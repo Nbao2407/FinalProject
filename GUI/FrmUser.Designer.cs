@@ -37,7 +37,7 @@
             bigLabel1.BackColor = Color.Transparent;
             bigLabel1.Font = new Font("Segoe UI", 25F);
             bigLabel1.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel1.Location = new Point(275, 191);
+            bigLabel1.Location = new Point(289, 192);
             bigLabel1.Name = "bigLabel1";
             bigLabel1.Size = new Size(160, 46);
             bigLabel1.TabIndex = 0;

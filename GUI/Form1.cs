@@ -4,19 +4,56 @@ namespace GUI
 {
     public partial class Form1 : Form
     {
-      
-        private bool isSidebarExpanded = true; // Trạng thái mặc định là mở rộng
+
+        private bool isSidebarExpanded = true;
         private const int SidebarExpandedWidth = 223;
         private const int SidebarCollapsedWidth = 60;
-        private System.Windows.Forms.Timer sidebarTimer;
+        private System.Windows.Forms.Timer sidebarTimer = new System.Windows.Forms.Timer();
         public Form1()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             InitializeSidebarToggle();
             this.IsMdiContainer = true;
+            panelMain.Dock = DockStyle.Fill;
             OpenChildForm(new FrmHome());
+            this.Resize += Form1_Resize;
+            SetDefaultFont(this, new Font("Segoe UI", 10, FontStyle.Regular));
         }
+        private void SetDefaultFont(Control parent, Font font)
+        {
+            parent.Font = font;
+            foreach (Control ctrl in parent.Controls)
+            {
+                SetDefaultFont(ctrl, font);
+            }
+        }
+        private void RoundCorners(int radius)
+        {
+            if (WindowState == FormWindowState.Normal)
+            {
+                var path = new GraphicsPath();
+                path.AddArc(0, 0, radius, radius, 180, 90);
+                path.AddArc(Width - radius, 0, radius, radius, 270, 90);
+                path.AddArc(Width - radius, Height - radius, radius, radius, 0, 90);
+                path.AddArc(0, Height - radius, radius, radius, 90, 90);
+                path.CloseFigure();
+                this.Region = new Region(path);
+            }
+            else if (WindowState == FormWindowState.Maximized)
+            {
+                this.Region = null; // Xóa bo góc khi fullscreen
+            }
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Normal)
+                RoundCorners(20); // 20 là bán kính bo góc
+            else
+                RoundCorners(0); // Hủy bo góc khi fullscreen
+        }
+
 
         private void InitializeSidebarToggle()
         {
@@ -31,8 +68,10 @@ namespace GUI
             sidebarTimer.Start();
         }
 
-        private void SidebarTimer_Tick(object sender, EventArgs e)
+        private void SidebarTimer_Tick(object? sender, EventArgs e)
         {
+            if (sender == null) return;
+
             if (isSidebarExpanded)
             {
                 if (panel2.Width > SidebarCollapsedWidth)
@@ -53,6 +92,14 @@ namespace GUI
                     sidebarTimer.Stop();
                 }
             }
+
+            panelMain.Left = panel2.Width;
+        }
+
+        private void AdjustPanelMain()
+        {
+            panelMain.Left = panel2.Width;
+            panelMain.Width = this.ClientSize.Width - panel2.Width;
         }
         private void ApplyButtonHoverEffect()
         {
@@ -62,40 +109,33 @@ namespace GUI
                 {
                     Button button = (Button)panel.Controls[0];
                     button.MouseEnter += (s, e) => button.BackColor = Color.FromArgb(50, 50, 50);
-                    button.MouseLeave += (s, e) => button.BackColor = Color.Black;
+                    button.MouseLeave += (s, e) => button.BackColor = Color.FromArgb(44, 62, 80);
                     btnSidebar.MouseEnter += (s, e) => btnSidebar.BackColor = Color.FromArgb(50, 50, 50);
                     btnSidebar.MouseLeave += (s, e) => btnSidebar.BackColor = Color.Transparent;
                 }
             }
         }
 
-        private void CloseAllChildForms()
-        {
-            foreach (Form form in this.MdiChildren)
-            {
-                form.Close(); // Đóng tất cả form con đang mở
-            }
-        }
 
-       
+
         private void button2_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmHome());
+            if (this.ActiveMdiChild is not FrmHome)
+            {
+                OpenChildForm(new FrmHome());
+            }
 
         }
+
 
         private void OpenChildForm(Form childForm)
         {
-            // Đóng form con hiện tại nếu có
-            foreach (Form form in this.MdiChildren)
-            {
-                form.Close();
-            }
-
-            // Mở form con mới
-            childForm.MdiParent = this;
-            childForm.FormBorderStyle = FormBorderStyle.None; // Loại bỏ viền form
-            childForm.Dock = DockStyle.Fill; // Để form con lấp đầy Form1
+            // Mở form con vào panelMain
+            childForm.TopLevel = false;
+            childForm.FormBorderStyle = FormBorderStyle.None;
+            childForm.Dock = DockStyle.Fill;
+            panelMain.Controls.Clear();
+            panelMain.Controls.Add(childForm);
             childForm.Show();
         }
 
@@ -107,6 +147,7 @@ namespace GUI
         private void btnMaterial_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmMaterial());
+
         }
 
         private void BtnType_Click(object sender, EventArgs e)
@@ -133,10 +174,26 @@ namespace GUI
         private void BtnUser_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmUser());
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            AdjustPanelMain();
+            panelMain.Left = panel2.Width;
+            this.Resize += Form1_Resize;
+
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panelMain_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
