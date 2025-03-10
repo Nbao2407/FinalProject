@@ -45,7 +45,7 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.White;
+            panel1.BackColor = Color.FromArgb(236, 240, 241);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(result);
             panel1.Controls.Add(button1);
@@ -150,7 +150,7 @@
             dataGridView.AllowUserToDeleteRows = false;
             dataGridView.AllowUserToResizeRows = false;
             dataGridView.Anchor = AnchorStyles.None;
-            dataGridView.BackgroundColor = Color.FromArgb(255, 255, 255);
+            dataGridView.BackgroundColor = Color.FromArgb(236, 240, 241);
             dataGridView.BorderStyle = BorderStyle.None;
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
