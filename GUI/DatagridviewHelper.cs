@@ -33,14 +33,19 @@ namespace GUI
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect; 
             dgv.ScrollBars = ScrollBars.None;
             dgv.MultiSelect = true; 
-            dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText; 
-            
+            dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+            dgv.AllowUserToResizeRows = false;
+            dgv.AllowUserToResizeColumns = false;
+         
+
         }
 
         public static void AddEditDeleteColumns(DataGridView dgv)
         {
             // Xóa cột "Loai" nếu tồn tại
             if (dgv.Columns["Loai"] != null) dgv.Columns.Remove("Loai");
+            if (dgv.Columns["MaTKLap"] !=null ) dgv.Columns.Remove("MaTKLap");
+            if (dgv.Columns["MaKhachHang"] != null) dgv.Columns.Remove("MaKhachHang");
 
             // Xóa cột "Edit" và "Delete" nếu đã tồn tại (tránh bị trùng lặp)
             if (dgv.Columns["Edit"] != null) dgv.Columns.Remove("Edit");

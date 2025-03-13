@@ -239,3 +239,4 @@ I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\osx-x64\native\libMono.Unix.dyli
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\tvos-arm64\native\libMono.Unix.a
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\tvossimulator-x64\native\libMono.Unix.a
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.FrmHoaDon.resources

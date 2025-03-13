@@ -41,6 +41,8 @@ namespace GUI
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "DonGiaBan", HeaderText = "Đơn Giá Bán", DataPropertyName = "DonGiaBan" });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "DonViTinh", HeaderText = "Đơn Vị Tính", DataPropertyName = "DonViTinh" });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "Số Lượng", DataPropertyName = "SoLuong" });
+            dataGridView1.Columns["DonGiaNhap"].DefaultCellStyle.Format = "N0";
+            dataGridView1.Columns["DonGiaBan"].DefaultCellStyle.Format = "N0";
 
             List<DTO_VatLieu> danhSach = busVatLieu.GetAllVatLieu();
             if (danhSach == null || danhSach.Count == 0)

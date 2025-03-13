@@ -6,14 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTO;
 using System.Data;
 using Microsoft.Data.SqlClient;
 namespace DAL;
 public class DAL_LVL : DBConnect
 {
 
-    // Lấy danh sách loại vật liệu
     public List<DTO_LVL> LayTatCaLVL()
     {
         List<DTO_LVL> danhSach = new List<DTO_LVL>();

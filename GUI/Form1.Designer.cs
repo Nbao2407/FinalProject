@@ -33,6 +33,10 @@
             nightControlBox1 = new ReaLTaiizor.Controls.NightControlBox();
             btnSidebar = new PictureBox();
             panel2 = new Panel();
+            panel13 = new Panel();
+            button10 = new Button();
+            button12 = new Button();
+            button13 = new Button();
             panel11 = new Panel();
             button3 = new Button();
             button4 = new Button();
@@ -64,6 +68,7 @@
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)btnSidebar).BeginInit();
             panel2.SuspendLayout();
+            panel13.SuspendLayout();
             panel11.SuspendLayout();
             panel12.SuspendLayout();
             panel10.SuspendLayout();
@@ -125,6 +130,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(44, 62, 80);
+            panel2.Controls.Add(panel13);
             panel2.Controls.Add(panel11);
             panel2.Controls.Add(panel12);
             panel2.Controls.Add(panel10);
@@ -143,6 +149,61 @@
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
+            // panel13
+            // 
+            panel13.Controls.Add(button10);
+            panel13.Controls.Add(button12);
+            panel13.Controls.Add(button13);
+            panel13.Location = new Point(3, 466);
+            panel13.Name = "panel13";
+            panel13.Size = new Size(215, 45);
+            panel13.TabIndex = 14;
+            // 
+            // button10
+            // 
+            button10.BackColor = Color.FromArgb(44, 62, 80);
+            button10.Cursor = Cursors.Hand;
+            button10.ForeColor = Color.White;
+            button10.Image = Properties.Resources.icons8_receipt_white;
+            button10.ImageAlign = ContentAlignment.MiddleLeft;
+            button10.Location = new Point(-9, -7);
+            button10.Name = "button10";
+            button10.Padding = new Padding(15, 0, 0, 0);
+            button10.Size = new Size(228, 59);
+            button10.TabIndex = 5;
+            button10.Text = "Nhà cung cấp";
+            button10.UseVisualStyleBackColor = false;
+            // 
+            // button12
+            // 
+            button12.BackColor = Color.Black;
+            button12.Cursor = Cursors.Hand;
+            button12.ForeColor = Color.White;
+            button12.Image = (Image)resources.GetObject("button12.Image");
+            button12.ImageAlign = ContentAlignment.MiddleLeft;
+            button12.Location = new Point(-9, -7);
+            button12.Name = "button12";
+            button12.Padding = new Padding(15, 0, 0, 0);
+            button12.Size = new Size(228, 59);
+            button12.TabIndex = 4;
+            button12.Text = "Nhân sự";
+            button12.UseVisualStyleBackColor = false;
+            // 
+            // button13
+            // 
+            button13.BackColor = Color.Black;
+            button13.Cursor = Cursors.Hand;
+            button13.ForeColor = Color.White;
+            button13.Image = (Image)resources.GetObject("button13.Image");
+            button13.ImageAlign = ContentAlignment.MiddleLeft;
+            button13.Location = new Point(-9, -6);
+            button13.Name = "button13";
+            button13.Padding = new Padding(15, 0, 0, 0);
+            button13.Size = new Size(228, 59);
+            button13.TabIndex = 3;
+            button13.Text = "Thống kê ";
+            button13.UseVisualStyleBackColor = false;
+            // 
             // panel11
             // 
             panel11.Controls.Add(button3);
@@ -160,13 +221,14 @@
             button3.ForeColor = Color.White;
             button3.Image = Properties.Resources.icons8_receipt_white;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
-            button3.Location = new Point(-9, -7);
+            button3.Location = new Point(-9, -5);
             button3.Name = "button3";
             button3.Padding = new Padding(15, 0, 0, 0);
             button3.Size = new Size(228, 59);
             button3.TabIndex = 5;
             button3.Text = "Hóa Dơn";
             button3.UseVisualStyleBackColor = false;
+            button3.Click += button3_Click;
             // 
             // button4
             // 
@@ -349,7 +411,7 @@
             BtnOrder.ForeColor = Color.White;
             BtnOrder.Image = (Image)resources.GetObject("BtnOrder.Image");
             BtnOrder.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnOrder.Location = new Point(-7, -7);
+            BtnOrder.Location = new Point(-8, -7);
             BtnOrder.Name = "BtnOrder";
             BtnOrder.Padding = new Padding(15, 0, 0, 0);
             BtnOrder.Size = new Size(228, 59);
@@ -484,7 +546,7 @@
             BtnUser.ForeColor = Color.White;
             BtnUser.Image = (Image)resources.GetObject("BtnUser.Image");
             BtnUser.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnUser.Location = new Point(-6, -18);
+            BtnUser.Location = new Point(-16, -18);
             BtnUser.Name = "BtnUser";
             BtnUser.Padding = new Padding(25, 0, 0, 0);
             BtnUser.Size = new Size(243, 61);
@@ -520,6 +582,7 @@
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)btnSidebar).EndInit();
             panel2.ResumeLayout(false);
+            panel13.ResumeLayout(false);
             panel11.ResumeLayout(false);
             panel12.ResumeLayout(false);
             panel10.ResumeLayout(false);
@@ -567,5 +630,9 @@
         private Panel panel12;
         private Button button7;
         private Button button8;
+        private Panel panel13;
+        private Button button10;
+        private Button button12;
+        private Button button13;
     }
 }

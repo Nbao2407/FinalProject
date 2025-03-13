@@ -41,31 +41,32 @@ namespace DAL
         }
         public List<DTO_Khach> GetAllKhach()
         {
-            List<DTO_Khach> danhSach = new List<DTO_Khach>();
+            List<DTO_Khach> danhSachKhach = new List<DTO_Khach>();
 
             using (SqlConnection conn = DBConnect.GetConnection())
             {
                 conn.Open();
-                string query = "SELECT * FROM QLKH"; 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT MaKhachHang, Ten, GioiTinh, NgaySinh, SDT, Email FROM QLKH", conn))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            danhSach.Add(new DTO_Khach(
-                                 reader.GetInt32(0),    
-                                 reader.GetString(1),
-                                 reader.GetString(2),   
-                                 reader.GetDateTime(3), 
-                                 reader.GetString(4),   
-                                 reader.GetString(5)
-                                    ));
+                            danhSachKhach.Add(new DTO_Khach
+                            {
+                                MaKhachHang = reader.GetInt32(0),
+                                Ten = reader.GetString(1),
+                                GioiTinh = reader.GetString(2),
+                                NgaySinh = reader.GetDateTime(3), // ✅ Đọc đúng kiểu DateTime
+                                SDT = reader.GetString(4),
+                                Email = reader.GetString(5)
+                            });
                         }
                     }
                 }
             }
-            return danhSach;
+            return danhSachKhach;
         }
+
     }
 }

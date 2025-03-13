@@ -59,7 +59,17 @@ CREATE TABLE QLVatLieu (
     GhiChu NVARCHAR(255),
     HinhAnh VARBINARY(MAX)
 );
-
+CREATE TABLE AuditLog (
+    MaLog INT PRIMARY KEY IDENTITY,
+    ThoiGian DATETIME DEFAULT GETDATE(),
+    MaTK INT REFERENCES QLTK(MaTK),
+    TenBang NVARCHAR(50) NOT NULL,
+    MaBanGhi INT NOT NULL,
+    HanhDong NVARCHAR(20) ,
+    GiaTriCu NVARCHAR(MAX),
+    GiaTriMoi NVARCHAR(MAX),
+    GhiChu NVARCHAR(255)
+);
 -- Bảng Quản lý đơn nhập
 CREATE TABLE QLDonNhap (
     MaDonNhap INT PRIMARY KEY IDENTITY,
@@ -98,8 +108,37 @@ CREATE TABLE ChiTietHoaDon (
     SoLuong INT CHECK (SoLuong > 0),
     DonGia DECIMAL(18,2) CHECK (DonGia >= 0)
 );
+
+ALTER PROCEDURE sp_ThemChiTietHoaDon
+    @MaHoaDon INT,
+    @MaVatLieu INT,
+    @SoLuong INT
+AS
+BEGIN
+    DECLARE @DonGia DECIMAL(18,2);
+    DECLARE @ThanhTien DECIMAL(18,2);
+
+    SELECT @DonGia = DonGiaBan FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu;
+
+    SET @ThanhTien = dbo.fn_LamTronTien(@SoLuong * @DonGia, 0);
+
+    INSERT INTO ChiTietHoaDon (MaHoaDon, MaVatLieu, SoLuong, DonGia)
+    VALUES (@MaHoaDon, @MaVatLieu, @SoLuong, @DonGia);
+
+    UPDATE QLHoaDon
+    SET TongTien = dbo.fn_LamTronTien(TongTien + @ThanhTien, 0)
+    WHERE MaHoaDon = @MaHoaDon;
+END;
+Go
+CREATE FUNCTION dbo.fn_LamTronTien (@Gia DECIMAL(18,2), @SoLamTron INT = 2)
+RETURNS DECIMAL(18,2)
+AS
+BEGIN
+    RETURN ROUND(@Gia, @SoLamTron)
+END;
 GO
 
+go
 CREATE TRIGGER trg_CapNhatSoLuongNhap
 ON ChiTietDonNhap
 AFTER INSERT
@@ -223,81 +262,69 @@ EXEC sp_ThemChiTietHoaDon @MaHD, 1, 10;
 EXEC sp_ThemChiTietHoaDon @MaHD, 2, 5;
 EXEC sp_ThemChiTietHoaDon @MaHD, 3, 100;
 go
-create PROCEDURE [dbo].[sp_TimKiemVatLieu]
-    @Keyword NVARCHAR(100)
+CREATE PROCEDURE sp_LayDanhSachHoaDon
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        hd.MaHoaDon, 
+        hd.NgayLap, 
+        tk.TenDangNhap AS N'Người Lập', 
+        kh.Ten AS N'Khách Hàng', 
+        hd.TongTien, 
+        hd.TrangThai, 
+        hd.HinhThucThanhToan
+    FROM QLHoaDon hd
+    JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
+    LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang;
+END;
+go
+CREATE TRIGGER trg_CapNhatNgayCapNhat_QLVatLieu
+ON QLVatLieu
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE QLVatLieu
+    SET NgayCapNhat = GETDATE(),
+        NguoiCapNhat = SYSTEM_USER
+    FROM QLVatLieu v
+    INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
+END;
+go
+CREATE TRIGGER trg_AuditLog_QLVatLieu
+ON QLVatLieu
+AFTER UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
     
-    SELECT vl.MaVatLieu, vl.Ten, lv.TenLoai, vl.DonGiaBan, vl.DonGiaNhap, vl.DonViTinh, vl.SoLuong
-    FROM QLVatLieu vl  
-    JOIN QLLoaiVatLieu lv ON vl.Loai = lv.MaLoaiVatLieu
-    WHERE CAST(vl.MaVatLieu AS NVARCHAR) LIKE '%' + @Keyword + '%'  
-       OR vl.Ten LIKE '%' + @Keyword + '%'
-       OR lv.TenLoai LIKE '%' + @Keyword + '%';   
-END;
-Go
-ALTER PROCEDURE sp_TimKiemLoaiVatLieu
-    @Keyword NVARCHAR(100)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
+    INSERT INTO AuditLog (MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
     SELECT 
-        MaLoaiVatLieu, 
-        TenLoai, 
-        TrangThai,
-        -- Tính độ khớp để sắp xếp
-        CASE 
-            WHEN TenLoai LIKE @Keyword + '%' THEN 3 -- Khớp đầu tiên
-            WHEN TenLoai LIKE '%' + @Keyword + '%' THEN 2 -- Khớp giữa
-            ELSE 1
-        END AS MatchScore
-    FROM QLLoaiVatLieu
-    WHERE 
-        TenLoai COLLATE Latin1_General_CI_AI LIKE '%' + @Keyword + '%'
-        OR CAST(MaLoaiVatLieu AS NVARCHAR) LIKE @Keyword + '%'
-    ORDER BY MatchScore DESC, TenLoai;
+        COALESCE(i.NguoiCapNhat, 1), -- Sử dụng MaTK mặc định nếu không có
+        'QLVatLieu',
+        i.MaVatLieu,
+        'UPDATE',
+        CONCAT('SL:', d.SoLuong, ', GiaNhap:', d.DonGiaNhap, ', GiaBan:', d.DonGiaBan),
+        CONCAT('SL:', i.SoLuong, ', GiaNhap:', i.DonGiaNhap, ', GiaBan:', i.DonGiaBan),
+        'Cập nhật thông tin vật liệu'
+    FROM deleted d
+    INNER JOIN inserted i ON d.MaVatLieu = i.MaVatLieu
+    WHERE d.SoLuong != i.SoLuong OR d.DonGiaNhap != i.DonGiaNhap OR d.DonGiaBan != i.DonGiaBan;
 END;
-ALTER PROCEDURE [dbo].[sp_TimKiemVatLieu]
-    @Keyword NVARCHAR(100)
-AS
-BEGIN
-    SET NOCOUNT ON;
+-- Thêm trường theo dõi thời gian cho các bảng chính
+ALTER TABLE QLVatLieu ADD 
+    NgayTao DATETIME DEFAULT GETDATE(),
+    NguoiTao INT REFERENCES QLTK(MaTK),
+    NgayCapNhat DATETIME,
+    NguoiCapNhat INT REFERENCES QLTK(MaTK);
 
-    -- Chuẩn hóa keyword để tìm kiếm không dấu và không phân biệt hoa thường
-    DECLARE @Search NVARCHAR(100) = '%' + @Keyword + '%';
+ALTER TABLE QLDonNhap ADD
+    NgayCapNhat DATETIME,
+    NguoiCapNhat INT REFERENCES QLTK(MaTK);
 
-    SELECT 
-        vl.MaVatLieu, 
-        vl.Ten, 
-        lv.TenLoai, 
-        vl.DonGiaBan, 
-        vl.DonGiaNhap, 
-        vl.DonViTinh, 
-        vl.SoLuong,
-        -- Xếp hạng mức độ khớp để ưu tiên hiển thị
-        CASE 
-            WHEN vl.Ten LIKE @Keyword + '%' THEN 3  -- Khớp đầu tiên
-            WHEN vl.Ten LIKE '%' + @Keyword + '%' THEN 2 -- Khớp giữa
-            ELSE 1
-        END AS MatchScore
-    FROM QLVatLieu vl  
-    JOIN QLLoaiVatLieu lv ON vl.Loai = lv.MaLoaiVatLieu
-    WHERE 
-        vl.Ten COLLATE Latin1_General_CI_AI LIKE @Search
-        OR lv.TenLoai COLLATE Latin1_General_CI_AI LIKE @Search
-        OR CAST(vl.MaVatLieu AS NVARCHAR) LIKE @Search
-    ORDER BY MatchScore DESC, vl.Ten;
-END;
-
-SELECT * FROM QLTK;
-SELECT * FROM Kho;
-SELECT * FROM NCC;
-SELECT * FROM QLKH;
-SELECT * FROM QLLoaiVatLieu;
-SELECT * FROM QLVatLieu;
-SELECT * FROM QLDonNhap;
-SELECT * FROM ChiTietDonNhap;
-SELECT * FROM QLHoaDon;
-SELECT * FROM ChiTietHoaDon;
+ALTER TABLE QLHoaDon ADD
+    NgayCapNhat DATETIME,
+    NguoiCapNhat INT REFERENCES QLTK(MaTK);
+	ALTER TABLE QLVatLieu ADD CONSTRAINT DF_QLVatLieu_NgayCapNhat DEFAULT GETDATE() FOR NgayCapNhat;

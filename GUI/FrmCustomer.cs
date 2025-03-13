@@ -99,11 +99,12 @@ namespace GUI
                     Label lbl = new Label
                     {
                         Text = item.Ten, 
+                        
                         AutoSize = false,
                         Width = result.Width,
                         Height = 40,
                         Padding = new Padding(5),
-                        Font = new Font("Arial", 11, FontStyle.Bold),
+                        Font = new Font("Arial", 12, FontStyle.Bold),
                         BackColor = Color.White,
                         ForeColor = Color.Black,
                         BorderStyle = BorderStyle.FixedSingle
