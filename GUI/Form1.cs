@@ -4,7 +4,9 @@ namespace GUI
 {
     public partial class Form1 : Form
     {
-
+        private bool dragging = false;
+        private Point startPoint = new Point(0, 0);
+        private FormWindowState lastWindowState = FormWindowState.Normal;
         private bool isSidebarExpanded = true;
         private const int SidebarExpandedWidth = 223;
         private const int SidebarCollapsedWidth = 60;
@@ -19,6 +21,33 @@ namespace GUI
             OpenChildForm(new FrmHome());
             this.Resize += Form1_Resize;
             SetDefaultFont(this, new Font("Segoe UI", 10, FontStyle.Regular));
+            panel1.MouseDown += Form1_MouseDown;
+            panel1.MouseMove += Form1_MouseMove;
+            panel1.MouseUp += Form1_MouseUp;
+        }
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            dragging = true;
+            startPoint = new Point(e.X, e.Y);
+
+            if (this.WindowState == FormWindowState.Maximized)
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.Location = new Point(Cursor.Position.X - this.Width / 2, Cursor.Position.Y - 10);
+            }
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (dragging)
+            {
+                this.Left = Cursor.Position.X - startPoint.X;
+                this.Top = Cursor.Position.Y - startPoint.Y;
+            }
+        }
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
+        {
+            dragging = false;
         }
         private void SetDefaultFont(Control parent, Font font)
         {
@@ -42,7 +71,7 @@ namespace GUI
             }
             else if (WindowState == FormWindowState.Maximized)
             {
-                this.Region = null; // Xóa bo góc khi fullscreen
+                this.Region = null;
             }
         }
 
@@ -62,15 +91,47 @@ namespace GUI
             sidebarTimer.Tick += SidebarTimer_Tick;
             ApplyButtonHoverEffect();
         }
-
-        private void ToggleButton_Click(object sender, EventArgs e)
+        private async Task ToggleSidebar()
         {
-            sidebarTimer.Start();
+            int step = 10;
+            int delay = 5; // Giảm độ trễ để nhanh hơn
+
+            this.SuspendLayout();
+
+            if (isSidebarExpanded)
+            {
+                for (int i = panel2.Width; i >= SidebarCollapsedWidth; i -= step)
+                {
+                    panel2.Width = i;
+                    AdjustPanelMain();
+                    await Task.Delay(delay);
+                }
+                isSidebarExpanded = false;
+            }
+            else
+            {
+                for (int i = panel2.Width; i <= SidebarExpandedWidth; i += step)
+                {
+                    panel2.Width = i;
+                    AdjustPanelMain();
+                    await Task.Delay(delay);
+                }
+                isSidebarExpanded = true;
+            }
+
+            this.ResumeLayout();
+        }
+
+        private async void ToggleButton_Click(object sender, EventArgs e)
+        {
+            await ToggleSidebar();
         }
 
         private void SidebarTimer_Tick(object? sender, EventArgs e)
         {
             if (sender == null) return;
+
+            this.SuspendLayout(); // Dừng cập nhật UI
 
             if (isSidebarExpanded)
             {
@@ -93,8 +154,10 @@ namespace GUI
                 }
             }
 
-            panelMain.Left = panel2.Width;
+            AdjustPanelMain(); // Cập nhật panelMain ngay sau khi thay đổi panel2.Width
+            this.ResumeLayout(); // Tiếp tục cập nhật UI
         }
+
 
         private void AdjustPanelMain()
         {
@@ -115,22 +178,15 @@ namespace GUI
                 }
             }
         }
-
-
-
         private void button2_Click(object sender, EventArgs e)
         {
             if (this.ActiveMdiChild is not FrmHome)
             {
                 OpenChildForm(new FrmHome());
             }
-
         }
-
-
         private void OpenChildForm(Form childForm)
         {
-            // Mở form con vào panelMain
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
@@ -169,12 +225,9 @@ namespace GUI
         {
             OpenChildForm(new FrmNV());
         }
-
-
         private void BtnUser_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new FrmUser());
-
+            ShowPopup();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -182,23 +235,41 @@ namespace GUI
             AdjustPanelMain();
             panelMain.Left = panel2.Width;
             this.Resize += Form1_Resize;
-
-
         }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
+        private void ShowPopup()
         {
+            Panel overlay = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(50, 0, 0, 0),
+                Parent = this,
+                Visible = true
+            };
+            this.Controls.Add(overlay);
 
+            overlay.BringToFront();
+            this.Resize += (s, e) =>
+            {
+                overlay.Size = this.ClientSize;
+            };
+            using (var popup = new FrmUser())
+            {
+                popup.Deactivate += (s, e) => popup.TopMost = true;
+
+                popup.StartPosition = FormStartPosition.CenterParent;
+
+                popup.ShowDialog();
+            }
+            overlay.Dispose();
         }
-
-        private void panelMain_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
             OpenChildForm(new FrmHoaDon());
+        }
+
+        private void Ncc_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new FrmNCc());
         }
     }
 }

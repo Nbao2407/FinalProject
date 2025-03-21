@@ -42,7 +42,6 @@
             txtPass = new TextBox();
             rdRemenber = new ReaLTaiizor.Controls.AirRadioButton();
             btnQuenMk = new Label();
-            guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(components);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -185,9 +184,6 @@
             // 
             // guna2BorderlessForm1
             // 
-            guna2BorderlessForm1.ContainerControl = this;
-            guna2BorderlessForm1.DockIndicatorTransparencyValue = 0.6D;
-            guna2BorderlessForm1.TransparentWhileDrag = true;
             // 
             // FrmDN
             // 
@@ -231,6 +227,5 @@
         private TextBox txtPass;
         private ReaLTaiizor.Controls.AirRadioButton rdRemenber;
         private Label btnQuenMk;
-        private Guna.UI2.WinForms.Guna2BorderlessForm guna2BorderlessForm1;
     }
 }

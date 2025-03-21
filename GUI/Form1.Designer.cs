@@ -52,8 +52,6 @@
             BtnTke = new Button();
             button9 = new Button();
             panel6 = new Panel();
-            BtnOrder = new Button();
-            button5 = new Button();
             panel5 = new Panel();
             BtnType = new Button();
             panel3 = new Panel();
@@ -73,7 +71,6 @@
             panel12.SuspendLayout();
             panel10.SuspendLayout();
             panel8.SuspendLayout();
-            panel6.SuspendLayout();
             panel5.SuspendLayout();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
@@ -147,14 +144,13 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(223, 641);
             panel2.TabIndex = 1;
-            panel2.Paint += panel2_Paint;
             // 
             // panel13
             // 
             panel13.Controls.Add(button10);
             panel13.Controls.Add(button12);
             panel13.Controls.Add(button13);
-            panel13.Location = new Point(3, 466);
+            panel13.Location = new Point(4, 414);
             panel13.Name = "panel13";
             panel13.Size = new Size(215, 45);
             panel13.TabIndex = 14;
@@ -173,6 +169,7 @@
             button10.TabIndex = 5;
             button10.Text = "Nhà cung cấp";
             button10.UseVisualStyleBackColor = false;
+            button10.Click += Ncc_Click;
             // 
             // button12
             // 
@@ -209,7 +206,7 @@
             panel11.Controls.Add(button3);
             panel11.Controls.Add(button4);
             panel11.Controls.Add(button6);
-            panel11.Location = new Point(3, 412);
+            panel11.Location = new Point(4, 360);
             panel11.Name = "panel11";
             panel11.Size = new Size(215, 45);
             panel11.TabIndex = 13;
@@ -264,7 +261,7 @@
             // 
             panel12.Controls.Add(button7);
             panel12.Controls.Add(button8);
-            panel12.Location = new Point(5, 361);
+            panel12.Location = new Point(6, 309);
             panel12.Name = "panel12";
             panel12.Size = new Size(215, 45);
             panel12.TabIndex = 12;
@@ -281,7 +278,7 @@
             button7.Padding = new Padding(15, 0, 0, 0);
             button7.Size = new Size(228, 59);
             button7.TabIndex = 4;
-            button7.Text = "Nhập/Xuất";
+            button7.Text = "Nhập hàng";
             button7.UseVisualStyleBackColor = false;
             // 
             // button8
@@ -304,7 +301,7 @@
             panel10.Controls.Add(button1);
             panel10.Controls.Add(BtnNV);
             panel10.Controls.Add(button11);
-            panel10.Location = new Point(3, 312);
+            panel10.Location = new Point(4, 260);
             panel10.Name = "panel10";
             panel10.Size = new Size(215, 45);
             panel10.TabIndex = 11;
@@ -359,7 +356,7 @@
             // 
             panel8.Controls.Add(BtnTke);
             panel8.Controls.Add(button9);
-            panel8.Location = new Point(5, 261);
+            panel8.Location = new Point(6, 209);
             panel8.Name = "panel8";
             panel8.Size = new Size(215, 45);
             panel8.TabIndex = 10;
@@ -371,7 +368,7 @@
             BtnTke.ForeColor = Color.White;
             BtnTke.Image = (Image)resources.GetObject("BtnTke.Image");
             BtnTke.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnTke.Location = new Point(-8, -7);
+            BtnTke.Location = new Point(-9, -6);
             BtnTke.Name = "BtnTke";
             BtnTke.Padding = new Padding(15, 0, 0, 0);
             BtnTke.Size = new Size(228, 59);
@@ -387,7 +384,7 @@
             button9.ForeColor = Color.White;
             button9.Image = (Image)resources.GetObject("button9.Image");
             button9.ImageAlign = ContentAlignment.MiddleLeft;
-            button9.Location = new Point(-9, -6);
+            button9.Location = new Point(-9, -8);
             button9.Name = "button9";
             button9.Padding = new Padding(15, 0, 0, 0);
             button9.Size = new Size(228, 59);
@@ -397,43 +394,10 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(BtnOrder);
-            panel6.Controls.Add(button5);
             panel6.Location = new Point(3, 210);
             panel6.Name = "panel6";
             panel6.Size = new Size(215, 45);
             panel6.TabIndex = 9;
-            // 
-            // BtnOrder
-            // 
-            BtnOrder.BackColor = Color.FromArgb(44, 62, 80);
-            BtnOrder.Cursor = Cursors.Hand;
-            BtnOrder.ForeColor = Color.White;
-            BtnOrder.Image = (Image)resources.GetObject("BtnOrder.Image");
-            BtnOrder.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnOrder.Location = new Point(-8, -7);
-            BtnOrder.Name = "BtnOrder";
-            BtnOrder.Padding = new Padding(15, 0, 0, 0);
-            BtnOrder.Size = new Size(228, 59);
-            BtnOrder.TabIndex = 4;
-            BtnOrder.Text = "Đơn hàng";
-            BtnOrder.UseVisualStyleBackColor = false;
-            BtnOrder.Click += BtnOrder_Click;
-            // 
-            // button5
-            // 
-            button5.BackColor = Color.Black;
-            button5.Cursor = Cursors.Hand;
-            button5.ForeColor = Color.White;
-            button5.Image = (Image)resources.GetObject("button5.Image");
-            button5.ImageAlign = ContentAlignment.MiddleLeft;
-            button5.Location = new Point(-9, -6);
-            button5.Name = "button5";
-            button5.Padding = new Padding(15, 0, 0, 0);
-            button5.Size = new Size(228, 59);
-            button5.TabIndex = 3;
-            button5.Text = "Thống kê ";
-            button5.UseVisualStyleBackColor = false;
             // 
             // panel5
             // 
@@ -562,7 +526,6 @@
             panelMain.Name = "panelMain";
             panelMain.Size = new Size(1209, 642);
             panelMain.TabIndex = 3;
-            panelMain.Paint += panelMain_Paint;
             // 
             // Form1
             // 
@@ -587,7 +550,6 @@
             panel12.ResumeLayout(false);
             panel10.ResumeLayout(false);
             panel8.ResumeLayout(false);
-            panel6.ResumeLayout(false);
             panel5.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel4.ResumeLayout(false);
@@ -610,14 +572,9 @@
         private Button btnMaterial;
         private Panel panel4;
         private Button button2;
-        private Panel panel6;
-        private Button button5;
         private Panel panel5;
         private Button BtnType;
-        private Panel panel8;
         private Button BtnTke;
-        private Button button9;
-        private Button BtnOrder;
         private Panel panel10;
         private Button BtnNV;
         private Button button11;
@@ -634,5 +591,8 @@
         private Button button10;
         private Button button12;
         private Button button13;
+        private Panel panel8;
+        private Button button9;
+        private Panel panel6;
     }
 }

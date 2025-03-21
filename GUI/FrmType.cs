@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,29 +40,27 @@ namespace GUI
                 MessageBox.Show("Không có dữ liệu vật liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             dataGridView.DataSource = danhSach;
-            DataGridViewHelper.AddEditDeleteColumns(dataGridView);
         }
         private void FrmType_Load(object sender, EventArgs e)
         {
             DataGridViewHelper.CustomizeDataGridView(dataGridView);
             LoadData();
-            DataGridViewHelper.AddEditDeleteColumns(dataGridView);
         }
         private void Frm_Resize(object sender, EventArgs e)
-        {   
+        {
             if (this.WindowState == FormWindowState.Minimized)
             {
-                dataGridView.Width = 1209;
+                dataGridView.Width = 1150;
                 dataGridView.Height = 642;
-                dataGridView.Left = (this.ClientSize.Width - 1209) / 2;
+                dataGridView.Left = (this.ClientSize.Width) / 2;
                 dataGridView.Top = (this.ClientSize.Height - 642) / 2;
 
             }
             else
             {
-                dataGridView.Width = this.ClientSize.Width - 40;
+                dataGridView.Width = this.ClientSize.Width;
                 dataGridView.Height = this.ClientSize.Height - 80;
-                dataGridView.Left = 20;
+                dataGridView.Left = 25;
                 dataGridView.Top = 80;
             }
 
@@ -73,19 +72,12 @@ namespace GUI
 
             int totalWidth = dataGridView.ClientSize.Width;
             int fixedColumnWidth = 50;
-            int variableColumnCount = dataGridView.Columns.Count - 3;
-            int variableColumnWidth = (totalWidth - (3 * fixedColumnWidth)) / variableColumnCount;
+            int variableColumnCount = dataGridView.Columns.Count;
+            int variableColumnWidth = (totalWidth - fixedColumnWidth) / variableColumnCount;
 
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
-                if (column.Name == "Edit" || column.Name == "Delete" || column.Name == "Disable")
-                {
-                    column.Width = fixedColumnWidth;
-                }
-                else
-                {
-                    column.Width = variableColumnWidth;
-                }
+                column.Width = variableColumnWidth;
             }
         }
 

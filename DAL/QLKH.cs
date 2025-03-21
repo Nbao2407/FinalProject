@@ -57,7 +57,7 @@ namespace DAL
                                 MaKhachHang = reader.GetInt32(0),
                                 Ten = reader.GetString(1),
                                 GioiTinh = reader.GetString(2),
-                                NgaySinh = reader.GetDateTime(3), // ✅ Đọc đúng kiểu DateTime
+                                NgaySinh = reader.GetDateTime(3), 
                                 SDT = reader.GetString(4),
                                 Email = reader.GetString(5)
                             });

@@ -33,7 +33,6 @@ I:\Pro213\GUI\bin\Debug\net8.0-windows\GUI.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\GUI.pdb
 I:\Pro213\GUI\bin\Debug\net8.0-windows\Azure.Core.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\Azure.Identity.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Guna.UI2.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\Microsoft.Bcl.Cryptography.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\Microsoft.Data.SqlClient.dll
@@ -54,13 +53,6 @@ I:\Pro213\GUI\bin\Debug\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\Microsoft.SqlServer.Server.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\MetroFramework.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\ReaLTaiizor.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.Grid.Windows.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.Licensing.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.Shared.Base.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.Shared.Windows.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.SpellChecker.Base.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.Tools.Base.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\Syncfusion.Tools.Windows.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.ClientModel.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Composition.AttributedModel.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Composition.Convention.dll
@@ -70,7 +62,6 @@ I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Composition.TypedParts.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Configuration.ConfigurationManager.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Diagnostics.EventLog.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Management.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Memory.Data.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\System.Security.Cryptography.Pkcs.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
@@ -92,7 +83,6 @@ I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
-I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\win\lib\net7.0\System.Management.dll
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.csproj.AssemblyReference.cache
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.Form1.resources
@@ -240,3 +230,11 @@ I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\tvos-arm64\native\libMono.Unix.a
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\tvossimulator-x64\native\libMono.Unix.a
 I:\Pro213\GUI\bin\Debug\net8.0-windows\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.FrmHoaDon.resources
+I:\Pro213\GUI\bin\Debug\net8.0-windows\OxyPlot.dll
+I:\Pro213\GUI\bin\Debug\net8.0-windows\OxyPlot.WindowsForms.dll
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.PopupCmer.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.FrmNCc.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.PopNcc.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.AddHoaDon.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.Wiget.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.Wiget2.resources

@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +22,7 @@ namespace GUI
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
-            this.Resize += new EventHandler(FrmMaterial_Resize);
+            this.Resize += new EventHandler(Frm_Resize);
         }
         private void FrmKhach_Load(object sender, EventArgs e)
         {
@@ -31,30 +32,40 @@ namespace GUI
 
         private void LoadKhachHang()
         {
+            dataGridView1.AutoGenerateColumns = false;
             List<DTO_Khach> danhSachKhach = busKhach.LayDanhSachKhach();
             dataGridView1.DataSource = danhSachKhach;
 
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaKhachHang", DataPropertyName = "MaKhachHang" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "Ten", DataPropertyName = "Ten" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "NgaySinh", DataPropertyName = "NgaySinh" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "SDT", DataPropertyName = "SDT" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "Email", DataPropertyName = "Email" });
+
+            dataGridView1.Columns["MaKhachHang"].HeaderText = "Mã Khách Hàng";
+            dataGridView1.Columns["Ten"].HeaderText = "Tên";
+            dataGridView1.Columns["NgaySinh"].HeaderText = "Ngày Sinh";
+            dataGridView1.Columns["SDT"].HeaderText = "Số Điện Thoại";
+            dataGridView1.Columns["Email"].HeaderText = "Email";
+
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
-            DataGridViewHelper.AddEditDeleteColumns(dataGridView1);
             ResizeColumns();
-
-
         }
-        private void FrmMaterial_Resize(object sender, EventArgs e)
+        private void Frm_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
                 dataGridView1.Width = 1150;
                 dataGridView1.Height = 642;
-                dataGridView1.Left = (this.ClientSize.Width - 1050) / 2;
+                dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
 
             }
             else
             {
-                dataGridView1.Width = this.ClientSize.Width - 40;
+                dataGridView1.Width = this.ClientSize.Width;
                 dataGridView1.Height = this.ClientSize.Height - 80;
-                dataGridView1.Left = 20;
+                dataGridView1.Left = 25;
                 dataGridView1.Top = 80;
             }
 
@@ -68,19 +79,12 @@ namespace GUI
 
             int totalWidth = dataGridView1.ClientSize.Width;
             int fixedColumnWidth = 50;
-            int variableColumnCount = dataGridView1.Columns.Count - 3;
-            int variableColumnWidth = (totalWidth - (3 * fixedColumnWidth)) / variableColumnCount;
+            int variableColumnCount = dataGridView1.Columns.Count;
+            int variableColumnWidth = (totalWidth - fixedColumnWidth) / variableColumnCount;
 
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
-                if (column.Name == "Edit" || column.Name == "Delete" || column.Name == "Disable")
-                {
-                    column.Width = fixedColumnWidth;
-                }
-                else
-                {
-                    column.Width = variableColumnWidth;
-                }
+                column.Width = variableColumnWidth;
             }
         }
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -89,17 +93,16 @@ namespace GUI
 
             if (searchQuery.Length > 0)
             {
-                // 🛠 Lấy danh sách khách hàng tìm kiếm
                 List<DTO_Khach> results = kh.TimKiemKhachHang(searchQuery);
                 result.Controls.Clear();
-                result.Height = Math.Min(results.Count * 40, 200); 
+                result.Height = Math.Min(results.Count * 40, 200);
 
                 foreach (var item in results)
                 {
                     Label lbl = new Label
                     {
-                        Text = item.Ten, 
-                        
+                        Text = item.Ten,
+
                         AutoSize = false,
                         Width = result.Width,
                         Height = 40,
@@ -130,5 +133,32 @@ namespace GUI
                 : kh.GetAllKhach();
         }
 
+        private void popup_Click(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            Panel overlay = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(50, 0, 0, 0),
+                Parent = this,
+                Visible = true
+            };
+            this.Controls.Add(overlay);
+
+            overlay.BringToFront();
+            this.Resize += (s, e) =>
+            {
+                overlay.Size = this.ClientSize;
+            };
+            using (var popup = new PopupCmer())
+            {
+                popup.Deactivate += (s, e) => popup.TopMost = true;
+
+                popup.StartPosition = FormStartPosition.CenterParent;
+
+                popup.ShowDialog();
+            }
+            overlay.Dispose();
+    }
     }
 }

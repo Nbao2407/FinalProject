@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DTO;
 using DAL;
 using static IronPython.Modules._ast;
+using GUI.Helpler;
 
 namespace GUI
 {
@@ -27,7 +28,6 @@ namespace GUI
             LoadData();
             ResizeColumns();
 
-            DataGridViewHelper.AddEditDeleteColumns(dataGridView1);
 
         }
         private void LoadData()
@@ -50,30 +50,29 @@ namespace GUI
                 MessageBox.Show("Không có dữ liệu vật liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             dataGridView1.DataSource = danhSach;
-            DataGridViewHelper.AddEditDeleteColumns(dataGridView1);
         }
 
         private void dgv_SelectionChanged(object sender, EventArgs e)
         {
             int tongSl = DataGridViewHelper.TinhTongSoLuongChon(dataGridView1, "SoLuong");
-            Tong.Text =  $"Tổng: {tongSl}";
+            Tong.Text = $"Tổng: {tongSl}";
         }
 
         private void FrmMaterial_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
-                dataGridView1.Width = 1150;
+                dataGridView1.Width = 1200;
                 dataGridView1.Height = 642;
-                dataGridView1.Left = (this.ClientSize.Width - 1050) / 2;
+                dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
 
             }
             else
             {
-                dataGridView1.Width = this.ClientSize.Width - 40;
+                dataGridView1.Width = this.ClientSize.Width;
                 dataGridView1.Height = this.ClientSize.Height - 80;
-                dataGridView1.Left = 20;
+                dataGridView1.Left = 25;
                 dataGridView1.Top = 80;
             }
 
@@ -85,54 +84,45 @@ namespace GUI
 
             int totalWidth = dataGridView1.ClientSize.Width;
             int fixedColumnWidth = 50;
-            int variableColumnCount = dataGridView1.Columns.Count - 3;
-            int variableColumnWidth = (totalWidth - (3 * fixedColumnWidth)) / variableColumnCount;
+            int variableColumnCount = dataGridView1.Columns.Count;
+            int variableColumnWidth = (totalWidth - fixedColumnWidth)/ variableColumnCount;
 
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
-                if (column.Name == "Edit" || column.Name == "Delete" || column.Name== "Disable")
-                {
-                    column.Width = fixedColumnWidth;
-                }
-                else
-                {
                     column.Width = variableColumnWidth;
-                }
             }
         }
 
-
-
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-        //    if (e.RowIndex >= 0 && e.ColumnIndex >= 0) // Đảm bảo không click vào tiêu đề
-        //    {
-        //        string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
-        //        string id = dataGridView1.Rows[e.RowIndex].Cells["ID"].Value.ToString();
+            //    if (e.RowIndex >= 0 && e.ColumnIndex >= 0) // Đảm bảo không click vào tiêu đề
+            //    {
+            //        string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
+            //        string id = dataGridView1.Rows[e.RowIndex].Cells["ID"].Value.ToString();
 
-        //        if (columnName == "Edit")
-        //        {
-        //            MessageBox.Show($"Chỉnh sửa vật liệu ID: {id}");
-        //            // TODO: Viết code để mở form chỉnh sửa vật liệu
-        //        }
-        //        else if (columnName == "Delete")
-        //        {
-        //            DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa vật liệu ID: {id}?",
-        //                                                  "Xác nhận xóa",
-        //                                                  MessageBoxButtons.YesNo,
-        //                                                  MessageBoxIcon.Warning);
-        //            if (result == DialogResult.Yes)
-        //            {
-        //                MessageBox.Show("xóa");
-        //                LoadData();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // Nếu click vào chỗ khác, không làm gì cả
-        //            dataGridView1.ClearSelection();
-        //        }
-        //    }
+            //        if (columnName == "Edit")
+            //        {
+            //            MessageBox.Show($"Chỉnh sửa vật liệu ID: {id}");
+            //            // TODO: Viết code để mở form chỉnh sửa vật liệu
+            //        }
+            //        else if (columnName == "Delete")
+            //        {
+            //            DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa vật liệu ID: {id}?",
+            //                                                  "Xác nhận xóa",
+            //                                                  MessageBoxButtons.YesNo,
+            //                                                  MessageBoxIcon.Warning);
+            //            if (result == DialogResult.Yes)
+            //            {
+            //                MessageBox.Show("xóa");
+            //                LoadData();
+            //            }
+            //        }
+            //        else
+            //        {
+            //            // Nếu click vào chỗ khác, không làm gì cả
+            //            dataGridView1.ClearSelection();
+            //        }
+            //    }
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -175,13 +165,17 @@ namespace GUI
                 result.Visible = false;
             }
 
-            // Load dữ liệu lên DataGridView
             dataGridView1.DataSource = searchQuery.Length > 0
                 ? vl.SearchProducts(searchQuery)
                 : vl.LayTatCaVatLieu();
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void plotView1_Click(object sender, EventArgs e)
         {
 
         }
