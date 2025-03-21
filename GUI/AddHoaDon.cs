@@ -18,6 +18,13 @@ namespace GUI
             InitializeComponent();
             splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.Resize += AddHoaDon_Resize;
+            flowLayoutPanel1.Resize += (s, e) =>
+            {
+                foreach (Control ctrl in flowLayoutPanel1.Controls)
+                {
+                    ctrl.Width = flowLayoutPanel1.Width - 20;
+                }
+            };
         }
         public void AddItem(string name, double price, Image image)
         {

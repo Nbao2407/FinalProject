@@ -60,6 +60,14 @@
             "OxyPlot.WindowsForms": {
               "target": "Package",
               "version": "[2.2.0, )"
+            },
+            "ScottPlot.WinForms": {
+              "target": "Package",
+              "version": "[5.0.54, )"
+            },
+            "WinForms.DataVisualization": {
+              "target": "Package",
+              "version": "[1.10.0, )"
             }
           },
           "imports": [

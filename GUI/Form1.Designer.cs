@@ -62,6 +62,7 @@
             btnCustomer = new Button();
             panel9 = new Panel();
             BtnUser = new Button();
+            sqlCommand1 = new Microsoft.Data.SqlClient.SqlCommand();
             panelMain = new Panel();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)btnSidebar).BeginInit();
@@ -519,9 +520,14 @@
             BtnUser.UseVisualStyleBackColor = false;
             BtnUser.Click += BtnUser_Click;
             // 
+            // sqlCommand1
+            // 
+            sqlCommand1.CommandTimeout = 30;
+            sqlCommand1.EnableOptimizedParameterBinding = false;
+            // 
             // panelMain
             // 
-            panelMain.BackColor = Color.FromArgb(236, 240, 241);
+            panelMain.BackColor = Color.FromArgb(42, 42, 42);
             panelMain.Location = new Point(225, 44);
             panelMain.Name = "panelMain";
             panelMain.Size = new Size(1209, 642);
@@ -578,7 +584,6 @@
         private Panel panel10;
         private Button BtnNV;
         private Button button11;
-        private Panel panelMain;
         private Button button1;
         private Panel panel11;
         private Button button3;
@@ -594,5 +599,7 @@
         private Panel panel8;
         private Button button9;
         private Panel panel6;
+        private Microsoft.Data.SqlClient.SqlCommand sqlCommand1;
+        private Panel panelMain;
     }
 }

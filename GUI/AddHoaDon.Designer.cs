@@ -209,7 +209,7 @@
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            flowLayoutPanel1.BackColor = Color.Black;
+            flowLayoutPanel1.BackColor = Color.FromArgb(236, 240, 241);
             flowLayoutPanel1.Controls.Add(wiget22);
             flowLayoutPanel1.Controls.Add(wiget21);
             flowLayoutPanel1.Controls.Add(wiget23);
@@ -221,7 +221,7 @@
             // 
             // wiget22
             // 
-            wiget22.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            wiget22.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             wiget22.Location = new Point(3, 3);
             wiget22.Name = "wiget22";
             wiget22.Size = new Size(516, 94);
@@ -236,6 +236,7 @@
             // 
             // wiget23
             // 
+            wiget23.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             wiget23.Location = new Point(3, 203);
             wiget23.Name = "wiget23";
             wiget23.Size = new Size(516, 94);
@@ -273,6 +274,7 @@
             lblTong.AutoSize = true;
             lblTong.BackColor = Color.White;
             lblTong.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTong.ForeColor = Color.LimeGreen;
             lblTong.Location = new Point(391, 10);
             lblTong.Name = "lblTong";
             lblTong.Size = new Size(68, 21);
