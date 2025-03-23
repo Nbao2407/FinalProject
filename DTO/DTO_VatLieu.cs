@@ -10,7 +10,9 @@
         public decimal DonGiaBan { get; set; }
         public string DonViTinh { get; set; }
         public int SoLuong { get; set; }
-        public DTO_VatLieu() { }
+
+        public DTO_VatLieu()
+        { }
 
         public DTO_VatLieu(int maVatLieu, string ten, string tenLoai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int soLuong)
         {
@@ -22,6 +24,5 @@
             DonViTinh = donViTinh;
             SoLuong = soLuong;
         }
-
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-
-namespace DTO
+﻿namespace DTO
 {
     internal class DTO_DonNhap
     {
-
     }
 }

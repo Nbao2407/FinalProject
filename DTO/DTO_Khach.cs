@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace DTO
+﻿namespace DTO
 {
     public class DTO_Khach
     {
@@ -22,7 +19,7 @@ namespace DTO
             Email = email;
         }
 
-        public DTO_Khach() { }
+        public DTO_Khach()
+        { }
     }
-
 }

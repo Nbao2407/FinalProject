@@ -133,22 +133,115 @@ ALTER TABLE QLHoaDon ADD
 
 	 
 
+	 select * from QLDonNhap
+	 SELECT * FROM QLVatLieu
+
+
+	 INSERT INTO NCC (TenNCC, DiaChi, SDT, Email, NguoiTao, TrangThai)
+VALUES 
+    (N'Công ty C', N'789 Đường DEF, Đà Nẵng', N'0935123456', N'ncc_c@example.com', N'admin', N'Hoạt động'),
+    (N'Công ty D', N'101 Đường GHI, Cần Thơ', N'0945123456', N'ncc_d@example.com', N'admin', N'Hoạt động');
+GO
+INSERT INTO QLLoaiVatLieu (TenLoai)
+VALUES 
+    (N'Thạch cao'),
+    (N'Sơn');
+GO
+
+EXEC sp_ThemVatLieu N'Thạch cao xây dựng', 5, 30000, 45000, N'Bao', 1;
+EXEC sp_ThemVatLieu N'Sơn trắng Dulux', 6, 500000, 600000, N'Thùng', 2;
+EXEC sp_ThemVatLieu N'Sắt phi 12', 4, 15000, 20000, N'Cây', 1;
+EXEC sp_ThemVatLieu N'Gạch ống', 3, 1200, 1800, N'Viên', 2;
+GO
 
 
 
+INSERT INTO QLDonNhap (NgayNhap, MaNCC, MaTK, TrangThai, GhiChu)
+VALUES 
+    (GETDATE(), 3, 2, N'Hoàn thành', N'Nhập hàng tháng 3 - Lô 2'),
+    ('2025-03-20', 1, 1, N'Đang xử lý', N'Nhập hàng dự trữ');
 
+INSERT INTO ChiTietDonNhap (MaDonNhap, MaVatLieu, SoLuong, GiaNhap)
+VALUES 
+    (1, 3, 200, 30000),  
+    (8, 7, 50, 500000), 
+    (9, 6, 1000, 15000)
+GO
 
+DECLARE @MaHD1 INT, @MaHD2 INT;
 
+EXEC sp_TaoHoaDon 2, 2, N'Chuyển khoản', @MaHD1 OUTPUT;
+EXEC sp_ThemChiTietHoaDon @MaHD1, 4, 50;  -- Thạch cao
+EXEC sp_ThemChiTietHoaDon @MaHD1, 5, 10;  -- Sơn trắng
 
+EXEC sp_TaoHoaDon 3, NULL, N'Tiền mặt', @MaHD2 OUTPUT;
+EXEC sp_ThemChiTietHoaDon @MaHD2, 6, 200; -- Sắt phi 12
+EXEC sp_ThemChiTietHoaDon @MaHD2, 7, 500; -- Gạch ống
+GO
+SELECT 
+    l.TenLoai, 
+    SUM(ct.SoLuong * ct.DonGia) AS DoanhThu
+FROM ChiTietHoaDon ct
+JOIN QLVatLieu v ON ct.MaVatLieu = v.MaVatLieu
+JOIN QLLoaiVatLieu l ON v.Loai = l.MaLoaiVatLieu
+GROUP BY l.TenLoai
+ORDER BY DoanhThu DESC;
+-- Thêm hóa đơn vào ngày Mar 17, 2025
+DECLARE @MaHD1 INT;
+INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai, HinhThucThanhToan)
+VALUES ('2025-03-17', 1, 1, 0, N'Đã thanh toán', N'Tiền mặt');
+SET @MaHD1 = SCOPE_IDENTITY();
 
+EXEC sp_ThemChiTietHoaDon @MaHD1, 1, 20; -- Xi măng Hà Tiên: 20 bao
+EXEC sp_ThemChiTietHoaDon @MaHD1, 2, 10; -- Cát vàng: 10 khối
+EXEC sp_ThemChiTietHoaDon @MaHD1, 3, 200; -- Gạch đỏ: 200 viên
 
+-- Thêm hóa đơn vào ngày Mar 20, 2025
+DECLARE @MaHD2 INT;
+INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai, HinhThucThanhToan)
+VALUES ('2025-03-20', 2, 2, 0, N'Đã thanh toán', N'Chuyển khoản');
+SET @MaHD2 = SCOPE_IDENTITY();
 
+EXEC sp_ThemChiTietHoaDon @MaHD2, 4, 30; -- Thạch cao: 30 bao
+EXEC sp_ThemChiTietHoaDon @MaHD2, 5, 5;  -- Sơn trắng: 5 thùng
 
+-- Thêm hóa đơn vào ngày Mar 23, 2025
+DECLARE @MaHD3 INT;
+INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai, HinhThucThanhToan)
+VALUES ('2025-03-23', 3, NULL, 0, N'Đã thanh toán', N'Tiền mặt');
+SET @MaHD3 = SCOPE_IDENTITY();
 
+EXEC sp_ThemChiTietHoaDon @MaHD3, 6, 100; -- Sắt phi 12: 100 cây
+EXEC sp_ThemChiTietHoaDon @MaHD3, 7, 300; -- Gạch ống: 300 viên
+GO
+-- Number of Orders (Số lượng hóa đơn từ Mar 17, 2025 đến Mar 24, 2025)
+SELECT COUNT(*) AS NumberOfOrders
+FROM QLHoaDon
+WHERE NgayLap BETWEEN '2025-03-17' AND '2025-03-24'
+AND TrangThai = N'Đã thanh toán';
 
+-- Total Revenue (Tổng doanh thu)
+SELECT ISNULL(SUM(TongTien), 0) AS TotalRevenue
+FROM QLHoaDon
+WHERE NgayLap BETWEEN '2025-03-17' AND '2025-03-24'
+AND TrangThai = N'Đã thanh toán';
 
+-- Total Profit (Tổng lợi nhuận)
+SELECT ISNULL(SUM((ct.DonGia - vl.DonGiaNhap) * ct.SoLuong), 0) AS TotalProfit
+FROM ChiTietHoaDon ct
+JOIN QLHoaDon hd ON ct.MaHoaDon = hd.MaHoaDon
+JOIN QLVatLieu vl ON ct.MaVatLieu = vl.MaVatLieu
+WHERE hd.NgayLap BETWEEN '2025-03-17' AND '2025-03-24'
+AND hd.TrangThai = N'Đã thanh toán';
 
-
-
-
-
+-- 5 Best Selling Products (5 sản phẩm bán chạy nhất)
+SELECT TOP 5 
+    vl.Ten AS ProductName,
+    SUM(ct.SoLuong) AS TotalQuantitySold
+FROM ChiTietHoaDon ct
+JOIN QLHoaDon hd ON ct.MaHoaDon = hd.MaHoaDon
+JOIN QLVatLieu vl ON ct.MaVatLieu = vl.MaVatLieu
+WHERE hd.NgayLap BETWEEN '2025-03-17' AND '2025-03-24'
+AND hd.TrangThai = N'Đã thanh toán'
+GROUP BY vl.Ten
+ORDER BY TotalQuantitySold DESC;

@@ -31,9 +31,6 @@
     <Compile Update="FrmOrder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmTke.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="FrmType.cs">
       <SubType>Form</SubType>
     </Compile>

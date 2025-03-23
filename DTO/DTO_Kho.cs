@@ -2,6 +2,5 @@
 {
     public class DTO_Kho
     {
-
     }
 }

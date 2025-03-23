@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
+﻿using System.Reflection;
 
 namespace GUI.Helpler
 {
@@ -28,30 +25,27 @@ namespace GUI.Helpler
             dgv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgv.DoubleBuffered(true);
             dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgv.ReadOnly = true; 
-            dgv.AllowUserToAddRows = false; 
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect; 
+            dgv.ReadOnly = true;
+            dgv.AllowUserToAddRows = false;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.ScrollBars = ScrollBars.None;
-            dgv.MultiSelect = true; 
+            dgv.MultiSelect = true;
             dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
             dgv.AllowUserToResizeRows = false;
             dgv.AllowUserToResizeColumns = false;
-         
-
         }
 
         public static void AddEditDeleteColumns(DataGridView dgv)
         {
             // Xóa cột "Loai" nếu tồn tại
             if (dgv.Columns["Loai"] != null) dgv.Columns.Remove("Loai");
-            if (dgv.Columns["MaTKLap"] !=null ) dgv.Columns.Remove("MaTKLap");
+            if (dgv.Columns["MaTKLap"] != null) dgv.Columns.Remove("MaTKLap");
             if (dgv.Columns["MaKhachHang"] != null) dgv.Columns.Remove("MaKhachHang");
 
             // Xóa cột "Edit" và "Delete" nếu đã tồn tại (tránh bị trùng lặp)
             if (dgv.Columns["Edit"] != null) dgv.Columns.Remove("Edit");
             if (dgv.Columns["Delete"] != null) dgv.Columns.Remove("Delete");
             if (dgv.Columns["Disable"] != null) dgv.Columns.Remove("Disable");
-
 
             // Cột Edit
             DataGridViewImageColumn editColumn = new DataGridViewImageColumn
@@ -85,21 +79,20 @@ namespace GUI.Helpler
             Type dgvType = dgv.GetType();
             PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
                 BindingFlags.Instance | BindingFlags.NonPublic);
-                 pi?.SetValue(dgv, setting, null);
+            pi?.SetValue(dgv, setting, null);
         }
-            public static int TinhTongSoLuongChon(DataGridView dgv, string tenCotSoLuong)
-            {
-                int tongSoLuong = 0;
-                foreach (DataGridViewRow row in dgv.SelectedRows)
-                {
-                    if (row.Cells[tenCotSoLuong].Value != null)
-                    {
-                        tongSoLuong += Convert.ToInt32(row.Cells[tenCotSoLuong].Value);
-                    }
-                }
-                return tongSoLuong;
-            }
 
+        public static int TinhTongSoLuongChon(DataGridView dgv, string tenCotSoLuong)
+        {
+            int tongSoLuong = 0;
+            foreach (DataGridViewRow row in dgv.SelectedRows)
+            {
+                if (row.Cells[tenCotSoLuong].Value != null)
+                {
+                    tongSoLuong += Convert.ToInt32(row.Cells[tenCotSoLuong].Value);
+                }
+            }
+            return tongSoLuong;
+        }
     }
 }
-

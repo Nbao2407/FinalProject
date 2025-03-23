@@ -2,16 +2,6 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace GUI
 {
@@ -20,6 +10,7 @@ namespace GUI
         private Panel overlayPanel;
         private BUS_Nccap busNcc = new BUS_Nccap();
         private DAL_NCcap ncc = new DAL_NCcap();
+
         public FrmNCc()
         {
             InitializeComponent();
@@ -132,7 +123,7 @@ namespace GUI
 
         private void PopupFrm_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-                ShowPopup();
+            ShowPopup();
         }
 
         private void ShowPopup()

@@ -25,8 +25,6 @@ namespace GUI
             this.MouseLeave += Wiget_MouseLeave;
         }
 
-
-
         private void Wiget_MouseEnter(object sender, EventArgs e)
         {
             isHovered = true;
@@ -40,11 +38,6 @@ namespace GUI
             this.BackColor = Color.White; // Trở về màu ban đầu
             this.Invalidate();
         }
-        private void Click_Click(object sender, EventArgs e)
-        {
-            OnSelect?.Invoke(this, e);
-        }
-
         private void Wiget_Load(object sender, EventArgs e)
         {
 

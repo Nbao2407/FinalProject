@@ -1,16 +1,11 @@
-﻿namespace GUI
+﻿using static GUI.BufferedControls;
+
+namespace GUI
 {
     partial class AddHoaDon
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +15,6 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddHoaDon));
@@ -34,11 +23,11 @@
             button1 = new ReaLTaiizor.Controls.Button();
             pictureBox1 = new PictureBox();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
-            splitContainer1 = new SplitContainer();
+            splitContainer1 = new BufferedSplitContainer();
             button2 = new ReaLTaiizor.Controls.Button();
-            flowLayoutPanel2 = new FlowLayoutPanel();
+            flowLayoutPanel2 = new BufferedFlowLayoutPanel();
             dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
-            flowLayoutPanel1 = new FlowLayoutPanel();
+            flowLayoutPanel1 = new BufferedFlowLayoutPanel();
             wiget22 = new Wiget2();
             wiget21 = new Wiget2();
             wiget23 = new Wiget2();
@@ -68,7 +57,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1090, 561);
+            panel1.Size = new Size(1106, 561);
             panel1.TabIndex = 2;
             // 
             // Tong
@@ -95,7 +84,7 @@
             button1.Image = null;
             button1.ImageAlign = ContentAlignment.MiddleRight;
             button1.InactiveColor = Color.FromArgb(44, 62, 80);
-            button1.Location = new Point(2724, 31);
+            button1.Location = new Point(2740, 31);
             button1.Margin = new Padding(3, 3, 160, 3);
             button1.Name = "button1";
             button1.Padding = new Padding(0, 0, 100, 0);
@@ -153,8 +142,8 @@
             splitContainer1.Panel2.Controls.Add(dungeonTextBox1);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel2.Controls.Add(roundedPanel6);
-            splitContainer1.Size = new Size(1088, 541);
-            splitContainer1.SplitterDistance = 561;
+            splitContainer1.Size = new Size(1104, 541);
+            splitContainer1.SplitterDistance = 569;
             splitContainer1.TabIndex = 9;
             // 
             // button2
@@ -195,7 +184,7 @@
             dungeonTextBox1.EdgeColor = SystemColors.ActiveBorder;
             dungeonTextBox1.Font = new Font("Tahoma", 11F);
             dungeonTextBox1.ForeColor = Color.DimGray;
-            dungeonTextBox1.Location = new Point(0, 3);
+            dungeonTextBox1.Location = new Point(8, 3);
             dungeonTextBox1.MaxLength = 32767;
             dungeonTextBox1.Multiline = false;
             dungeonTextBox1.Name = "dungeonTextBox1";
@@ -216,7 +205,7 @@
             flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel1.Location = new Point(0, 34);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(523, 459);
+            flowLayoutPanel1.Size = new Size(531, 459);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // wiget22
@@ -252,7 +241,7 @@
             roundedPanel6.Controls.Add(lblSL);
             roundedPanel6.Location = new Point(3, 497);
             roundedPanel6.Name = "roundedPanel6";
-            roundedPanel6.Size = new Size(516, 41);
+            roundedPanel6.Size = new Size(524, 41);
             roundedPanel6.TabIndex = 16;
             // 
             // label10
@@ -275,7 +264,7 @@
             lblTong.BackColor = Color.White;
             lblTong.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTong.ForeColor = Color.LimeGreen;
-            lblTong.Location = new Point(391, 10);
+            lblTong.Location = new Point(399, 10);
             lblTong.Name = "lblTong";
             lblTong.Size = new Size(68, 21);
             lblTong.TabIndex = 15;
@@ -298,7 +287,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1090, 561);
+            ClientSize = new Size(1106, 561);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "AddHoaDon";
@@ -317,22 +306,20 @@
             ResumeLayout(false);
         }
 
-        #endregion
-
         private Panel panel1;
         private Label Tong;
         private ReaLTaiizor.Controls.Button button1;
         private PictureBox pictureBox1;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
-        private SplitContainer splitContainer1;
+        private BufferedSplitContainer splitContainer1;
         private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
         private ReaLTaiizor.Controls.Button button2;
         private Label lblTong;
         private Label lblSL;
         private Label label10;
         private Helpler.RoundedPanel roundedPanel6;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private BufferedFlowLayoutPanel flowLayoutPanel2;
+        private BufferedFlowLayoutPanel flowLayoutPanel1;
         private Wiget2 wiget22;
         private Wiget2 wiget21;
         private Wiget2 wiget23;

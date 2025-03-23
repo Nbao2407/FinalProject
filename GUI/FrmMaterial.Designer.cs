@@ -200,7 +200,6 @@
         }
 
         #endregion
-        private ReaLTaiizor.Controls.PoisonDataGridView DataGridView1;
         private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private PictureBox pictureBox1;

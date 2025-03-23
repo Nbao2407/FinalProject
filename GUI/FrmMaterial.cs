@@ -1,11 +1,6 @@
 ﻿using BUS;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using DTO;
 using DAL;
-using static IronPython.Modules._ast;
+using DTO;
 using GUI.Helpler;
 
 namespace GUI
@@ -14,12 +9,12 @@ namespace GUI
     {
         private BUS_VatLieu busVatLieu = new BUS_VatLieu();
         private QLVatLieu vl = new QLVatLieu();
+
         public FrmMaterial()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.Resize += new EventHandler(FrmMaterial_Resize);
-
         }
 
         private void FrmMaterial_Load(object sender, EventArgs e)
@@ -27,9 +22,8 @@ namespace GUI
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             LoadData();
             ResizeColumns();
-
-
         }
+
         private void LoadData()
         {
             dataGridView1.AutoGenerateColumns = false;
@@ -66,7 +60,6 @@ namespace GUI
                 dataGridView1.Height = 642;
                 dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
-
             }
             else
             {
@@ -78,6 +71,7 @@ namespace GUI
 
             ResizeColumns();
         }
+
         private void ResizeColumns()
         {
             if (dataGridView1.Columns.Count == 0) return;
@@ -85,11 +79,11 @@ namespace GUI
             int totalWidth = dataGridView1.ClientSize.Width;
             int fixedColumnWidth = 50;
             int variableColumnCount = dataGridView1.Columns.Count;
-            int variableColumnWidth = (totalWidth - fixedColumnWidth)/ variableColumnCount;
+            int variableColumnWidth = (totalWidth - fixedColumnWidth) / variableColumnCount;
 
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
-                    column.Width = variableColumnWidth;
+                column.Width = variableColumnWidth;
             }
         }
 
@@ -172,12 +166,10 @@ namespace GUI
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void plotView1_Click(object sender, EventArgs e)
         {
-
         }
     }
 }

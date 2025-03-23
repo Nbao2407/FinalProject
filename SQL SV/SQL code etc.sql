@@ -270,3 +270,131 @@ BEGIN
     ORDER BY MaNCC;
 END;
 GO
+	 Go
+	Alter TRIGGER [dbo].[trg_CapNhatNgayCapNhat_QLVatLieu]
+ON [dbo].[QLVatLieu]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    UPDATE [dbo].[QLVatLieu]
+    SET NgayCapNhat = GETDATE(),
+        NguoiCapNhat = (SELECT TOP 1 MaTK FROM [dbo].[QLTK] WHERE TrangThai = N'Hoạt động') -- Gán MaTK hợp lệ
+    FROM INSERTED
+    WHERE [QLVatLieu].MaVatLieu = INSERTED.MaVatLieu;
+END;
+GO
+CREATE PROCEDURE sp_ThongKeDoanhThu
+    @TuNgay DATE = NULL,
+    @DenNgay DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        hd.MaHoaDon,
+        hd.NgayLap,
+        tk.TenDangNhap AS NguoiLap,
+        ISNULL(kh.Ten, N'Khách vãng lai') AS KhachHang,
+        hd.TongTien,
+        hd.TrangThai,
+        hd.HinhThucThanhToan
+    FROM QLHoaDon hd
+    JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
+    LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang
+    WHERE (@TuNgay IS NULL OR hd.NgayLap >= @TuNgay)
+    AND (@DenNgay IS NULL OR hd.NgayLap <= @DenNgay)
+    ORDER BY hd.NgayLap DESC;
+END;
+GO
+
+
+
+-- Thống kê sản phẩm bán chạy theo khoảng thời gian
+CREATE PROCEDURE sp_ThongKeTopProducts
+    @TuNgay DATE = NULL,
+    @DenNgay DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        vl.Ten AS TenVatLieu,
+        SUM(cthd.SoLuong) AS SoLuongBan
+    FROM ChiTietHoaDon cthd
+    JOIN QLHoaDon hd ON cthd.MaHoaDon = hd.MaHoaDon
+    JOIN QLVatLieu vl ON cthd.MaVatLieu = vl.MaVatLieu
+    WHERE (@TuNgay IS NULL OR hd.NgayLap >= @TuNgay)
+    AND (@DenNgay IS NULL OR hd.NgayLap <= @DenNgay)
+    AND hd.TrangThai = N'Đã thanh toán'
+    GROUP BY vl.Ten
+    ORDER BY SoLuongBan DESC;
+END;
+GO
+
+-- Thống kê vật liệu tồn kho thấp (dưới 10 đơn vị chẳng hạn)
+CREATE PROCEDURE sp_ThongKeUnderstock
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        Ten AS TenVatLieu,
+        SoLuong AS SoLuongTon
+    FROM QLVatLieu
+    WHERE SoLuong < 10 AND TrangThai = N'Hoạt động'
+    ORDER BY SoLuong ASC;
+END;
+GO
+
+-- Đếm số nhà cung cấp
+CREATE PROCEDURE sp_DemSoNhaCungCap
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS SoNhaCungCap
+    FROM NCC
+    WHERE TrangThai = N'Hoạt động';
+END;
+GO
+
+
+UPDATE QLHoaDon
+SET TongTien = (
+    SELECT SUM(ct.SoLuong * ct.DonGia)
+    FROM ChiTietHoaDon ct
+    WHERE ct.MaHoaDon = QLHoaDon.MaHoaDon
+)
+
+WHERE TongTien IS NULL ;
+UPDATE QLHoaDon
+SET TrangThai = N'Đã thanh toán'
+WHERE MaHoaDon IN (2, 3);
+GO
+GO
+SELECT * FROM QLHoaDon
+SELECT * FROM ChiTietHoaDon
+
+Go
+CREATE TRIGGER trg_CapNhatNgayCapNhat_QLHoaDon
+ON QLHoaDon
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE QLHoaDon
+    SET NgayCapNhat = GETDATE(),
+        NguoiCapNhat = (SELECT MaTK FROM QLTK WHERE TenDangNhap = SYSTEM_USER)
+    FROM QLHoaDon hd
+    INNER JOIN inserted i ON hd.MaHoaDon = i.MaHoaDon;
+END;
+GO
+UPDATE QLHoaDon
+SET 
+    NguoiCapNhat = '1' -- Giả sử người cập nhật là admin (MaTK = 1)
+WHERE NgayCapNhat IS NULL;
+GO
+SELECT * FROM NCC
+EXEC sp_ThongKeUnderstock

@@ -157,17 +157,12 @@ namespace GUI
         }
         private void OpenAddHoaDon()
         {
-            // Xóa toàn bộ controls hiện tại trong FrmHoaDon
             this.Controls.Clear();
-
-            // Tạo instance của FrmAddHoaDon
             AddHoaDon addHoaDon = new AddHoaDon
             {
-                TopLevel = false,  // Đặt false để có thể nhúng vào form cha
-                Dock = DockStyle.Fill // Choán toàn bộ FrmHoaDon
+                TopLevel = false,
+                Dock = DockStyle.Fill 
             };
-
-            // Thêm FrmAddHoaDon vào FrmHoaDon
             this.Controls.Add(addHoaDon);
             addHoaDon.Show();
         }

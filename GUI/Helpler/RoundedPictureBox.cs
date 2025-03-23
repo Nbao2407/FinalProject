@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing.Drawing2D;
 
 namespace GUI.Helpler
 {
@@ -12,6 +7,7 @@ namespace GUI.Helpler
         public int BorderRadius { get; set; } = 20;
         public Color BorderColor { get; set; } = Color.Black;
         public float BorderThickness { get; set; } = 2f;
+
         protected override void OnPaint(PaintEventArgs pe)
         {
             GraphicsPath grPath = new GraphicsPath();
