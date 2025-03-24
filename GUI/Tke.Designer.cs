@@ -110,18 +110,18 @@ namespace GUI
             label1.ForeColor = Color.WhiteSmoke;
             label1.Location = new Point(3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(162, 31);
+            label1.Size = new Size(127, 31);
             label1.TabIndex = 0;
-            label1.Text = "Dashboardd";
+            label1.Text = "Thống kê";
             label1.Click += label1_Click;
             // 
             // dtpStartDate
             // 
             dtpStartDate.Cursor = Cursors.Hand;
-            dtpStartDate.CustomFormat = "MMM, dd, yyyy";
+            dtpStartDate.CustomFormat = "dd/MM/yyyy";
             dtpStartDate.Enabled = false;
             dtpStartDate.Font = new Font("Microsoft Sans Serif", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dtpStartDate.Format = DateTimePickerFormat.Custom;
+            dtpStartDate.Format = DateTimePickerFormat.Short;
             dtpStartDate.Location = new Point(183, 7);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(128, 20);
@@ -131,14 +131,16 @@ namespace GUI
             // dtpEndDate
             // 
             dtpEndDate.Cursor = Cursors.Hand;
-            dtpEndDate.CustomFormat = "MMM, dd, yyyy";
+            dtpEndDate.CustomFormat = "dd/MM/yyyy";
             dtpEndDate.Enabled = false;
             dtpEndDate.Font = new Font("Microsoft Sans Serif", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dtpEndDate.Format = DateTimePickerFormat.Custom;
+            dtpEndDate.Format = DateTimePickerFormat.Short;
             dtpEndDate.Location = new Point(355, 7);
+            dtpEndDate.MaxDate = new DateTime(2025, 12, 31, 0, 0, 0, 0);
             dtpEndDate.Name = "dtpEndDate";
             dtpEndDate.Size = new Size(128, 20);
             dtpEndDate.TabIndex = 2;
+            dtpEndDate.Value = new DateTime(2025, 3, 15, 0, 0, 0, 0);
             dtpEndDate.ValueChanged += dtpEndDate_ValueChanged;
             // 
             // btnLast30Days
@@ -152,7 +154,7 @@ namespace GUI
             btnLast30Days.Name = "btnLast30Days";
             btnLast30Days.Size = new Size(130, 35);
             btnLast30Days.TabIndex = 4;
-            btnLast30Days.Text = "Last 30 days";
+            btnLast30Days.Text = " 30 ngày trước";
             btnLast30Days.UseVisualStyleBackColor = true;
             btnLast30Days.Click += btnLast30Days_Click;
             // 
@@ -167,7 +169,7 @@ namespace GUI
             btnLast7Days.Name = "btnLast7Days";
             btnLast7Days.Size = new Size(130, 35);
             btnLast7Days.TabIndex = 5;
-            btnLast7Days.Text = "Last 7 days";
+            btnLast7Days.Text = "7 ngày trước";
             btnLast7Days.UseVisualStyleBackColor = true;
             btnLast7Days.Click += btnLast7Days_Click;
             // 
@@ -182,7 +184,7 @@ namespace GUI
             btnToday.Name = "btnToday";
             btnToday.Size = new Size(130, 35);
             btnToday.TabIndex = 6;
-            btnToday.Text = "Today";
+            btnToday.Text = "Hôm nay";
             btnToday.UseVisualStyleBackColor = true;
             btnToday.Click += btnToday_Click;
             // 
@@ -197,7 +199,7 @@ namespace GUI
             btnCustomDate.Name = "btnCustomDate";
             btnCustomDate.Size = new Size(130, 35);
             btnCustomDate.TabIndex = 7;
-            btnCustomDate.Text = "Custom";
+            btnCustomDate.Text = "Tùy chỉnh";
             btnCustomDate.UseVisualStyleBackColor = true;
             btnCustomDate.Click += btnCustomDate_Click;
             // 
@@ -261,9 +263,9 @@ namespace GUI
             label5.ForeColor = Color.FromArgb(124, 141, 181);
             label5.Location = new Point(29, 14);
             label5.Name = "label5";
-            label5.Size = new Size(85, 20);
+            label5.Size = new Size(113, 20);
             label5.TabIndex = 0;
-            label5.Text = "Total Profit";
+            label5.Text = "Tổng lợi nhuận";
             // 
             // chartGrossRevenue
             // 
@@ -318,7 +320,7 @@ namespace GUI
             title1.Font = new Font("Microsoft Sans Serif", 15F);
             title1.ForeColor = Color.WhiteSmoke;
             title1.Name = "Title1";
-            title1.Text = "Gross revenue";
+            title1.Text = "Doanh thu (theo ngày)";
             chartGrossRevenue.Titles.Add(title1);
             chartGrossRevenue.Click += chartGrossRevenue_Click;
             // 
@@ -395,9 +397,9 @@ namespace GUI
             label13.ForeColor = Color.WhiteSmoke;
             label13.Location = new Point(3, 0);
             label13.Name = "label13";
-            label13.Size = new Size(179, 25);
+            label13.Size = new Size(171, 25);
             label13.TabIndex = 2;
-            label13.Text = "Low stock products";
+            label13.Text = "Sản phẩm sắp hết";
             // 
             // lblStartDate
             // 
@@ -409,7 +411,7 @@ namespace GUI
             lblStartDate.Name = "lblStartDate";
             lblStartDate.Size = new Size(130, 20);
             lblStartDate.TabIndex = 4;
-            lblStartDate.Text = "Aug 06, 2023";
+            lblStartDate.Text = "22/3/2025";
             lblStartDate.TextAlign = ContentAlignment.MiddleRight;
             lblStartDate.Click += lblStartDate_Click;
             // 
@@ -424,7 +426,7 @@ namespace GUI
             lblEndDate.Name = "lblEndDate";
             lblEndDate.Size = new Size(130, 20);
             lblEndDate.TabIndex = 14;
-            lblEndDate.Text = "Aug 06, 2023";
+            lblEndDate.Text = "22/3/2025";
             lblEndDate.TextAlign = ContentAlignment.MiddleLeft;
             lblEndDate.Click += lblEndDate_Click;
             // 
@@ -483,9 +485,9 @@ namespace GUI
             label4.ForeColor = Color.FromArgb(124, 141, 181);
             label4.Location = new Point(75, 14);
             label4.Name = "label4";
-            label4.Size = new Size(112, 20);
+            label4.Size = new Size(121, 20);
             label4.TabIndex = 0;
-            label4.Text = "Total Revenue";
+            label4.Text = "Tổng doanh thu";
             // 
             // panel1
             // 
@@ -530,9 +532,9 @@ namespace GUI
             label2.ForeColor = Color.FromArgb(124, 141, 181);
             label2.Location = new Point(30, 14);
             label2.Name = "label2";
-            label2.Size = new Size(135, 20);
+            label2.Size = new Size(97, 20);
             label2.TabIndex = 0;
-            label2.Text = "Number of Orders";
+            label2.Text = "Số Hóa Đơn";
             // 
             // tableLayoutPanel1
             // 
@@ -568,7 +570,7 @@ namespace GUI
             chartTopProducts.Location = new Point(5, 5);
             chartTopProducts.Margin = new Padding(5);
             chartTopProducts.Name = "chartTopProducts";
-            chartTopProducts.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            chartTopProducts.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Berry;
             chartTopProducts.PaletteCustomColors = new Color[]
     {
     Color.FromArgb(241, 160, 139),
@@ -598,7 +600,7 @@ namespace GUI
             title2.Font = new Font("Microsoft Sans Serif", 15F);
             title2.ForeColor = Color.WhiteSmoke;
             title2.Name = "Title1";
-            title2.Text = "5 Best selling products";
+            title2.Text = "Top 5 Sản phẩm bán chạy nhất";
             chartTopProducts.Titles.Add(title2);
             // 
             // splitContainer1
@@ -664,9 +666,9 @@ namespace GUI
             tableLayoutPanel6.RowCount = 5;
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 50.7042236F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 49.2957764F));
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 47F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
             tableLayoutPanel6.Size = new Size(124, 174);
             tableLayoutPanel6.TabIndex = 5;
             // 
@@ -678,9 +680,9 @@ namespace GUI
             label21.ForeColor = Color.FromArgb(124, 141, 181);
             label21.Location = new Point(3, 0);
             label21.Name = "label21";
-            label21.Size = new Size(100, 37);
+            label21.Size = new Size(115, 33);
             label21.TabIndex = 0;
-            label21.Text = "Customers";
+            label21.Text = "Khách Hàng";
             // 
             // label17
             // 
@@ -689,18 +691,18 @@ namespace GUI
             label17.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label17.ForeColor = Color.FromArgb(124, 141, 181);
             label17.ImageAlign = ContentAlignment.MiddleLeft;
-            label17.Location = new Point(3, 73);
+            label17.Location = new Point(3, 66);
             label17.Name = "label17";
-            label17.Size = new Size(89, 27);
+            label17.Size = new Size(101, 34);
             label17.TabIndex = 3;
-            label17.Text = "Suppliers";
+            label17.Text = "Nhà Cung cấp";
             // 
             // lblNumCustomers
             // 
             lblNumCustomers.AutoSize = true;
             lblNumCustomers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumCustomers.ForeColor = Color.WhiteSmoke;
-            lblNumCustomers.Location = new Point(3, 37);
+            lblNumCustomers.Location = new Point(3, 33);
             lblNumCustomers.Name = "lblNumCustomers";
             lblNumCustomers.RightToLeft = RightToLeft.No;
             lblNumCustomers.Size = new Size(90, 25);
@@ -728,9 +730,9 @@ namespace GUI
             label19.ForeColor = Color.WhiteSmoke;
             label19.Location = new Point(0, 0);
             label19.Name = "label19";
-            label19.Size = new Size(141, 25);
+            label19.Size = new Size(63, 25);
             label19.TabIndex = 2;
-            label19.Text = "Total Counters";
+            label19.Text = "Tổng ";
             // 
             // tableLayoutPanel4
             // 
@@ -763,15 +765,15 @@ namespace GUI
             panel4.Controls.Add(tableLayoutPanel1);
             panel4.Controls.Add(label1);
             panel4.Controls.Add(btnOkCustomDate);
-            panel4.Controls.Add(lblStartDate);
             panel4.Controls.Add(label12);
             panel4.Controls.Add(btnLast30Days);
-            panel4.Controls.Add(lblEndDate);
             panel4.Controls.Add(btnLast7Days);
             panel4.Controls.Add(btnToday);
             panel4.Controls.Add(btnCustomDate);
-            panel4.Controls.Add(dtpEndDate);
+            panel4.Controls.Add(lblStartDate);
             panel4.Controls.Add(dtpStartDate);
+            panel4.Controls.Add(lblEndDate);
+            panel4.Controls.Add(dtpEndDate);
             panel4.Dock = DockStyle.Top;
             panel4.Location = new Point(0, 0);
             panel4.Name = "panel4";

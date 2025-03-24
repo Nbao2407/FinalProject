@@ -1,4 +1,5 @@
 ﻿using BUS;
+using GUI.Helpler;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GUI
@@ -15,113 +16,12 @@ namespace GUI
             dtpStartDate.Value = DateTime.Today.AddDays(-7);
             dtpEndDate.Value = DateTime.Now;
             btnLast7Days.Select();
+        
             ChartHelper.SetupSplineAreaChart(chartGrossRevenue, "Tổng Doanh Thu");
-            dgvUnderstock.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            tableLayoutPanel4.Size = new Size(0, 0);
-            tableLayoutPanel2.Size = new Size(0, 0);
+            ChartHelper.SetupTop5Chart(chartTopProducts, "Top 5 Vật Liệu Bán Chạy");
             SetDataMenuButtonsUI(btnLast7Days);
-            tableLayoutPanel2.ColumnStyles.Clear();
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
-            BackColor = Color.FromArgb(44, 62, 80);
-            dgvUnderstock.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            panel1.BackColor = Color.FromArgb(52, 73, 94);
-            panel2.BackColor = Color.FromArgb(52, 73, 94);
-            panel3.BackColor = Color.FromArgb(52, 73, 94);
-            panel5.BackColor = Color.FromArgb(52, 73, 94);
-            btnToday.FlatAppearance.BorderColor = Color.FromArgb(52, 152, 219);
-            btnLast7Days.FlatAppearance.BorderColor = Color.FromArgb(52, 152, 219);
-            btnLast30Days.FlatAppearance.BorderColor = Color.FromArgb(52, 152, 219);
-            btnCustomDate.FlatAppearance.BorderColor = Color.FromArgb(52, 152, 219);
-            btnOkCustomDate.BackColor = Color.FromArgb(52, 152, 219);
-
-            chartTopProducts.Series.Clear();
-            chartTopProducts.ChartAreas.Clear();
-            chartTopProducts.Legends.Clear();
-            chartTopProducts.Titles.Clear();
-
-            ChartArea chartArea2 = new ChartArea
-            {
-                Name = "ChartArea1",
-                BackColor = Color.FromArgb(52, 73, 94)
-            };
-            chartTopProducts.ChartAreas.Add(chartArea2);
-
-            Legend legend2 = new Legend
-            {
-                Name = "Legend1",
-                BackColor = Color.FromArgb(52, 73, 94),
-                Docking = Docking.Bottom,
-                Font = new Font("Microsoft Sans Serif", 10F),
-                ForeColor = Color.FromArgb(189, 195, 199),
-                IsTextAutoFit = false
-            };
-            chartTopProducts.Legends.Add(legend2);
-
-            Series series2 = new Series
-            {
-                Name = "TopProducts",
-                ChartArea = "ChartArea1",
-                Legend = "Legend1",
-                ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut,
-                BackSecondaryColor = Color.FromArgb(255, 159, 255),
-                BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.DiagonalRight,
-                IsValueShownAsLabel = true,
-                LabelForeColor = Color.White,
-                Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold),
-                LegendText = "#LEGENDTEXT"
-            };
-            series2["DoughnutHoleSize"] = "40";
-            series2.BorderColor = Color.FromArgb(52, 73, 94);
-            series2.BorderWidth = 8;
-            chartTopProducts.Series.Add(series2);
-            chartTopProducts.Palette = ChartColorPalette.None;
-            chartTopProducts.PaletteCustomColors = new Color[]
-            {
-    Color.FromArgb(239, 188, 0),
-    Color.FromArgb(241, 88, 127),
-    Color.FromArgb(1, 220, 205),
-    Color.FromArgb(107, 83, 255),
-    Color.FromArgb(94, 153, 254)
-            };
-
-            Title title2 = new Title
-            {
-                Name = "Title1",
-                Text = "5 Best Selling Products",
-                Alignment = ContentAlignment.TopLeft,
-                Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Bold),
-                ForeColor = Color.WhiteSmoke
-            };
-            chartTopProducts.Titles.Add(title2);
-            panelTotalCounters.Width = this.ClientSize.Width / 3;
-            panelTotalCounters.Height = this.ClientSize.Height - 50;
-            chartTopProducts.BackColor = Color.FromArgb(52, 73, 94);
-            chartTopProducts.Location = new Point(751, 138);
-            chartTopProducts.Size = new Size(351, 415);
-            panelTotalCounters.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            label1.ForeColor = Color.WhiteSmoke;
-            lblNumOrders.ForeColor = Color.WhiteSmoke;
-            lblTotalRevenue.ForeColor = Color.WhiteSmoke;
-            lblTotalProfit.ForeColor = Color.WhiteSmoke;
-            lblNumCustomers.ForeColor = Color.WhiteSmoke;
-            lblNumSuppliers.ForeColor = Color.WhiteSmoke;
-
-            label2.ForeColor = Color.FromArgb(189, 195, 199);
-            label4.ForeColor = Color.FromArgb(189, 195, 199);
-            label5.ForeColor = Color.FromArgb(189, 195, 199);
-            lblStartDate.ForeColor = Color.FromArgb(189, 195, 199);
-            lblEndDate.ForeColor = Color.FromArgb(189, 195, 199);
-            dgvUnderstock.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvUnderstock.GridColor = Color.Gray;
-            dgvUnderstock.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUnderstock.EnableHeadersVisualStyles = false;
-            dgvUnderstock.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvUnderstock.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal; // Viền ngang
-            dgvUnderstock.DefaultCellStyle.SelectionBackColor = dgvUnderstock.DefaultCellStyle.BackColor;
-            dgvUnderstock.DefaultCellStyle.SelectionForeColor = dgvUnderstock.DefaultCellStyle.ForeColor;
-            AdjustDataGridViewColumns();
+         
+                AdjustDataGridViewColumns();
             this.Resize += new EventHandler(Tke_Resize);
         }
 
@@ -283,8 +183,13 @@ namespace GUI
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            lblStartDate.Text = dtpStartDate.Text;
-            lblEndDate.Text = dtpEndDate.Text;
+            UIHelper.SetupDashboardUI(this, dgvUnderstock,
+                tableLayoutPanel4, tableLayoutPanel2,
+                panel1, panel2, panel3, panel5,
+                btnToday, btnLast7Days, btnLast30Days, btnCustomDate, btnOkCustomDate,
+                label1, lblNumOrders, lblTotalRevenue, lblTotalProfit, lblNumCustomers, lblNumSuppliers,
+                label2, label4, label5, lblStartDate, lblEndDate,
+                dtpStartDate, dtpEndDate); // Added missing parameters
             LoadData();
         }
 

@@ -17,30 +17,44 @@ namespace GUI
             this.FormBorderStyle = FormBorderStyle.None;
             this.Resize += new EventHandler(Frm_Resize);
             this.Load += FrmNCc_Load;
+            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+
         }
 
         private void Loaddata()
         {
-            dataGridView1.AutoGenerateColumns = false;
-            dataGridView1.Columns.Clear();
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaNCC", HeaderText = "Mã NCC", DataPropertyName = "MaNCC" });
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenNCC", HeaderText = "Tên NCC", DataPropertyName = "TenNCC" });
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "SDT", HeaderText = "SĐT", DataPropertyName = "SDT" });
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "Email", HeaderText = "Email", DataPropertyName = "Email" });
-            List<DTO_Ncap> DanhsachNcc = busNcc.GetAllNcc();
-            if (DanhsachNcc == null || DanhsachNcc.Count == 0)
+            try
             {
-                MessageBox.Show("Không có dữ liệu !", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                List<DTO_Ncap> nccList = busNcc.GetAllNcc();
+                if (nccList == null || nccList.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu!");
+                }
+
+                dataGridView1.Columns.Clear();
+                dataGridView1.Columns.Add("MaNCC", "Mã NCC");
+                dataGridView1.Columns.Add("TenNCC", "Tên NCC");
+                dataGridView1.Columns.Add("SDT", "SĐT");
+                dataGridView1.Columns.Add("Email", "Email");
+                dataGridView1.AutoGenerateColumns = false;
+
+                foreach (var ncc in nccList)
+                {
+                    dataGridView1.Rows.Add(ncc.MaNCC, ncc.TenNCC, ncc.SDT, ncc.Email);
+                }
             }
-            dataGridView1.DataSource = DanhsachNcc;
-            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
-            ResizeColumns();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
         }
 
         private void FrmNCc_Load(object sender, EventArgs e)
         {
             Loaddata();
+            dataGridView1.Visible = true;
         }
+
 
         private void Frm_Resize(object sender, EventArgs e)
         {
@@ -151,6 +165,11 @@ namespace GUI
                 popup.ShowDialog();
             }
             overlay.Dispose();
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

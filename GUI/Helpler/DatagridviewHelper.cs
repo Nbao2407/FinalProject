@@ -35,45 +35,6 @@ namespace GUI.Helpler
             dgv.AllowUserToResizeColumns = false;
         }
 
-        public static void AddEditDeleteColumns(DataGridView dgv)
-        {
-            // Xóa cột "Loai" nếu tồn tại
-            if (dgv.Columns["Loai"] != null) dgv.Columns.Remove("Loai");
-            if (dgv.Columns["MaTKLap"] != null) dgv.Columns.Remove("MaTKLap");
-            if (dgv.Columns["MaKhachHang"] != null) dgv.Columns.Remove("MaKhachHang");
-
-            // Xóa cột "Edit" và "Delete" nếu đã tồn tại (tránh bị trùng lặp)
-            if (dgv.Columns["Edit"] != null) dgv.Columns.Remove("Edit");
-            if (dgv.Columns["Delete"] != null) dgv.Columns.Remove("Delete");
-            if (dgv.Columns["Disable"] != null) dgv.Columns.Remove("Disable");
-
-            // Cột Edit
-            DataGridViewImageColumn editColumn = new DataGridViewImageColumn
-            {
-                Name = "Edit",
-                Image = Properties.Resources.icons8_pencil_24, // Đổi hình nếu cần
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-            };
-            dgv.Columns.Add(editColumn);
-
-            // Cột Delete
-            DataGridViewImageColumn deleteColumn = new DataGridViewImageColumn
-            {
-                Name = "Delete",
-                Image = Properties.Resources.icons8_delete_24,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-            };
-            dgv.Columns.Add(deleteColumn);
-
-            DataGridViewImageColumn LockColumn = new DataGridViewImageColumn
-            {
-                Name = "Disable",
-                Image = Properties.Resources.icons8_unavailable_24,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-            };
-            dgv.Columns.Add(LockColumn);
-        }
-
         public static void DoubleBuffered(this DataGridView dgv, bool setting)
         {
             Type dgvType = dgv.GetType();

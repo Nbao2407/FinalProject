@@ -29,10 +29,7 @@ namespace GUI
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             LoadData();
             ResizeColumns();
-            foreach (DataGridViewColumn col in dataGridView1.Columns)
-            {
-                Console.WriteLine(col.Name); // In tên cột ra kiểm tra
-            }
+          
 
 
         }
@@ -41,11 +38,7 @@ namespace GUI
         {
             try
             {
-                if (busHoaDon == null)
-                {
-                    MessageBox.Show("busHoaDon chưa được khởi tạo!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+            
 
                 List<DTO_HoaDon> danhSach = busHoaDon.LayTatCaHoaDon();
                 if (danhSach == null || danhSach.Count == 0)
@@ -55,13 +48,6 @@ namespace GUI
                         dataGridView1.DataSource = null;
                     return;
                 }
-
-                if (dataGridView1 == null)
-                {
-                    MessageBox.Show("Lỗi: dataGridView1 chưa được khởi tạo!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
                 var data = danhSach.Select(hd => new
                 {
                     hd.MaHoaDon,

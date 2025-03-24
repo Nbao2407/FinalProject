@@ -32,29 +32,24 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             result = new Panel();
             button1 = new ReaLTaiizor.Controls.Button();
             pictureBox1 = new PictureBox();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
             panel1 = new Panel();
-            Tong = new Label();
             panel2 = new Panel();
             label1 = new Label();
             panel3 = new Panel();
             button2 = new ReaLTaiizor.Controls.Button();
             pictureBox2 = new PictureBox();
             dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
-            poisonDataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
+            Tong = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)poisonDataGridView1).BeginInit();
             SuspendLayout();
             // 
             // result
@@ -169,30 +164,18 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(236, 240, 241);
-            panel1.Controls.Add(panel2);
             panel1.Controls.Add(Tong);
             panel1.Controls.Add(result);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(txtSearch);
             panel1.Controls.Add(dataGridView1);
+            panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(1106, 600);
             panel1.TabIndex = 1;
-            // 
-            // Tong
-            // 
-            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            Tong.AutoSize = true;
-            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tong.ForeColor = Color.DarkGray;
-            Tong.Location = new Point(12, 1084);
-            Tong.Name = "Tong";
-            Tong.Size = new Size(33, 13);
-            Tong.TabIndex = 8;
-            Tong.Text = "Tổng";
             // 
             // panel2
             // 
@@ -202,12 +185,12 @@
             panel2.Controls.Add(button2);
             panel2.Controls.Add(pictureBox2);
             panel2.Controls.Add(dungeonTextBox1);
-            panel2.Controls.Add(poisonDataGridView1);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(1106, 600);
             panel2.TabIndex = 9;
+            panel2.Paint += panel2_Paint;
             // 
             // label1
             // 
@@ -281,52 +264,17 @@
             dungeonTextBox1.TextAlignment = HorizontalAlignment.Left;
             dungeonTextBox1.UseSystemPasswordChar = false;
             // 
-            // poisonDataGridView1
+            // Tong
             // 
-            poisonDataGridView1.AllowUserToAddRows = false;
-            poisonDataGridView1.AllowUserToDeleteRows = false;
-            poisonDataGridView1.AllowUserToResizeRows = false;
-            poisonDataGridView1.Anchor = AnchorStyles.None;
-            poisonDataGridView1.BackgroundColor = Color.FromArgb(236, 240, 241);
-            poisonDataGridView1.BorderStyle = BorderStyle.None;
-            poisonDataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            poisonDataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle4.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle4.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            poisonDataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            poisonDataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle5.ForeColor = Color.FromArgb(136, 136, 136);
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle5.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            poisonDataGridView1.DefaultCellStyle = dataGridViewCellStyle5;
-            poisonDataGridView1.EnableHeadersVisualStyles = false;
-            poisonDataGridView1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            poisonDataGridView1.GridColor = Color.FromArgb(255, 255, 255);
-            poisonDataGridView1.Location = new Point(456, 324);
-            poisonDataGridView1.Name = "poisonDataGridView1";
-            poisonDataGridView1.ReadOnly = true;
-            poisonDataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle6.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle6.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle6.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            poisonDataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            poisonDataGridView1.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            poisonDataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            poisonDataGridView1.Size = new Size(1100, 463);
-            poisonDataGridView1.TabIndex = 0;
+            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Tong.AutoSize = true;
+            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Tong.ForeColor = Color.DarkGray;
+            Tong.Location = new Point(12, 1084);
+            Tong.Name = "Tong";
+            Tong.Size = new Size(33, 13);
+            Tong.TabIndex = 8;
+            Tong.Text = "Tổng";
             // 
             // FrmNCc
             // 
@@ -346,7 +294,6 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)poisonDataGridView1).EndInit();
             ResumeLayout(false);
         }
 
@@ -365,6 +312,5 @@
         private ReaLTaiizor.Controls.Button button2;
         private PictureBox pictureBox2;
         private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
-        private ReaLTaiizor.Controls.PoisonDataGridView poisonDataGridView1;
     }
 }

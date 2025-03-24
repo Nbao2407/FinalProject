@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Linq;
 using System.Data;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 namespace DAL
 {
     public class DAL_NCcap : DBConnect
@@ -26,13 +26,13 @@ namespace DAL
                         {
                             DTO_Ncap ncc = new DTO_Ncap
                             {
-                              MaNCC = reader.GetInt32(0),
-                              TenNCC = reader.GetString(1),
-                              SDT = reader.GetString(2),
-                              Email = reader.GetString(3),
-                              DiaChi = reader.GetString(4),
-                              NguoiTao = reader.GetString(5),
-                              NgayTao = reader.GetDateTime(6)
+                                MaNCC = reader.GetInt32(0),
+                                TenNCC = reader.GetString(1),
+                                SDT = reader.GetString(2),
+                                Email = reader.GetString(3),
+                                DiaChi = reader.GetString(4),
+                                NguoiTao = reader.GetString(5),
+                                NgayTao = reader.GetDateTime(6)
                             };
                             DanhsachNcc.Add(ncc);
                         }
@@ -40,31 +40,37 @@ namespace DAL
                 }
             }
 
-            return DanhsachNcc; 
+            return DanhsachNcc;
         }
         public List<DTO_Ncap> GetAllNcc()
         {
             List<DTO_Ncap> DanhsachNcc = new List<DTO_Ncap>();
-
-            using (SqlConnection conn = DBConnect.GetConnection())
+            try
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT MaNCC, TenNCC,SDT, Email FROM NCC", conn))
+                using (SqlConnection conn = DBConnect.GetConnection())
                 {
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("SELECT MaNCC, TenNCC, SDT, Email FROM NCC", conn))
                     {
-                        while (reader.Read())
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            DanhsachNcc.Add(new DTO_Ncap
+                            while (reader.Read())
                             {
-                                MaNCC = reader.GetInt32(0),
-                                TenNCC = reader.GetString(1),
-                                SDT = reader.GetString(2),
-                                Email = reader.GetString(3)
-                            });
+                                DanhsachNcc.Add(new DTO_Ncap
+                                {
+                                    MaNCC = reader.GetInt32(0),
+                                    TenNCC = reader.GetString(1),
+                                    SDT = reader.GetString(2),
+                                    Email = reader.GetString(3),
+                                });
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Lỗi trong DAL_NCcap.GetAllNcc: " + ex.Message);
             }
             return DanhsachNcc;
         }

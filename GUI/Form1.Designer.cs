@@ -321,6 +321,7 @@
             button1.TabIndex = 5;
             button1.Text = "Nhân sự";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += BtnNV_Click;
             // 
             // BtnNV
             // 

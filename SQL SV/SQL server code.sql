@@ -131,12 +131,29 @@ ALTER TABLE QLHoaDon ADD
     NguoiCapNhat INT REFERENCES QLTK(MaTK);
 	ALTER TABLE QLVatLieu ADD CONSTRAINT DF_QLVatLieu_NgayCapNhat DEFAULT GETDATE() FOR NgayCapNhat;
 
-	 
+ALTER TABLE QLTK ADD
+	 --SDT NVARCHAR(15) CHECK (SDT LIKE '[0-9]%' AND LEN(SDT) BETWEEN 10 AND 15),
+	 --GHICHU NVARCHAR(255),
+	 --DiaChi NVARCHAR(255)
+	 NgayTao DATETIME DEFAULT GETDATE()
+	 SELECT MaTK, TenDangNhap, SDT, Email,TrangThai FROM QLTK
 
-	 select * from QLDonNhap
-	 SELECT * FROM QLVatLieu
 
+	 UPDATE QLTK
+SET 
+    SDT = '09123425678',
+    GHICHU = N'Tài khoản quản trị hệ thống',
+    DiaChi = N'123 Đường Láng, Đống Đa, Hà Nội',
+    NgayTao = '2025-01-01 10:00:00'
+WHERE MaTK = 1;
 
+UPDATE QLTK
+SET 
+    SDT = '0912345678',
+    GHICHU = N'Nhân viên mới',
+    DiaChi = N'45 Nguyễn Huệ, Quận 1, TP.HCM',
+    NgayTao = '2025-02-15 09:30:00'
+WHERE MaTK = 2;
 	 INSERT INTO NCC (TenNCC, DiaChi, SDT, Email, NguoiTao, TrangThai)
 VALUES 
     (N'Công ty C', N'789 Đường DEF, Đà Nẵng', N'0935123456', N'ncc_c@example.com', N'admin', N'Hoạt động'),
@@ -167,7 +184,6 @@ VALUES
     (8, 7, 50, 500000), 
     (9, 6, 1000, 15000)
 GO
-
 DECLARE @MaHD1 INT, @MaHD2 INT;
 
 EXEC sp_TaoHoaDon 2, 2, N'Chuyển khoản', @MaHD1 OUTPUT;
