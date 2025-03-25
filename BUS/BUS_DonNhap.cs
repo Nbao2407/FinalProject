@@ -1,6 +1,8 @@
 ﻿namespace BUS
 {
-    internal class BUS_DonNhap
+    public class BUS_DonNhap
     {
+
+
     }
 }

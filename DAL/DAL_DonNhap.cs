@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DAL
 {
-    internal class DAL_DonNhap
+    public class DAL_DonNhap
     {
     }
 }

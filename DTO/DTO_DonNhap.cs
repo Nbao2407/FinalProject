@@ -1,6 +1,6 @@
 ﻿namespace DTO
 {
-    internal class DTO_DonNhap
+    public class DTO_DonNhap
     {
     }
 }

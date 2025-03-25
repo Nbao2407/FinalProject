@@ -92,13 +92,13 @@
             // 
             // nightControlBox1
             // 
-            nightControlBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             nightControlBox1.BackColor = Color.Transparent;
             nightControlBox1.CloseHoverColor = Color.FromArgb(199, 80, 80);
             nightControlBox1.CloseHoverForeColor = Color.White;
             nightControlBox1.DefaultLocation = true;
             nightControlBox1.DisableMaximizeColor = Color.FromArgb(105, 105, 105);
             nightControlBox1.DisableMinimizeColor = Color.FromArgb(105, 105, 105);
+            nightControlBox1.Dock = DockStyle.Right;
             nightControlBox1.EnableCloseColor = Color.FromArgb(160, 160, 160);
             nightControlBox1.EnableMaximizeButton = true;
             nightControlBox1.EnableMaximizeColor = Color.FromArgb(160, 160, 160);
@@ -117,9 +117,9 @@
             // 
             btnSidebar.BackgroundImageLayout = ImageLayout.None;
             btnSidebar.Image = Properties.Resources.icons8_menu_24;
-            btnSidebar.Location = new Point(12, 7);
+            btnSidebar.Location = new Point(0, 0);
             btnSidebar.Name = "btnSidebar";
-            btnSidebar.Size = new Size(32, 32);
+            btnSidebar.Size = new Size(55, 45);
             btnSidebar.SizeMode = PictureBoxSizeMode.CenterImage;
             btnSidebar.TabIndex = 2;
             btnSidebar.TabStop = false;
@@ -281,6 +281,7 @@
             button7.TabIndex = 4;
             button7.Text = "Nhập hàng";
             button7.UseVisualStyleBackColor = false;
+            button7.Click += BtnOrder_Click;
             // 
             // button8
             // 
