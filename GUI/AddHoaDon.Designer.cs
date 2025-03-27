@@ -1,4 +1,4 @@
-﻿using static GUI.BufferedControls;
+﻿using static GUI.Helpler.BufferedControls;
 
 namespace GUI
 {

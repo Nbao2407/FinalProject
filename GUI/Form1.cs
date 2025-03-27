@@ -1,5 +1,5 @@
 ﻿using System.Drawing.Drawing2D;
-
+using System.Windows.Forms;
 namespace GUI
 {
     public partial class Form1 : Form
@@ -29,7 +29,7 @@ namespace GUI
             panel1.MouseMove += Form1_MouseMove;
             panel1.MouseUp += Form1_MouseUp;
         }
-
+      
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             dragging = true;

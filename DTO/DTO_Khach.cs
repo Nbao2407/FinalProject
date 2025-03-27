@@ -8,8 +8,12 @@
         public DateTime NgaySinh { get; set; }
         public string SDT { get; set; }
         public string Email { get; set; }
+        public int NguoiTao { get; set; } 
+        public string TenNguoiTao { get; set; }
+        public string TrangThai { get; set; }
+        public DateTime NgayTao { get; set; } 
 
-        public DTO_Khach(int maKH, string ten, string gioiTinh, DateTime ngaySinh, string sdt, string email)
+        public DTO_Khach(int maKH, string ten, string gioiTinh, DateTime ngaySinh, string sdt, string email,string trangthai, int nguoiTao, string tenNguoiTao, DateTime ngayTao)
         {
             MaKhachHang = maKH;
             Ten = ten;
@@ -17,9 +21,16 @@
             NgaySinh = ngaySinh;
             SDT = sdt;
             Email = email;
+            TrangThai = trangthai;
+            NguoiTao = nguoiTao;
+            TenNguoiTao = tenNguoiTao;
+            NgayTao = ngayTao;
         }
 
         public DTO_Khach()
-        { }
+        {
+            NgaySinh = DateTime.Today; 
+            NgayTao = DateTime.Today;  
+        }
     }
 }

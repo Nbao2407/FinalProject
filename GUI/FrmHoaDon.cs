@@ -17,6 +17,7 @@ namespace GUI
     public partial class FrmHoaDon : Form
     {
         private BUS_HoaDon busHoaDon = new BUS_HoaDon();
+
         public FrmHoaDon()
         {
             InitializeComponent();
@@ -29,17 +30,12 @@ namespace GUI
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             LoadData();
             ResizeColumns();
-          
-
-
         }
 
         private void LoadData()
         {
             try
             {
-            
-
                 List<DTO_HoaDon> danhSach = busHoaDon.LayTatCaHoaDon();
                 if (danhSach == null || danhSach.Count == 0)
                 {
@@ -85,16 +81,12 @@ namespace GUI
 
                 if (dataGridView1.Columns.Contains("HinhThucThanhToan"))
                     dataGridView1.Columns["HinhThucThanhToan"].HeaderText = "Hình Thức TT";
-
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-
 
         //private void dgv_SelectionChanged(object sender, EventArgs e)
         //{
@@ -110,7 +102,6 @@ namespace GUI
                 dataGridView1.Height = 642;
                 dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
-
             }
             else
             {
@@ -122,6 +113,7 @@ namespace GUI
 
             ResizeColumns();
         }
+
         private void ResizeColumns()
         {
             if (dataGridView1.Columns.Count == 0) return;
@@ -139,70 +131,69 @@ namespace GUI
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-
         }
+
         private void OpenAddHoaDon()
         {
             this.Controls.Clear();
             AddHoaDon addHoaDon = new AddHoaDon
             {
                 TopLevel = false,
-                Dock = DockStyle.Fill 
+                Dock = DockStyle.Fill
             };
             this.Controls.Add(addHoaDon);
             addHoaDon.Show();
         }
 
-
         private void button2_Click(object sender, EventArgs e)
         {
             OpenAddHoaDon();
-
         }
-            //private void txtSearch_TextChanged(object sender, EventArgs e)
-            //{
-            //    string searchQuery = txtSearch.Text.Trim();
 
-            //    if (searchQuery.Length > 0)
-            //    {
-            //        List<DTO_VatLieu> results = busHoaDon.Sea(searchQuery);
-            //        result.Controls.Clear();
-            //        result.Height = Math.Min(results.Count * 40, 200); // Giới hạn chiều cao
+        //private void txtSearch_TextChanged(object sender, EventArgs e)
+        //{
+        //    string searchQuery = txtSearch.Text.Trim();
 
-            //        foreach (var item in results)
-            //        {
-            //            Label lbl = new Label
-            //            {
-            //                Text = item.TenLoai,
-            //                AutoSize = false,
-            //                Width = result.Width,
-            //                Height = 40,
-            //                Padding = new Padding(5),
-            //                Font = new Font("Arial", 11, FontStyle.Bold),
-            //                BackColor = Color.White,
-            //                ForeColor = Color.Black,
-            //                BorderStyle = BorderStyle.FixedSingle
-            //            };
+        //    if (searchQuery.Length > 0)
+        //    {
+        //        List<DTO_VatLieu> results = busHoaDon.Sea(searchQuery);
+        //        result.Controls.Clear();
+        //        result.Height = Math.Min(results.Count * 40, 200); // Giới hạn chiều cao
 
-            //            lbl.Click += (s, ev) =>
-            //            {
-            //                txtSearch.Text = item.TenLoai;
-            //                result.Visible = false;
-            //            };
+        //        foreach (var item in results)
+        //        {
+        //            Label lbl = new Label
+        //            {
+        //                Text = item.TenLoai,
+        //                AutoSize = false,
+        //                Width = result.Width,
+        //                Height = 40,
+        //                Padding = new Padding(5),
+        //                Font = new Font("Arial", 11, FontStyle.Bold),
+        //                BackColor = Color.White,
+        //                ForeColor = Color.Black,
+        //                BorderStyle = BorderStyle.FixedSingle
+        //            };
 
-            //            result.Controls.Add(lbl);
-            //        }
-            //        result.Visible = true;
-            //    }
-            //    else
-            //    {
-            //        result.Visible = false;
-            //    }
+        //            lbl.Click += (s, ev) =>
+        //            {
+        //                txtSearch.Text = item.TenLoai;
+        //                result.Visible = false;
+        //            };
 
-            //    // Load dữ liệu lên DataGridView
-            //    dataGridView1.DataSource = searchQuery.Length > 0
-            //        ? vl.SearchProducts(searchQuery)
-            //        : vl.LayTatCaVatLieu();
-            //}
-        }
+        //            result.Controls.Add(lbl);
+        //        }
+        //        result.Visible = true;
+        //    }
+        //    else
+        //    {
+        //        result.Visible = false;
+        //    }
+
+        //    // Load dữ liệu lên DataGridView
+        //    dataGridView1.DataSource = searchQuery.Length > 0
+        //        ? vl.SearchProducts(searchQuery)
+        //        : vl.LayTatCaVatLieu();
+        //}
+    }
 }

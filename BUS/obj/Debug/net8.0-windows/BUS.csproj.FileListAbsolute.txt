@@ -1,6 +1,10 @@
 I:\Pro213\BUS\bin\Debug\net8.0-windows\BUS.deps.json
 I:\Pro213\BUS\bin\Debug\net8.0-windows\BUS.dll
 I:\Pro213\BUS\bin\Debug\net8.0-windows\BUS.pdb
+I:\Pro213\BUS\bin\Debug\net8.0-windows\DAL.dll
+I:\Pro213\BUS\bin\Debug\net8.0-windows\DTO.dll
+I:\Pro213\BUS\bin\Debug\net8.0-windows\DAL.pdb
+I:\Pro213\BUS\bin\Debug\net8.0-windows\DTO.pdb
 I:\Pro213\BUS\obj\Debug\net8.0-windows\BUS.csproj.AssemblyReference.cache
 I:\Pro213\BUS\obj\Debug\net8.0-windows\BUS.GeneratedMSBuildEditorConfig.editorconfig
 I:\Pro213\BUS\obj\Debug\net8.0-windows\BUS.AssemblyInfoInputs.cache
@@ -12,7 +16,3 @@ I:\Pro213\BUS\obj\Debug\net8.0-windows\BUS.dll
 I:\Pro213\BUS\obj\Debug\net8.0-windows\refint\BUS.dll
 I:\Pro213\BUS\obj\Debug\net8.0-windows\BUS.pdb
 I:\Pro213\BUS\obj\Debug\net8.0-windows\ref\BUS.dll
-I:\Pro213\BUS\bin\Debug\net8.0-windows\DAL.dll
-I:\Pro213\BUS\bin\Debug\net8.0-windows\DTO.dll
-I:\Pro213\BUS\bin\Debug\net8.0-windows\DAL.pdb
-I:\Pro213\BUS\bin\Debug\net8.0-windows\DTO.pdb

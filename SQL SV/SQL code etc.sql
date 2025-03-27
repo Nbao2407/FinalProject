@@ -1,25 +1,39 @@
+-- Hệ thống Quản lý Vật liệu
+-- Script SQL bao gồm các stored procedure, trigger và cài đặt dữ liệu ban đầu
+
+-- Stored Procedure: Thêm chi tiết hóa đơn
 ALTER PROCEDURE sp_ThemChiTietHoaDon
-    @MaHoaDon INT,
-    @MaVatLieu INT,
-    @SoLuong INT
+    @MaHoaDon INT,        -- Mã hóa đơn
+    @MaVatLieu INT,       -- Mã vật liệu
+    @SoLuong INT          -- Số lượng
 AS
 BEGIN
+    -- Khai báo biến để lưu giá và tổng tiền
     DECLARE @DonGia DECIMAL(18,2);
     DECLARE @ThanhTien DECIMAL(18,2);
 
+    -- Lấy giá bán của vật liệu
     SELECT @DonGia = DonGiaBan FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu;
 
+    -- Tính tổng tiền và làm tròn
     SET @ThanhTien = dbo.fn_LamTronTien(@SoLuong * @DonGia, 0);
 
+    -- Thêm chi tiết hóa đơn
     INSERT INTO ChiTietHoaDon (MaHoaDon, MaVatLieu, SoLuong, DonGia)
     VALUES (@MaHoaDon, @MaVatLieu, @SoLuong, @DonGia);
 
+    -- Cập nhật tổng tiền hóa đơn và làm tròn
     UPDATE QLHoaDon
     SET TongTien = dbo.fn_LamTronTien(TongTien + @ThanhTien, 0)
     WHERE MaHoaDon = @MaHoaDon;
 END;
-Go
-CREATE FUNCTION dbo.fn_LamTronTien (@Gia DECIMAL(18,2), @SoLamTron INT = 2)
+GO
+
+-- Hàm làm tròn tiền tệ
+CREATE FUNCTION dbo.fn_LamTronTien (
+    @Gia DECIMAL(18,2),      -- Số tiền cần làm tròn
+    @SoLamTron INT = 2       -- Số chữ số thập phân (mặc định 2)
+)
 RETURNS DECIMAL(18,2)
 AS
 BEGIN
@@ -27,7 +41,7 @@ BEGIN
 END;
 GO
 
-go
+-- Trigger cập nhật số lượng khi nhập hàng
 CREATE TRIGGER trg_CapNhatSoLuongNhap
 ON ChiTietDonNhap
 AFTER INSERT
@@ -35,12 +49,15 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    -- Cập nhật số lượng vật liệu trong kho
     UPDATE QLVatLieu
     SET SoLuong = v.SoLuong + i.SoLuong
     FROM QLVatLieu v
     INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
 END;
 GO
+
+-- Trigger kiểm tra và cập nhật số lượng khi bán hàng
 CREATE TRIGGER trg_KiemTraSoLuongBan
 ON ChiTietHoaDon
 AFTER INSERT
@@ -48,6 +65,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    -- Kiểm tra xem số lượng yêu cầu có vượt quá số lượng trong kho không
     IF EXISTS (
         SELECT 1
         FROM QLVatLieu v
@@ -55,162 +73,236 @@ BEGIN
         WHERE v.SoLuong < i.SoLuong
     )
     BEGIN
+        -- Báo lỗi nếu không đủ hàng trong kho
         RAISERROR (N'Số lượng vật liệu trong kho không đủ!', 16, 1);
         ROLLBACK TRANSACTION;
     END
     ELSE
     BEGIN
+        -- Cập nhật số lượng kho sau khi bán hàng thành công
         UPDATE QLVatLieu
-        SET SoLuong =v.SoLuong - i.SoLuong
+        SET SoLuong = v.SoLuong - i.SoLuong
         FROM QLVatLieu v
         INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
     END;
 END;
 GO
+ALTER TABLE QLKH
+    ADD TrangThai NVARCHAR(20) CHECK (TrangThai IN (N'Hoạt động', N'Vô hiệu hóa')) DEFAULT N'Hoạt động';
+	Go
+	UPDATE QLKH
+SET TrangThai = N'Hoạt động'
+WHERE TrangThai IS NULL;
+GO
+GO
+-- Stored Procedure: Thêm vật liệu mới
 CREATE PROCEDURE sp_ThemVatLieu
-    @Ten NVARCHAR(100),
-    @Loai INT,
-    @DonGiaNhap DECIMAL(18,2),
-    @DonGiaBan DECIMAL(18,2),
-    @DonViTinh NVARCHAR(50),
-    @MaKho INT
+    @Ten NVARCHAR(100),       -- Tên vật liệu
+    @Loai INT,                -- Loại vật liệu
+    @DonGiaNhap DECIMAL(18,2),-- Giá nhập
+    @DonGiaBan DECIMAL(18,2), -- Giá bán
+    @DonViTinh NVARCHAR(50),  -- Đơn vị tính
+    @MaKho INT               -- Mã kho
 AS
 BEGIN
+    -- Thêm vật liệu mới với số lượng ban đầu là 0 và trạng thái hoạt động
     INSERT INTO QLVatLieu (Ten, Loai, DonGiaNhap, DonGiaBan, DonViTinh, SoLuong, MaKho, TrangThai)
     VALUES (@Ten, @Loai, @DonGiaNhap, @DonGiaBan, @DonViTinh, 0, @MaKho, N'Hoạt động');
 END;
 GO
-CREATE PROCEDURE sp_TaoHoaDon
-    @MaTKLap INT,
-    @MaKhachHang INT = NULL, -- Cho phép khách vãng lai
-    @HinhThucThanhToan NVARCHAR(50),
-    @MaHoaDon INT OUTPUT
+-- Stored Procedure: Vô hiệu hóa khách hàng (disable) với kiểm tra hóa đơn chờ thanh toán
+Create PROCEDURE sp_DisableKhachHang
+    @MaKhachHang INT,
+    @NguoiCapNhat INT
 AS
 BEGIN
-    INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai, HinhThucThanhToan)
-    VALUES (GETDATE(), @MaTKLap, @MaKhachHang, 0, N'Chờ thanh toán', @HinhThucThanhToan);
+    BEGIN TRY
+        -- Kiểm tra khách hàng có tồn tại
+        IF NOT EXISTS (SELECT 1 FROM QLKH WHERE MaKhachHang = @MaKhachHang)
+            THROW 50003, N'Khách hàng không tồn tại!', 1;
 
-    SET @MaHoaDon = SCOPE_IDENTITY();
+        -- Kiểm tra xem khách hàng có hóa đơn "Chờ thanh toán" hay không
+        IF EXISTS (
+            SELECT 1 
+            FROM QLHoaDon 
+            WHERE MaKhachHang = @MaKhachHang 
+            AND TrangThai = N'Chờ thanh toán'
+        )
+            THROW 50004, N'Không thể vô hiệu hóa khách hàng vì còn hóa đơn "Chờ thanh toán"!', 1;
+
+        -- Thêm cột TrangThai nếu chưa có
+        IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                      WHERE TABLE_NAME = 'QLKH' AND COLUMN_NAME = 'TrangThai')
+        BEGIN
+            ALTER TABLE QLKH
+            ADD TrangThai NVARCHAR(20) CHECK (TrangThai IN (N'Hoạt động', N'Ngừng sử dụng')) DEFAULT N'Hoạt động';
+        END
+
+        -- Cập nhật trạng thái thành 'Vô hiệu hóa'
+        UPDATE QLKH
+        SET TrangThai = N'Ngừng sử dụng',
+            NguoiTao = @NguoiCapNhat,
+            NgayTao = GETDATE()
+        WHERE MaKhachHang = @MaKhachHang;
+
+        -- Ghi log hoạt động
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, 'QLKH', @MaKhachHang, N'Ngừng sử dụng', N'Hoạt động', N'Ngừng sử dụng', N'Khách hàng bị vô hiệu hóa');
+
+        SELECT N'Vô hiệu hóa khách hàng thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
 END;
 GO
-CREATE PROCEDURE sp_ThemChiTietHoaDon
-    @MaHoaDon INT,
-    @MaVatLieu INT,
-    @SoLuong INT
+
+-- Stored Procedure: Xóa khách hàng với kiểm tra hóa đơn chờ thanh toán
+Alter PROCEDURE sp_XoaKhachHang
+    @MaKhachHang INT,
+    @NguoiCapNhat INT
 AS
 BEGIN
-    DECLARE @DonGia DECIMAL(18,2);
+    BEGIN TRY
+        -- Kiểm tra khách hàng có tồn tại
+        IF NOT EXISTS (SELECT 1 FROM QLKH WHERE MaKhachHang = @MaKhachHang)
+            THROW 50003, N'Khách hàng không tồn tại!', 1;
 
-    -- Lấy giá bán của vật liệu
-    SELECT @DonGia = DonGiaBan FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu;
+        -- Kiểm tra xem khách hàng có hóa đơn "Chờ thanh toán" hay không
+        IF EXISTS (
+            SELECT 1 
+            FROM QLHoaDon 
+            WHERE MaKhachHang = @MaKhachHang 
+            AND TrangThai = N'Chờ thanh toán'
+        )
+            THROW 50005, N'Không thể xóa khách hàng vì còn hóa đơn "Chờ thanh toán"!', 1;
 
-    -- Thêm chi tiết hóa đơn
-    INSERT INTO ChiTietHoaDon (MaHoaDon, MaVatLieu, SoLuong, DonGia)
-    VALUES (@MaHoaDon, @MaVatLieu, @SoLuong, @DonGia);
+        -- Xóa thông tin khách hàng nhưng giữ lại MaKhachHang trong lịch sử giao dịch
+        DELETE FROM QLKH
+        WHERE MaKhachHang = @MaKhachHang;
 
-    -- Cập nhật tổng tiền hóa đơn
-    UPDATE QLHoaDon
-    SET TongTien = TongTien + (@SoLuong * @DonGia)
-    WHERE MaHoaDon = @MaHoaDon;
+        -- Ghi log hoạt động
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, 'QLKH', @MaKhachHang, N'Xóa', N'Có dữ liệu', N'Đã xóa', N'Xóa khách hàng nhưng giữ lịch sử giao dịch');
+
+        SELECT N'Xóa khách hàng thành công! Lịch sử giao dịch vẫn được giữ lại.' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
 END;
 GO
+
+-- Ví dụ kiểm tra:
+-- Thêm một hóa đơn "Chờ thanh toán" để thử nghiệm
+INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai)
+VALUES (GETDATE(), 1, 1, 500000, N'Chờ thanh toán');
+GO
+
+-- Thử vô hiệu hóa khách hàng
+EXEC sp_DisableKhachHang 
+    @MaKhachHang = 1, 
+    @NguoiCapNhat = 1;
+-- Kết quả: Sẽ báo lỗi "Không thể vô hiệu hóa khách hàng vì còn hóa đơn 'Chờ thanh toán'!"
+
+-- Thử xóa khách hàng
+EXEC sp_XoaKhachHang 
+    @MaKhachHang = 1, 
+    @NguoiCapNhat = 1;
+-- Kết quả: Sẽ báo lỗi "Không thể xóa khách hàng vì còn hóa đơn 'Chờ thanh toán'!"
+
+-- Cập nhật hóa đơn thành "Đã thanh toán" để thử lại
+UPDATE QLHoaDon
+SET TrangThai = N'Đã thanh toán'
+WHERE MaKhachHang = 1;
+
+-- Thử lại vô hiệu hóa/xóa sau khi hóa đơn đã được xử lý
+EXEC sp_DisableKhachHang 
+    @MaKhachHang = 1, 
+    @NguoiCapNhat = 1;
+-- Kết quả: Thành công
+
+EXEC sp_XoaKhachHang 
+    @MaKhachHang = 1, 
+    @NguoiCapNhat = 1;
+-- Kết quả: Thành công
+-- Cài đặt dữ liệu ban đầu
+
+-- Chèn tài khoản người dùng
 INSERT INTO QLTK (TenDangNhap, MatKhau, Email, ChucVu, TrangThai)
-VALUES (N'admin', N'123456', N'admin@example.com', N'Quản lý', N'Hoạt động'),
-       (N'nhanvien1', N'abc123', N'nhanvien1@example.com', N'Nhân viên', N'Hoạt động');
+VALUES 
+    (N'admin', N'123456', N'admin@example.com', N'Quản lý', N'Hoạt động'),
+    (N'nhanvien1', N'abc123', N'nhanvien1@example.com', N'Nhân viên', N'Hoạt động');
 GO
+
+-- Chèn thông tin kho
 INSERT INTO Kho (TenKho)
-VALUES (N'Kho Chính'), (N'Kho Phụ');
+VALUES 
+    (N'Kho Chính'), 
+    (N'Kho Phụ');
 GO
+
+-- Chèn nhà cung cấp
 INSERT INTO NCC (TenNCC, DiaChi, SDT, Email)
-VALUES (N'Công ty A', N'123 Đường ABC, TP.HCM', N'0909123456', N'ncc_a@example.com'),
-       (N'Công ty B', N'456 Đường XYZ, Hà Nội', N'0912345678', N'ncc_b@example.com');
+VALUES 
+    (N'Công ty A', N'123 Đường ABC, TP.HCM', N'0909123456', N'ncc_a@example.com'),
+    (N'Công ty B', N'456 Đường XYZ, Hà Nội', N'0912345678', N'ncc_b@example.com');
 GO
-	   INSERT INTO QLLoaiVatLieu (TenLoai)
-VALUES (N'Xi măng'), (N'Cát'), (N'Gạch'), (N'Sắt thép');
+
+-- Chèn loại vật liệu
+INSERT INTO QLLoaiVatLieu (TenLoai)
+VALUES 
+    (N'Xi măng'), 
+    (N'Cát'), 
+    (N'Gạch'), 
+    (N'Sắt thép');
 GO
+
+-- Chèn khách hàng
 INSERT INTO QLKH (Ten, NgaySinh, GioiTinh, SDT, Email)
-VALUES (N'Nguyễn Văn A', '1990-01-01', N'Nam', '0987654321', N'vana@example.com'),
-       (N'Trần Thị B', '1995-05-10', N'Nữ', '0976543210', N'thib@example.com');
-
-go
-EXEC sp_ThemVatLieu N'Xi măng Hà Tiên', 1, 50000, 70000, N'Bao', 1;
-EXEC sp_ThemVatLieu N'Cát vàng', 2, 200000, 250000, N'Khối', 2;
-EXEC sp_ThemVatLieu N'Gạch đỏ', 3, 1000, 1500, N'Viên', 1;
+VALUES 
+    (N'Nguyễn Văn A', '1990-01-01', N'Nam', '0987654321', N'vana@example.com'),
+    (N'Trần Thị B', '1995-05-10', N'Nữ', '0976543210', N'thib@example.com');
 GO
-INSERT INTO QLDonNhap (NgayNhap, MaNCC, MaTK, TrangThai, GhiChu)
-VALUES (GETDATE(), 1, 1, N'Đang xử lý', N'Nhập hàng tháng 3');
+-- Stored Procedure cập nhật mật khẩu với mã hóa
+CREATE PROCEDURE sp_CapNhatMatKhau
+    @MaTK INT,
+    @MatKhauMoi NVARCHAR(255)
+AS
+BEGIN
+    -- Mã hóa mật khẩu bằng SHA-256
+    DECLARE @MatKhauHash NVARCHAR(255);
+    SET @MatKhauHash = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhauMoi), 2);
 
-INSERT INTO ChiTietDonNhap (MaDonNhap, MaVatLieu, SoLuong, GiaNhap)
-VALUES (1, 1, 100, 50000),
-       (1, 2, 50, 200000),
-       (1, 3, 500, 1000);
-GO
-DECLARE @MaHD INT;
-EXEC sp_TaoHoaDon 1, 1, N'Tiền mặt', @MaHD OUTPUT;
-EXEC sp_ThemChiTietHoaDon @MaHD, 1, 10;
-EXEC sp_ThemChiTietHoaDon @MaHD, 2, 5;
-EXEC sp_ThemChiTietHoaDon @MaHD, 3, 100;
-go
-CREATE PROCEDURE sp_LayDanhSachHoaDon
-AS
-BEGIN
-    SET NOCOUNT ON;
+    -- Cập nhật mật khẩu đã mã hóa
+    UPDATE QLTK
+    SET MatKhau = @MatKhauHash
+    WHERE MaTK = @MaTK;
 
-    SELECT 
-        hd.MaHoaDon, 
-        hd.NgayLap, 
-        tk.TenDangNhap AS N'Người Lập', 
-        kh.Ten AS N'Khách Hàng', 
-        hd.TongTien, 
-        hd.TrangThai, 
-        hd.HinhThucThanhToan
-    FROM QLHoaDon hd
-    JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
-    LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang;
-END;
-go
-CREATE TRIGGER trg_CapNhatNgayCapNhat_QLVatLieu
-ON QLVatLieu
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    UPDATE QLVatLieu
-    SET NgayCapNhat = GETDATE(),
-        NguoiCapNhat = SYSTEM_USER
-    FROM QLVatLieu v
-    INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
-END;
-go
-CREATE TRIGGER trg_AuditLog_QLVatLieu
-ON QLVatLieu
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
+    -- Ghi log hành động
     INSERT INTO AuditLog (MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
     SELECT 
-        COALESCE(i.NguoiCapNhat, 1), -- Sử dụng MaTK mặc định nếu không có
-        'QLVatLieu',
-        i.MaVatLieu,
-        'UPDATE',
-        CONCAT('SL:', d.SoLuong, ', GiaNhap:', d.DonGiaNhap, ', GiaBan:', d.DonGiaBan),
-        CONCAT('SL:', i.SoLuong, ', GiaNhap:', i.DonGiaNhap, ', GiaBan:', i.DonGiaBan),
-        'Cập nhật thông tin vật liệu'
-    FROM deleted d
-    INNER JOIN inserted i ON d.MaVatLieu = i.MaVatLieu
-    WHERE d.SoLuong != i.SoLuong OR d.DonGiaNhap != i.DonGiaNhap OR d.DonGiaBan != i.DonGiaBan;
+        @MaTK,
+        N'QLTK',
+        @MaTK,
+        N'Cập nhật mật khẩu',
+        MatKhau,
+        @MatKhauHash,
+        N'Đổi mật khẩu thành công'
+    FROM QLTK
+    WHERE MaTK = @MaTK;
 END;
-Go
--- Stored Procedure tìm kiếm QLTK (Quản lý tài khoản)
-CREATE PROCEDURE sp_TimKiemQLTK
-    @MaTK INT = NULL,
-    @TenDangNhap NVARCHAR(50) = NULL
+GO
+
+-- Stored Procedure kiểm tra đăng nhập
+CREATE PROCEDURE sp_KiemTraDangNhap
+    @TenDangNhap NVARCHAR(50),
+    @MatKhau NVARCHAR(255)
 AS
 BEGIN
-    SET NOCOUNT ON;
-    
+    DECLARE @MatKhauHash NVARCHAR(255);
+    SET @MatKhauHash = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhau), 2);
+
     SELECT 
         MaTK,
         TenDangNhap,
@@ -218,183 +310,96 @@ BEGIN
         ChucVu,
         TrangThai
     FROM QLTK
-    WHERE (@MaTK IS NULL OR MaTK = @MaTK)
-    AND (@TenDangNhap IS NULL OR TenDangNhap LIKE '%' + @TenDangNhap + '%')
-    ORDER BY MaTK;
+    WHERE TenDangNhap = @TenDangNhap 
+    AND MatKhau = @MatKhauHash 
+    AND TrangThai = N'Hoạt động';
+END;
+GO
+-- Stored Procedure tạo token reset mật khẩu
+CREATE PROCEDURE sp_TaoTokenResetMatKhau
+    @Email NVARCHAR(100),
+    @Token NVARCHAR(255) OUTPUT
+AS
+BEGIN
+    DECLARE @MaTK INT;
+    DECLARE @NgayHetHan DATETIME;
+
+    -- Kiểm tra email tồn tại
+    SELECT @MaTK = MaTK
+    FROM QLTK
+    WHERE Email = @Email;
+
+    IF @MaTK IS NULL
+    BEGIN
+        RAISERROR (N'Email không tồn tại trong hệ thống!', 16, 1);
+        RETURN;
+    END
+
+    -- Tạo token ngẫu nhiên (trong thực tế, nên dùng GUID hoặc cách tạo token an toàn hơn)
+    SET @Token = NEWID();
+    SET @NgayHetHan = DATEADD(HOUR, 24, GETDATE()); -- Token hết hạn sau 24 giờ
+
+    -- Thêm token vào bảng
+    INSERT INTO PasswordResetToken (MaTK, Token, NgayHetHan)
+    VALUES (@MaTK, @Token, @NgayHetHan);
+
+    -- Ghi log
+    INSERT INTO AuditLog (MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+    VALUES (@MaTK, N'PasswordResetToken', @MaTK, N'Tạo token reset', N'Yêu cầu reset mật khẩu');
 END;
 GO
 
--- Stored Procedure tìm kiếm QLDonNhap (Quản lý đơn nhập)
-CREATE PROCEDURE sp_TimKiemQLDonNhap
-    @MaDonNhap INT = NULL,
-    @TenNCC NVARCHAR(100) = NULL
+-- Stored Procedure xác nhận và reset mật khẩu
+CREATE PROCEDURE sp_ResetMatKhau
+    @Token NVARCHAR(255),
+    @MatKhauMoi NVARCHAR(255)
 AS
 BEGIN
-    SET NOCOUNT ON;
-    
+    DECLARE @MaTK INT;
+    DECLARE @MatKhauHash NVARCHAR(255);
+
+    -- Kiểm tra token hợp lệ
+    SELECT @MaTK = MaTK
+    FROM PasswordResetToken
+    WHERE Token = @Token
+    AND NgayHetHan > GETDATE()
+    AND DaSuDung = 0;
+
+    IF @MaTK IS NULL
+    BEGIN
+        RAISERROR (N'Token không hợp lệ hoặc đã hết hạn!', 16, 1);
+        RETURN;
+    END
+
+    -- Mã hóa mật khẩu mới
+    SET @MatKhauHash = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhauMoi), 2);
+
+    -- Cập nhật mật khẩu
+    UPDATE QLTK
+    SET MatKhau = @MatKhauHash
+    WHERE MaTK = @MaTK;
+
+    -- Đánh dấu token đã sử dụng
+    UPDATE PasswordResetToken
+    SET DaSuDung = 1
+    WHERE Token = @Token;
+
+    -- Ghi log
+    INSERT INTO AuditLog (MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+    VALUES (@MaTK, N'QLTK', @MaTK, N'Reset mật khẩu', N'Reset mật khẩu thành công');
+END;
+GO
+-- Stored Procedure lấy vai trò người dùng
+CREATE PROCEDURE sp_LayVaiTroNguoiDung
+    @MaTK INT
+AS
+BEGIN
     SELECT 
-        dn.MaDonNhap,
-        dn.NgayNhap,
-        ncc.TenNCC,
-        tk.TenDangNhap AS NguoiLap,
-        dn.TrangThai,
-        dn.GhiChu
-    FROM QLDonNhap dn
-    JOIN NCC ncc ON dn.MaNCC = ncc.MaNCC
-    JOIN QLTK tk ON dn.MaTK = tk.MaTK
-    WHERE (@MaDonNhap IS NULL OR dn.MaDonNhap = @MaDonNhap)
-    AND (@TenNCC IS NULL OR ncc.TenNCC LIKE '%' + @TenNCC + '%')
-    ORDER BY dn.MaDonNhap DESC;
+        MaTK,
+        TenDangNhap,
+        ChucVu,
+        TrangThai
+    FROM QLTK
+    WHERE MaTK = @MaTK;
 END;
 GO
-
--- Stored Procedure tìm kiếm NCC (Nhà cung cấp)
-CREATE PROCEDURE sp_TimKiemNCC
-    @MaNCC INT = NULL,
-    @TenNCC NVARCHAR(100) = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    SELECT 
-        MaNCC,
-        TenNCC,
-        DiaChi,
-        SDT,
-        Email,
-        NguoiTao,
-        NgayTao
-    FROM NCC
-    WHERE (@MaNCC IS NULL OR MaNCC = @MaNCC)
-    AND (@TenNCC IS NULL OR TenNCC LIKE '%' + @TenNCC + '%')
-    ORDER BY MaNCC;
-END;
-GO
-	 Go
-	Alter TRIGGER [dbo].[trg_CapNhatNgayCapNhat_QLVatLieu]
-ON [dbo].[QLVatLieu]
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    UPDATE [dbo].[QLVatLieu]
-    SET NgayCapNhat = GETDATE(),
-        NguoiCapNhat = (SELECT TOP 1 MaTK FROM [dbo].[QLTK] WHERE TrangThai = N'Hoạt động') -- Gán MaTK hợp lệ
-    FROM INSERTED
-    WHERE [QLVatLieu].MaVatLieu = INSERTED.MaVatLieu;
-END;
-GO
-CREATE PROCEDURE sp_ThongKeDoanhThu
-    @TuNgay DATE = NULL,
-    @DenNgay DATE = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT 
-        hd.MaHoaDon,
-        hd.NgayLap,
-        tk.TenDangNhap AS NguoiLap,
-        ISNULL(kh.Ten, N'Khách vãng lai') AS KhachHang,
-        hd.TongTien,
-        hd.TrangThai,
-        hd.HinhThucThanhToan
-    FROM QLHoaDon hd
-    JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
-    LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang
-    WHERE (@TuNgay IS NULL OR hd.NgayLap >= @TuNgay)
-    AND (@DenNgay IS NULL OR hd.NgayLap <= @DenNgay)
-    ORDER BY hd.NgayLap DESC;
-END;
-GO
-
-
-
--- Thống kê sản phẩm bán chạy theo khoảng thời gian
-CREATE PROCEDURE sp_ThongKeTopProducts
-    @TuNgay DATE = NULL,
-    @DenNgay DATE = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT 
-        vl.Ten AS TenVatLieu,
-        SUM(cthd.SoLuong) AS SoLuongBan
-    FROM ChiTietHoaDon cthd
-    JOIN QLHoaDon hd ON cthd.MaHoaDon = hd.MaHoaDon
-    JOIN QLVatLieu vl ON cthd.MaVatLieu = vl.MaVatLieu
-    WHERE (@TuNgay IS NULL OR hd.NgayLap >= @TuNgay)
-    AND (@DenNgay IS NULL OR hd.NgayLap <= @DenNgay)
-    AND hd.TrangThai = N'Đã thanh toán'
-    GROUP BY vl.Ten
-    ORDER BY SoLuongBan DESC;
-END;
-GO
-
--- Thống kê vật liệu tồn kho thấp (dưới 10 đơn vị chẳng hạn)
-CREATE PROCEDURE sp_ThongKeUnderstock
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT 
-        Ten AS TenVatLieu,
-        SoLuong AS SoLuongTon
-    FROM QLVatLieu
-    WHERE SoLuong < 10 AND TrangThai = N'Hoạt động'
-    ORDER BY SoLuong ASC;
-END;
-GO
-
--- Đếm số nhà cung cấp
-CREATE PROCEDURE sp_DemSoNhaCungCap
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT COUNT(*) AS SoNhaCungCap
-    FROM NCC
-    WHERE TrangThai = N'Hoạt động';
-END;
-GO
-
-
-UPDATE QLHoaDon
-SET TongTien = (
-    SELECT SUM(ct.SoLuong * ct.DonGia)
-    FROM ChiTietHoaDon ct
-    WHERE ct.MaHoaDon = QLHoaDon.MaHoaDon
-)
-
-WHERE TongTien IS NULL ;
-UPDATE QLHoaDon
-SET TrangThai = N'Đã thanh toán'
-WHERE MaHoaDon IN (2, 3);
-GO
-GO
-SELECT * FROM QLHoaDon
-SELECT * FROM ChiTietHoaDon
-
-Go
-CREATE TRIGGER trg_CapNhatNgayCapNhat_QLHoaDon
-ON QLHoaDon
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    UPDATE QLHoaDon
-    SET NgayCapNhat = GETDATE(),
-        NguoiCapNhat = (SELECT MaTK FROM QLTK WHERE TenDangNhap = SYSTEM_USER)
-    FROM QLHoaDon hd
-    INNER JOIN inserted i ON hd.MaHoaDon = i.MaHoaDon;
-END;
-GO
-UPDATE QLHoaDon
-SET 
-    NguoiCapNhat = '1' -- Giả sử người cập nhật là admin (MaTK = 1)
-WHERE NgayCapNhat IS NULL;
-GO
-SELECT * FROM NCC
-EXEC sp_ThongKeUnderstock

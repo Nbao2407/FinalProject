@@ -13,10 +13,25 @@ namespace BUS
         {
             return dalKH.TimKiemKhachHang(keyword);
         }
-
         public List<DTO_Khach> LayDanhSachKhach()
         {
             return dalKH.GetAllKhach();
+        }
+        public void ThemKhachHang(DTO_Khach khach)
+        {
+           dalKH.ThemKhachHang(khach);
+        }
+        public void SuaKhachHang(DTO_Khach khach)
+        {
+            dalKH.SuaKhachHang(khach);
+        }
+        public void XoaKhachHang(int maKhachHang,int nguoiCapNhat)
+        {
+            dalKH.XoaKhachHang(maKhachHang, nguoiCapNhat);
+        }
+        public DTO_Khach GetCustomerById(int maKhachHang)
+        {
+            return dalKH.GetCustomerById(maKhachHang);
         }
     }
 

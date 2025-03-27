@@ -33,8 +33,18 @@ namespace GUI.Helpler
             dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
             dgv.AllowUserToResizeRows = false;
             dgv.AllowUserToResizeColumns = false;
-        }
 
+        }
+        public static void FormatDateColumns(DataGridView dataGridView, params string[] dateColumnNames)
+        {
+            foreach (string columnName in dateColumnNames)
+            {
+                if (dataGridView.Columns[columnName] != null)
+                {
+                    dataGridView.Columns[columnName].DefaultCellStyle.Format = "dd/MM/yyyy";
+                }
+            }
+        }
         public static void DoubleBuffered(this DataGridView dgv, bool setting)
         {
             Type dgvType = dgv.GetType();
