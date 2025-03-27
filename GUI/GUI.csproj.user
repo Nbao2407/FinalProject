@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="AddHoaDon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Customer\AddCustomer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmNCc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Customer\FrmCustomer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmHoaDon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmHome.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="PopupForm\FrmUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Helpler\RoundedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Helpler\RoundedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Customer\PopupCmer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Wiget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Wiget2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
