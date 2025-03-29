@@ -23,7 +23,6 @@ namespace GUI.Helpler
             dgv.GridColor = Color.LightGray;
             dgv.RowHeadersVisible = false;
             dgv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgv.DoubleBuffered(true);
             dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgv.ReadOnly = true;
             dgv.AllowUserToAddRows = false;
@@ -45,14 +44,6 @@ namespace GUI.Helpler
                 }
             }
         }
-        public static void DoubleBuffered(this DataGridView dgv, bool setting)
-        {
-            Type dgvType = dgv.GetType();
-            PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-            pi?.SetValue(dgv, setting, null);
-        }
-
         public static int TinhTongSoLuongChon(DataGridView dgv, string tenCotSoLuong)
         {
             int tongSoLuong = 0;

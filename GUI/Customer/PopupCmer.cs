@@ -198,7 +198,7 @@ namespace GUI
                             this.Controls.Add(overlay);
                             overlay.BringToFront();
                             this.Resize += (s, e) => overlay.Size = this.ClientSize;
-                            using (var popup = new EditCustomer(_parentForm, _khachHang, this)) // Truyền this để EditCustomer biết PopupCmer
+                            using (var popup = new EditCustomer(_parentForm, _khachHang, this)) 
                             {
                                 popup.Deactivate += (s, e) => popup.TopMost = true;
                                 popup.StartPosition = FormStartPosition.CenterParent;

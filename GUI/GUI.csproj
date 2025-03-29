@@ -34,7 +34,7 @@
     <Compile Update="Customer\EditCustomer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="PopupForm\PopupNcc.cs">
+    <Compile Update="NCC\PopupNcc.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">

@@ -245,7 +245,7 @@
             // 
             // DateTime
             // 
-            DateTime.Location = new Point(408, 213);
+            DateTime.Location = new Point(408, 216);
             DateTime.MinimumSize = new Size(0, 29);
             DateTime.Name = "DateTime";
             DateTime.Size = new Size(380, 29);

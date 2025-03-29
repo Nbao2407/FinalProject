@@ -44,7 +44,6 @@ namespace GUI
             panel4 = new Panel();
             label4 = new Label();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
-            BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnEdit = new ReaLTaiizor.Controls.HopeRoundButton();
             panel5 = new Panel();
             roundedPictureBox1 = new RoundedPictureBox();
@@ -199,23 +198,11 @@ namespace GUI
             BtnDelete.EnabledCalc = true;
             BtnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnDelete.ForeColor = Color.Black;
-            BtnDelete.Location = new Point(35, 380);
+            BtnDelete.Location = new Point(32, 386);
             BtnDelete.Name = "BtnDelete";
             BtnDelete.Size = new Size(67, 30);
             BtnDelete.TabIndex = 34;
             BtnDelete.Text = "Xóa";
-            // 
-            // BtnDisable
-            // 
-            BtnDisable.BackColor = Color.Transparent;
-            BtnDisable.EnabledCalc = true;
-            BtnDisable.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BtnDisable.ForeColor = Color.Black;
-            BtnDisable.Location = new Point(720, 380);
-            BtnDisable.Name = "BtnDisable";
-            BtnDisable.Size = new Size(120, 30);
-            BtnDisable.TabIndex = 36;
-            BtnDisable.Text = "Ngừng hoạt động";
             // 
             // BtnEdit
             // 
@@ -226,7 +213,7 @@ namespace GUI
             BtnEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnEdit.HoverTextColor = Color.FromArgb(48, 49, 51);
             BtnEdit.InfoColor = Color.FromArgb(144, 147, 153);
-            BtnEdit.Location = new Point(603, 380);
+            BtnEdit.Location = new Point(737, 386);
             BtnEdit.Name = "BtnEdit";
             BtnEdit.PrimaryColor = Color.FromArgb(39, 174, 97);
             BtnEdit.Size = new Size(106, 30);
@@ -304,13 +291,12 @@ namespace GUI
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(869, 444);
+            ClientSize = new Size(869, 428);
             Controls.Add(panel3);
             Controls.Add(poisonDateTime1);
             Controls.Add(ID);
             Controls.Add(panel5);
             Controls.Add(BtnEdit);
-            Controls.Add(BtnDisable);
             Controls.Add(BtnDelete);
             Controls.Add(TbAddress);
             Controls.Add(panel4);
@@ -351,7 +337,6 @@ namespace GUI
         private Panel panel4;
         private Label label4;
         private ReaLTaiizor.Controls.AloneButton BtnDelete;
-        private ReaLTaiizor.Controls.AloneButton BtnDisable;
         private ReaLTaiizor.Controls.HopeRoundButton BtnEdit;
         private Panel panel5;
         private RoundedPictureBox roundedPictureBox1;

@@ -10,20 +10,17 @@ namespace GUI
 {
     public partial class EditCustomer : Form
     {
+        private BUS_Khach busKhach = new BUS_Khach();
         private FrmCustomer _parentForm;
         private DTO_Khach _khachHang;
-        private BUS_Khach busKhach = new BUS_Khach();
-        private PopupCmer _popupForm;
 
-        public EditCustomer(FrmCustomer parentForm, DTO_Khach khach, PopupCmer popupForm = null)
+        public EditCustomer(FrmCustomer parentForm, DTO_Khach khach,PopupCmer popupCmer)
         {
             InitializeComponent();
             _parentForm = parentForm;
             _khachHang = khach;
-            _popupForm = popupForm;
             LoadData();
         }
-
         private void LoadData()
         {
             txtID.Text = _khachHang.MaKhachHang.ToString();
@@ -40,12 +37,8 @@ namespace GUI
 
                 DTO_Khach updatedKhachHang = busKhach.GetCustomerById(_khachHang.MaKhachHang);
 
-                if (_popupForm != null)
-                {
-                    _popupForm.UpdateKhachHang(updatedKhachHang); 
-                }
+               
                 this.Close();
-                _popupForm.Close();
 
             }
             catch (Exception ex)
@@ -57,7 +50,6 @@ namespace GUI
         private void btncancel_Click(object sender, EventArgs e)
         {
             this.Close();
-            _popupForm.Close();
         }
     }
 }

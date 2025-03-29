@@ -126,8 +126,11 @@
             Tbpass.Size = new Size(353, 28);
             Tbpass.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             Tbpass.TabIndex = 2;
+            Tbpass.Text = "Password";
             Tbpass.TextAlignment = HorizontalAlignment.Left;
             Tbpass.UseSystemPasswordChar = false;
+            Tbpass.Enter += Tbpass_Enter;
+            Tbpass.Leave += Tbpass_Leave;
             // 
             // TbEmail
             // 
@@ -144,8 +147,11 @@
             TbEmail.Size = new Size(353, 28);
             TbEmail.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbEmail.TabIndex = 1;
+            TbEmail.Text = "Email/Username";
             TbEmail.TextAlignment = HorizontalAlignment.Left;
             TbEmail.UseSystemPasswordChar = false;
+            TbEmail.Enter += TbEmail_Enter;
+            TbEmail.Leave += TbEmail_Leave_1;
             // 
             // splitContainer2
             // 
@@ -293,8 +299,11 @@
             TbNewPass.Size = new Size(353, 28);
             TbNewPass.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbNewPass.TabIndex = 2;
+            TbNewPass.Text = "Mật khẩu mới";
             TbNewPass.TextAlignment = HorizontalAlignment.Left;
             TbNewPass.UseSystemPasswordChar = false;
+            TbNewPass.Enter += TbNewPass_Enter;
+            TbNewPass.Leave += TbNewpass_Leave;
             // 
             // bigLabel2
             // 
@@ -325,8 +334,11 @@
             TbToken.Size = new Size(353, 28);
             TbToken.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbToken.TabIndex = 1;
+            TbToken.Text = "Token";
             TbToken.TextAlignment = HorizontalAlignment.Left;
             TbToken.UseSystemPasswordChar = false;
+            TbToken.Enter += TbToken_Enter;
+            TbToken.Leave += TbToken_Leave;
             // 
             // panel2
             // 

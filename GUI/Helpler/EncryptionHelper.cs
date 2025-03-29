@@ -7,8 +7,8 @@ namespace GUI.Helper
 {
     public static class EncryptionHelper
     {
-        private static readonly string password = "YourSecretKey123456"; // Mật khẩu để tạo khóa
-        private static readonly byte[] salt = Encoding.UTF8.GetBytes("SomeSaltValue"); // Giá trị salt cố định
+        private static readonly string password = "YourSecretKey123456"; 
+        private static readonly byte[] salt = Encoding.UTF8.GetBytes("SomeSaltValue"); 
 
         public static string Encrypt(string text)
         {
@@ -17,7 +17,7 @@ namespace GUI.Helper
             using (Aes aes = Aes.Create())
             {
                 aes.Key = GenerateKey();
-                aes.IV = new byte[16]; // IV 16 byte (AES-128, AES-192, AES-256 đều dùng 16 byte IV)
+                aes.IV = new byte[16]; 
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
 
@@ -36,7 +36,7 @@ namespace GUI.Helper
             using (Aes aes = Aes.Create())
             {
                 aes.Key = GenerateKey();
-                aes.IV = new byte[16]; // Phải giống với Encrypt()
+                aes.IV = new byte[16]; 
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
 
@@ -52,7 +52,7 @@ namespace GUI.Helper
         {
             using (var deriveBytes = new Rfc2898DeriveBytes(password, salt, 10000))
             {
-                return deriveBytes.GetBytes(32); // Lấy 32 bytes cho AES-256
+                return deriveBytes.GetBytes(32); 
             }
         }
     }

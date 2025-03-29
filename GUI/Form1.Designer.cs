@@ -320,7 +320,7 @@
             button1.Padding = new Padding(15, 0, 0, 0);
             button1.Size = new Size(228, 59);
             button1.TabIndex = 5;
-            button1.Text = "Nhân sự";
+            button1.Text = "Tài khoản";
             button1.UseVisualStyleBackColor = false;
             button1.Click += BtnNV_Click;
             // 
@@ -518,7 +518,7 @@
             BtnUser.Padding = new Padding(25, 0, 0, 0);
             BtnUser.Size = new Size(243, 61);
             BtnUser.TabIndex = 3;
-            BtnUser.Text = "Tài khoản";
+            BtnUser.Text = "Người dùng";
             BtnUser.UseVisualStyleBackColor = false;
             BtnUser.Click += BtnUser_Click;
             // 

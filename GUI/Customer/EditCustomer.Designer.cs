@@ -55,9 +55,9 @@
             label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(12, 9);
             label1.Name = "label1";
-            label1.Size = new Size(134, 21);
+            label1.Size = new Size(182, 21);
             label1.TabIndex = 0;
-            label1.Text = "Tạo Khách Hàng";
+            label1.Text = "Chỉnh sửa Khách Hàng";
             // 
             // groupBox2
             // 

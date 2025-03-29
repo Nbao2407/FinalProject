@@ -7,6 +7,7 @@ namespace GUI
 {
     public class AuthData
     {
+        public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
     }
@@ -15,10 +16,11 @@ namespace GUI
     {
         private static readonly string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "auth.json");
 
-        public static void SaveCredentials(string email, string password)
+        public static void SaveCredentials(string username, string email, string password)
         {
             var data = new AuthData
             {
+                Username = username,
                 Email = email,
                 Password = EncryptionHelper.Encrypt(password)
             };

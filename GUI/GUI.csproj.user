@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Compile Update="AddHoaDon.cs">
+    <Compile Update="HoaDon\AddHoaDon.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Form1.cs">
@@ -13,28 +13,61 @@
     <Compile Update="Login.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmNCc.cs">
+    <Compile Update="NCC\AddNcc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NCC\EditNcc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NCC\FrmNCc.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Customer\FrmCustomer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmHoaDon.cs">
+    <Compile Update="HoaDon\FrmHoaDon.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FrmHome.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmMaterial.cs">
+    <Compile Update="_Type\AddType.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmNV.cs">
+    <Compile Update="_Type\Edit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmOrder.cs">
+    <Compile Update="_Type\PopupType.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmType.cs">
+    <Compile Update="VatLieu\AddMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="VatLieu\EditMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="VatLieu\FrmMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TaiKhoan\AddTk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TaiKhoan\EditTk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TaiKhoan\FrmNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Order\NhapHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Order\FrmOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="_Type\FrmType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Order\PopupOrder.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="PopupForm\FrmUser.cs">
@@ -49,11 +82,17 @@
     <Compile Update="Customer\PopupCmer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Wiget.cs">
+    <Compile Update="HoaDon\Wiget.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Wiget2.cs">
+    <Compile Update="HoaDon\Wiget2.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TaiKhoan\PopupTk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="VatLieu\PopupMaterial.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
 </Project>

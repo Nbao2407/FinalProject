@@ -12,6 +12,9 @@ using System.Runtime.InteropServices;
 using GUI.Helpler;
 using Microsoft.VisualBasic.ApplicationServices;
 using DTO;
+using Mono.Unix.Native;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 namespace GUI
 {
     public partial class Login : Form
@@ -32,7 +35,10 @@ namespace GUI
             if (savedCredentials != null)
             {
                 TbEmail.Text = savedCredentials.Email;
+                TbEmail.Text = savedCredentials.Username;
                 Tbpass.Text = savedCredentials.Password;
+                TbNewPass.UseSystemPasswordChar = true;
+                Tbpass.UseSystemPasswordChar = true;
                 RdRemenber.Checked = true;
             }
             paneloverlay.Location = new Point(371, 0);
@@ -176,19 +182,14 @@ namespace GUI
 
                     if (!string.IsNullOrEmpty(token))
                     {
-                        Console.WriteLine("Token tạo thành công, gửi email...");
-                        MessageBox.Show("Đã gửi mã", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                         try
                         {
                             SendResetEmail(email, token);
-                            Console.WriteLine("Email đã được gửi!");
                         }
                         catch (Exception emailEx)
                         {
                             MessageBox.Show($"Gửi email thất bại: {emailEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
-
                         Task.Delay(500).Wait();
                         SetupSlideAnimation(true);
                     }
@@ -197,7 +198,7 @@ namespace GUI
                         MessageBox.Show("Không thể tạo token. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                
+
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Lỗi hệ thống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -240,6 +241,7 @@ namespace GUI
         {
             string username = TbEmail.Text;
             string password = Tbpass.Text;
+            string email = TbEmail.Text;
 
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -249,18 +251,20 @@ namespace GUI
                     SqlCommand cmd = new SqlCommand("sp_KiemTraDangNhap", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@TenDangNhap", username);
+                    cmd.Parameters.AddWithValue("@Email", email);
                     cmd.Parameters.AddWithValue("@MatKhau", password);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read() )
+                        if (reader.Read())
                         {
                             string role = reader["ChucVu"].ToString();
                             System.Windows.Forms.MessageBox.Show($"Đăng nhập thành công! Vai trò: {role}", "Thông Báo");
 
                             if (RdRemenber.Checked)
                             {
-                                AuthStorage.SaveCredentials(username, password);
+                                AuthStorage.SaveCredentials(username, email, password);
+
                             }
                             else
                             {
@@ -312,7 +316,89 @@ namespace GUI
         }
         private void parrotPictureBox2_Click(object sender, EventArgs e)
         {
+            string username = TbEmail.Text;
+            string password = Tbpass.Text;
+            string email = TbEmail.Text;
+
+            if (RdRemenber.Checked)
+            {
+                AuthStorage.SaveCredentials(username, email, password);
+            }
+            else
+            {
+                AuthStorage.ClearCredentials();
+            }
             Application.Exit();
+        }
+
+        private void TbEmail_Enter(object sender, EventArgs e)
+        {
+            if (TbEmail.Text == "Email/Username")
+            {
+                TbEmail.Text = "";
+                TbEmail.ForeColor = Color.Black;
+            }
+        }
+      
+        private void TbEmail_Leave_1(object sender, EventArgs e)
+        {
+            if(TbEmail.Text == "")
+            {
+                TbEmail.Text = "Email/Username";
+                TbEmail.ForeColor = Color.Gray;
+            }
+        }
+        private void Tbpass_Enter(object sender, EventArgs e)
+        {
+            if (Tbpass.Text == "Password")
+            {
+                Tbpass.Text = "";
+                Tbpass.ForeColor = Color.Black;
+                Tbpass.UseSystemPasswordChar = true;
+            }
+        }
+        private void Tbpass_Leave(object sender, EventArgs e)
+        {
+            if (Tbpass.Text == "")
+            {
+                Tbpass.Text = "Password";
+                Tbpass.ForeColor = Color.Gray;
+                Tbpass.UseSystemPasswordChar = false;
+            }
+        }
+        private void TbToken_Enter(object sender, EventArgs e)
+        {
+            if (TbToken.Text == "Token")
+            {
+                TbToken.Text = "";
+                TbToken.ForeColor = Color.Black;
+            }
+        }
+        private void TbToken_Leave(object sender, EventArgs e)
+        {
+            if (TbToken.Text == "")
+            {
+                TbToken.Text = "Token";
+                TbToken.ForeColor = Color.Gray;
+            }
+        }
+        private void TbNewPass_Enter(object sender, EventArgs e)
+        {
+            if (TbNewPass.Text == "Mật khẩu mới")
+            {
+                TbNewPass.Text = "";
+                TbNewPass.ForeColor = Color.Black;
+                TbNewPass.UseSystemPasswordChar = true;
+            }
+        }
+        private void TbNewpass_Leave(object sender, EventArgs e)
+        {
+            if (TbNewPass.Text == "")
+            {
+                TbNewPass.Text = "Mật khẩu mới";
+                TbNewPass.ForeColor = Color.Gray;
+                TbNewPass.UseSystemPasswordChar = false;
+            }
         }
     }
 }
