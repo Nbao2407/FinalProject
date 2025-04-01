@@ -181,9 +181,10 @@ SET NguoiTao = 1,
 WHERE NguoiTao IS NULL;
 
 UPDATE QLKH
-SET TenNguoiTao = tk.TenDangNhap
-FROM QLKH kh
-LEFT JOIN QLTK tk ON kh.NguoiTao = tk.MaTK
+SET Trangthai =  N'Ngừng sử dụng'
+Where MaKhachHang=MaKhachHang
+
+
 WHERE kh.TenNguoiTao IS NULL;
 DELETE FROM ChiTietHoaDon
 WHERE MaHoaDon IN (

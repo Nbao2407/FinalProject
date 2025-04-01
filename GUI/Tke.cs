@@ -32,7 +32,7 @@ namespace GUI
                 var danhSach = thongKeBUS.GetThongKeDoanhThu(dtpStartDate.Value, dtpEndDate.Value);
                 if (danhSach != null && danhSach.Count > 0)
                 {
-                    lblNumOrders.Text = danhSach.Count.ToString();
+                    lblNumOrders.Text = danhSach.Count(o => o.TrangThai == "Đã thanh toán").ToString();
                     lblTotalRevenue.Text = thongKeBUS.TinhTongDoanhThu(dtpStartDate.Value, dtpEndDate.Value).ToString("N0") + " VNĐ";
                     lblTotalProfit.Text = (thongKeBUS.TinhTongDoanhThu(dtpStartDate.Value, dtpEndDate.Value) * 0.2m).ToString("N0") + " VNĐ";
                     lblNumCustomers.Text = danhSach.Select(x => x.KhachHang).Distinct().Count().ToString();
@@ -189,7 +189,7 @@ namespace GUI
                 btnToday, btnLast7Days, btnLast30Days, btnCustomDate, btnOkCustomDate,
                 label1, lblNumOrders, lblTotalRevenue, lblTotalProfit, lblNumCustomers, lblNumSuppliers,
                 label2, label4, label5, lblStartDate, lblEndDate,
-                dtpStartDate, dtpEndDate); // Added missing parameters
+                dtpStartDate, dtpEndDate);
             LoadData();
         }
 

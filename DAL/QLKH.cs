@@ -25,9 +25,9 @@ namespace DAL
             }
         }
 
-    
 
-         public List<DTO_Khach> TimKiemKhachHang(string keyword)
+
+        public List<DTO_Khach> TimKiemKhachHang(string keyword)
         {
             List<DTO_Khach> danhSachKH = new List<DTO_Khach>();
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -59,9 +59,9 @@ namespace DAL
             }
             return danhSachKH;
         }
-        public DTO_Khach GetCustomerById(int maKhachHang) 
+        public DTO_Khach GetCustomerById(int maKhachHang)
         {
-            
+
             return new DTO_Khach();
         }
         public async Task<bool> SuaKhachHang(DTO_Khach khach)
@@ -105,6 +105,7 @@ namespace DAL
                 throw new Exception($"Lỗi cơ sở dữ liệu: {ex.Message}", ex);
             }
         }
+
 
         public List<DTO_Khach> GetAllKhach()
         {
@@ -198,6 +199,37 @@ namespace DAL
                     throw new Exception("Không thể xóa khách hàng vì còn hóa đơn 'Chờ thanh toán'!");
                 else
                     throw new Exception("Lỗi khi xóa khách hàng: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi hệ thống: " + ex.Message);
+            }
+        }
+        public bool DisableKhachHang(int maKhachHang, int nguoiCapNhat)
+        {
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                {
+                    conn.Open();
+                    string query = "UPDATE QLKH SET Trangthai = N'Ngừng sử dụng' WHERE MaKhachHang = @MaKhachHang";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@MaKhachHang", maKhachHang);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 50003)
+                    throw new Exception("Khách hàng không tồn tại!");
+                else
+                    throw new Exception("Lỗi khi disable khách hàng: " + ex.Message);
             }
             catch (Exception ex)
             {

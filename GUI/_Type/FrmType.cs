@@ -2,6 +2,7 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
+using GUI.Type;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static IronPython.Modules._ast;
 
 namespace GUI
 {
@@ -126,7 +128,7 @@ namespace GUI
                 ? dal.SearchProductTypes(searchQuery)
                 : dal.LayTatCaLVL();
         }
-      
+
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -137,5 +139,28 @@ namespace GUI
             }
         }
 
+        private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            using (var Pop = new PopupType())
+            {
+                Pop.Deactivate += (s, e) => Pop.TopMost = true;
+                Pop.StartPosition = FormStartPosition.CenterParent;
+                Pop.ShowDialog();
+            }
+        }
+        private void ShowPopup()
+        {
+
+            using (var popup = new AddType())
+            {
+                popup.Deactivate += (s, e) => popup.TopMost = true;
+                popup.StartPosition = FormStartPosition.CenterParent;
+                popup.ShowDialog();
+            }
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ShowPopup();
+        }
     }
 }

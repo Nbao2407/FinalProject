@@ -155,13 +155,13 @@ namespace GUI
                 {
                     return;
                 }
-                int nguoiCapNhat = 1;
+                int nguoiCapNhat = CurrentUser.MaTK;
 
                 QLKH qlkh = new QLKH();
-                bool result = qlkh.XoaKhachHang(maKhachHang, nguoiCapNhat);
+                bool result = qlkh.DisableKhachHang(maKhachHang, nguoiCapNhat);
                 if (result)
                 {
-                    MessageBox.Show("Xóa khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Disable khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _parentForm.LoadKhachHang();
                 }
                 else

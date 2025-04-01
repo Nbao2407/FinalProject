@@ -2,6 +2,7 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
+using GUI.Order;
 
 namespace GUI
 {
@@ -35,7 +36,7 @@ namespace GUI
                     dataGridView1.Columns["NCC"].HeaderText = "Nhà Cung Cấp";
                     dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
 
-                 
+
                     // Định dạng cột ngày
                     dataGridView1.Columns["NgayNhap"].DefaultCellStyle.Format = "dd/MM/yyyy";
 
@@ -84,6 +85,33 @@ namespace GUI
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
                 column.Width = variableColumnWidth;
+            }
+        }
+
+        private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            ShowPopup();
+        }
+        private void ShowPopup()
+        {
+
+            using (var popup = new PopupOrder())
+            {
+                popup.Deactivate += (s, e) => popup.TopMost = true;
+
+                popup.StartPosition = FormStartPosition.CenterParent;
+
+                popup.ShowDialog();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            using(var popup = new NhapHang()) 
+            {
+                popup.Deactivate += (s, e) => popup.TopMost = true;
+                popup.StartPosition = FormStartPosition.CenterParent;
+                popup.ShowDialog();
             }
         }
     }

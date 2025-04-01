@@ -35,11 +35,11 @@
             btnSave = new ReaLTaiizor.Controls.Button();
             label2 = new Label();
             panel5 = new Panel();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
-            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox2 = new Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new Helpler.RoundedPictureBox();
             panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             SuspendLayout();
             // 
             // btnDelete
@@ -131,6 +131,7 @@
             btnSave.TabIndex = 64;
             btnSave.Text = "Chỉnh sửa";
             btnSave.TextAlignment = StringAlignment.Center;
+            btnSave.Click += btnSave_Click;
             // 
             // label2
             // 
@@ -153,21 +154,6 @@
             panel5.Size = new Size(800, 38);
             panel5.TabIndex = 68;
             // 
-            // roundedPictureBox1
-            // 
-            roundedPictureBox1.BorderColor = Color.Transparent;
-            roundedPictureBox1.BorderRadius = 20;
-            roundedPictureBox1.BorderThickness = 0F;
-            roundedPictureBox1.ErrorImage = null;
-            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
-            roundedPictureBox1.InitialImage = null;
-            roundedPictureBox1.Location = new Point(830, 7);
-            roundedPictureBox1.Name = "roundedPictureBox1";
-            roundedPictureBox1.Size = new Size(26, 26);
-            roundedPictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            roundedPictureBox1.TabIndex = 41;
-            roundedPictureBox1.TabStop = false;
-            // 
             // roundedPictureBox2
             // 
             roundedPictureBox2.BorderColor = Color.Transparent;
@@ -182,6 +168,22 @@
             roundedPictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
             roundedPictureBox2.TabIndex = 42;
             roundedPictureBox2.TabStop = false;
+            roundedPictureBox2.Click += roundedPictureBox2_Click;
+            // 
+            // roundedPictureBox1
+            // 
+            roundedPictureBox1.BorderColor = Color.Transparent;
+            roundedPictureBox1.BorderRadius = 20;
+            roundedPictureBox1.BorderThickness = 0F;
+            roundedPictureBox1.ErrorImage = null;
+            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox1.InitialImage = null;
+            roundedPictureBox1.Location = new Point(830, 7);
+            roundedPictureBox1.Name = "roundedPictureBox1";
+            roundedPictureBox1.Size = new Size(26, 26);
+            roundedPictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            roundedPictureBox1.TabIndex = 41;
+            roundedPictureBox1.TabStop = false;
             // 
             // PopupType
             // 
@@ -199,8 +201,8 @@
             Name = "PopupType";
             Text = "PopupType";
             panel5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

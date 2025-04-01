@@ -38,13 +38,14 @@
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
             panel1 = new Panel();
+            Tong = new Label();
             panel2 = new Panel();
             label1 = new Label();
             panel3 = new Panel();
             button2 = new ReaLTaiizor.Controls.Button();
             pictureBox2 = new PictureBox();
             dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
-            Tong = new Label();
+            button3 = new ReaLTaiizor.Controls.Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
@@ -143,7 +144,7 @@
             dataGridView1.EnableHeadersVisualStyles = false;
             dataGridView1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
             dataGridView1.GridColor = Color.FromArgb(255, 255, 255);
-            dataGridView1.Location = new Point(3, 74);
+            dataGridView1.Location = new Point(6, 87);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
@@ -159,6 +160,7 @@
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Size = new Size(1100, 463);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.CellDoubleClick += PopupFrm_CellDoubleClick;
             // 
             // panel1
@@ -169,7 +171,6 @@
             panel1.Controls.Add(button1);
             panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(txtSearch);
-            panel1.Controls.Add(dataGridView1);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
@@ -177,13 +178,27 @@
             panel1.Size = new Size(1106, 600);
             panel1.TabIndex = 1;
             // 
+            // Tong
+            // 
+            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Tong.AutoSize = true;
+            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Tong.ForeColor = Color.DarkGray;
+            Tong.Location = new Point(12, 1084);
+            Tong.Name = "Tong";
+            Tong.Size = new Size(34, 13);
+            Tong.TabIndex = 8;
+            Tong.Text = "Tổng";
+            // 
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(236, 240, 241);
+            panel2.Controls.Add(button3);
             panel2.Controls.Add(label1);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(button2);
             panel2.Controls.Add(pictureBox2);
+            panel2.Controls.Add(dataGridView1);
             panel2.Controls.Add(dungeonTextBox1);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
@@ -200,7 +215,7 @@
             label1.ForeColor = Color.DarkGray;
             label1.Location = new Point(12, 1584);
             label1.Name = "label1";
-            label1.Size = new Size(33, 13);
+            label1.Size = new Size(34, 13);
             label1.TabIndex = 8;
             label1.Text = "Tổng";
             // 
@@ -264,17 +279,30 @@
             dungeonTextBox1.TextAlignment = HorizontalAlignment.Left;
             dungeonTextBox1.UseSystemPasswordChar = false;
             // 
-            // Tong
+            // button3
             // 
-            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            Tong.AutoSize = true;
-            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tong.ForeColor = Color.DarkGray;
-            Tong.Location = new Point(12, 1084);
-            Tong.Name = "Tong";
-            Tong.Size = new Size(33, 13);
-            Tong.TabIndex = 8;
-            Tong.Text = "Tổng";
+            button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button3.BackColor = Color.Transparent;
+            button3.BorderColor = Color.FromArgb(52, 73, 94);
+            button3.Cursor = Cursors.Hand;
+            button3.EnteredBorderColor = Color.FromArgb(165, 37, 37);
+            button3.EnteredColor = Color.FromArgb(32, 34, 37);
+            button3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button3.Image = null;
+            button3.ImageAlign = ContentAlignment.MiddleRight;
+            button3.InactiveColor = Color.FromArgb(44, 62, 80);
+            button3.Location = new Point(928, 31);
+            button3.Margin = new Padding(3, 3, 160, 3);
+            button3.Name = "button3";
+            button3.Padding = new Padding(0, 0, 100, 0);
+            button3.PressedBorderColor = Color.Green;
+            button3.PressedColor = Color.Green;
+            button3.RightToLeft = RightToLeft.Yes;
+            button3.Size = new Size(129, 28);
+            button3.TabIndex = 14;
+            button3.Text = "Thêm";
+            button3.TextAlignment = StringAlignment.Center;
+            button3.Click += button3_Click;
             // 
             // FrmNCc
             // 
@@ -312,5 +340,6 @@
         private ReaLTaiizor.Controls.Button button2;
         private PictureBox pictureBox2;
         private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
+        private ReaLTaiizor.Controls.Button button3;
     }
 }

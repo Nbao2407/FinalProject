@@ -11,3 +11,16 @@ I:\Pro213\DTO\obj\Debug\net8.0-windows\DTO.dll
 I:\Pro213\DTO\obj\Debug\net8.0-windows\refint\DTO.dll
 I:\Pro213\DTO\obj\Debug\net8.0-windows\DTO.pdb
 I:\Pro213\DTO\obj\Debug\net8.0-windows\ref\DTO.dll
+D:\Pro213\FinalProject\DTO\bin\Debug\net8.0-windows\DTO.deps.json
+D:\Pro213\FinalProject\DTO\bin\Debug\net8.0-windows\DTO.dll
+D:\Pro213\FinalProject\DTO\bin\Debug\net8.0-windows\DTO.pdb
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.csproj.AssemblyReference.cache
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.GeneratedMSBuildEditorConfig.editorconfig
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.AssemblyInfoInputs.cache
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.AssemblyInfo.cs
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.csproj.CoreCompileInputs.cache
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.sourcelink.json
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.dll
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\refint\DTO.dll
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\DTO.pdb
+D:\Pro213\FinalProject\DTO\obj\Debug\net8.0-windows\ref\DTO.dll

@@ -1196,10 +1196,7 @@
           "WinForms.DataVisualization": "1.10.0"
         },
         "runtime": {
-          "BUS.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "BUS.dll": {}
         }
       },
       "DAL/1.0.0": {
@@ -1212,10 +1209,7 @@
           "WinForms.DataVisualization": "1.10.0"
         },
         "runtime": {
-          "DAL.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DAL.dll": {}
         }
       },
       "DTO/1.0.0": {
@@ -1225,10 +1219,7 @@
           "WinForms.DataVisualization": "1.10.0"
         },
         "runtime": {
-          "DTO.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DTO.dll": {}
         }
       }
     }

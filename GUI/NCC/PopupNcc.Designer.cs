@@ -222,6 +222,7 @@ namespace GUI
             BtnEdit.Text = "Chỉnh sửa";
             BtnEdit.TextColor = Color.White;
             BtnEdit.WarningColor = Color.FromArgb(230, 162, 60);
+            BtnEdit.Click += BtnEdit_Click;
             // 
             // panel5
             // 

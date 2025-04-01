@@ -49,7 +49,6 @@ namespace GUI
             btnCustomDate = new Button();
             btnOkCustomDate = new Button();
             panel3 = new Panel();
-            label11 = new Label();
             lblTotalProfit = new Label();
             label5 = new Label();
             chartGrossRevenue = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -61,11 +60,9 @@ namespace GUI
             lblEndDate = new Label();
             label12 = new Label();
             panel2 = new Panel();
-            label10 = new Label();
             lblTotalRevenue = new Label();
             label4 = new Label();
             panel1 = new Panel();
-            label3 = new Label();
             lblNumOrders = new Label();
             label2 = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -224,7 +221,6 @@ namespace GUI
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel3.BackColor = Color.FromArgb(42, 45, 86);
-            panel3.Controls.Add(label11);
             panel3.Controls.Add(lblTotalProfit);
             panel3.Controls.Add(label5);
             panel3.Location = new Point(754, 5);
@@ -232,18 +228,6 @@ namespace GUI
             panel3.Name = "panel3";
             panel3.Size = new Size(347, 73);
             panel3.TabIndex = 11;
-            // 
-            // label11
-            // 
-            label11.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            label11.AutoSize = true;
-            label11.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label11.ForeColor = Color.FromArgb(128, 128, 255);
-            label11.Location = new Point(282, 27);
-            label11.Name = "label11";
-            label11.Size = new Size(50, 20);
-            label11.TabIndex = 3;
-            label11.Text = "+19%";
             // 
             // lblTotalProfit
             // 
@@ -446,7 +430,6 @@ namespace GUI
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BackColor = Color.FromArgb(42, 45, 86);
-            panel2.Controls.Add(label10);
             panel2.Controls.Add(lblTotalRevenue);
             panel2.Controls.Add(label4);
             panel2.Location = new Point(310, 5);
@@ -454,18 +437,6 @@ namespace GUI
             panel2.Name = "panel2";
             panel2.Size = new Size(434, 74);
             panel2.TabIndex = 10;
-            // 
-            // label10
-            // 
-            label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            label10.AutoSize = true;
-            label10.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label10.ForeColor = Color.FromArgb(255, 128, 128);
-            label10.Location = new Point(353, 27);
-            label10.Name = "label10";
-            label10.Size = new Size(50, 20);
-            label10.TabIndex = 3;
-            label10.Text = "+21%";
             // 
             // lblTotalRevenue
             // 
@@ -493,7 +464,6 @@ namespace GUI
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel1.BackColor = Color.FromArgb(42, 45, 86);
-            panel1.Controls.Add(label3);
             panel1.Controls.Add(lblNumOrders);
             panel1.Controls.Add(label2);
             panel1.Location = new Point(5, 5);
@@ -501,18 +471,6 @@ namespace GUI
             panel1.Name = "panel1";
             panel1.Size = new Size(295, 73);
             panel1.TabIndex = 9;
-            // 
-            // label3
-            // 
-            label3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            label3.AutoSize = true;
-            label3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.FromArgb(0, 192, 192);
-            label3.Location = new Point(230, 27);
-            label3.Name = "label3";
-            label3.Size = new Size(50, 20);
-            label3.TabIndex = 2;
-            label3.Text = "+15%";
             // 
             // lblNumOrders
             // 
@@ -820,7 +778,6 @@ namespace GUI
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             ResumeLayout(false);
-
         }
 
         #endregion
@@ -839,16 +796,13 @@ namespace GUI
         private System.Windows.Forms.DataVisualization.Charting.Chart chartGrossRevenue;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label lblStartDate;
         private System.Windows.Forms.Label lblEndDate;
         private System.Windows.Forms.Label label12;
         private Panel panel2;
-        private Label label10;
         private Label lblTotalRevenue;
         private Label label4;
         private Panel panel1;
-        private Label label3;
         private Label lblNumOrders;
         private Label label2;
         private TableLayoutPanel tableLayoutPanel1;

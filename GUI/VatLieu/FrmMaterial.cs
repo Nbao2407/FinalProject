@@ -2,6 +2,8 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
+using GUI.TaiKhoan;
+using GUI.VatLieu;
 
 namespace GUI
 {
@@ -170,6 +172,23 @@ namespace GUI
 
         private void plotView1_Click(object sender, EventArgs e)
         {
+        }
+
+        private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            PopupMaterial popupMaterial = new PopupMaterial();
+            popupMaterial.StartPosition= FormStartPosition.CenterParent;
+            popupMaterial.ShowDialog();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (var add = new AddMaterial())
+            {
+                add.Deactivate += (s, e) => add.TopMost = true;
+                add.StartPosition = FormStartPosition.CenterParent;
+                add.ShowDialog();
+            }
         }
     }
 }

@@ -91,6 +91,7 @@
             dataGridView1.Size = new Size(1100, 463);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellContentClick += dataGridView1_CellClick;
+            dataGridView1.CellContentDoubleClick += dataGridView1_CellContentDoubleClick;
             dataGridView1.SelectionChanged += dgv_SelectionChanged;
             // 
             // txtSearch
@@ -145,6 +146,7 @@
             button1.TabIndex = 5;
             button1.Text = "Thêm";
             button1.TextAlignment = StringAlignment.Center;
+            button1.Click += button1_Click;
             // 
             // result
             // 
@@ -178,7 +180,7 @@
             Tong.ForeColor = Color.DarkGray;
             Tong.Location = new Point(12, 584);
             Tong.Name = "Tong";
-            Tong.Size = new Size(33, 13);
+            Tong.Size = new Size(34, 13);
             Tong.TabIndex = 8;
             Tong.Text = "Tổng";
             // 

@@ -1,4 +1,5 @@
 ﻿using GUI.Helpler;
+using GUI.NCC;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,7 +31,7 @@ namespace GUI
         {
             PopupHelper.RoundCorners(this, 10);
             PopupHelper.MakeTextBoxesTransparent(this);
-       
+
         }
 
         private void PopupForm_Resize(object sender, EventArgs e)
@@ -40,8 +41,19 @@ namespace GUI
 
         private void roundedPictureBox1_Click_1(object sender, EventArgs e)
         {
-            PopNcc.ActiveForm.Close();
+            this.Close();
         }
 
+        private void BtnEdit_Click(object sender, EventArgs e)
+        {
+            using (var edit = new EditNcc())
+            {
+                edit.Deactivate += (s, e) => edit.TopMost = true;
+
+                edit.StartPosition = FormStartPosition.CenterParent;
+
+                edit.ShowDialog();
+            }    
+        }
     }
 }

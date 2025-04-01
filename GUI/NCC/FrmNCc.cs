@@ -2,6 +2,7 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
+using GUI.NCC;
 
 namespace GUI
 {
@@ -142,20 +143,7 @@ namespace GUI
 
         private void ShowPopup()
         {
-            Panel overlay = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(50, 0, 0, 0),
-                Parent = this,
-                Visible = true
-            };
-            this.Controls.Add(overlay);
 
-            overlay.BringToFront();
-            this.Resize += (s, e) =>
-            {
-                overlay.Size = this.ClientSize;
-            };
             using (var popup = new PopNcc())
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
@@ -164,12 +152,28 @@ namespace GUI
 
                 popup.ShowDialog();
             }
-            overlay.Dispose();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            using (var popup = new AddNcc())
+            {
+                popup.Deactivate += (s, e) => popup.TopMost = true;
+
+                popup.StartPosition = FormStartPosition.CenterParent;
+
+                popup.ShowDialog();
+            }
         }
     }
 }

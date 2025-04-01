@@ -34,7 +34,7 @@
             Ngay = new ReaLTaiizor.Controls.SmallTextBox();
             tableLayoutPanel1 = new TableLayoutPanel();
             lbld = new ReaLTaiizor.Controls.BigLabel();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new Helpler.RoundedPictureBox();
             panel5 = new Panel();
             BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnHuy = new ReaLTaiizor.Controls.AloneButton();
@@ -118,6 +118,7 @@
             roundedPictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             roundedPictureBox1.TabIndex = 41;
             roundedPictureBox1.TabStop = false;
+            roundedPictureBox1.Click += roundedPictureBox1_Click;
             // 
             // panel5
             // 

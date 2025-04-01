@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace GUI.Type
 {
-    public partial class AddType: Form
+    public partial class AddType : Form
     {
         public AddType()
         {
             InitializeComponent();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

@@ -40,13 +40,13 @@
             TbAddress = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label2 = new Label();
             groupBox2 = new GroupBox();
+            TbNote = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label1 = new Label();
             CbChucVu = new ReaLTaiizor.Controls.AloneComboBox();
             label6 = new Label();
             label7 = new Label();
             Tbpass = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label8 = new Label();
-            TbNote = new ReaLTaiizor.Controls.DungeonRichTextBox();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
@@ -72,6 +72,7 @@
             btnCancel.TabIndex = 36;
             btnCancel.Text = "Bỏ qua";
             btnCancel.TextAlignment = StringAlignment.Center;
+            btnCancel.Click += btnCancel_Click;
             // 
             // label4
             // 
@@ -228,6 +229,22 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Ghi chú";
             // 
+            // TbNote
+            // 
+            TbNote.AutoWordSelection = false;
+            TbNote.BackColor = Color.Transparent;
+            TbNote.BorderColor = Color.FromArgb(180, 180, 180);
+            TbNote.EdgeColor = Color.White;
+            TbNote.Font = new Font("Tahoma", 10F);
+            TbNote.ForeColor = Color.Black;
+            TbNote.Location = new Point(6, 26);
+            TbNote.Name = "TbNote";
+            TbNote.ReadOnly = false;
+            TbNote.Size = new Size(816, 32);
+            TbNote.TabIndex = 42;
+            TbNote.TextBackColor = Color.White;
+            TbNote.WordWrap = true;
+            // 
             // label1
             // 
             label1.AutoSize = true;
@@ -296,22 +313,6 @@
             label8.Size = new Size(66, 17);
             label8.TabIndex = 41;
             label8.Text = "Mật khẩu";
-            // 
-            // TbNote
-            // 
-            TbNote.AutoWordSelection = false;
-            TbNote.BackColor = Color.Transparent;
-            TbNote.BorderColor = Color.FromArgb(180, 180, 180);
-            TbNote.EdgeColor = Color.White;
-            TbNote.Font = new Font("Tahoma", 10F);
-            TbNote.ForeColor = Color.Black;
-            TbNote.Location = new Point(6, 26);
-            TbNote.Name = "TbNote";
-            TbNote.ReadOnly = false;
-            TbNote.Size = new Size(816, 32);
-            TbNote.TabIndex = 42;
-            TbNote.TextBackColor = Color.White;
-            TbNote.WordWrap = true;
             // 
             // AddTk
             // 

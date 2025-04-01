@@ -59,6 +59,7 @@
             btnCancel.TabIndex = 67;
             btnCancel.Text = "Bỏ qua";
             btnCancel.TextAlignment = StringAlignment.Center;
+            btnCancel.Click += btnCancel_Click;
             // 
             // label5
             // 

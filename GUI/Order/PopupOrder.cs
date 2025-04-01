@@ -21,5 +21,10 @@ namespace GUI.Order
         {
 
         }
+
+        private void roundedPictureBox1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace GUI
     {
         private BUS_Khach busKhach = new BUS_Khach();
         private QLKH kh = new QLKH();
-        private List<DTO_Khach> danhSachKhach; // Lưu danh sách khách hàng
+        private List<DTO_Khach> danhSachKhach; 
 
         public FrmCustomer()
         {

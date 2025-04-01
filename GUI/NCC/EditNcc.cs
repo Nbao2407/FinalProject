@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace GUI.NCC
 {
-    public partial class EditNcc: Form
+    public partial class EditNcc : Form
     {
         public EditNcc()
         {
             InitializeComponent();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

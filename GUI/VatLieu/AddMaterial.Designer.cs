@@ -71,6 +71,7 @@
             button1.TabIndex = 36;
             button1.Text = "Bỏ qua";
             button1.TextAlignment = StringAlignment.Center;
+            button1.Click += button1_Click;
             // 
             // label6
             // 

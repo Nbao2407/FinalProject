@@ -33,8 +33,9 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             lblID = new Label();
             lblName = new ReaLTaiizor.Controls.BigLabel();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new Helpler.RoundedPictureBox();
             panel5 = new Panel();
+            roundedPictureBox2 = new Helpler.RoundedPictureBox();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
             txtEmail = new Label();
             dtpNgayTao = new ReaLTaiizor.Controls.PoisonDateTime();
@@ -52,13 +53,12 @@
             lblKho = new Label();
             dungeonRichTextBox1 = new ReaLTaiizor.Controls.DungeonRichTextBox();
             groupBox1 = new GroupBox();
-            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
             SuspendLayout();
             // 
             // Ngay
@@ -164,6 +164,22 @@
             panel5.Size = new Size(815, 38);
             panel5.TabIndex = 64;
             // 
+            // roundedPictureBox2
+            // 
+            roundedPictureBox2.BorderColor = Color.Transparent;
+            roundedPictureBox2.BorderRadius = 20;
+            roundedPictureBox2.BorderThickness = 0F;
+            roundedPictureBox2.ErrorImage = null;
+            roundedPictureBox2.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox2.InitialImage = null;
+            roundedPictureBox2.Location = new Point(778, 3);
+            roundedPictureBox2.Name = "roundedPictureBox2";
+            roundedPictureBox2.Size = new Size(26, 26);
+            roundedPictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
+            roundedPictureBox2.TabIndex = 42;
+            roundedPictureBox2.TabStop = false;
+            roundedPictureBox2.Click += roundedPictureBox2_Click;
+            // 
             // BtnDelete
             // 
             BtnDelete.BackColor = Color.Transparent;
@@ -214,6 +230,7 @@
             BtnEdit.Text = "Chỉnh sửa";
             BtnEdit.TextColor = Color.White;
             BtnEdit.WarningColor = Color.FromArgb(230, 162, 60);
+            BtnEdit.Click += BtnEdit_Click;
             // 
             // label2
             // 
@@ -372,21 +389,6 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Ghi chú";
             // 
-            // roundedPictureBox2
-            // 
-            roundedPictureBox2.BorderColor = Color.Transparent;
-            roundedPictureBox2.BorderRadius = 20;
-            roundedPictureBox2.BorderThickness = 0F;
-            roundedPictureBox2.ErrorImage = null;
-            roundedPictureBox2.Image = Properties.Resources.icons8_close_26;
-            roundedPictureBox2.InitialImage = null;
-            roundedPictureBox2.Location = new Point(778, 3);
-            roundedPictureBox2.Name = "roundedPictureBox2";
-            roundedPictureBox2.Size = new Size(26, 26);
-            roundedPictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
-            roundedPictureBox2.TabIndex = 42;
-            roundedPictureBox2.TabStop = false;
-            // 
             // PopupMaterial
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -419,9 +421,9 @@
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             panel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

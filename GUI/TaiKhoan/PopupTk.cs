@@ -26,5 +26,21 @@ namespace GUI.TaiKhoan
         {
 
         }
+
+        private void BtnEdit_Click(object sender, EventArgs e)
+        {
+            using (var edit = new EditTk())
+            {
+                this.Close();
+                edit.Deactivate += (s, e) => edit.TopMost = true;
+                edit.StartPosition = FormStartPosition.CenterParent;
+                edit.ShowDialog();
+            }
+        }
+
+        private void roundedPictureBox1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

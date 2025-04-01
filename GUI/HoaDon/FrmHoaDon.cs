@@ -22,6 +22,7 @@ namespace GUI
         private DTO_HoaDon dalhoaDon = new DTO_HoaDon();
         private DAL_HoaDon dalHoaDon = new DAL_HoaDon();
         private FrmHoaDon _parentForm;
+        private List<DTO_HoaDon> hoaDons = new List<DTO_HoaDon>();
         private List<ChiTietHoaDon> chiTietHoaDon = new List<ChiTietHoaDon>();
         private int? maHoaDon;
 
@@ -88,7 +89,7 @@ namespace GUI
 
                 if (dataGridView1.Columns.Contains("HinhThucThanhToan"))
                     dataGridView1.Columns["HinhThucThanhToan"].HeaderText = "Hình Thức TT";
-                
+
             }
             catch (Exception ex)
             {
@@ -158,7 +159,7 @@ namespace GUI
             this.Controls.Add(editForm);
             editForm.Show();
         }
-        public void Openadd() 
+        public void Openadd()
         {
             this.Controls.Clear();
             AddHoaDon addHoaDon = new AddHoaDon(maHoaDon)
@@ -173,6 +174,22 @@ namespace GUI
         {
             Openadd();
         }
+
+        private void CbTrangthai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+                string filter = CbTrangthai.SelectedItem.ToString();
+                if (filter == "Tất cả")
+                {
+                    dataGridView1.DataSource = hoaDons;
+                }
+                else
+                {
+                    var filteredList = hoaDons.Where(k => k.TrangThai == filter).ToList();
+                    dataGridView1.DataSource = filteredList;
+                }
+        }
+
+
 
         //private void txtSearch_TextChanged(object sender, EventArgs e)
         //{

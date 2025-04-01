@@ -2,6 +2,8 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
+using GUI.TaiKhoan;
+using GUI.Type;
 
 namespace GUI
 {
@@ -39,12 +41,12 @@ namespace GUI
 
                 var data = danhSach.Select(nv => new
                 {
-                    MaTK = nv.maTK,             
-                    TenDangNhap = nv.tenDangNhap, 
-                    SDT = nv.sdt,                
-                    Email = nv.email,            
-                    Quyen = nv.quyen,            
-                    TrangThai = nv.trangThai     
+                    MaTK = nv.maTK,
+                    TenDangNhap = nv.tenDangNhap,
+                    SDT = nv.sdt,
+                    Email = nv.email,
+                    Quyen = nv.quyen,
+                    TrangThai = nv.trangThai
                 }).ToList();
 
                 dataGridView1.DataSource = data;
@@ -94,6 +96,28 @@ namespace GUI
             {
                 column.Width = variableColumnWidth;
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            using (var add = new AddTk())
+            {
+                add.Deactivate += (s, e) => add.TopMost = true;
+
+                add.StartPosition = FormStartPosition.CenterParent;
+
+                add.ShowDialog();
+            }
+        }
+
+        private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            using (var Pop = new PopupTk())
+            {
+                Pop.Deactivate += (s, e) => Pop.TopMost = true;
+                Pop.StartPosition = FormStartPosition.CenterParent;
+                Pop.ShowDialog();
+            }    
         }
     }
 }

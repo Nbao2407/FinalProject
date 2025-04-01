@@ -37,7 +37,7 @@
             lblName = new ReaLTaiizor.Controls.BigLabel();
             label1 = new Label();
             dtpNgaySinh = new ReaLTaiizor.Controls.PoisonDateTime();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new Helpler.RoundedPictureBox();
             panel5 = new Panel();
             BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
@@ -210,6 +210,7 @@
             roundedPictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             roundedPictureBox1.TabIndex = 41;
             roundedPictureBox1.TabStop = false;
+            roundedPictureBox1.Click += roundedPictureBox1_Click;
             // 
             // panel5
             // 
@@ -293,6 +294,7 @@
             BtnEdit.Text = "Chỉnh sửa";
             BtnEdit.TextColor = Color.White;
             BtnEdit.WarningColor = Color.FromArgb(230, 162, 60);
+            BtnEdit.Click += BtnEdit_Click;
             // 
             // label2
             // 

@@ -81,6 +81,7 @@
             button2.TabIndex = 7;
             button2.Text = "Thêm";
             button2.TextAlignment = StringAlignment.Center;
+            button2.Click += button2_Click;
             // 
             // result
             // 
@@ -190,6 +191,7 @@
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.Size = new Size(1100, 463);
             dataGridView.TabIndex = 0;
+            dataGridView.CellContentDoubleClick += dataGridView_CellContentDoubleClick;
             // 
             // FrmType
             // 
