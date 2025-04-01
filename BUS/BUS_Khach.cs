@@ -2,6 +2,8 @@
 using System.Linq;
 using DTO;
 using DAL;
+using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 namespace BUS
 {
 
@@ -21,9 +23,22 @@ namespace BUS
         {
            dalKH.ThemKhachHang(khach);
         }
-        public void SuaKhachHang(DTO_Khach khach)
+        public async Task<bool> SuaKhachHang(DTO_Khach khach)
         {
-            dalKH.SuaKhachHang(khach);
+            try
+            {
+                if (khach == null)
+                {
+                    throw new ArgumentException("Thông tin khách hàng không hợp lệ");
+                }
+
+                bool result = await dalKH.SuaKhachHang(khach);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi cập nhật khách hàng: {ex.Message}", ex);
+            }
         }
         public void XoaKhachHang(int maKhachHang,int nguoiCapNhat)
         {

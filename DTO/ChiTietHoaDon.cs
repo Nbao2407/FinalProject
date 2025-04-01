@@ -1,4 +1,6 @@
-﻿namespace DTO
+﻿using System.Drawing;
+
+namespace DTO
 {
     public class ChiTietHoaDon
     {
@@ -10,5 +12,13 @@
         public decimal DonGia { get; set; }
         public decimal ThanhTien { get; set; }
         public string DonViTinh { get; set; }
+    }
+    public class ChiTietHoaDonTemp
+    {
+        public int MaVatLieu { get; set; }
+        public string TenVatLieu { get; set; }
+        public double DonGia { get; set; }
+        public int SoLuong { get; set; }
+        public Image HinhAnh { get; set; }
     }
 }

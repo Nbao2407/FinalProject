@@ -16,5 +16,6 @@
         public int SoMatHang { get; set; }
         public int TongSoLuong { get; set; }
         public string KhachHangGop => $"{TenKhachHang} ({MaKhachHang})";
+
     }
 }

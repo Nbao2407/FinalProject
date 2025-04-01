@@ -10,20 +10,20 @@ namespace GUI
     public partial class AddCustomer : Form
     {
         private FrmCustomer _parentForm;
-        private BUS_Khach busKhach = new BUS_Khach(); // Sử dụng BUS thay vì truy cập trực tiếp DAL
-
+        private BUS_Khach busKhach = new BUS_Khach();
         public AddCustomer(FrmCustomer parentForm)
         {
             InitializeComponent();
             _parentForm = parentForm;
+            dtpNgaySinh.Value = DateTime.Now;
         }
-      
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
                 string ten = TbName.Text.Trim();
-                DateTime ngaySinh = DateTime.Value; 
+                DateTime ngaySinh = dtpNgaySinh.Value;
                 string gioiTinh = CbGender.SelectedItem?.ToString();
                 string sdt = TbSdt.Text.Trim();
                 string email = TbEmail.Text.Trim();
@@ -59,7 +59,8 @@ namespace GUI
                     NgaySinh = ngaySinh,
                     GioiTinh = gioiTinh,
                     SDT = sdt,
-                    Email = email
+                    Email = email,
+                    NguoiTao = CurrentUser.MaTK,
                 };
 
                 busKhach.ThemKhachHang(khach);
@@ -93,6 +94,16 @@ namespace GUI
         private void btncancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void dtpNgaySinh_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dtpNgaySinh_ValueChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

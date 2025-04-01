@@ -15,6 +15,7 @@ using DTO;
 using Mono.Unix.Native;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using BUS;
 namespace GUI
 {
     public partial class Login : Form
@@ -23,6 +24,7 @@ namespace GUI
         private int targetX;
         private int labelTargetX;
         private bool isOverlayVisible = false;
+        private BUS_Login bus_Login = new BUS_Login();
         public Login()
         {
             InitializeComponent();
@@ -239,52 +241,45 @@ namespace GUI
         }
         private void hopeRoundButton1_Click(object sender, EventArgs e)
         {
-            string username = TbEmail.Text;
-            string password = Tbpass.Text;
-            string email = TbEmail.Text;
+            string username = TbEmail.Text.Trim(); 
+            string password = Tbpass.Text; 
+            string email = TbEmail.Text.Trim();
 
-            using (SqlConnection conn = DBConnect.GetConnection())
+            try
             {
-                try
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 {
-                    conn.Open();
-                    SqlCommand cmd = new SqlCommand("sp_KiemTraDangNhap", conn);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@TenDangNhap", username);
-                    cmd.Parameters.AddWithValue("@Email", email);
-                    cmd.Parameters.AddWithValue("@MatKhau", password);
+                    MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập/Email và mật khẩu!", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                var user = bus_Login.kiemtradangnhap(username, password, email);
+                if (user != null)
+                {
+                    MessageBox.Show("Đăng nhập thành công", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    CurrentUser.SetUser(user.Id, user.username, user.role);
+
+                    if (RdRemenber.Checked)
                     {
-                        if (reader.Read())
-                        {
-                            string role = reader["ChucVu"].ToString();
-                            System.Windows.Forms.MessageBox.Show($"Đăng nhập thành công! Vai trò: {role}", "Thông Báo");
-
-                            if (RdRemenber.Checked)
-                            {
-                                AuthStorage.SaveCredentials(username, email, password);
-
-                            }
-                            else
-                            {
-                                AuthStorage.ClearCredentials();
-                            }
-                            Thread.Sleep(500);
-                            Form1 f = new Form1();
-                            f.Show();
-                            this.Hide();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Đăng nhập thất bại! Vui lòng kiểm tra lại.", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
+                        AuthStorage.SaveCredentials(username, email, password);
                     }
+                    else
+                    {
+                        AuthStorage.ClearCredentials();
+                    }
+                    Thread.Sleep(500);
+                    Form1 f = new Form1();
+                    f.Show();
+                    this.Hide();
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Lỗi đăng nhập: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Đăng nhập thất bại! Vui lòng kiểm tra lại.", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi đăng nhập: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void ChangePW_Click(object sender, EventArgs e)

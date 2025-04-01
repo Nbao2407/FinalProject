@@ -403,3 +403,182 @@ BEGIN
     WHERE MaTK = @MaTK;
 END;
 GO
+ALTER PROCEDURE [dbo].[sp_KiemTraDangNhap]
+    @TenDangNhap NVARCHAR(50) = NULL,
+    @Email NVARCHAR(255) = NULL,
+    @MatKhau NVARCHAR(255)
+AS
+BEGIN
+    DECLARE @MatKhauHash NVARCHAR(255);
+
+    SET @MatKhauHash = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhau), 2);
+
+    SELECT 
+        MaTK,
+        TenDangNhap,
+        Email,
+        ChucVu,
+        TrangThai
+    FROM QLTK
+    WHERE (TenDangNhap = @TenDangNhap OR Email = @Email)
+    AND MatKhau = @MatKhauHash 
+    AND TrangThai = N'Hoạt động';
+END;
+Go
+ALTER TRIGGER trg_KiemTraSoLuongBan
+ON ChiTietHoaDon
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Kiểm tra xem số lượng yêu cầu có vượt quá số lượng trong kho không
+    IF EXISTS (
+        SELECT 1
+        FROM QLVatLieu v
+        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu
+        WHERE v.SoLuong < i.SoLuong
+    )
+    BEGIN
+        -- Báo lỗi nếu không đủ hàng trong kho
+        RAISERROR (N'Số lượng vật liệu trong kho không đủ!', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+    ELSE
+    BEGIN
+        -- Cập nhật số lượng kho sau khi bán hàng thành công
+        UPDATE QLVatLieu
+        SET SoLuong = v.SoLuong - i.SoLuong
+        FROM QLVatLieu v
+        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
+    END;
+END;
+GO
+Create PROCEDURE sp_HuyHoaDon
+    @MaHoaDon INT,
+    @NguoiCapNhat INT,
+    @LyDoHuy NVARCHAR(255)
+AS
+BEGIN
+    BEGIN TRY
+        -- Kiểm tra hóa đơn có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon)
+            THROW 50001, N'Hóa đơn không tồn tại!', 1;
+
+        -- Kiểm tra trạng thái hóa đơn
+        IF EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon AND TrangThai = N'Đã hủy')
+            THROW 50002, N'Hóa đơn đã bị hủy trước đó!', 1;
+
+        IF EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon AND TrangThai = N'Đã thanh toán')
+            THROW 50003, N'Không thể hủy hóa đơn đã thanh toán!', 1;
+
+        -- Cập nhật số lượng vật liệu trong kho (hoàn lại số lượng đã bán)
+        UPDATE QLVatLieu
+        SET SoLuong = v.SoLuong + cthd.SoLuong
+        FROM QLVatLieu v
+        INNER JOIN ChiTietHoaDon cthd ON v.MaVatLieu = cthd.MaVatLieu
+        WHERE cthd.MaHoaDon = @MaHoaDon;
+
+        -- Cập nhật trạng thái hóa đơn thành "Đã hủy"
+        UPDATE QLHoaDon
+        SET TrangThai = N'Đã hủy',
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiCapNhat
+        WHERE MaHoaDon = @MaHoaDon;
+
+        -- Ghi log hoạt động với lý do hủy
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, 'QLHoaDon', @MaHoaDon, N'Hủy', N'Chờ thanh toán', N'Đã hủy', @LyDoHuy);
+
+        SELECT N'Hủy hóa đơn thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_CapNhatHoaDon
+    @MaHoaDon INT,
+    @NgayLap DATE,
+    @MaTKLap INT,
+    @MaKhachHang INT,
+    @TongTien DECIMAL(18,2),
+    @TrangThai NVARCHAR(50),
+    @HinhThucThanhToan NVARCHAR(50),
+    @NguoiCapNhat INT
+AS
+BEGIN
+    UPDATE QLHoaDon
+    SET NgayLap = @NgayLap,
+        MaTKLap = @MaTKLap,
+        MaKhachHang = @MaKhachHang,
+        TongTien = @TongTien,
+        TrangThai = @TrangThai,
+        HinhThucThanhToan = @HinhThucThanhToan,
+        NgayCapNhat = GETDATE(),
+        NguoiCapNhat = @NguoiCapNhat
+    WHERE MaHoaDon = @MaHoaDon;
+
+    -- Ghi log
+    INSERT INTO AuditLog (MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+    VALUES (@NguoiCapNhat, N'QLHoaDon', @MaHoaDon, N'Cập nhật', N'Cập nhật thông tin hóa đơn');
+END;
+GO
+CREATE PROCEDURE sp_XoaChiTietHoaDon
+    @MaHoaDon INT,
+    @MaVatLieu INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Kiểm tra chi tiết hóa đơn có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM ChiTietHoaDon WHERE MaHoaDon = @MaHoaDon AND MaVatLieu = @MaVatLieu)
+            THROW 50001, N'Chi tiết hóa đơn không tồn tại!', 1;
+
+        -- Lấy số lượng để hoàn lại kho
+        DECLARE @SoLuong INT;
+        SELECT @SoLuong = SoLuong FROM ChiTietHoaDon WHERE MaHoaDon = @MaHoaDon AND MaVatLieu = @MaVatLieu;
+
+        -- Hoàn lại số lượng vào kho
+        UPDATE QLVatLieu
+        SET SoLuong = SoLuong + @SoLuong
+        WHERE MaVatLieu = @MaVatLieu;
+
+        -- Xóa chi tiết hóa đơn
+        DELETE FROM ChiTietHoaDon
+        WHERE MaHoaDon = @MaHoaDon AND MaVatLieu = @MaVatLieu;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_CapNhatChiTietHoaDon
+    @MaHoaDon INT,
+    @MaVatLieu INT,
+    @SoLuong INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Kiểm tra chi tiết hóa đơn có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM ChiTietHoaDon WHERE MaHoaDon = @MaHoaDon AND MaVatLieu = @MaVatLieu)
+            THROW 50001, N'Chi tiết hóa đơn không tồn tại!', 1;
+
+        -- Lấy số lượng hiện tại
+        DECLARE @SoLuongCu INT;
+        SELECT @SoLuongCu = SoLuong FROM ChiTietHoaDon WHERE MaHoaDon = @MaHoaDon AND MaVatLieu = @MaVatLieu;
+
+        -- Cập nhật số lượng trong kho
+        UPDATE QLVatLieu
+        SET SoLuong = SoLuong + (@SoLuongCu - @SoLuong)
+        WHERE MaVatLieu = @MaVatLieu;
+
+        -- Cập nhật chi tiết hóa đơn
+        UPDATE ChiTietHoaDon
+        SET SoLuong = @SoLuong
+        WHERE MaHoaDon = @MaHoaDon AND MaVatLieu = @MaVatLieu;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO

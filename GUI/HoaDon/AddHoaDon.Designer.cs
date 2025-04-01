@@ -24,17 +24,13 @@ namespace GUI
             pictureBox1 = new PictureBox();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             splitContainer1 = new BufferedSplitContainer();
-            button2 = new ReaLTaiizor.Controls.Button();
+            BtnThanhToan = new ReaLTaiizor.Controls.Button();
             flowLayoutPanel2 = new BufferedFlowLayoutPanel();
-            dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
             flowLayoutPanel1 = new BufferedFlowLayoutPanel();
-            wiget22 = new Wiget2();
-            wiget21 = new Wiget2();
-            wiget23 = new Wiget2();
+            dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
             roundedPanel6 = new GUI.Helpler.RoundedPanel();
-            label10 = new Label();
+            lblTongSoMatHang = new Label();
             lblTong = new Label();
-            lblSL = new Label();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -42,7 +38,6 @@ namespace GUI
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
             roundedPanel6.SuspendLayout();
             SuspendLayout();
             // 
@@ -134,37 +129,38 @@ namespace GUI
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(button2);
+            splitContainer1.Panel1.Controls.Add(BtnThanhToan);
             splitContainer1.Panel1.Controls.Add(flowLayoutPanel2);
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(dungeonTextBox1);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
+            splitContainer1.Panel2.Controls.Add(dungeonTextBox1);
             splitContainer1.Panel2.Controls.Add(roundedPanel6);
             splitContainer1.Size = new Size(1104, 541);
             splitContainer1.SplitterDistance = 569;
             splitContainer1.TabIndex = 9;
             // 
-            // button2
+            // BtnThanhToan
             // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            button2.BackColor = Color.Transparent;
-            button2.BorderColor = Color.Transparent;
-            button2.EnteredBorderColor = Color.FromArgb(165, 37, 37);
-            button2.EnteredColor = Color.FromArgb(32, 34, 37);
-            button2.Font = new Font("Microsoft Sans Serif", 12F);
-            button2.Image = null;
-            button2.ImageAlign = ContentAlignment.MiddleLeft;
-            button2.InactiveColor = Color.FromArgb(39, 174, 97);
-            button2.Location = new Point(9, 498);
-            button2.Name = "button2";
-            button2.PressedBorderColor = Color.FromArgb(165, 37, 37);
-            button2.PressedColor = Color.FromArgb(165, 37, 37);
-            button2.Size = new Size(549, 40);
-            button2.TabIndex = 12;
-            button2.Text = "Thanh Toán";
-            button2.TextAlignment = StringAlignment.Center;
+            BtnThanhToan.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            BtnThanhToan.BackColor = Color.Transparent;
+            BtnThanhToan.BorderColor = Color.Transparent;
+            BtnThanhToan.EnteredBorderColor = Color.FromArgb(165, 37, 37);
+            BtnThanhToan.EnteredColor = Color.FromArgb(32, 34, 37);
+            BtnThanhToan.Font = new Font("Microsoft Sans Serif", 12F);
+            BtnThanhToan.Image = null;
+            BtnThanhToan.ImageAlign = ContentAlignment.MiddleLeft;
+            BtnThanhToan.InactiveColor = Color.FromArgb(39, 174, 97);
+            BtnThanhToan.Location = new Point(9, 498);
+            BtnThanhToan.Name = "BtnThanhToan";
+            BtnThanhToan.PressedBorderColor = Color.FromArgb(165, 37, 37);
+            BtnThanhToan.PressedColor = Color.FromArgb(165, 37, 37);
+            BtnThanhToan.Size = new Size(549, 40);
+            BtnThanhToan.TabIndex = 12;
+            BtnThanhToan.Text = "Thanh Toán";
+            BtnThanhToan.TextAlignment = StringAlignment.Center;
+            BtnThanhToan.Click += BtnThanhToan_Click;
             // 
             // flowLayoutPanel2
             // 
@@ -175,6 +171,16 @@ namespace GUI
             flowLayoutPanel2.Name = "flowLayoutPanel2";
             flowLayoutPanel2.Size = new Size(561, 456);
             flowLayoutPanel2.TabIndex = 0;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            flowLayoutPanel1.BackColor = Color.FromArgb(236, 240, 241);
+            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+            flowLayoutPanel1.Location = new Point(0, 37);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(531, 459);
+            flowLayoutPanel1.TabIndex = 0;
             // 
             // dungeonTextBox1
             // 
@@ -195,67 +201,30 @@ namespace GUI
             dungeonTextBox1.TextAlignment = HorizontalAlignment.Left;
             dungeonTextBox1.UseSystemPasswordChar = false;
             // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            flowLayoutPanel1.BackColor = Color.FromArgb(236, 240, 241);
-            flowLayoutPanel1.Controls.Add(wiget22);
-            flowLayoutPanel1.Controls.Add(wiget21);
-            flowLayoutPanel1.Controls.Add(wiget23);
-            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
-            flowLayoutPanel1.Location = new Point(0, 34);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(531, 459);
-            flowLayoutPanel1.TabIndex = 0;
-            // 
-            // wiget22
-            // 
-            wiget22.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            wiget22.Location = new Point(3, 3);
-            wiget22.Name = "wiget22";
-            wiget22.Size = new Size(516, 94);
-            wiget22.TabIndex = 2;
-            // 
-            // wiget21
-            // 
-            wiget21.Location = new Point(3, 103);
-            wiget21.Name = "wiget21";
-            wiget21.Size = new Size(516, 94);
-            wiget21.TabIndex = 3;
-            // 
-            // wiget23
-            // 
-            wiget23.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            wiget23.Location = new Point(3, 203);
-            wiget23.Name = "wiget23";
-            wiget23.Size = new Size(516, 94);
-            wiget23.TabIndex = 4;
-            // 
             // roundedPanel6
             // 
             roundedPanel6.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             roundedPanel6.BackColor = Color.White;
             roundedPanel6.BorderRadius = 20;
-            roundedPanel6.Controls.Add(label10);
+            roundedPanel6.Controls.Add(lblTongSoMatHang);
             roundedPanel6.Controls.Add(lblTong);
-            roundedPanel6.Controls.Add(lblSL);
             roundedPanel6.Location = new Point(3, 497);
             roundedPanel6.Name = "roundedPanel6";
             roundedPanel6.Size = new Size(524, 41);
             roundedPanel6.TabIndex = 16;
             // 
-            // label10
+            // lblTongSoMatHang
             // 
-            label10.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            label10.AutoSize = true;
-            label10.BackColor = Color.White;
-            label10.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(22, 10);
-            label10.Name = "label10";
-            label10.Size = new Size(120, 21);
-            label10.TabIndex = 13;
-            label10.Text = "Tổng tiền hàng";
-            label10.TextAlign = ContentAlignment.MiddleLeft;
+            lblTongSoMatHang.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblTongSoMatHang.AutoSize = true;
+            lblTongSoMatHang.BackColor = Color.White;
+            lblTongSoMatHang.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTongSoMatHang.Location = new Point(22, 10);
+            lblTongSoMatHang.Name = "lblTongSoMatHang";
+            lblTongSoMatHang.Size = new Size(120, 21);
+            lblTongSoMatHang.TabIndex = 13;
+            lblTongSoMatHang.Text = "Tổng tiền hàng";
+            lblTongSoMatHang.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblTong
             // 
@@ -269,19 +238,6 @@ namespace GUI
             lblTong.Size = new Size(68, 21);
             lblTong.TabIndex = 15;
             lblTong.Text = "500,000";
-            // 
-            // lblSL
-            // 
-            lblSL.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblSL.AutoSize = true;
-            lblSL.BackColor = Color.White;
-            lblSL.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblSL.Location = new Point(148, 10);
-            lblSL.Name = "lblSL";
-            lblSL.Size = new Size(19, 21);
-            lblSL.TabIndex = 14;
-            lblSL.Text = "3";
-            lblSL.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // AddHoaDon
             // 
@@ -300,7 +256,6 @@ namespace GUI
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            flowLayoutPanel1.ResumeLayout(false);
             roundedPanel6.ResumeLayout(false);
             roundedPanel6.PerformLayout();
             ResumeLayout(false);
@@ -313,16 +268,12 @@ namespace GUI
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private BufferedSplitContainer splitContainer1;
         private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
-        private ReaLTaiizor.Controls.Button button2;
+        private ReaLTaiizor.Controls.Button BtnThanhToan;
         private Label lblTong;
-        private Label lblSL;
-        private Label label10;
+        private Label lblTongSoMatHang;
         private Helpler.RoundedPanel roundedPanel6;
         private BufferedFlowLayoutPanel flowLayoutPanel2;
         private BufferedFlowLayoutPanel flowLayoutPanel1;
-        private Wiget2 wiget22;
-        private Wiget2 wiget21;
-        private Wiget2 wiget23;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

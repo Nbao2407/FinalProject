@@ -152,17 +152,6 @@ namespace GUI
 
         private void ShowPopupWithData(DTO_Khach khach)
         {
-            Panel overlay = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(50, 0, 0, 0),
-                Parent = this,
-                Visible = true
-            };
-            this.Controls.Add(overlay);
-            overlay.BringToFront();
-            this.Resize += (s, e) => overlay.Size = this.ClientSize;
-
             using (var popup = new PopupCmer(this, khach))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
@@ -170,21 +159,11 @@ namespace GUI
                 popup.ShowDialog();
                 LoadKhachHang();
             }
-            overlay.Dispose();
         }
 
         private void ShowPopup()
         {
-            Panel overlay = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(50, 0, 0, 0),
-                Parent = this,
-                Visible = true
-            };
-            this.Controls.Add(overlay);
-            overlay.BringToFront();
-            this.Resize += (s, e) => overlay.Size = this.ClientSize;
+            
             using (var popup = new AddCustomer(this))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
@@ -192,7 +171,6 @@ namespace GUI
                 popup.ShowDialog();
                 LoadKhachHang();
             }
-            overlay.Dispose();
         }
 
         private void button2_Click(object sender, EventArgs e)

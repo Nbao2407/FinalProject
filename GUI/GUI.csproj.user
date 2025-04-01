@@ -10,6 +10,12 @@
     <Compile Update="Customer\AddCustomer.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="HoaDon\LydoHuy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="HoaDon\PopupHoaDon.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Login.cs">
       <SubType>Form</SubType>
     </Compile>

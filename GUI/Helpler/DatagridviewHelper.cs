@@ -27,7 +27,7 @@ namespace GUI.Helpler
             dgv.ReadOnly = true;
             dgv.AllowUserToAddRows = false;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.ScrollBars = ScrollBars.None;
+            dgv.ScrollBars = ScrollBars.Vertical;
             dgv.MultiSelect = true;
             dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
             dgv.AllowUserToResizeRows = false;
@@ -42,6 +42,28 @@ namespace GUI.Helpler
                 {
                     dataGridView.Columns[columnName].DefaultCellStyle.Format = "dd/MM/yyyy";
                 }
+            }
+        }
+        public static void DisableColumnSorting(DataGridView dgv)
+        {
+            foreach (DataGridViewColumn column in dgv.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+        }
+        public static void FillColumnsToDgvWidth(DataGridView dgv)
+        {
+            if (dgv.Columns.Count == 0) return; 
+            int totalWidth = dgv.ClientSize.Width;
+            int columnWidth = totalWidth / dgv.Columns.Count;
+            foreach (DataGridViewColumn column in dgv.Columns)
+            {
+                column.Width = columnWidth;
+            }
+            int remainingWidth = totalWidth - (columnWidth * dgv.Columns.Count);
+            if (dgv.Columns.Count > 0)
+            {
+                dgv.Columns[dgv.Columns.Count - 1].Width += remainingWidth;
             }
         }
         public static int TinhTongSoLuongChon(DataGridView dgv, string tenCotSoLuong)

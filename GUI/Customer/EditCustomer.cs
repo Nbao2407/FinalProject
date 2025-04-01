@@ -2,9 +2,12 @@
 using DAL;
 using DTO;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
+using System.Net;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace GUI
 {
@@ -12,38 +15,71 @@ namespace GUI
     {
         private BUS_Khach busKhach = new BUS_Khach();
         private FrmCustomer _parentForm;
+        private PopupCmer _popupCmer; // Thêm reference tới PopupCmer
         private DTO_Khach _khachHang;
 
-        public EditCustomer(FrmCustomer parentForm, DTO_Khach khach,PopupCmer popupCmer)
+        public EditCustomer(FrmCustomer parentForm, DTO_Khach khach, PopupCmer popupCmer)
         {
             InitializeComponent();
             _parentForm = parentForm;
+            _popupCmer = popupCmer; 
             _khachHang = khach;
             LoadData();
         }
+
         private void LoadData()
         {
-            txtID.Text = _khachHang.MaKhachHang.ToString();
             TbName.Text = _khachHang.Ten;
+            DateTime1.Value = _khachHang.NgaySinh;
+            CbGender.SelectedItem = _khachHang.GioiTinh;
+            TbSdt.Text = _khachHang.SDT;
+            TbEmail.Text = _khachHang.Email;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
-                _khachHang.Ten = TbName.Text;
-                busKhach.SuaKhachHang(_khachHang);
-                MessageBox.Show("Chỉnh sửa thông tin khách hàng thành công !", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (string.IsNullOrWhiteSpace(TbName.Text))
+                {
+                    MessageBox.Show("Vui lòng nhập tên khách hàng!", "Cảnh báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TbName.Focus();
+                    return;
+                }
 
-                DTO_Khach updatedKhachHang = busKhach.GetCustomerById(_khachHang.MaKhachHang);
+                _khachHang.Ten = TbName.Text.Trim();
+                _khachHang.NgaySinh = DateTime1.Value;
+                _khachHang.GioiTinh = CbGender.SelectedItem?.ToString();
+                _khachHang.SDT = TbSdt.Text.Trim();
+                _khachHang.Email = TbEmail.Text.Trim();
 
-               
-                this.Close();
+                bool updateResult = await busKhach.SuaKhachHang(_khachHang);
 
+                if (updateResult)
+                {
+                    MessageBox.Show("Chỉnh sửa thông tin khách hàng thành công!",
+                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    DTO_Khach updatedKhachHang = busKhach.GetCustomerById(_khachHang.MaKhachHang);
+                    if (updatedKhachHang != null && _popupCmer != null)
+                    {
+                        _popupCmer.LoadDataToControls(updatedKhachHang);
+                    }
+
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Không thể cập nhật thông tin khách hàng!",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Đã xảy ra lỗi: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

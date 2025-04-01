@@ -1,6 +1,8 @@
 ﻿using BUS;
+using DAL;
 using DTO;
 using GUI.Helpler;
+using GUI.HoaDon;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +19,11 @@ namespace GUI
     public partial class FrmHoaDon : Form
     {
         private BUS_HoaDon busHoaDon = new BUS_HoaDon();
+        private DTO_HoaDon dalhoaDon = new DTO_HoaDon();
+        private DAL_HoaDon dalHoaDon = new DAL_HoaDon();
+        private FrmHoaDon _parentForm;
+        private List<ChiTietHoaDon> chiTietHoaDon = new List<ChiTietHoaDon>();
+        private int? maHoaDon;
 
         public FrmHoaDon()
         {
@@ -32,7 +39,7 @@ namespace GUI
             ResizeColumns();
         }
 
-        private void LoadData()
+        public void LoadData()
         {
             try
             {
@@ -81,6 +88,7 @@ namespace GUI
 
                 if (dataGridView1.Columns.Contains("HinhThucThanhToan"))
                     dataGridView1.Columns["HinhThucThanhToan"].HeaderText = "Hình Thức TT";
+                
             }
             catch (Exception ex)
             {
@@ -88,12 +96,16 @@ namespace GUI
             }
         }
 
-        //private void dgv_SelectionChanged(object sender, EventArgs e)
-        //{
-        //    int tongSl = DataGridViewHelper.TinhTongSoLuongChon(dataGridView1, "SoLuong");
-        //    Tong.Text = $"Tổng: {tongSl}";
-        //}
+        private void dgvHoaDon_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                int maHoaDon = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[0].Value);
 
+                PopupHoaDon popup = new PopupHoaDon(maHoaDon);
+                popup.ShowDialog();
+            }
+        }
         private void Frm_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -133,10 +145,23 @@ namespace GUI
         {
         }
 
-        private void OpenAddHoaDon()
+        public void OpenEdit(int? maHoaDon)
         {
             this.Controls.Clear();
-            AddHoaDon addHoaDon = new AddHoaDon
+            EditHoaDon editForm = new EditHoaDon(maHoaDon);
+            editForm.TopLevel = false;
+            editForm.Dock = DockStyle.Fill;
+            editForm.FormClosed += (s, e) =>
+            {
+                LoadData();
+            };
+            this.Controls.Add(editForm);
+            editForm.Show();
+        }
+        public void Openadd() 
+        {
+            this.Controls.Clear();
+            AddHoaDon addHoaDon = new AddHoaDon(maHoaDon)
             {
                 TopLevel = false,
                 Dock = DockStyle.Fill
@@ -144,10 +169,9 @@ namespace GUI
             this.Controls.Add(addHoaDon);
             addHoaDon.Show();
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
-            OpenAddHoaDon();
+            Openadd();
         }
 
         //private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -191,7 +215,7 @@ namespace GUI
         //    }
 
         //    // Load dữ liệu lên DataGridView
-        //    dataGridView1.DataSource = searchQuery.Length > 0
+        //    dataGridView.DataSource = searchQuery.Length > 0
         //        ? vl.SearchProducts(searchQuery)
         //        : vl.LayTatCaVatLieu();
         //}

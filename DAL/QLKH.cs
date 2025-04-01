@@ -1,5 +1,6 @@
 ﻿using DTO;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
 namespace DAL
@@ -63,28 +64,45 @@ namespace DAL
             
             return new DTO_Khach();
         }
-        public void SuaKhachHang(DTO_Khach khach)
+        public async Task<bool> SuaKhachHang(DTO_Khach khach)
         {
-            using (SqlConnection conn = DBConnect.GetConnection())
+            try
             {
-                conn.Open();
-                string query = "UPDATE QLKH SET Ten = @Ten, NgaySinh = @NgaySinh, GioiTinh = @GioiTinh, " +
-                               "SDT = @SDT, Email = @Email, NguoiTao = @NguoiTao, TenNguoiTao = @TenNguoiTao, NgayTao = @NgayTao " +
-                               "WHERE MaKhachHang = @MaKhachHang";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlConnection conn = DBConnect.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaKhachHang", khach.MaKhachHang);
-                    cmd.Parameters.AddWithValue("@Ten", khach.Ten);
-                    cmd.Parameters.AddWithValue("@NgaySinh", khach.NgaySinh);
-                    cmd.Parameters.AddWithValue("@GioiTinh", khach.GioiTinh);
-                    cmd.Parameters.AddWithValue("@SDT", khach.SDT);
-                    cmd.Parameters.AddWithValue("@Email", khach.Email);
-                    cmd.Parameters.AddWithValue("@NguoiTao", khach.NguoiTao);
-                    cmd.Parameters.AddWithValue("@TenNguoiTao", GetTenDangNhap(khach.NguoiTao.ToString()) ?? "Unknown");
-                    cmd.Parameters.AddWithValue("@NgayTao", khach.NgayTao);
-                    cmd.ExecuteNonQuery();
+                    await conn.OpenAsync();
+                    string query = @"UPDATE QLKH 
+                           SET Ten = @Ten,
+                               NgaySinh = @NgaySinh,
+                               GioiTinh = @GioiTinh,
+                               SDT = @SDT,
+                               Email = @Email,
+                               NguoiTao = @NguoiTao,
+                               TenNguoiTao = @TenNguoiTao,
+                               NgayTao = @NgayTao
+                           WHERE MaKhachHang = @MaKhachHang";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaKhachHang", khach.MaKhachHang);
+                        cmd.Parameters.AddWithValue("@Ten", (object)khach.Ten ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@NgaySinh", (object)khach.NgaySinh ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@GioiTinh", (object)khach.GioiTinh ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SDT", (object)khach.SDT ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Email", (object)khach.Email ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@NguoiTao", (object)khach.NguoiTao ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@TenNguoiTao",
+                            GetTenDangNhap(khach.NguoiTao.ToString()) ?? "Unknown");
+                        cmd.Parameters.AddWithValue("@NgayTao", (object)khach.NgayTao ?? DBNull.Value);
+
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
                 }
-                conn.Close();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Lỗi cơ sở dữ liệu: {ex.Message}", ex);
             }
         }
 

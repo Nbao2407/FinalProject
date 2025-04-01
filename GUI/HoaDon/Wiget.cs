@@ -19,7 +19,7 @@ namespace GUI
         public Wiget()
         {
             InitializeComponent();
-            this.BackColor = Color.White; // Màu nền mặc định
+            this.BackColor = Color.White; 
 
             this.MouseEnter += Wiget_MouseEnter;
             this.MouseLeave += Wiget_MouseLeave;
@@ -35,7 +35,7 @@ namespace GUI
         private void Wiget_MouseLeave(object sender, EventArgs e)
         {
             isHovered = false;
-            this.BackColor = Color.White; // Trở về màu ban đầu
+            this.BackColor = Color.White; 
             this.Invalidate();
         }
         private void Wiget_Load(object sender, EventArgs e)
@@ -56,7 +56,8 @@ namespace GUI
 
         public double Gia
         {
-            set => lblGia.Text = value.ToString("N0"); // Hiển thị số với dấu phân cách
+            get => double.Parse(lblGia.Text);
+            set => lblGia.Text = value.ToString("N0");
         }
 
         public Image Images

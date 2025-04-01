@@ -384,7 +384,7 @@
             Controls.Add(bigLabel5);
             FormBorderStyle = FormBorderStyle.None;
             Name = "PopupOrder";
-            Text = "PopupOrder";
+            Text = "a";
             Load += PopupOrder_Load;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();

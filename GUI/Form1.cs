@@ -1,4 +1,6 @@
-﻿using System.Drawing.Drawing2D;
+﻿using BUS;
+using DTO;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 namespace GUI
 {
@@ -173,7 +175,7 @@ namespace GUI
             this.Resize += Form1_Resize;
         }
 
-        private void OpenChildForm(Form childForm)
+        public void OpenChildForm(Form childForm)
         {
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
@@ -182,7 +184,7 @@ namespace GUI
             panelMain.Controls.Add(childForm);
             childForm.Show();
         }
-
+    
         private void button2_Click(object sender, EventArgs e) => OpenChildForm(new FrmHome());
 
         private void btnCustomer_Click(object sender, EventArgs e) => OpenChildForm(new FrmCustomer());

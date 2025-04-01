@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    class DTO_User
+    public class DTO_User
     {
         public int Id { get; set; }
         public string Username { get; set; }
@@ -17,5 +17,26 @@ namespace DTO
         public string DiaChi { get; set; }
         public string Ghichu { get; set; }
         public string NgayTao { get; set; }
+        public string TrangThai { get; set; }
+    }
+    public static class CurrentUser
+    {
+        public static int MaTK { get; set; }
+        public static string TenDangNhap { get; set; }
+        public static string ChucVu { get; set; }
+
+        public static void SetUser(int maTK, string tenDangNhap, string chucVu)
+        {
+            MaTK = maTK;
+            TenDangNhap = tenDangNhap;
+            ChucVu = chucVu;
+        }
+
+        public static void ClearUser()
+        {
+            MaTK = 0;
+            TenDangNhap = null;
+            ChucVu = null;
+        }
     }
 }

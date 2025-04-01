@@ -69,9 +69,9 @@
             roundedPanel1.Controls.Add(TitleSp);
             roundedPanel1.Controls.Add(lblGia);
             roundedPanel1.Cursor = Cursors.Hand;
-            roundedPanel1.Location = new Point(3, 3);
+            roundedPanel1.Location = new Point(0, 0);
             roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(244, 81);
+            roundedPanel1.Size = new Size(250, 87);
             roundedPanel1.TabIndex = 3;
             roundedPanel1.Paint += roundedPanel1_Paint;
             roundedPanel1.MouseEnter += Wiget_MouseEnter;
@@ -107,9 +107,9 @@
         }
 
         #endregion
-        private Helpler.RoundedPanel roundedPanel1;
         public Label lblGia;
         public Label TitleSp;
         public Helpler.RoundedPictureBox roundedPictureBox1;
+        public Helpler.RoundedPanel roundedPanel1;
     }
 }

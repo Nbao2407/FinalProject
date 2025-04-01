@@ -185,3 +185,11 @@ SET TenNguoiTao = tk.TenDangNhap
 FROM QLKH kh
 LEFT JOIN QLTK tk ON kh.NguoiTao = tk.MaTK
 WHERE kh.TenNguoiTao IS NULL;
+DELETE FROM ChiTietHoaDon
+WHERE MaHoaDon IN (
+    SELECT MaHoaDon FROM QLHoaDon
+    WHERE NgayLap = '2025-03-30'
+);
+
+DELETE FROM QLHoaDon
+WHERE NgayLap = '2025-03-30';

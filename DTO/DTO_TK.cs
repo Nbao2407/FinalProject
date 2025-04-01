@@ -14,7 +14,7 @@ namespace DTO
         public string ghichu { get; set; }
         public string trangThai { get; set; }
         public DateTime ngayTao { get; set; }
-        public DTO_TK(int Matk, string tenDangNhap, string matKhau, string quyen, string email, string sdt, string diaChi,string tranthai ,string ghichu, DateTime ngayTao)
+        public DTO_TK(int Matk, string tenDangNhap, string matKhau, string quyen, string email, string sdt, string diaChi, string tranthai, string ghichu, DateTime ngayTao)
         {
             this.maTK = Matk;
             this.tenDangNhap = tenDangNhap;
@@ -27,7 +27,7 @@ namespace DTO
             this.ghichu = ghichu;
             this.ngayTao = ngayTao;
         }
-        public DTO_TK(int Matk, string tenDangNhap,string email, string sdt,string quyen,string tranthai,DateTime ngayTao)
+        public DTO_TK(int Matk, string tenDangNhap, string email, string sdt, string quyen, string tranthai, DateTime ngayTao)
         {
             this.maTK = Matk;
             this.tenDangNhap = tenDangNhap;
@@ -38,6 +38,5 @@ namespace DTO
             this.trangThai = tranthai;
             this.ngayTao = ngayTao;
         }
-        public DTO_TK(){ }
     }
 }

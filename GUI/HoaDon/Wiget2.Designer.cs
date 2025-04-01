@@ -173,7 +173,6 @@
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             ResumeLayout(false);
         }
-
         #endregion
         private Panel panel1;
         public Label IdSp;

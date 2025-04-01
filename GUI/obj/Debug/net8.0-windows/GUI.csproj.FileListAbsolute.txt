@@ -256,3 +256,7 @@ I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.Type.PopupType.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.VatLieu.AddMaterial.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.VatLieu.EditMaterial.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.VatLieu.PopupMaterial.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.Resource.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.HoaDon.PopupHoaDon.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.HoaDon.LydoHuy.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.EditHoaDon.resources

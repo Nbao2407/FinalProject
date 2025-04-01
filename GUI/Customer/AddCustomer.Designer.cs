@@ -42,9 +42,9 @@
             dungeonRichTextBox5 = new ReaLTaiizor.Controls.DungeonRichTextBox();
             CbGender = new ReaLTaiizor.Controls.ComboBoxEdit();
             label6 = new Label();
-            DateTime = new ReaLTaiizor.Controls.PoisonDateTime();
             label7 = new Label();
             button1 = new ReaLTaiizor.Controls.Button();
+            dtpNgaySinh = new ReaLTaiizor.Controls.PoisonDateTime();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
@@ -211,7 +211,7 @@
             dungeonRichTextBox5.Size = new Size(380, 32);
             dungeonRichTextBox5.TabIndex = 14;
             dungeonRichTextBox5.Text = "Tự động";
-            dungeonRichTextBox5.TextBackColor = Color.White;
+            dungeonRichTextBox5.TextBackColor = Color.Black;
             dungeonRichTextBox5.WordWrap = true;
             // 
             // CbGender
@@ -242,14 +242,6 @@
             label6.Size = new Size(59, 17);
             label6.TabIndex = 17;
             label6.Text = "Giới tính";
-            // 
-            // DateTime
-            // 
-            DateTime.Location = new Point(408, 216);
-            DateTime.MinimumSize = new Size(0, 29);
-            DateTime.Name = "DateTime";
-            DateTime.Size = new Size(380, 29);
-            DateTime.TabIndex = 18;
             // 
             // label7
             // 
@@ -285,15 +277,24 @@
             button1.TextAlignment = StringAlignment.Center;
             button1.Click += btncancel_Click;
             // 
+            // dtpNgaySinh
+            // 
+            dtpNgaySinh.Format = DateTimePickerFormat.Custom;
+            dtpNgaySinh.Location = new Point(408, 216);
+            dtpNgaySinh.MinimumSize = new Size(0, 29);
+            dtpNgaySinh.Name = "dtpNgaySinh";
+            dtpNgaySinh.Size = new Size(380, 29);
+            dtpNgaySinh.TabIndex = 21;
+            // 
             // AddCustomer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(800, 400);
+            Controls.Add(dtpNgaySinh);
             Controls.Add(button1);
             Controls.Add(label7);
-            Controls.Add(DateTime);
             Controls.Add(label6);
             Controls.Add(CbGender);
             Controls.Add(label4);
@@ -330,8 +331,8 @@
         private ReaLTaiizor.Controls.DungeonRichTextBox TbEmail;
         private ReaLTaiizor.Controls.ComboBoxEdit CbGender;
         private Label label6;
-        private ReaLTaiizor.Controls.PoisonDateTime DateTime;
         private Label label7;
         private ReaLTaiizor.Controls.Button button1;
+        private ReaLTaiizor.Controls.PoisonDateTime dtpNgaySinh;
     }
 }

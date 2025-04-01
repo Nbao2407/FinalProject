@@ -11,13 +11,15 @@ namespace GUI
     {
         private FrmCustomer _parentForm;
         private DTO_Khach _khachHang;
+        private BUS_Khach BUS_Khach = new BUS_Khach();
         public PopupCmer(FrmCustomer parentForm, DTO_Khach khach)
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.BackColor = Color.White;
-            this.Load += PopupForm_Load;
+            this.Load += PopupForm_Load;    
             this.Resize += PopupForm_Resize;
+            LoadDataToControls(_khachHang);
             _parentForm = parentForm;
             _khachHang = khach;
         }
@@ -41,6 +43,7 @@ namespace GUI
                 email.Text = khach.Email;
                 txtNgTao.Text = khach.TenNguoiTao ?? string.Empty;
                 lblID.Text = khach.MaKhachHang.ToString();
+                address.Text = khach.DiaChi;
                 if (khach.NgayTao >= dtpNgayTao.MinDate && khach.NgayTao <= dtpNgayTao.MaxDate)
                 {
                     dtpNgayTao.Value = khach.NgayTao;
@@ -53,7 +56,15 @@ namespace GUI
                 }
             }
         }
-
+        private void OpenEditCustomer(int maKhachHang)
+        {
+            DTO_Khach khach = BUS_Khach.GetCustomerById(maKhachHang);
+            if (khach != null)
+            {
+                EditCustomer editForm = new EditCustomer(_parentForm, khach, this);
+                editForm.ShowDialog();
+            }
+        }
         private void PopupForm_Load(object sender, EventArgs e)
         {
             PopupHelper.RoundCorners(this, 10);
@@ -188,23 +199,13 @@ namespace GUI
                         }
                         else
                         {
-                            Panel overlay = new Panel
-                            {
-                                Dock = DockStyle.Fill,
-                                BackColor = Color.FromArgb(50, 0, 0, 0),
-                                Parent = this,
-                                Visible = true
-                            };
-                            this.Controls.Add(overlay);
-                            overlay.BringToFront();
-                            this.Resize += (s, e) => overlay.Size = this.ClientSize;
+                            
                             using (var popup = new EditCustomer(_parentForm, _khachHang, this)) 
                             {
                                 popup.Deactivate += (s, e) => popup.TopMost = true;
                                 popup.StartPosition = FormStartPosition.CenterParent;
                                 popup.ShowDialog();
                             }
-                            overlay.Dispose();
                         }
                     }
                 }
