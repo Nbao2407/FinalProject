@@ -85,7 +85,7 @@ namespace DAL
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
-                SqlCommand cmd = new SqlCommand("SELECT TenLoai FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoaiVatLieu", conn);
+                SqlCommand cmd = new SqlCommand("SELECT TenLoai FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoaiVatLieu And TrangThai='Hoạt động'", conn);
                 cmd.Parameters.AddWithValue("@MaLoaiVatLieu", maLoai);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -94,6 +94,23 @@ namespace DAL
                 return dt;
             }
         }
+        public DataTable LayVatLieuTheoMa2(int maVatLieu)
+        {
+            DataTable dt = new DataTable();
+            string query = "SELECT * FROM VatLieu WHERE MaVatLieu = @MaVatLieu  And TrangThai='Hoạt động'";
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaVatLieu", maVatLieu);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+            }
+
+            return dt;
+        }
+
         public List<DTO_VatLieu> SearchProducts(string keyword)
         {
             List<DTO_VatLieu> danhSach = new List<DTO_VatLieu>();
@@ -230,6 +247,6 @@ namespace DAL
             }
             return dt;
         }
-
+       
     }
 }

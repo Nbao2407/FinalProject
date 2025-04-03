@@ -25,6 +25,10 @@ namespace BUS
         {
             return dalVatLieu.LayVatLieuTheoMa(maVatLieu);
         }
+        public DataTable LayVatLieuTheoMa2(int maVatLieu)
+        {
+            return dalVatLieu.LayVatLieuTheoMa2(maVatLieu);
+        }
         public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu,int NguoiTao)
         {
             if (string.IsNullOrEmpty(ten) || donGiaNhap < 0 || donGiaBan < 0 || string.IsNullOrEmpty(donViTinh))

@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.Windows.Forms;
 
 namespace DAL
 {
@@ -26,39 +27,46 @@ namespace DAL
         }
 
 
-
         public List<DTO_Khach> TimKiemKhachHang(string keyword)
         {
             List<DTO_Khach> danhSachKH = new List<DTO_Khach>();
-            using (SqlConnection conn = DBConnect.GetConnection())
+
+            try
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_TimKiemKH", conn))
+                using (SqlConnection conn = DBConnect.GetConnection())
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Keyword", keyword);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_TimKiemKH", conn))
                     {
-                        while (reader.Read())
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Keyword", keyword ?? string.Empty);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            danhSachKH.Add(new DTO_Khach
+                            while (reader.Read())
                             {
-                                MaKhachHang = reader.GetInt32(0),
-                                Ten = reader.GetString(1),
-                                GioiTinh = reader.GetString(2),
-                                NgaySinh = reader.IsDBNull(3) ? DateTime.Today : reader.GetDateTime(3),
-                                SDT = reader.GetString(4),
-                                Email = reader.GetString(5),
-                                NguoiTao = reader.IsDBNull(6) ? 0 : reader.GetInt32(6),
-                                TenNguoiTao = reader.IsDBNull(7) ? null : reader.GetString(7),
-                                NgayTao = reader.IsDBNull(8) ? DateTime.Today : reader.GetDateTime(8)
-                            });
+                                danhSachKH.Add(new DTO_Khach
+                                {
+                                    MaKhachHang = reader.GetInt32(reader.GetOrdinal("MaKhachHang")),
+                                    Ten = reader.GetString(reader.GetOrdinal("Ten")),
+                                    GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
+                                    NgaySinh = (DateTime)(reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgaySinh"))),
+                                    SDT = reader.GetString(reader.GetOrdinal("SDT")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                                });
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tìm kiếm khách hàng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             return danhSachKH;
         }
+
         public List<DTO_Khach> TimKiemKhachHangtenid(string searchQuery)
         {
             List<DTO_Khach> results = new List<DTO_Khach>();

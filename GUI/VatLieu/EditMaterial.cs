@@ -28,8 +28,7 @@ namespace GUI.VatLieu
             popupMaterial = parent;
             this.maVatLieu = maVatLieu;
             LoadDataFromDatabase();
-            LoadComboBoxDonViTinh();
-            LoadComboBoxLoaiVatLieu();
+            LoadLoaiVatLieu();
         }
 
         private void EditMaterial_Load(object sender, EventArgs e)
@@ -38,46 +37,53 @@ namespace GUI.VatLieu
         }
         private void LoadDataFromDatabase()
         {
-            if (maVatLieu.HasValue)
+            if (!maVatLieu.HasValue) return;
+
+            DataTable dt = bus.LayVatLieuTheoMa(maVatLieu.Value);
+            if (dt.Rows.Count == 0)
             {
-                DataTable dt = bus.LayVatLieuTheoMa(maVatLieu.Value);
-                if (dt.Rows.Count > 0)
+                MessageBox.Show("Không tìm thấy vật liệu với mã này!");
+                this.Close();
+                return;
+            }
+
+            DataRow row = dt.Rows[0];
+
+            TbID.Text = row["MaVatLieu"].ToString();
+            TbName.Text = row["Ten"].ToString();
+
+            decimal giaNhap = Convert.ToDecimal(row["DonGiaNhap"]);
+            TbGiaNhap.Text = giaNhap.ToString("N0", new CultureInfo("vi-VN")) + " ₫";
+
+            decimal giaBan = Convert.ToDecimal(row["DonGiaBan"]);
+            TbGiaBan.Text = giaBan.ToString("N0", new CultureInfo("vi-VN")) + " ₫";
+
+            TbNote.Text = row["GhiChu"]?.ToString();
+
+            int maloai = Convert.ToInt32(row["Loai"]);
+
+            LoadLoaiVatLieu();
+
+            if (CbType.Items.Count > 0)
+            {
+                CbType.SelectedValue = maloai;
+            }
+
+            if (row["HinhAnh"] != DBNull.Value)
+            {
+                byte[] hinhAnh = (byte[])row["HinhAnh"];
+                using (MemoryStream ms = new MemoryStream(hinhAnh))
                 {
-                    DataRow row = dt.Rows[0];
-                    TbID.Text = row["MaVatLieu"].ToString();
-                    TbName.Text = row["Ten"].ToString();
-
-                    decimal giaNhap = Convert.ToDecimal(row["DonGiaNhap"]);
-
-                    TbGiaNhap.Text = giaNhap.ToString("N0", new CultureInfo("vi-VN")) + " ₫";
-
-                    int maLoai = Convert.ToInt32(row["Loai"]);
-                    CbType.SelectedValue = bus.LayTenLoaiTheoMa(maLoai);
-
-                    decimal giaban = Convert.ToDecimal(row["DonGiaBan"]);
-                    TbGiaBan.Text = Convert.ToDecimal(row["DonGiaBan"]).ToString("N0", new CultureInfo("vi-VN")) + " ₫";
-                    TbNote.Text = row["GhiChu"]?.ToString();
-                    int maTk = Convert.ToInt32(row["NguoiTao"]);
-                    if (row["HinhAnh"] != DBNull.Value)
-                    {
-                        byte[] hinhAnh = (byte[])row["HinhAnh"];
-                        using (MemoryStream ms = new MemoryStream(hinhAnh))
-                        {
-                            pictureBox1.Image = Image.FromStream(ms);
-                        }
-                    }
-                    else
-                    {
-                        pictureBox1.Image = null;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Không tìm thấy vật liệu với mã này!");
-                    this.Close();
+                    pictureBox1.Image = Image.FromStream(ms);
                 }
             }
+            else
+            {
+                pictureBox1.Image = null;
+            }
         }
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             popupMaterial.LoadDataFromDatabase();
@@ -108,13 +114,29 @@ namespace GUI.VatLieu
                 MessageBox.Show("Lỗi: " + ex.Message);
             }
         }
-        private void LoadComboBoxLoaiVatLieu()
+        private void LoadLoaiVatLieu()
         {
             DataTable dt = bus.LayDanhSachLoaiVatLieu();
-            CbType.DataSource = dt;
-            CbType.DisplayMember = "TenLoai";
-            CbType.ValueMember = "MaLoaiVatLieu";
+            if (dt.Rows.Count > 0)
+            {
+                CbType.DataSource = dt;
+                CbType.DisplayMember = "TenLoai";
+                CbType.ValueMember = "MaLoaiVatLieu"; 
+            }
         }
+        private string TypeByID(int maLoai)
+        {
+            DataTable dt = bus.LayVatLieuTheoMa2(maLoai);
+
+            if (dt.Rows.Count > 0)
+            {
+                return dt.Rows[0]["TenLoai"].ToString(); 
+            }
+
+            return "Không xác định"; 
+        }
+
+
         private void LoadComboBoxDonViTinh()
         {
             DataTable dt = bus.LayDanhSachDVT();
@@ -132,6 +154,7 @@ namespace GUI.VatLieu
                 return ms.ToArray();
             }
         }
+
         private void btnTaiHinhAnh_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -144,7 +167,6 @@ namespace GUI.VatLieu
                 }
             }
         }
-
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();

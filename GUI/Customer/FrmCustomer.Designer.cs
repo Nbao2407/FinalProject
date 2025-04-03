@@ -116,7 +116,7 @@
             // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(243, 31);
+            pictureBox1.Location = new Point(252, 31);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(27, 28);
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -149,7 +149,8 @@
             // 
             // result
             // 
-            result.Location = new Point(23, 60);
+            result.BackColor = Color.Transparent;
+            result.Location = new Point(23, 63);
             result.Name = "result";
             result.Size = new Size(223, 82);
             result.TabIndex = 6;
@@ -163,17 +164,17 @@
             Tong.ForeColor = Color.DarkGray;
             Tong.Location = new Point(12, 1084);
             Tong.Name = "Tong";
-            Tong.Size = new Size(33, 13);
+            Tong.Size = new Size(34, 13);
             Tong.TabIndex = 8;
             Tong.Text = "Tổng";
             // 
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(236, 240, 241);
+            panel1.Controls.Add(result);
             panel1.Controls.Add(CbTrangThai);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(Tong);
-            panel1.Controls.Add(result);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(txtSearch);

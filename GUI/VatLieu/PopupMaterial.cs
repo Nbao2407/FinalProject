@@ -55,7 +55,7 @@ namespace GUI.VatLieu
                     lblKho.Text = bus.LayTenKhoTheoMa(maKho);
 
                     TbNote.Text = row["GhiChu"]?.ToString();
-                    int maTk = Convert.ToInt32(row["NguoiTao"]);
+                    int maTk = Convert.ToInt32(row["NguoiTao"]) ;
                     txtNgTao.Text = bus.LayTenNgTaoTheoMa(maTk);
                     dtpNgayTao.Text = row["NgayTao"].ToString();
                     Ngay.Text = dtpNgayTao.Value.ToString("dd/MM/yyyy");

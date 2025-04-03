@@ -1,46 +1,63 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "I:\\Pro213\\GUI\\",
+  "WorkspaceRootPath": "D:\\Pro213\\FinalProject\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|d:\\pro213\\finalproject\\dal\\qlkh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|d:\\pro213\\finalproject\\bus\\bus_khach.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|d:\\pro213\\finalproject\\dal\\qlvatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|d:\\pro213\\finalproject\\bus\\bus_vatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\addmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|i:\\pro213\\dto\\dto_vatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\editmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\vatlieu\\addmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\addmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\addmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\vatlieu\\addmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\addmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|i:\\pro213\\bus\\bus_vatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\qlvatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\frmmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\vatlieu\\frmmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\frmmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_vatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_hoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\frmmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\vatlieu\\frmmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\frmmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|i:\\pro213\\dal\\dal_hoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|i:\\pro213\\dal\\qlvatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,11 +67,29 @@
       "DocumentGroups": [
         {
           "DockedHeight": 506,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FrmCustomer.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Customer\\FrmCustomer.cs",
+              "RelativeDocumentMoniker": "Customer\\FrmCustomer.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Customer\\FrmCustomer.cs",
+              "RelativeToolTip": "Customer\\FrmCustomer.cs",
+              "ViewState": "AQIAAFwAAAAAAAAAAAAmwGUAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T09:35:02.483Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -63,112 +98,163 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "QLKH.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\DAL\\QLKH.cs",
+              "RelativeDocumentMoniker": "..\\DAL\\QLKH.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\DAL\\QLKH.cs",
+              "RelativeToolTip": "..\\DAL\\QLKH.cs",
+              "ViewState": "AQIAABoAAAAAAAAAAAAEwDcAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T09:40:21.589Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FrmCustomer.cs [Design]",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Customer\\FrmCustomer.cs",
+              "RelativeDocumentMoniker": "Customer\\FrmCustomer.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Customer\\FrmCustomer.cs [Design]",
+              "RelativeToolTip": "Customer\\FrmCustomer.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T09:34:45.438Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BUS_Khach.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\BUS\\BUS_Khach.cs",
+              "RelativeDocumentMoniker": "..\\BUS\\BUS_Khach.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\BUS\\BUS_Khach.cs",
+              "RelativeToolTip": "..\\BUS\\BUS_Khach.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T09:34:13.311Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BUS_VatLieu.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\BUS\\BUS_VatLieu.cs",
+              "RelativeDocumentMoniker": "..\\BUS\\BUS_VatLieu.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\BUS\\BUS_VatLieu.cs",
+              "RelativeToolTip": "..\\BUS\\BUS_VatLieu.cs",
+              "ViewState": "AQIAAAEAAAAAAAAAAAD4vxsAAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T09:13:33.661Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "QLVatLieu.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\DAL\\QLVatLieu.cs",
+              "RelativeDocumentMoniker": "..\\DAL\\QLVatLieu.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\DAL\\QLVatLieu.cs",
+              "RelativeToolTip": "..\\DAL\\QLVatLieu.cs",
+              "ViewState": "AQIAAE4AAAAAAAAAAAAiwGYAAABEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T09:05:37.173Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "PopupMaterial.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\PopupMaterial.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\PopupMaterial.cs",
               "RelativeDocumentMoniker": "VatLieu\\PopupMaterial.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\PopupMaterial.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\PopupMaterial.cs",
               "RelativeToolTip": "VatLieu\\PopupMaterial.cs",
-              "ViewState": "AgIAAEEAAAAAAAAAAADgv1MAAAAAAAAAAAAAAA==",
+              "ViewState": "AQIAACQAAAAAAAAAAAAQwC8AAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-03T06:55:39.923Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "EditMaterial.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\EditMaterial.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\EditMaterial.cs",
               "RelativeDocumentMoniker": "VatLieu\\EditMaterial.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\EditMaterial.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\EditMaterial.cs",
               "RelativeToolTip": "VatLieu\\EditMaterial.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAlwFcAAAAPAAAAAAAAAA==",
+              "ViewState": "AQIAAFAAAAAAAAAAAAAewGoAAABKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-03T06:54:30.593Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
               "Title": "EditMaterial.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\EditMaterial.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\EditMaterial.cs",
               "RelativeDocumentMoniker": "VatLieu\\EditMaterial.cs",
               "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\EditMaterial.cs [Design]",
-              "RelativeToolTip": "VatLieu\\EditMaterial.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-03T05:33:33.206Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AddMaterial.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\AddMaterial.cs",
-              "RelativeDocumentMoniker": "VatLieu\\AddMaterial.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\AddMaterial.cs [Design]",
-              "RelativeToolTip": "VatLieu\\AddMaterial.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-03T06:54:11.815Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AddMaterial.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\AddMaterial.cs",
-              "RelativeDocumentMoniker": "VatLieu\\AddMaterial.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\AddMaterial.cs",
-              "RelativeToolTip": "VatLieu\\AddMaterial.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABgAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T17:47:42.881Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "FrmMaterial.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\FrmMaterial.cs",
-              "RelativeDocumentMoniker": "VatLieu\\FrmMaterial.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\FrmMaterial.cs",
-              "RelativeToolTip": "VatLieu\\FrmMaterial.cs",
-              "ViewState": "AgIAAI8AAAAAAAAAAADwv6cAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T18:57:41.505Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "DAL_HoaDon.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_HoaDon.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\DAL_HoaDon.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\DAL_HoaDon.cs",
-              "RelativeToolTip": "..\\DAL\\DAL_HoaDon.cs",
-              "ViewState": "AgIAAIsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T18:21:58.846Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-03T05:33:33.206Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 10,
+              "Title": "AddMaterial.cs [Design]",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\AddMaterial.cs",
+              "RelativeDocumentMoniker": "VatLieu\\AddMaterial.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\AddMaterial.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-03T06:54:11.815Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AddMaterial.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\AddMaterial.cs",
+              "RelativeDocumentMoniker": "VatLieu\\AddMaterial.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\AddMaterial.cs",
+              "RelativeToolTip": "VatLieu\\AddMaterial.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABgAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-02T17:47:42.881Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "FrmMaterial.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\FrmMaterial.cs",
+              "RelativeDocumentMoniker": "VatLieu\\FrmMaterial.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\FrmMaterial.cs",
+              "RelativeToolTip": "VatLieu\\FrmMaterial.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAADwv6cAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-02T18:57:41.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "DAL_HoaDon.cs",
+              "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_HoaDon.cs",
+              "ToolTip": "I:\\Pro213\\DAL\\DAL_HoaDon.cs",
+              "ViewState": "AgIAAIsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-02T18:21:58.846Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "FrmMaterial.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\FrmMaterial.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\VatLieu\\FrmMaterial.cs",
               "RelativeDocumentMoniker": "VatLieu\\FrmMaterial.cs",
               "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\FrmMaterial.cs [Design]",
-              "RelativeToolTip": "VatLieu\\FrmMaterial.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T17:49:56.659Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-04-02T17:49:56.659Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
               "Title": "DTO_VatLieu.cs",
               "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_VatLieu.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_VatLieu.cs",
               "ToolTip": "I:\\Pro213\\DTO\\DTO_VatLieu.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_VatLieu.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-02T17:39:10.855Z",
@@ -176,29 +262,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "BUS_VatLieu.cs",
-              "DocumentMoniker": "I:\\Pro213\\BUS\\BUS_VatLieu.cs",
-              "RelativeDocumentMoniker": "..\\BUS\\BUS_VatLieu.cs",
-              "ToolTip": "I:\\Pro213\\BUS\\BUS_VatLieu.cs",
-              "RelativeToolTip": "..\\BUS\\BUS_VatLieu.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAjwCgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T17:39:08.592Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "QLVatLieu.cs",
               "DocumentMoniker": "I:\\Pro213\\DAL\\QLVatLieu.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\QLVatLieu.cs",
               "ToolTip": "I:\\Pro213\\DAL\\QLVatLieu.cs",
-              "RelativeToolTip": "..\\DAL\\QLVatLieu.cs",
               "ViewState": "AgIAAIQAAAAAAAAAAADgv5YAAACAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T17:39:05.127Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-02T17:39:05.127Z"
             }
           ]
         },
@@ -209,22 +279,16 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
+            }
+          ]
+        },
+        {
+          "DockedHeight": 54,
+          "SelectedChildIndex": -1,
+          "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             }
           ]
         }
