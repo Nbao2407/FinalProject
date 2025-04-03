@@ -14,7 +14,7 @@
         public DateTime NgayTao { get; set; }
         public string DiaChi { get; set; }
 
-        public DTO_Khach(int maKH, string ten, string gioiTinh, DateTime ngaySinh, string sdt, string email,string trangthai,String D, int nguoiTao, string tenNguoiTao, DateTime ngayTao, string diaChi)
+        public DTO_Khach(int maKH, string ten, string gioiTinh, DateTime ngaySinh, string sdt, string email,string trangthai, int nguoiTao, string tenNguoiTao, DateTime ngayTao, string diaChi)
         {
             MaKhachHang = maKH;
             Ten = ten;

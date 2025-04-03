@@ -30,7 +30,6 @@ namespace DAL
         public List<DTO_Khach> TimKiemKhachHang(string keyword)
         {
             List<DTO_Khach> danhSachKH = new List<DTO_Khach>();
-
             try
             {
                 using (SqlConnection conn = DBConnect.GetConnection())
@@ -53,6 +52,7 @@ namespace DAL
                                     NgaySinh = (DateTime)(reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgaySinh"))),
                                     SDT = reader.GetString(reader.GetOrdinal("SDT")),
                                     Email = reader.GetString(reader.GetOrdinal("Email")),
+                                    TrangThai = reader.GetString(reader.GetOrdinal("TrangThai")),
                                 });
                             }
                         }
@@ -258,6 +258,37 @@ namespace DAL
                 {
                     conn.Open();
                     string query = "UPDATE QLKH SET Trangthai = N'Ngừng sử dụng' WHERE MaKhachHang = @MaKhachHang";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@MaKhachHang", maKhachHang);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 50003)
+                    throw new Exception("Khách hàng không tồn tại!");
+                else
+                    throw new Exception("Lỗi khi disable khách hàng: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi hệ thống: " + ex.Message);
+            }
+        }
+        public bool ActiveKhachHang(int maKhachHang, int nguoiCapNhat)
+        {
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                {
+                    conn.Open();
+                    string query = "UPDATE QLKH SET Trangthai = N'Hoạt động' WHERE MaKhachHang = @MaKhachHang";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {

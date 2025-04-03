@@ -1,6 +1,7 @@
 ﻿using DAL;
 using DTO;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace BUS
 {
@@ -12,28 +13,36 @@ namespace BUS
         {
             return dalLoaiVatLieu.LayTatCaLVL();
         }
+        public List<DTO_LVL> SearchLoaiVatLieu(string keyword)
+        {
+            return dalLoaiVatLieu.SearchProductTypes(keyword);
+        }
+        public void Update(int maLoai, string tenLoai)
+        {
+            if (string.IsNullOrWhiteSpace(tenLoai))
+                throw new Exception("Tên loại vật liệu không được để trống!");
+            dalLoaiVatLieu.Update(maLoai, tenLoai);
+        }
 
-        //public bool ThemLoaiVatLieu(string tenLoai, string trangThai)
-        //{
-        //    return dalLoaiVatLieu.ThemLoaiVatLieu(tenLoai, trangThai);
-        //}
+        public void Delete(int maLoai)
+        {
+            if (dalLoaiVatLieu.IsLoaiVatLieuInUse(maLoai))
+                throw new Exception("Không thể xóa loại vật liệu vì đang được sử dụng! Hệ Thống sẽ chuyển sang ngừng sử dụng loại vật liệu này");
+            dalLoaiVatLieu.UpdateTrangThai(maLoai, "Ngừng sử dụng");
+        }                                           
+        public void Addd(string tenLoai)
+        {
+            if (string.IsNullOrWhiteSpace(tenLoai))
+                throw new Exception("Tên loại vật liệu không được để trống!");
 
-        //// Sửa loại vật liệu
-        //public bool SuaLoaiVatLieu(int maLoai, string tenLoai, string trangThai)
-        //{
-        //    return dalLoaiVatLieu.SuaLoaiVatLieu(maLoai, tenLoai, trangThai);
-        //}
+            if (dalLoaiVatLieu.IsTenLoaiExists(tenLoai))
+                throw new Exception("Tên loại vật liệu đã tồn tại!");
 
-        //// Xóa loại vật liệu
-        //public bool XoaLoaiVatLieu(int maLoai)
-        //{
-        //    return dalLoaiVatLieu.XoaLoaiVatLieu(maLoai);
-        //}
-
-        //// Tìm kiếm loại vật liệu
-        //public List<DTO_LVL> TimKiemLoaiVatLieu(string keyword)
-        //{
-        //    return dalLoaiVatLieu.TimKiemLoaiVatLieu(keyword);
-        //}
+            dalLoaiVatLieu.Add(tenLoai);
+        }
+        public int DeleteLoaiVatLieu(int maLoai)
+        {
+            return dalLoaiVatLieu.Deltele2(maLoai);
+        }
     }
 }

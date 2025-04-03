@@ -46,6 +46,7 @@
             label7 = new Label();
             btncancel = new ReaLTaiizor.Controls.Button();
             lblStatus = new ReaLTaiizor.Controls.NightHeaderLabel();
+            toggleEdit1 = new ReaLTaiizor.Controls.ToggleEdit();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
@@ -303,12 +304,23 @@
             lblStatus.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             lblStatus.UseCompatibleTextRendering = true;
             // 
+            // toggleEdit1
+            // 
+            toggleEdit1.Location = new Point(12, 360);
+            toggleEdit1.Name = "toggleEdit1";
+            toggleEdit1.Size = new Size(41, 23);
+            toggleEdit1.TabIndex = 22;
+            toggleEdit1.Text = "toggleEdit1";
+            toggleEdit1.Toggled = false;
+            toggleEdit1.Type = ReaLTaiizor.Controls.ToggleEdit._Type.YesNo;
+            // 
             // EditCustomer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(800, 400);
+            Controls.Add(toggleEdit1);
             Controls.Add(lblStatus);
             Controls.Add(btncancel);
             Controls.Add(label7);
@@ -353,5 +365,6 @@
         private Label label7;
         private ReaLTaiizor.Controls.Button btncancel;
         private ReaLTaiizor.Controls.NightHeaderLabel lblStatus;
+        private ReaLTaiizor.Controls.ToggleEdit toggleEdit1;
     }
 }

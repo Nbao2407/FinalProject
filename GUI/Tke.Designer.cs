@@ -618,7 +618,7 @@ namespace GUI
             tableLayoutPanel6.Controls.Add(label17, 0, 2);
             tableLayoutPanel6.Controls.Add(lblNumCustomers, 0, 1);
             tableLayoutPanel6.Controls.Add(lblNumSuppliers, 0, 3);
-            tableLayoutPanel6.Location = new Point(41, 40);
+            tableLayoutPanel6.Location = new Point(30, 40);
             tableLayoutPanel6.Margin = new Padding(3, 15, 3, 3);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
             tableLayoutPanel6.RowCount = 5;
@@ -627,7 +627,7 @@ namespace GUI
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
-            tableLayoutPanel6.Size = new Size(124, 174);
+            tableLayoutPanel6.Size = new Size(158, 177);
             tableLayoutPanel6.TabIndex = 5;
             // 
             // label21
@@ -638,7 +638,7 @@ namespace GUI
             label21.ForeColor = Color.FromArgb(124, 141, 181);
             label21.Location = new Point(3, 0);
             label21.Name = "label21";
-            label21.Size = new Size(115, 33);
+            label21.Size = new Size(115, 35);
             label21.TabIndex = 0;
             label21.Text = "Khách Hàng";
             // 
@@ -649,9 +649,9 @@ namespace GUI
             label17.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label17.ForeColor = Color.FromArgb(124, 141, 181);
             label17.ImageAlign = ContentAlignment.MiddleLeft;
-            label17.Location = new Point(3, 66);
+            label17.Location = new Point(3, 69);
             label17.Name = "label17";
-            label17.Size = new Size(101, 34);
+            label17.Size = new Size(132, 34);
             label17.TabIndex = 3;
             label17.Text = "Nhà Cung cấp";
             // 
@@ -660,7 +660,7 @@ namespace GUI
             lblNumCustomers.AutoSize = true;
             lblNumCustomers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumCustomers.ForeColor = Color.WhiteSmoke;
-            lblNumCustomers.Location = new Point(3, 33);
+            lblNumCustomers.Location = new Point(3, 35);
             lblNumCustomers.Name = "lblNumCustomers";
             lblNumCustomers.RightToLeft = RightToLeft.No;
             lblNumCustomers.Size = new Size(90, 25);
@@ -673,7 +673,7 @@ namespace GUI
             lblNumSuppliers.AutoSize = true;
             lblNumSuppliers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumSuppliers.ForeColor = Color.WhiteSmoke;
-            lblNumSuppliers.Location = new Point(3, 100);
+            lblNumSuppliers.Location = new Point(3, 103);
             lblNumSuppliers.Name = "lblNumSuppliers";
             lblNumSuppliers.RightToLeft = RightToLeft.No;
             lblNumSuppliers.Size = new Size(90, 25);

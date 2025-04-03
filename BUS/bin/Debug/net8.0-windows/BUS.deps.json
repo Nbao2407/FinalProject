@@ -590,7 +590,10 @@
           "WinForms.DataVisualization": "1.10.0"
         },
         "runtime": {
-          "DAL.dll": {}
+          "DAL.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DTO/1.0.0": {
@@ -600,7 +603,10 @@
           "WinForms.DataVisualization": "1.10.0"
         },
         "runtime": {
-          "DTO.dll": {}
+          "DTO.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

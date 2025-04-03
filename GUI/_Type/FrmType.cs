@@ -20,34 +20,56 @@ namespace GUI
     {
         private BUS_LVL lVL = new BUS_LVL();
         private DAL_LVL dal = new DAL_LVL();
+        private List<DTO_LVL> danhSach;
+        private BindingSource bindingSource = new BindingSource();
+        private System.Windows.Forms.Timer debounceTimer;
+        private Color defaultLabelColor = Color.White;
+        private Color hoverLabelColor = Color.FromArgb(230, 240, 255);
+
         public FrmType()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.None;
+            LoadData();
+            ConfigureDataGridView();
             this.Resize += new EventHandler(Frm_Resize);
             txtSearch.KeyDown += txtSearch_KeyDown;
-
+            debounceTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 300
+            };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
         }
-        private void LoadData()
+        private void ConfigureDataGridView()
         {
             dataGridView.AutoGenerateColumns = false;
-            dataGridView.Columns.Clear();
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaLoaiVatLieu", HeaderText = "Mã Loại Vật Liệu", DataPropertyName = "MaLoaiVatLieu" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenLoai", HeaderText = "Loại Vật Liệu", DataPropertyName = "TenLoai" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "Trangthai", HeaderText = "Trạng Thái", DataPropertyName = "Trangthai" });
+            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaLoaiVatLieu", DataPropertyName = "MaLoaiVatLieu", HeaderText = "Mã Loại" });
+            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenLoai", DataPropertyName = "TenLoai", HeaderText = "Tên Loại" });
+            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", DataPropertyName = "TrangThai", HeaderText = "Trạng thái" });
 
-            List<DTO_LVL> danhSach = dal.LayTatCaLVL();
-            if (danhSach == null || danhSach.Count == 0)
-            {
-                MessageBox.Show("Không có dữ liệu vật liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+
+            DataGridViewHelper.CustomizeDataGridView(dataGridView);
+            ResizeColumns();
+        }
+        public void LoadData()
+        {
+            danhSach = lVL.GetAllLoaiVatLieu();
             dataGridView.DataSource = danhSach;
         }
+
         private void FrmType_Load(object sender, EventArgs e)
         {
-            DataGridViewHelper.CustomizeDataGridView(dataGridView);
             LoadData();
+            CbTrangThai.Items.Add("Tất cả");
+            CbTrangThai.Items.Add("Hoạt động");
+            CbTrangThai.Items.Add("Ngừng sử dụng");
+            CbTrangThai.SelectedIndex = 1;
+            DataGridViewHelper.CustomizeDataGridView(dataGridView);
         }
+
         private void Frm_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -56,7 +78,6 @@ namespace GUI
                 dataGridView.Height = 642;
                 dataGridView.Left = (this.ClientSize.Width) / 2;
                 dataGridView.Top = (this.ClientSize.Height - 642) / 2;
-
             }
             else
             {
@@ -68,6 +89,7 @@ namespace GUI
 
             ResizeColumns();
         }
+
         private void ResizeColumns()
         {
             if (dataGridView.Columns.Count == 0) return;
@@ -85,33 +107,93 @@ namespace GUI
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            string searchQuery = txtSearch.Text.Trim();
+            debounceTimer.Stop();
+            debounceTimer.Start();
+        }
 
-            if (searchQuery.Length > 0)
+        private void PerformSearch()
+        {
+            string searchQuery = txtSearch.Text.Trim();
+            string selectedTrangThai = CbTrangThai.SelectedItem?.ToString();
+
+            try
             {
                 List<DTO_LVL> results = dal.SearchProductTypes(searchQuery);
-                result.Controls.Clear();
-                result.Height = Math.Min(results.Count * 40, 200); // Giới hạn chiều cao
+
+                if (!string.IsNullOrEmpty(selectedTrangThai))
+                {
+                    results = results.Where(kh => kh.TrangThai == selectedTrangThai).ToList();
+                }
+
+                UpdateSearchSuggestions(results);
+
+                UpdateDataGridView(searchQuery, results);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                result.Visible = false;
+                dataGridView.DataSource = null;
+            }
+        }
+        private void UpdateDataGridView(string searchQuery, List<DTO_LVL> results)
+        {
+            if (searchQuery.Length > 0)
+            {
+                dataGridView.DataSource = results;
+            }
+            else
+            {
+                var all = lVL.GetAllLoaiVatLieu();
+                if (!string.IsNullOrEmpty(CbTrangThai.SelectedItem?.ToString()))
+                {
+                    all = all.Where(kh => kh.TrangThai == CbTrangThai.SelectedItem.ToString()).ToList();
+                }
+                dataGridView.DataSource = all;
+            }
+        }
+        private void UpdateSearchSuggestions(List<DTO_LVL> results)
+        {
+            result.Controls.Clear();
+            if (results.Any() && txtSearch.Text.Trim().Length > 0)
+            {
+                result.Height = Math.Min(results.Count * 40, 200);
+                result.BackColor = Color.Transparent;
 
                 foreach (var item in results)
                 {
                     Label lbl = new Label
                     {
-                        Text = item.TenLoai,
+                        Text = $"👤 {item.TenLoai}-{item.MaLoaiVatLieu}",
                         AutoSize = false,
-                        Width = result.Width,
+                        Width = result.Width - 2,
                         Height = 40,
-                        Padding = new Padding(5),
-                        Font = new Font("Arial", 11, FontStyle.Bold),
-                        BackColor = Color.White,
-                        ForeColor = Color.Black,
-                        BorderStyle = BorderStyle.FixedSingle
+                        Padding = new Padding(10, 5, 5, 5),
+                        Font = new Font("Segoe UI", 11, FontStyle.Regular),
+                        BackColor = defaultLabelColor,
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        BorderStyle = BorderStyle.FixedSingle,
+                        Margin = new Padding(1),
+                        Tag = item
                     };
 
-                    lbl.Click += (s, ev) =>
+                    lbl.MouseEnter += (s, e) =>
                     {
-                        txtSearch.Text = item.TenLoai;
+                        lbl.BackColor = hoverLabelColor;
+                        lbl.ForeColor = Color.FromArgb(0, 102, 204);
+                    };
+                    lbl.MouseLeave += (s, e) =>
+                    {
+                        lbl.BackColor = defaultLabelColor;
+                        lbl.ForeColor = Color.FromArgb(33, 37, 41);
+                    };
+
+                    lbl.Click += (s, e) =>
+                    {
+                        var selectedItem = (DTO_LVL)lbl.Tag;
+                        txtSearch.Text = selectedItem.TenLoai;
                         result.Visible = false;
+                        dataGridView.DataSource = new List<DTO_LVL> { selectedItem };
                     };
 
                     result.Controls.Add(lbl);
@@ -122,36 +204,34 @@ namespace GUI
             {
                 result.Visible = false;
             }
-
-            // Load dữ liệu lên DataGridView
-            dataGridView.DataSource = searchQuery.Length > 0
-                ? dal.SearchProductTypes(searchQuery)
-                : dal.LayTatCaLVL();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.F3)
             {
                 e.SuppressKeyPress = true;
                 txtSearch.Focus();
-
             }
         }
 
         private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            using (var Pop = new PopupType())
+            if (e.RowIndex >= 0)
             {
-                Pop.Deactivate += (s, e) => Pop.TopMost = true;
-                Pop.StartPosition = FormStartPosition.CenterParent;
-                Pop.ShowDialog();
+                var lvatLieu = (DTO_LVL)dataGridView.Rows[e.RowIndex].DataBoundItem;
+                using (var Pop = new PopupType(this, lvatLieu))
+                {
+                    Pop.Deactivate += (s, e) => Pop.TopMost = true;
+                    Pop.StartPosition = FormStartPosition.CenterParent;
+                    Pop.ShowDialog();
+                }
             }
         }
+
         private void ShowPopup()
         {
-
-            using (var popup = new AddType())
+            using (var popup = new AddType(this))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
                 popup.StartPosition = FormStartPosition.CenterParent;
@@ -161,6 +241,20 @@ namespace GUI
         private void button2_Click(object sender, EventArgs e)
         {
             ShowPopup();
+        }
+
+        private void CbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string filter = CbTrangThai.SelectedItem.ToString();
+            if (filter == "Tất cả")
+            {
+                dataGridView.DataSource = danhSach;
+            }
+            else
+            {
+                var filteredList = danhSach.Where(k => k.TrangThai == filter).ToList();
+                dataGridView.DataSource = filteredList;
+            }
         }
     }
 }

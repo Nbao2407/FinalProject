@@ -35,8 +35,9 @@
             btnSave = new ReaLTaiizor.Controls.Button();
             label2 = new Label();
             panel5 = new Panel();
-            roundedPictureBox2 = new Helpler.RoundedPictureBox();
-            roundedPictureBox1 = new Helpler.RoundedPictureBox();
+            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            foreverToggle1 = new ReaLTaiizor.Controls.ForeverToggle();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
@@ -119,15 +120,15 @@
             btnSave.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSave.Image = null;
             btnSave.ImageAlign = ContentAlignment.MiddleRight;
-            btnSave.InactiveColor = Color.Green;
-            btnSave.Location = new Point(679, 155);
+            btnSave.InactiveColor = Color.LimeGreen;
+            btnSave.Location = new Point(679, 152);
             btnSave.Margin = new Padding(3, 3, 160, 3);
             btnSave.Name = "btnSave";
             btnSave.Padding = new Padding(0, 0, 100, 0);
             btnSave.PressedBorderColor = Color.Green;
             btnSave.PressedColor = Color.Green;
             btnSave.RightToLeft = RightToLeft.Yes;
-            btnSave.Size = new Size(109, 28);
+            btnSave.Size = new Size(109, 38);
             btnSave.TabIndex = 64;
             btnSave.Text = "Chỉnh sửa";
             btnSave.TextAlignment = StringAlignment.Center;
@@ -185,11 +186,30 @@
             roundedPictureBox1.TabIndex = 41;
             roundedPictureBox1.TabStop = false;
             // 
+            // foreverToggle1
+            // 
+            foreverToggle1.BackColor = Color.Transparent;
+            foreverToggle1.BaseColor = Color.FromArgb(35, 168, 109);
+            foreverToggle1.BaseColorRed = Color.White;
+            foreverToggle1.BGColor = Color.FromArgb(255, 255, 192);
+            foreverToggle1.Checked = false;
+            foreverToggle1.Font = new Font("Segoe UI", 10F);
+            foreverToggle1.Location = new Point(574, 155);
+            foreverToggle1.Name = "foreverToggle1";
+            foreverToggle1.Options = ReaLTaiizor.Controls.ForeverToggle._Options.Style3;
+            foreverToggle1.Size = new Size(76, 33);
+            foreverToggle1.TabIndex = 69;
+            foreverToggle1.Text = "foreverToggle1";
+            foreverToggle1.TextColor = Color.Black;
+            foreverToggle1.ToggleColor = Color.Crimson;
+            foreverToggle1.CheckedChanged += foreverToggle1_CheckedChanged;
+            // 
             // PopupType
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 202);
+            Controls.Add(foreverToggle1);
             Controls.Add(panel5);
             Controls.Add(btnDelete);
             Controls.Add(label5);
@@ -218,5 +238,6 @@
         private Panel panel5;
         private Helpler.RoundedPictureBox roundedPictureBox1;
         private Helpler.RoundedPictureBox roundedPictureBox2;
+        private ReaLTaiizor.Controls.ForeverToggle foreverToggle1;
     }
 }

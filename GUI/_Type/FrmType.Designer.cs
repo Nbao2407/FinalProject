@@ -38,6 +38,7 @@
             pictureBox1 = new PictureBox();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             dataGridView = new ReaLTaiizor.Controls.PoisonDataGridView();
+            CbTrangThai = new ReaLTaiizor.Controls.AloneComboBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
@@ -46,6 +47,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(236, 240, 241);
+            panel1.Controls.Add(CbTrangThai);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(result);
             panel1.Controls.Add(button1);
@@ -193,6 +195,19 @@
             dataGridView.TabIndex = 0;
             dataGridView.CellContentDoubleClick += dataGridView_CellContentDoubleClick;
             // 
+            // CbTrangThai
+            // 
+            CbTrangThai.DrawMode = DrawMode.OwnerDrawFixed;
+            CbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbTrangThai.EnabledCalc = true;
+            CbTrangThai.FormattingEnabled = true;
+            CbTrangThai.ItemHeight = 20;
+            CbTrangThai.Location = new Point(324, 33);
+            CbTrangThai.Name = "CbTrangThai";
+            CbTrangThai.Size = new Size(161, 26);
+            CbTrangThai.TabIndex = 11;
+            CbTrangThai.SelectedIndexChanged += CbTrangThai_SelectedIndexChanged;
+            // 
             // FrmType
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -218,5 +233,6 @@
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private ReaLTaiizor.Controls.PoisonDataGridView dataGridView;
         private ReaLTaiizor.Controls.Button button2;
+        private ReaLTaiizor.Controls.AloneComboBox CbTrangThai;
     }
 }

@@ -150,9 +150,9 @@
             // result
             // 
             result.BackColor = Color.Transparent;
-            result.Location = new Point(23, 63);
+            result.Location = new Point(23, 62);
             result.Name = "result";
-            result.Size = new Size(223, 82);
+            result.Size = new Size(223, 54);
             result.TabIndex = 6;
             result.Visible = false;
             // 
@@ -164,7 +164,7 @@
             Tong.ForeColor = Color.DarkGray;
             Tong.Location = new Point(12, 1084);
             Tong.Name = "Tong";
-            Tong.Size = new Size(34, 13);
+            Tong.Size = new Size(33, 13);
             Tong.TabIndex = 8;
             Tong.Text = "Tổng";
             // 

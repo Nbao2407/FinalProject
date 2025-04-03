@@ -39,7 +39,6 @@ namespace GUI
             label3 = new Label();
             label4 = new Label();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
-            BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnEdit = new ReaLTaiizor.Controls.HopeRoundButton();
             panel5 = new Panel();
             roundedPictureBox1 = new RoundedPictureBox();
@@ -54,6 +53,8 @@ namespace GUI
             email = new ReaLTaiizor.Controls.SmallTextBox();
             phone = new ReaLTaiizor.Controls.SmallTextBox();
             Ngay = new ReaLTaiizor.Controls.SmallTextBox();
+            toggleEdit1 = new ReaLTaiizor.Controls.ToggleEdit();
+            bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
@@ -162,19 +163,6 @@ namespace GUI
             BtnDelete.Text = "Xóa";
             BtnDelete.Click += BtnDelete_Click;
             // 
-            // BtnDisable
-            // 
-            BtnDisable.BackColor = Color.Transparent;
-            BtnDisable.EnabledCalc = true;
-            BtnDisable.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BtnDisable.ForeColor = Color.Black;
-            BtnDisable.Location = new Point(720, 455);
-            BtnDisable.Name = "BtnDisable";
-            BtnDisable.Size = new Size(120, 30);
-            BtnDisable.TabIndex = 36;
-            BtnDisable.Text = "Ngừng hoạt động";
-            BtnDisable.Click += BtnDisable_Click;
-            // 
             // BtnEdit
             // 
             BtnEdit.BorderColor = Color.FromArgb(220, 223, 230);
@@ -184,7 +172,7 @@ namespace GUI
             BtnEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnEdit.HoverTextColor = Color.FromArgb(48, 49, 51);
             BtnEdit.InfoColor = Color.FromArgb(144, 147, 153);
-            BtnEdit.Location = new Point(608, 455);
+            BtnEdit.Location = new Point(734, 455);
             BtnEdit.Name = "BtnEdit";
             BtnEdit.PrimaryColor = Color.FromArgb(39, 174, 97);
             BtnEdit.Size = new Size(106, 30);
@@ -254,9 +242,9 @@ namespace GUI
             lblID.ImageAlign = ContentAlignment.MiddleRight;
             lblID.Location = new Point(194, 0);
             lblID.Name = "lblID";
-            lblID.Size = new Size(22, 41);
+            lblID.Size = new Size(15, 41);
             lblID.TabIndex = 45;
-            lblID.Text = "ID";
+            lblID.Text = "1";
             lblID.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label1
@@ -384,12 +372,38 @@ namespace GUI
             Ngay.TextAlignment = HorizontalAlignment.Left;
             Ngay.UseSystemPasswordChar = false;
             // 
+            // toggleEdit1
+            // 
+            toggleEdit1.ForeColor = Color.Black;
+            toggleEdit1.Location = new Point(635, 108);
+            toggleEdit1.Name = "toggleEdit1";
+            toggleEdit1.Size = new Size(41, 23);
+            toggleEdit1.TabIndex = 53;
+            toggleEdit1.Text = "toggleEdit1";
+            toggleEdit1.Toggled = false;
+            toggleEdit1.Type = ReaLTaiizor.Controls.ToggleEdit._Type.YesNo;
+            toggleEdit1.ToggledChanged += toggleEdit1_ToggledChanged;
+            // 
+            // bigLabel1
+            // 
+            bigLabel1.AutoSize = true;
+            bigLabel1.BackColor = Color.Transparent;
+            bigLabel1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            bigLabel1.ForeColor = Color.FromArgb(80, 80, 80);
+            bigLabel1.Location = new Point(530, 108);
+            bigLabel1.Name = "bigLabel1";
+            bigLabel1.Size = new Size(90, 21);
+            bigLabel1.TabIndex = 54;
+            bigLabel1.Text = "Trạng thái  :";
+            // 
             // PopupCmer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(236, 240, 241);
             ClientSize = new Size(869, 515);
+            Controls.Add(bigLabel1);
+            Controls.Add(toggleEdit1);
             Controls.Add(Ngay);
             Controls.Add(phone);
             Controls.Add(email);
@@ -400,7 +414,6 @@ namespace GUI
             Controls.Add(dtpNgaySinh);
             Controls.Add(panel5);
             Controls.Add(BtnEdit);
-            Controls.Add(BtnDisable);
             Controls.Add(BtnDelete);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -434,7 +447,6 @@ namespace GUI
         private Label label3;
         private Label label4;
         private ReaLTaiizor.Controls.AloneButton BtnDelete;
-        private ReaLTaiizor.Controls.AloneButton BtnDisable;
         private ReaLTaiizor.Controls.HopeRoundButton BtnEdit;
         private Panel panel5;
         private RoundedPictureBox roundedPictureBox1;
@@ -453,5 +465,7 @@ namespace GUI
         private ReaLTaiizor.Controls.SmallTextBox email;
         private ReaLTaiizor.Controls.SmallTextBox phone;
         private ReaLTaiizor.Controls.SmallTextBox Ngay;
+        private ReaLTaiizor.Controls.ToggleEdit toggleEdit1;
+        private ReaLTaiizor.Controls.BigLabel bigLabel1;
     }
 }

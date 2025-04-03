@@ -126,6 +126,7 @@
             btnSave.TabIndex = 55;
             btnSave.Text = "Lưu";
             btnSave.TextAlignment = StringAlignment.Center;
+            btnSave.Click += btnSave_Click;
             // 
             // label2
             // 

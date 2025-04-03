@@ -67,5 +67,165 @@ public class DAL_LVL : DBConnect
         return danhSachL;
     }
 
+    public void Add(string tenLoai)
+    {
+        using (SqlConnection conn = DBConnect.GetConnection())
+
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("INSERT INTO QLLoaiVatLieu (TenLoai) VALUES (@TenLoai)", conn);
+            cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    public void Update(int maLoai, string tenLoai)
+    {
+        using (SqlConnection conn = DBConnect.GetConnection())
+
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("UPDATE QLLoaiVatLieu SET TenLoai = @TenLoai WHERE MaLoaiVatLieu = @MaLoai", conn);
+            cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+            cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    public bool IsLoaiVatLieuInUse(int maLoai)
+    {
+        using (SqlConnection conn = DBConnect.GetConnection())
+        {
+            conn.Open();
+            string query = "SELECT COUNT(*) FROM QLVatLieu WHERE Loai = @MaLoai";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+            int count = (int)cmd.ExecuteScalar();
+            return count > 0;
+        }
+    }
+    public void UpdateTrangThai(int maLoai, string trangThai)
+    {
+        using (SqlConnection conn = DBConnect.GetConnection())
+        {
+            conn.Open();
+            string query = "UPDATE QLLoaiVatLieu SET TrangThai = @TrangThai WHERE MaLoaiVatLieu = @MaLoai";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@TrangThai", trangThai);
+            cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+            cmd.ExecuteNonQuery();
+        }
+    }
+    public void Delete(int maLoai)
+    {
+        using (SqlConnection conn = DBConnect.GetConnection())
+        {
+            conn.Open();
+            string query = "DELETE FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoai";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+            cmd.ExecuteNonQuery();
+        }
+    }
+    public bool IsTenLoaiExists(string tenLoai, int? maLoai = null)
+    {
+        using (SqlConnection conn = DBConnect.GetConnection())
+        {
+            conn.Open();
+            string query = "SELECT COUNT(*) FROM QLLoaiVatLieu WHERE TenLoai = @TenLoai AND (@MaLoai IS NULL OR MaLoaiVatLieu != @MaLoai)";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
+            cmd.Parameters.AddWithValue("@MaLoai", (object)maLoai ?? DBNull.Value);
+            int count = (int)cmd.ExecuteScalar();
+            return count > 0;
+        }
+    }
+    public bool Disable(int MaLoaiVatLieu , int nguoiCapNhat)
+    {
+        try
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open();
+                string query = "UPDATE QLLoaiVatLieu SET Trangthai = N'Ngừng sử dụng' WHERE MaLoaiVatLieu = @MaLoaiVatLieu";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@MaLoaiVatLieu", MaLoaiVatLieu);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
+        }
+        catch (SqlException ex)
+        {
+            if (ex.Number == 50003)
+                throw new Exception("loại vật liệu không tồn tại!");
+            else
+                throw new Exception("Lỗi khi disable loại vật liệu: " + ex.Message);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Lỗi hệ thống: " + ex.Message);
+        }
+    }
+
+    public bool Active(int MaLoaiVatLieu, int nguoiCapNhat)
+    {
+        try
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open();
+                string query = "UPDATE QLLoaiVatLieu SET Trangthai = N'Hoạt động' WHERE MaLoaiVatLieu = @MaLoaiVatLieu";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@MaLoaiVatLieu", MaLoaiVatLieu);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
+        }
+        catch (SqlException ex)
+        {
+            if (ex.Number == 50003)
+                throw new Exception("loại vật liệu không tồn tại!");
+            else
+                throw new Exception("Lỗi khi disable loại vật liệu " + ex.Message);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Lỗi hệ thống: " + ex.Message);
+        }
+    }
+   public int Deltele2(int MaLoaiVatLieu)
+    {
+        try
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open();
+                string query = "DELETE FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoaiVatLieu";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaLoaiVatLieu", MaLoaiVatLieu);
+                    return cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        catch (SqlException ex)
+        {
+            if (ex.Number == 50003)
+                throw new Exception("loại vật liệu không tồn tại!");
+            else
+                throw new Exception("Lỗi khi xóa loại vật liệu: " + ex.Message);
+        }
+    }
 }
+
 

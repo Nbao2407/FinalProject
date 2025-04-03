@@ -15,14 +15,14 @@ namespace GUI
     {
         private BUS_Khach busKhach = new BUS_Khach();
         private FrmCustomer _parentForm;
-        private PopupCmer _popupCmer; 
+        private PopupCmer _popupCmer;
         private DTO_Khach _khachHang;
 
         public EditCustomer(FrmCustomer parentForm, DTO_Khach khach, PopupCmer popupCmer)
         {
             InitializeComponent();
             _parentForm = parentForm;
-            _popupCmer = popupCmer; 
+            _popupCmer = popupCmer;
             _khachHang = khach;
             LoadData();
         }
@@ -87,5 +87,7 @@ namespace GUI
         {
             this.Close();
         }
+
+       
     }
 }

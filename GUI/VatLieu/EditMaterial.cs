@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Globalization;
 using ReaLTaiizor.Controls;
+using static IronPython.Modules._ast;
 
 namespace GUI.VatLieu
 {
@@ -28,7 +29,7 @@ namespace GUI.VatLieu
             popupMaterial = parent;
             this.maVatLieu = maVatLieu;
             LoadDataFromDatabase();
-            LoadLoaiVatLieu();
+          
         }
 
         private void EditMaterial_Load(object sender, EventArgs e)
@@ -60,18 +61,14 @@ namespace GUI.VatLieu
 
             TbNote.Text = row["GhiChu"]?.ToString();
 
-            int maloai = Convert.ToInt32(row["Loai"]);
+            int loai = Convert.ToInt32(row["Loai"]);
+            string donViTinh = row["DonViTinh"]?.ToString();
 
-            LoadLoaiVatLieu();
-
-            if (CbType.Items.Count > 0)
-            {
-                CbType.SelectedValue = maloai;
-            }
-
+            LoadComboBoxLoaiVatLieu(loai);
+            LoadComboBoxDonViTinh(donViTinh);
             if (row["HinhAnh"] != DBNull.Value)
             {
-                byte[] hinhAnh = (byte[])row["HinhAnh"];
+                hinhAnh = (byte[])row["HinhAnh"];
                 using (MemoryStream ms = new MemoryStream(hinhAnh))
                 {
                     pictureBox1.Image = Image.FromStream(ms);
@@ -80,6 +77,7 @@ namespace GUI.VatLieu
             else
             {
                 pictureBox1.Image = null;
+                hinhAnh = null;
             }
         }
 
@@ -114,36 +112,24 @@ namespace GUI.VatLieu
                 MessageBox.Show("Lỗi: " + ex.Message);
             }
         }
-        private void LoadLoaiVatLieu()
+
+
+        private void LoadComboBoxLoaiVatLieu(int loai)
         {
             DataTable dt = bus.LayDanhSachLoaiVatLieu();
-            if (dt.Rows.Count > 0)
-            {
-                CbType.DataSource = dt;
-                CbType.DisplayMember = "TenLoai";
-                CbType.ValueMember = "MaLoaiVatLieu"; 
-            }
-        }
-        private string TypeByID(int maLoai)
-        {
-            DataTable dt = bus.LayVatLieuTheoMa2(maLoai);
-
-            if (dt.Rows.Count > 0)
-            {
-                return dt.Rows[0]["TenLoai"].ToString(); 
-            }
-
-            return "Không xác định"; 
+            CbType.DataSource = dt;
+            CbType.DisplayMember = "TenLoai";
+            CbType.ValueMember = "MaLoaiVatLieu";
+            CbType.SelectedValue = loai; 
         }
 
-
-        private void LoadComboBoxDonViTinh()
+        private void LoadComboBoxDonViTinh(string donViTinh)
         {
             DataTable dt = bus.LayDanhSachDVT();
             CbDVT.DataSource = dt;
             CbDVT.DisplayMember = "DonViTinh";
             CbDVT.ValueMember = "DonViTinh";
-            TbDonvi.Text = CbDVT.Text;
+            CbDVT.SelectedValue = donViTinh; 
         }
 
         private byte[] ImageToByteArray(Image image)

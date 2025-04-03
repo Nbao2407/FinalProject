@@ -18,8 +18,10 @@ namespace GUI
     {
         private BUS_Khach busKhach = new BUS_Khach();
         private QLKH kh = new QLKH();
-        private List<DTO_Khach> danhSachKhach; 
-
+        private List<DTO_Khach> danhSachKhach;
+        private System.Windows.Forms.Timer debounceTimer; 
+        private Color defaultLabelColor = Color.White;
+        private Color hoverLabelColor = Color.FromArgb(230, 240, 255);
         public FrmCustomer()
         {
             InitializeComponent();
@@ -27,6 +29,15 @@ namespace GUI
             this.Resize += new EventHandler(Frm_Resize);
             this.Load += new EventHandler(FrmCustomer_Load);
             ConfigureDataGridView();
+            debounceTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 300 
+            };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
         }
 
         private void FrmCustomer_Load(object sender, EventArgs e)
@@ -92,36 +103,94 @@ namespace GUI
                 column.Width = variableColumnWidth;
             }
         }
-
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            debounceTimer.Stop();
+            debounceTimer.Start();
+        }
+        private void PerformSearch()
+        {
             string searchQuery = txtSearch.Text.Trim();
+            string selectedTrangThai = CbTrangThai.SelectedItem?.ToString(); 
 
-            if (searchQuery.Length > 0)
+            try
             {
                 List<DTO_Khach> results = kh.TimKiemKhachHang(searchQuery);
-                result.Controls.Clear();
+
+                if (!string.IsNullOrEmpty(selectedTrangThai))
+                {
+                    results = results.Where(kh => kh.TrangThai == selectedTrangThai).ToList();
+                }
+
+                UpdateSearchSuggestions(results);
+
+                UpdateDataGridView(searchQuery, results);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                result.Visible = false;
+                dataGridView1.DataSource = null; 
+            }
+        }
+        private void UpdateDataGridView(string searchQuery, List<DTO_Khach> results)
+        {
+            if (searchQuery.Length > 0)
+            {
+                dataGridView1.DataSource = results;
+            }
+            else
+            {
+                var allCustomers = kh.GetAllKhach();
+                if (!string.IsNullOrEmpty(CbTrangThai.SelectedItem?.ToString()))
+                {
+                    allCustomers = allCustomers.Where(kh => kh.TrangThai == CbTrangThai.SelectedItem.ToString()).ToList();
+                }
+                dataGridView1.DataSource = allCustomers;
+            }
+        }
+        private void UpdateSearchSuggestions(List<DTO_Khach> results)
+        {
+            result.Controls.Clear();
+            if (results.Any() && txtSearch.Text.Trim().Length > 0)
+            {
                 result.Height = Math.Min(results.Count * 40, 200);
+                result.BackColor = Color.Transparent;
 
                 foreach (var item in results)
                 {
                     Label lbl = new Label
                     {
-                        Text = item.Ten,
+                        Text = $"👤 {item.Ten}-{item.MaKhachHang}", 
                         AutoSize = false,
-                        Width = result.Width,
+                        Width = result.Width - 2,
                         Height = 40,
-                        Padding = new Padding(5),
-                        Font = new Font("Arial", 12, FontStyle.Bold),
-                        BackColor = Color.White,
-                        ForeColor = Color.Black,
-                        BorderStyle = BorderStyle.FixedSingle
+                        Padding = new Padding(10, 5, 5, 5),
+                        Font = new Font("Segoe UI", 11, FontStyle.Regular),
+                        BackColor = defaultLabelColor,
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        BorderStyle = BorderStyle.FixedSingle,
+                        Margin = new Padding(1),
+                        Tag = item 
                     };
 
-                    lbl.Click += (s, ev) =>
+                    lbl.MouseEnter += (s, e) =>
                     {
-                        txtSearch.Text = item.Ten;
+                        lbl.BackColor = hoverLabelColor;
+                        lbl.ForeColor = Color.FromArgb(0, 102, 204); 
+                    };
+                    lbl.MouseLeave += (s, e) =>
+                    {
+                        lbl.BackColor = defaultLabelColor;
+                        lbl.ForeColor = Color.FromArgb(33, 37, 41);
+                    };
+
+                    lbl.Click += (s, e) =>
+                    {
+                        var selectedItem = (DTO_Khach)lbl.Tag;
+                        txtSearch.Text = selectedItem.Ten;
                         result.Visible = false;
+                        dataGridView1.DataSource = new List<DTO_Khach> { selectedItem };
                     };
 
                     result.Controls.Add(lbl);
@@ -132,12 +201,20 @@ namespace GUI
             {
                 result.Visible = false;
             }
-
-            dataGridView1.DataSource = searchQuery.Length > 0
-                ? kh.TimKiemKhachHang(searchQuery)
-                : kh.GetAllKhach();
         }
-
+        private void CbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
+            {
+                string filter = CbTrangThai.SelectedItem.ToString();
+                if (filter == "Tất cả")
+                {
+                    dataGridView1.DataSource = danhSachKhach; 
+                }
+                else
+                {
+                    var filteredList = danhSachKhach.Where(k => k.TrangThai == filter).ToList();
+                    dataGridView1.DataSource = filteredList;
+                }
+            }
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -178,18 +255,6 @@ namespace GUI
             ShowPopup();
         }
 
-        private void CbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string filter = CbTrangThai.SelectedItem.ToString();
-            if (filter == "Tất cả")
-            {
-                dataGridView1.DataSource = danhSachKhach; 
-            }
-            else
-            {
-                var filteredList = danhSachKhach.Where(k => k.TrangThai == filter).ToList();
-                dataGridView1.DataSource = filteredList;
-            }
-        }
+       
     }
 }

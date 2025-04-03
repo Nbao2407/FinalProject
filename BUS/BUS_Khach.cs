@@ -25,7 +25,7 @@ namespace BUS
         }
         public void ThemKhachHang(DTO_Khach khach)
         {
-           dalKH.ThemKhachHang(khach);
+            dalKH.ThemKhachHang(khach);
         }
         public async Task<bool> SuaKhachHang(DTO_Khach khach)
         {
@@ -44,7 +44,7 @@ namespace BUS
                 throw new Exception($"Lỗi khi cập nhật khách hàng: {ex.Message}", ex);
             }
         }
-        public void XoaKhachHang(int maKhachHang,int nguoiCapNhat)
+        public void XoaKhachHang(int maKhachHang, int nguoiCapNhat)
         {
             dalKH.XoaKhachHang(maKhachHang, nguoiCapNhat);
         }
@@ -53,5 +53,4 @@ namespace BUS
             return dalKH.GetCustomerById(maKhachHang);
         }
     }
-
 }
