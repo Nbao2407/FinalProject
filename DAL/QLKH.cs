@@ -59,6 +59,43 @@ namespace DAL
             }
             return danhSachKH;
         }
+        public List<DTO_Khach> TimKiemKhachHangtenid(string searchQuery)
+        {
+            List<DTO_Khach> results = new List<DTO_Khach>();
+
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_TimKiemKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    int? maKhachHang = null;
+                    if (int.TryParse(searchQuery, out int id))
+                    {
+                        maKhachHang = id;
+                    }
+
+                    cmd.Parameters.AddWithValue("@MaKhachHang", (object)maKhachHang ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Ten", (object)searchQuery ?? DBNull.Value);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            DTO_Khach khach = new DTO_Khach
+                            {
+                                MaKhachHang = reader.GetInt32("MaKhachHang"),
+                                Ten = reader.GetString("Ten"),
+                                TrangThai = reader.GetString("TrangThai")
+                            };
+                            results.Add(khach);
+                        }
+                    }
+                }
+            }
+            return results;
+        }
         public DTO_Khach GetCustomerById(int maKhachHang)
         {
 

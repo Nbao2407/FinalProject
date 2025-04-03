@@ -8,7 +8,7 @@
         public DateTime NgaySinh { get; set; }
         public string SDT { get; set; }
         public string Email { get; set; }
-        public int NguoiTao { get; set; } 
+        public int? NguoiTao { get; set; } 
         public string TenNguoiTao { get; set; }
         public string TrangThai { get; set; }
         public DateTime NgayTao { get; set; }

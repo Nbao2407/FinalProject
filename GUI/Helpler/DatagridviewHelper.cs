@@ -69,6 +69,10 @@ namespace GUI.Helpler
         public static int TinhTongSoLuongChon(DataGridView dgv, string tenCotSoLuong)
         {
             int tongSoLuong = 0;
+            if (!dgv.Columns.Contains(tenCotSoLuong))
+            {
+                throw new ArgumentException($"Column named {tenCotSoLuong} cannot be found.", nameof(tenCotSoLuong));
+            }
             foreach (DataGridViewRow row in dgv.SelectedRows)
             {
                 if (row.Cells[tenCotSoLuong].Value != null)

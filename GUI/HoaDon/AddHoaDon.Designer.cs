@@ -17,6 +17,7 @@ namespace GUI
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddHoaDon));
             panel1 = new Panel();
             Tong = new Label();
@@ -24,14 +25,16 @@ namespace GUI
             pictureBox1 = new PictureBox();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             splitContainer1 = new BufferedSplitContainer();
+            panel2 = new Panel();
             BtnThanhToan = new ReaLTaiizor.Controls.Button();
             flowLayoutPanel2 = new BufferedFlowLayoutPanel();
+            SearchKhCombo = new ReaLTaiizor.Controls.AloneComboBox();
             flowLayoutPanel1 = new BufferedFlowLayoutPanel();
-            dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
             roundedPanel6 = new GUI.Helpler.RoundedPanel();
             lblTongSoMatHang = new Label();
             lblTong = new Label();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            searchTimer = new System.Windows.Forms.Timer(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -129,17 +132,26 @@ namespace GUI
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(panel2);
             splitContainer1.Panel1.Controls.Add(BtnThanhToan);
             splitContainer1.Panel1.Controls.Add(flowLayoutPanel2);
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(SearchKhCombo);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
-            splitContainer1.Panel2.Controls.Add(dungeonTextBox1);
             splitContainer1.Panel2.Controls.Add(roundedPanel6);
             splitContainer1.Size = new Size(1104, 541);
             splitContainer1.SplitterDistance = 569;
             splitContainer1.TabIndex = 9;
+            // 
+            // panel2
+            // 
+            panel2.Location = new Point(4, 29);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(312, 82);
+            panel2.TabIndex = 14;
+            panel2.Visible = false;
             // 
             // BtnThanhToan
             // 
@@ -172,6 +184,22 @@ namespace GUI
             flowLayoutPanel2.Size = new Size(561, 456);
             flowLayoutPanel2.TabIndex = 0;
             // 
+            // SearchKhCombo
+            // 
+            SearchKhCombo.Dock = DockStyle.Left;
+            SearchKhCombo.DrawMode = DrawMode.OwnerDrawFixed;
+            SearchKhCombo.DropDownStyle = ComboBoxStyle.DropDownList;
+            SearchKhCombo.EnabledCalc = true;
+            SearchKhCombo.FormattingEnabled = true;
+            SearchKhCombo.ItemHeight = 20;
+            SearchKhCombo.Location = new Point(0, 0);
+            SearchKhCombo.Name = "SearchKhCombo";
+            SearchKhCombo.Size = new Size(270, 26);
+            SearchKhCombo.TabIndex = 17;
+            SearchKhCombo.SelectedIndexChanged += SearchKhCombo_SelectedIndexChanged;
+            SearchKhCombo.Format += SearchKhCombo_Format;
+            SearchKhCombo.TextChanged += SearchKhCombo_TextChanged;
+            // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -181,25 +209,6 @@ namespace GUI
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Size = new Size(531, 459);
             flowLayoutPanel1.TabIndex = 0;
-            // 
-            // dungeonTextBox1
-            // 
-            dungeonTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            dungeonTextBox1.BackColor = Color.FromArgb(236, 240, 241);
-            dungeonTextBox1.BorderColor = Color.FromArgb(180, 180, 180);
-            dungeonTextBox1.EdgeColor = SystemColors.ActiveBorder;
-            dungeonTextBox1.Font = new Font("Tahoma", 11F);
-            dungeonTextBox1.ForeColor = Color.DimGray;
-            dungeonTextBox1.Location = new Point(8, 3);
-            dungeonTextBox1.MaxLength = 32767;
-            dungeonTextBox1.Multiline = false;
-            dungeonTextBox1.Name = "dungeonTextBox1";
-            dungeonTextBox1.ReadOnly = false;
-            dungeonTextBox1.Size = new Size(290, 28);
-            dungeonTextBox1.TabIndex = 10;
-            dungeonTextBox1.Text = "Tìm Khách Hàng";
-            dungeonTextBox1.TextAlignment = HorizontalAlignment.Left;
-            dungeonTextBox1.UseSystemPasswordChar = false;
             // 
             // roundedPanel6
             // 
@@ -267,7 +276,6 @@ namespace GUI
         private PictureBox pictureBox1;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private BufferedSplitContainer splitContainer1;
-        private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
         private ReaLTaiizor.Controls.Button BtnThanhToan;
         private Label lblTong;
         private Label lblTongSoMatHang;
@@ -275,5 +283,8 @@ namespace GUI
         private BufferedFlowLayoutPanel flowLayoutPanel2;
         private BufferedFlowLayoutPanel flowLayoutPanel1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private Panel panel2;
+        private ReaLTaiizor.Controls.AloneComboBox SearchKhCombo;
+        private System.Windows.Forms.Timer searchTimer;
     }
 }

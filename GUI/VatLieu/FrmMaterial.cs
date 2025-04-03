@@ -17,16 +17,17 @@ namespace GUI
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.Resize += new EventHandler(FrmMaterial_Resize);
+            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+            LoadData();
         }
 
         private void FrmMaterial_Load(object sender, EventArgs e)
         {
-            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
-            LoadData();
+          
             ResizeColumns();
         }
 
-        private void LoadData()
+        public void LoadData()
         {
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.Columns.Clear();
@@ -46,12 +47,7 @@ namespace GUI
                 MessageBox.Show("Không có dữ liệu vật liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             dataGridView1.DataSource = danhSach;
-        }
-
-        private void dgv_SelectionChanged(object sender, EventArgs e)
-        {
-            int tongSl = DataGridViewHelper.TinhTongSoLuongChon(dataGridView1, "SoLuong");
-            Tong.Text = $"Tổng: {tongSl}";
+            FrmMaterial_Resize(null, null);
         }
 
         private void FrmMaterial_Resize(object sender, EventArgs e)
@@ -91,34 +87,22 @@ namespace GUI
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            //    if (e.RowIndex >= 0 && e.ColumnIndex >= 0) // Đảm bảo không click vào tiêu đề
-            //    {
-            //        string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
-            //        string id = dataGridView1.Rows[e.RowIndex].Cells["ID"].Value.ToString();
+            //if (dataGridView1.CurrentRow != null)
+            //{
+            //    DataGridViewRow row = dataGridView1.CurrentRow;
 
-            //        if (columnName == "Edit")
-            //        {
-            //            MessageBox.Show($"Chỉnh sửa vật liệu ID: {id}");
-            //            // TODO: Viết code để mở form chỉnh sửa vật liệu
-            //        }
-            //        else if (columnName == "Delete")
-            //        {
-            //            DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa vật liệu ID: {id}?",
-            //                                                  "Xác nhận xóa",
-            //                                                  MessageBoxButtons.YesNo,
-            //                                                  MessageBoxIcon.Warning);
-            //            if (result == DialogResult.Yes)
-            //            {
-            //                MessageBox.Show("xóa");
-            //                LoadData();
-            //            }
-            //        }
-            //        else
-            //        {
-            //            // Nếu click vào chỗ khác, không làm gì cả
-            //            dataGridView1.ClearSelection();
-            //        }
-            //    }
+            //    string ten = row.Cells["Ten"].Value.ToString();
+            //    int loai = Convert.ToInt32(row.Cells["Loai"].Value);
+            //    decimal donGiaNhap = Convert.ToDecimal(row.Cells["DonGiaNhap"].Value);
+            //    decimal donGiaBan = Convert.ToDecimal(row.Cells["DonGiaBan"].Value);
+            //    string donViTinh = row.Cells["DonViTinh"].Value?.ToString();
+            //    int maKho = Convert.ToInt32(row.Cells["MaKho"].Value);
+            //    string ghiChu = row.Cells["GhiChu"].Value?.ToString();
+            //    byte[] hinhAnh = row.Cells["HinhAnh"].Value != DBNull.Value ? (byte[])row.Cells["HinhAnh"].Value : null;
+
+            //    FrmVatLieu frmVatLieu = new FrmVatLieu(this, ten, loai, donGiaNhap, donGiaBan, donViTinh, maKho, ghiChu, hinhAnh);
+            //    frmVatLieu.ShowDialog();
+            //}
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -176,14 +160,17 @@ namespace GUI
 
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            PopupMaterial popupMaterial = new PopupMaterial();
-            popupMaterial.StartPosition= FormStartPosition.CenterParent;
-            popupMaterial.ShowDialog();
+            if (dataGridView1.CurrentRow != null)
+            {
+                int maVatLieu = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaVatLieu"].Value);
+                PopupMaterial popup = new PopupMaterial(this, maVatLieu);
+                popup.StartPosition = FormStartPosition.CenterParent;
+                popup.ShowDialog();
+            }
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            using (var add = new AddMaterial())
+            using (var add = new AddMaterial(this))
             {
                 add.Deactivate += (s, e) => add.TopMost = true;
                 add.StartPosition = FormStartPosition.CenterParent;

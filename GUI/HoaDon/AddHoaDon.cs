@@ -1,6 +1,8 @@
 ﻿using BUS;
 using DTO;
+using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Windows.Forms;
 
 namespace GUI
 {
@@ -9,6 +11,8 @@ namespace GUI
         private BUS_HoaDon busHoaDon = new BUS_HoaDon();
         private int? _maHoaDon = null;
         private List<ChiTietHoaDonTemp> chiTietHoaDonTemps = new List<ChiTietHoaDonTemp>();
+        private BUS_Khach kh = new BUS_Khach();
+
         public AddHoaDon(int? maHoaDon = null)
         {
             InitializeComponent();
@@ -16,6 +20,11 @@ namespace GUI
             this.DoubleBuffered = true;
             splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.Resize += AddHoaDon_Resize;
+            SearchKhCombo.DropDownStyle = ComboBoxStyle.DropDown;
+            SearchKhCombo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            SearchKhCombo.AutoCompleteSource = AutoCompleteSource.ListItems;
+
+            searchTimer.Tick += SearchTimer_Tick;
             this.FormClosing += AddHoaDon_FormClosing;
             flowLayoutPanel1.Resize += (s, e) =>
             {
@@ -25,18 +34,18 @@ namespace GUI
                 }
             };
         }
-       
+
         private void AddHoaDon_Load(object sender, EventArgs e)
         {
             LoadVatLieu();
-           
-                _maHoaDon = CreateNewHoaDon();
-                dungeonTextBox1.Text = "Khách lẻ";
-                lblTong.Text = "0";
-                lblTongSoMatHang.Text = "Tổng số lượng: 0";
+
+            _maHoaDon = CreateNewHoaDon();
+            lblTong.Text = "0";
+            lblTongSoMatHang.Text = "Tổng số lượng: 0";
             AddHoaDon_Resize(this, EventArgs.Empty);
         }
-
+    
+    
         private void LoadVatLieu()
         {
             try
@@ -57,7 +66,6 @@ namespace GUI
                 MessageBox.Show("Lỗi khi load vật liệu: " + ex.Message);
             }
         }
-
 
         public void AddItem(string name, double price, Image image, int maVatLieu)
         {
@@ -82,35 +90,9 @@ namespace GUI
                 int newSoLuong = int.Parse(existingWidget.TbSL.Text) + soLuong;
                 existingWidget.TbSL.Text = newSoLuong.ToString();
                 existingWidget.UpdateGia(newSoLuong);
-
-                var chiTiet = chiTietHoaDonTemps.FirstOrDefault(x => x.MaVatLieu == maVatLieu);
-                if (chiTiet != null)
-                {
-                    chiTiet.SoLuong = newSoLuong;
-                }
-                else
-                {
-                    chiTietHoaDonTemps.Add(new ChiTietHoaDonTemp
-                    {
-                        MaVatLieu = maVatLieu,
-                        TenVatLieu = name,
-                        DonGia = price,
-                        SoLuong = newSoLuong,
-                        HinhAnh = image
-                    });
-                }
             }
             else
             {
-                chiTietHoaDonTemps.Add(new ChiTietHoaDonTemp
-                {
-                    MaVatLieu = maVatLieu,
-                    TenVatLieu = name,
-                    DonGia = price,
-                    SoLuong = soLuong,
-                    HinhAnh = image
-                });
-
                 var widget2 = new Wiget2()
                 {
                     IdSp = { Text = $"SP{maVatLieu:D4}" },
@@ -125,7 +107,6 @@ namespace GUI
 
                 widget2.OnDelete += (s, e) =>
                 {
-                    chiTietHoaDonTemps.RemoveAll(x => x.MaVatLieu == widget2.MaVatLieu);
                     flowLayoutPanel1.Controls.Remove(widget2);
                     UpdateTongSoLuongVaTongTien();
                 };
@@ -133,11 +114,6 @@ namespace GUI
                 widget2.OnQuantityChanged += (s, e) =>
                 {
                     int newSoLuong = int.Parse(widget2.TbSL.Text);
-                    var chiTiet = chiTietHoaDonTemps.FirstOrDefault(x => x.MaVatLieu == widget2.MaVatLieu);
-                    if (chiTiet != null)
-                    {
-                        chiTiet.SoLuong = newSoLuong;
-                    }
                     widget2.UpdateGia(newSoLuong);
                     UpdateTongSoLuongVaTongTien();
                 };
@@ -147,6 +123,7 @@ namespace GUI
 
             UpdateTongSoLuongVaTongTien();
         }
+
         private void UpdateTongSoLuongVaTongTien()
         {
             int tongSoLuong = flowLayoutPanel1.Controls.OfType<Wiget2>().Sum(w => int.Parse(w.TbSL.Text));
@@ -154,33 +131,59 @@ namespace GUI
             lblTongSoMatHang.Text = $"Tổng số lượng: {tongSoLuong}";
             lblTong.Text = tongTien.ToString("#,##0");
         }
+
         private void BtnThanhToan_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!chiTietHoaDonTemps.Any())
+                if (flowLayoutPanel1.Controls.Count == 0)
                 {
-                    MessageBox.Show("Hóa đơn trống! Vui lòng thêm vật liệu trước khi thanh toán.");
+                    MessageBox.Show("Hóa đơn trống! Vui lòng thêm vật liệu trước khi thanh toán.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                foreach (var chiTiet in chiTietHoaDonTemps)
+                int? maKhachHang = null;
+                if (!string.IsNullOrWhiteSpace(SearchKhCombo.Text) &&
+                    !SearchKhCombo.Text.Equals("Khách lẻ", StringComparison.OrdinalIgnoreCase) &&
+                    SearchKhCombo.Tag != null)
                 {
-                    DataTable dt = busHoaDon.CheckSoLuongTonKho(chiTiet.MaVatLieu);
-                    int soLuongTon = Convert.ToInt32(dt.Rows[0]["SoLuong"]);
-                    if (soLuongTon < chiTiet.SoLuong)
+                    maKhachHang = Convert.ToInt32(SearchKhCombo.Tag);
+                    Console.WriteLine($"Khách hàng được chọn: {SearchKhCombo.Text} (Mã: {maKhachHang})");
+                }
+
+                foreach (var widget in flowLayoutPanel1.Controls.OfType<Wiget2>())
+                {
+                    int soLuong = int.Parse(widget.TbSL.Text);
+                    if (soLuong <= 0)
                     {
-                        MessageBox.Show($"Số lượng tồn kho không đủ cho vật liệu {chiTiet.TenVatLieu}! (Tồn: {soLuongTon}, Yêu cầu: {chiTiet.SoLuong})");
+                        MessageBox.Show($"Số lượng của {widget.Title2.Text} phải lớn hơn 0!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    DataTable dt = busHoaDon.CheckSoLuongTonKho(widget.MaVatLieu);
+                    int soLuongTon = Convert.ToInt32(dt.Rows[0]["SoLuong"]);
+                    if (soLuongTon < soLuong)
+                    {
+                        MessageBox.Show($"Số lượng tồn kho không đủ cho vật liệu {widget.Title2.Text}! (Tồn: {soLuongTon}, Yêu cầu: {soLuong})", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
-                foreach (var chiTiet in chiTietHoaDonTemps)
+
+                if (maKhachHang.HasValue)
                 {
-                    busHoaDon.AddChiTietHoaDon(_maHoaDon.Value, chiTiet.MaVatLieu, chiTiet.SoLuong);
+                    busHoaDon.UpdateHoaDon(_maHoaDon.Value, maKhachHang,"Tiền mặt", "Chờ thanh toán", CurrentUser.MaTK);
                 }
+
+                foreach (var widget in flowLayoutPanel1.Controls.OfType<Wiget2>())
+                {
+                    int soLuong = int.Parse(widget.TbSL.Text);
+                    busHoaDon.AddChiTietHoaDon(_maHoaDon.Value, widget.MaVatLieu, soLuong);
+                }
+
                 busHoaDon.UpdateTHoaDon(_maHoaDon.Value, "Đã thanh toán");
 
-                MessageBox.Show("Thanh toán thành công!");
+                MessageBox.Show($"Thanh toán thành công!  (Mã: {maKhachHang})", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 FrmHoaDon frmHoaDon = Application.OpenForms.OfType<FrmHoaDon>().FirstOrDefault();
                 if (frmHoaDon != null)
                 {
@@ -198,7 +201,8 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi thanh toán: " + ex.Message);
+                MessageBox.Show($"Lỗi khi thanh toán: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Lỗi thanh toán: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
         private void Widget_Click(Wiget widget)
@@ -222,13 +226,33 @@ namespace GUI
             {
                 int maTKLap = CurrentUser.MaTK;
                 int? maKhachHang = null;
+
+                if (!string.IsNullOrWhiteSpace(SearchKhCombo.Text) &&
+                    !SearchKhCombo.Text.Equals("Khách lẻ", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (SearchKhCombo.SelectedItem is DTO_Khach selectedKhach)
+                    {
+                        maKhachHang = selectedKhach.MaKhachHang;
+                        Console.WriteLine($"Đã chọn khách hàng: {selectedKhach.MaKhachHang} - {selectedKhach.Ten}");
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Không tìm thấy mã khách hàng. Vui lòng chọn lại.");
+                    }
+                }
+
                 return busHoaDon.CreateHoaDon(maTKLap, maKhachHang);
             }
             catch (Exception ex)
             {
-                throw new Exception("Không thể tạo hóa đơn mới: " + ex.Message);
+                Console.WriteLine($"Lỗi khi tạo hóa đơn mới: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                throw;
             }
         }
+
+
+
+
         public class BufferedSplitContainer : SplitContainer
         {
             public BufferedSplitContainer()
@@ -301,6 +325,7 @@ namespace GUI
                 }
             }
         }
+
         private void AddHoaDon_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (flowLayoutPanel1.Controls.Count == 0 && _maHoaDon.HasValue)
@@ -314,17 +339,83 @@ namespace GUI
 
                     if (result == DialogResult.Yes)
                     {
-                        busHoaDon.DeleteHoaDonTam(_maHoaDon.Value,CurrentUser.MaTK);
+                        busHoaDon.DeleteHoaDonTam(_maHoaDon.Value, CurrentUser.MaTK);
                     }
                     else
                     {
-                        e.Cancel = true; 
+                        e.Cancel = true;
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Lỗi khi xóa hóa đơn tạm: " + ex.Message);
                 }
+            }
+        }
+        private void SearchKhCombo_TextChanged(object sender, EventArgs e)
+        {
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+        private void SearchTimer_Tick(object sender, EventArgs e)
+        {
+            searchTimer.Stop();
+            string searchQuery = SearchKhCombo.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(searchQuery) || searchQuery.Equals("Khách lẻ", StringComparison.OrdinalIgnoreCase))
+            {
+                SearchKhCombo.Items.Clear();
+                SearchKhCombo.Tag = null; 
+                return;
+            }
+
+            try
+            {
+                List<DTO_Khach> results = kh.TimKiemKh(searchQuery);
+
+                SearchKhCombo.Items.Clear();
+                SearchKhCombo.Tag = null; 
+
+                if (results == null || results.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (var item in results)
+                {
+                    if (item == null || string.IsNullOrEmpty(item.Ten)) continue;
+
+                    SearchKhCombo.Items.Add(new { MaKhachHang = item.MaKhachHang, Ten = item.Ten });
+                }
+
+                SearchKhCombo.DroppedDown = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tìm kiếm khách hàng: {ex.Message}",
+                               "Lỗi",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
+            }
+
+        }
+        private void SearchKhCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SearchKhCombo.SelectedItem != null)
+            {
+                var selectedItem = SearchKhCombo.SelectedItem;
+                int maKhachHang = (int)selectedItem.GetType().GetProperty("MaKhachHang").GetValue(selectedItem);
+                string ten = (string)selectedItem.GetType().GetProperty("Ten").GetValue(selectedItem);
+
+                SearchKhCombo.Text = ten; 
+                SearchKhCombo.Tag = maKhachHang; 
+            }
+        }
+        private void SearchKhCombo_Format(object sender, ListControlConvertEventArgs e)
+        {
+            if (e.ListItem != null)
+            {
+                e.Value = e.ListItem.GetType().GetProperty("Ten").GetValue(e.ListItem);
             }
         }
     }

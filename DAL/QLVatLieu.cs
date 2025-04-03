@@ -3,6 +3,9 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 using System.Linq;
+using System.Windows.Forms;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+
 namespace DAL
 {
     public class QLVatLieu : DBConnect
@@ -35,11 +38,62 @@ namespace DAL
                         danhSach.Add(vatLieu);
                     }
                 }
-
             }
             return danhSach;
         }
+        public DataTable LayVatLieuTheoMa(int maVatLieu)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu", conn);
+                cmd.Parameters.AddWithValue("@MaVatLieu", maVatLieu);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+        public DataTable LayTenKhoTheoMa(int maKho)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("SELECT TenKho FROM Kho WHERE MaKho = @MaKho", conn);
+                cmd.Parameters.AddWithValue("@MaKho", maKho);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+        public DataTable LayTenNgTaoTheoMa(int maTk)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("SELECT TenDangNhap FROM QLTK WHERE MaTk = @MaTk", conn);
+                cmd.Parameters.AddWithValue("@MaTk", maTk);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
 
+        public DataTable LayTenLoaiTheoMa(int maLoai)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("SELECT TenLoai FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoaiVatLieu", conn);
+                cmd.Parameters.AddWithValue("@MaLoaiVatLieu", maLoai);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
         public List<DTO_VatLieu> SearchProducts(string keyword)
         {
             List<DTO_VatLieu> danhSach = new List<DTO_VatLieu>();
@@ -65,7 +119,6 @@ namespace DAL
                                 DonGiaNhap = reader.GetDecimal(4),
                                 DonViTinh = reader.GetString(5),
                                 SoLuong = reader.GetInt32(6)
-
                             });
                         }
                     }
@@ -73,6 +126,110 @@ namespace DAL
             }
             return danhSach;
         }
+
+        public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu,int NguoiTao)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("sp_ThemVatLieu", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Ten", ten);
+                cmd.Parameters.AddWithValue("@Loai", loai);
+                cmd.Parameters.AddWithValue("@DonGiaNhap", donGiaNhap);
+                cmd.Parameters.AddWithValue("@DonGiaBan", donGiaBan);
+                cmd.Parameters.AddWithValue("@DonViTinh", donViTinh);
+                cmd.Parameters.AddWithValue("@MaKho", maKho);
+                cmd.Parameters.AddWithValue("@HinhAnh", hinhAnh == null ? (object)DBNull.Value : hinhAnh);
+                cmd.Parameters.AddWithValue("@GhiChu", string.IsNullOrEmpty(ghiChu) ? (object)DBNull.Value : ghiChu);
+                cmd.Parameters.AddWithValue("@NguoiTao",NguoiTao );
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void CapNhatVatLieu(int maVatLieu, string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, byte[] hinhAnh, string ghiChu, int nguoiCapNhat)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+
+            {
+                SqlCommand cmd = new SqlCommand("sp_CapNhatVatLieu", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@MaVatLieu", maVatLieu);
+                cmd.Parameters.AddWithValue("@Ten", ten);
+                cmd.Parameters.AddWithValue("@Loai", loai);
+                cmd.Parameters.AddWithValue("@DonGiaNhap", donGiaNhap);
+                cmd.Parameters.AddWithValue("@DonGiaBan", donGiaBan);
+                cmd.Parameters.AddWithValue("@DonViTinh", donViTinh);
+                cmd.Parameters.AddWithValue("@HinhAnh", hinhAnh == null ? (object)DBNull.Value : hinhAnh);
+                cmd.Parameters.AddWithValue("@GhiChu", string.IsNullOrEmpty(ghiChu) ? (object)DBNull.Value : ghiChu);
+                cmd.Parameters.AddWithValue("@NguoiCapNhat", nguoiCapNhat);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void XoaVatLieu(int maVatLieu, int nguoiCapNhat)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+
+            {
+                SqlCommand cmd = new SqlCommand("sp_XoaVatLieu", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@MaVatLieu", maVatLieu);
+                cmd.Parameters.AddWithValue("@NguoiCapNhat", nguoiCapNhat);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+      public DataTable LayDanhSachLoaiVatLieu()
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("sp_LayDanhSachLoaiVatLieu", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+
+        public DataTable LayDanhSachDonViTinh()
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("sp_LayDanhSachDonViTinh", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+        public DataTable LayDanhSachKho()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Kho", conn))
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi lấy danh sách kho: {ex.Message}");
+            }
+            return dt;
+        }
+
     }
 }
-

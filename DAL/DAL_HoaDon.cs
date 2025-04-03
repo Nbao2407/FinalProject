@@ -122,6 +122,7 @@ namespace DAL
             }
             return danhSachHoaDon;
         }
+      
 
         public DataTable GetVatLieu()
         {

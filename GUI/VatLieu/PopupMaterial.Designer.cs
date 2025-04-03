@@ -33,9 +33,8 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             lblID = new Label();
             lblName = new ReaLTaiizor.Controls.BigLabel();
-            roundedPictureBox1 = new Helpler.RoundedPictureBox();
             panel5 = new Panel();
-            roundedPictureBox2 = new Helpler.RoundedPictureBox();
+            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
             txtEmail = new Label();
             dtpNgayTao = new ReaLTaiizor.Controls.PoisonDateTime();
@@ -44,21 +43,18 @@
             bigLabel2 = new ReaLTaiizor.Controls.BigLabel();
             txtNgTao = new ReaLTaiizor.Controls.BigLabel();
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
-            pictureBox1 = new PictureBox();
             TbGiaBan = new ReaLTaiizor.Controls.SmallTextBox();
             label1 = new Label();
             lblType = new Label();
-            TbSoLuong = new ReaLTaiizor.Controls.SmallTextBox();
-            label3 = new Label();
             lblKho = new Label();
-            dungeonRichTextBox1 = new ReaLTaiizor.Controls.DungeonRichTextBox();
+            TbNote = new ReaLTaiizor.Controls.DungeonRichTextBox();
             groupBox1 = new GroupBox();
+            pictureBox2 = new PictureBox();
             tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // Ngay
@@ -68,7 +64,7 @@
             Ngay.CustomBGColor = Color.Transparent;
             Ngay.Font = new Font("Tahoma", 11F);
             Ngay.ForeColor = Color.Black;
-            Ngay.Location = new Point(266, 98);
+            Ngay.Location = new Point(286, 97);
             Ngay.MaxLength = 32767;
             Ngay.Multiline = false;
             Ngay.Name = "Ngay";
@@ -90,7 +86,7 @@
             TbGiaNhap.MaxLength = 32767;
             TbGiaNhap.Multiline = false;
             TbGiaNhap.Name = "TbGiaNhap";
-            TbGiaNhap.ReadOnly = false;
+            TbGiaNhap.ReadOnly = true;
             TbGiaNhap.Size = new Size(219, 28);
             TbGiaNhap.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbGiaNhap.TabIndex = 74;
@@ -104,20 +100,21 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34.02062F));
             tableLayoutPanel1.Controls.Add(lblID, 1, 0);
             tableLayoutPanel1.Controls.Add(lblName, 0, 0);
-            tableLayoutPanel1.Location = new Point(171, 44);
+            tableLayoutPanel1.Location = new Point(191, 44);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Size = new Size(291, 41);
+            tableLayoutPanel1.Size = new Size(407, 41);
             tableLayoutPanel1.TabIndex = 69;
             // 
             // lblID
             // 
             lblID.AutoSize = true;
             lblID.Dock = DockStyle.Left;
-            lblID.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblID.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblID.ForeColor = Color.Cyan;
             lblID.ImageAlign = ContentAlignment.MiddleRight;
-            lblID.Location = new Point(194, 0);
+            lblID.Location = new Point(271, 0);
             lblID.Name = "lblID";
             lblID.Size = new Size(22, 41);
             lblID.TabIndex = 45;
@@ -138,26 +135,10 @@
             lblName.Text = "Tên";
             lblName.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // roundedPictureBox1
-            // 
-            roundedPictureBox1.BorderColor = Color.Transparent;
-            roundedPictureBox1.BorderRadius = 20;
-            roundedPictureBox1.BorderThickness = 0F;
-            roundedPictureBox1.ErrorImage = null;
-            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
-            roundedPictureBox1.InitialImage = null;
-            roundedPictureBox1.Location = new Point(830, 7);
-            roundedPictureBox1.Name = "roundedPictureBox1";
-            roundedPictureBox1.Size = new Size(26, 26);
-            roundedPictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            roundedPictureBox1.TabIndex = 41;
-            roundedPictureBox1.TabStop = false;
-            // 
             // panel5
             // 
             panel5.BackColor = Color.FromArgb(44, 62, 80);
             panel5.Controls.Add(roundedPictureBox2);
-            panel5.Controls.Add(roundedPictureBox1);
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
             panel5.Name = "panel5";
@@ -205,12 +186,13 @@
             // dtpNgayTao
             // 
             dtpNgayTao.FontWeight = ReaLTaiizor.Extension.Poison.PoisonDateTimeWeight.Bold;
-            dtpNgayTao.Location = new Point(266, 99);
+            dtpNgayTao.Location = new Point(286, 99);
             dtpNgayTao.MinimumSize = new Size(0, 29);
             dtpNgayTao.Name = "dtpNgayTao";
             dtpNgayTao.RightToLeft = RightToLeft.No;
             dtpNgayTao.Size = new Size(202, 29);
             dtpNgayTao.TabIndex = 68;
+            dtpNgayTao.Visible = false;
             // 
             // BtnEdit
             // 
@@ -221,7 +203,7 @@
             BtnEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnEdit.HoverTextColor = Color.FromArgb(48, 49, 51);
             BtnEdit.InfoColor = Color.FromArgb(144, 147, 153);
-            BtnEdit.Location = new Point(697, 339);
+            BtnEdit.Location = new Point(687, 339);
             BtnEdit.Name = "BtnEdit";
             BtnEdit.PrimaryColor = Color.FromArgb(39, 174, 97);
             BtnEdit.Size = new Size(106, 30);
@@ -248,7 +230,7 @@
             bigLabel2.BackColor = Color.Transparent;
             bigLabel2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             bigLabel2.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel2.Location = new Point(178, 101);
+            bigLabel2.Location = new Point(198, 101);
             bigLabel2.Name = "bigLabel2";
             bigLabel2.Size = new Size(80, 21);
             bigLabel2.TabIndex = 56;
@@ -260,11 +242,12 @@
             txtNgTao.BackColor = Color.Transparent;
             txtNgTao.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtNgTao.ForeColor = Color.FromArgb(80, 80, 80);
-            txtNgTao.Location = new Point(600, 103);
+            txtNgTao.Location = new Point(620, 103);
             txtNgTao.Name = "txtNgTao";
             txtNgTao.Size = new Size(20, 21);
             txtNgTao.TabIndex = 55;
             txtNgTao.Text = "X";
+            txtNgTao.Click += txtNgTao_Click;
             // 
             // bigLabel5
             // 
@@ -272,19 +255,11 @@
             bigLabel5.BackColor = Color.Transparent;
             bigLabel5.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             bigLabel5.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel5.Location = new Point(507, 103);
+            bigLabel5.Location = new Point(527, 103);
             bigLabel5.Name = "bigLabel5";
             bigLabel5.Size = new Size(87, 21);
             bigLabel5.TabIndex = 54;
             bigLabel5.Text = "Người tạo :";
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Location = new Point(22, 44);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(118, 118);
-            pictureBox1.TabIndex = 75;
-            pictureBox1.TabStop = false;
             // 
             // TbGiaBan
             // 
@@ -297,7 +272,7 @@
             TbGiaBan.MaxLength = 32767;
             TbGiaBan.Multiline = false;
             TbGiaBan.Name = "TbGiaBan";
-            TbGiaBan.ReadOnly = false;
+            TbGiaBan.ReadOnly = true;
             TbGiaBan.Size = new Size(219, 28);
             TbGiaBan.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbGiaBan.TabIndex = 76;
@@ -308,7 +283,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(178, 141);
+            label1.Location = new Point(198, 141);
             label1.Name = "label1";
             label1.Size = new Size(100, 21);
             label1.TabIndex = 77;
@@ -318,69 +293,41 @@
             // 
             lblType.AutoSize = true;
             lblType.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblType.Location = new Point(297, 141);
+            lblType.Location = new Point(317, 141);
             lblType.Name = "lblType";
             lblType.Size = new Size(46, 21);
             lblType.TabIndex = 78;
             lblType.Text = "Gạch";
             // 
-            // TbSoLuong
-            // 
-            TbSoLuong.BackColor = Color.Transparent;
-            TbSoLuong.BorderColor = Color.FromArgb(180, 180, 180);
-            TbSoLuong.CustomBGColor = Color.Transparent;
-            TbSoLuong.Font = new Font("Tahoma", 11F);
-            TbSoLuong.ForeColor = Color.DimGray;
-            TbSoLuong.Location = new Point(584, 212);
-            TbSoLuong.MaxLength = 32767;
-            TbSoLuong.Multiline = false;
-            TbSoLuong.Name = "TbSoLuong";
-            TbSoLuong.ReadOnly = false;
-            TbSoLuong.Size = new Size(219, 28);
-            TbSoLuong.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            TbSoLuong.TabIndex = 80;
-            TbSoLuong.TextAlignment = HorizontalAlignment.Left;
-            TbSoLuong.UseSystemPasswordChar = false;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.Location = new Point(585, 182);
-            label3.Name = "label3";
-            label3.Size = new Size(66, 21);
-            label3.TabIndex = 79;
-            label3.Text = "Tồn kho";
-            // 
             // lblKho
             // 
             lblKho.AutoSize = true;
             lblKho.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblKho.Location = new Point(507, 141);
+            lblKho.Location = new Point(527, 141);
             lblKho.Name = "lblKho";
             lblKho.Size = new Size(37, 21);
             lblKho.TabIndex = 81;
             lblKho.Text = "Kho";
             // 
-            // dungeonRichTextBox1
+            // TbNote
             // 
-            dungeonRichTextBox1.AutoWordSelection = false;
-            dungeonRichTextBox1.BackColor = Color.Transparent;
-            dungeonRichTextBox1.BorderColor = Color.FromArgb(180, 180, 180);
-            dungeonRichTextBox1.EdgeColor = Color.White;
-            dungeonRichTextBox1.Font = new Font("Tahoma", 10F);
-            dungeonRichTextBox1.ForeColor = Color.Black;
-            dungeonRichTextBox1.Location = new Point(6, 26);
-            dungeonRichTextBox1.Name = "dungeonRichTextBox1";
-            dungeonRichTextBox1.ReadOnly = false;
-            dungeonRichTextBox1.Size = new Size(765, 32);
-            dungeonRichTextBox1.TabIndex = 42;
-            dungeonRichTextBox1.TextBackColor = Color.White;
-            dungeonRichTextBox1.WordWrap = true;
+            TbNote.AutoWordSelection = false;
+            TbNote.BackColor = Color.Transparent;
+            TbNote.BorderColor = Color.FromArgb(180, 180, 180);
+            TbNote.EdgeColor = Color.White;
+            TbNote.Font = new Font("Tahoma", 10F);
+            TbNote.ForeColor = Color.Black;
+            TbNote.Location = new Point(6, 26);
+            TbNote.Name = "TbNote";
+            TbNote.ReadOnly = true;
+            TbNote.Size = new Size(765, 32);
+            TbNote.TabIndex = 42;
+            TbNote.TextBackColor = Color.White;
+            TbNote.WordWrap = true;
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(dungeonRichTextBox1);
+            groupBox1.Controls.Add(TbNote);
             groupBox1.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(22, 256);
             groupBox1.Name = "groupBox1";
@@ -389,19 +336,27 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Ghi chú";
             // 
+            // pictureBox2
+            // 
+            pictureBox2.BackColor = Color.LightGray;
+            pictureBox2.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox2.Location = new Point(33, 44);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(134, 130);
+            pictureBox2.TabIndex = 82;
+            pictureBox2.TabStop = false;
+            // 
             // PopupMaterial
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(815, 385);
+            Controls.Add(pictureBox2);
             Controls.Add(groupBox1);
             Controls.Add(lblKho);
-            Controls.Add(TbSoLuong);
-            Controls.Add(label3);
             Controls.Add(lblType);
             Controls.Add(label1);
             Controls.Add(TbGiaBan);
-            Controls.Add(pictureBox1);
             Controls.Add(Ngay);
             Controls.Add(TbGiaNhap);
             Controls.Add(tableLayoutPanel1);
@@ -419,11 +374,10 @@
             Text = "PopupMaterial";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             panel5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -435,7 +389,6 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Label lblID;
         private ReaLTaiizor.Controls.BigLabel lblName;
-        private Helpler.RoundedPictureBox roundedPictureBox1;
         private Panel panel5;
         private ReaLTaiizor.Controls.AloneButton BtnDelete;
         private Label txtEmail;
@@ -445,16 +398,14 @@
         private ReaLTaiizor.Controls.BigLabel bigLabel2;
         private ReaLTaiizor.Controls.BigLabel txtNgTao;
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
-        private PictureBox pictureBox1;
         private ReaLTaiizor.Controls.SmallTextBox TbGiaBan;
         private Label label1;
         private Label lblType;
-        private ReaLTaiizor.Controls.SmallTextBox TbSoLuong;
-        private Label label3;
         private ReaLTaiizor.Controls.SmallTextBox smallTextBox1;
         private Label lblKho;
-        private ReaLTaiizor.Controls.DungeonRichTextBox dungeonRichTextBox1;
+        private ReaLTaiizor.Controls.DungeonRichTextBox TbNote;
         private GroupBox groupBox1;
         private Helpler.RoundedPictureBox roundedPictureBox2;
+        private PictureBox pictureBox2;
     }
 }

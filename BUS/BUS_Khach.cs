@@ -15,6 +15,10 @@ namespace BUS
         {
             return dalKH.TimKiemKhachHang(keyword);
         }
+        public List<DTO_Khach> TimKiemKh(string searchQuery)
+        {
+            return dalKH.TimKiemKhachHangtenid(searchQuery);
+        }
         public List<DTO_Khach> LayDanhSachKhach()
         {
             return dalKH.GetAllKhach();

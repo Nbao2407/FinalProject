@@ -92,7 +92,6 @@
             dataGridView1.TabIndex = 0;
             dataGridView1.CellContentClick += dataGridView1_CellClick;
             dataGridView1.CellContentDoubleClick += dataGridView1_CellContentDoubleClick;
-            dataGridView1.SelectionChanged += dgv_SelectionChanged;
             // 
             // txtSearch
             // 

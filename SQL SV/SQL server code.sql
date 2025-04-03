@@ -168,11 +168,11 @@ VALUES
     (N'Công ty C', N'789 Đường DEF, Đà Nẵng', N'0935123456', N'ncc_c@example.com', N'admin', N'Hoạt động'),
     (N'Công ty D', N'101 Đường GHI, Cần Thơ', N'0945123456', N'ncc_d@example.com', N'admin', N'Hoạt động');
 
+
 -- Thêm dữ liệu loại vật liệu
 INSERT INTO QLLoaiVatLieu (TenLoai)
 VALUES 
-    (N'Thạch cao'),
-    (N'Sơn');
+	(N'Đá');
 
 -- Thêm dữ liệu khách hàng và cập nhật người tạo
 UPDATE QLKH
@@ -189,8 +189,8 @@ WHERE kh.TenNguoiTao IS NULL;
 DELETE FROM ChiTietHoaDon
 WHERE MaHoaDon IN (
     SELECT MaHoaDon FROM QLHoaDon
-    WHERE NgayLap = '2025-03-30'
+    WHERE NgayLap = '2025-04-03'
 );
 
 DELETE FROM QLHoaDon
-WHERE NgayLap = '2025-03-30';
+WHERE NgayLap = '2025-04-03';

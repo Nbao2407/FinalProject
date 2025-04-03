@@ -582,3 +582,190 @@ BEGIN
     END CATCH
 END;
 GO
+CREATE PROCEDURE sp_XoaHoaDonTam
+    @MaHoaDon INT,
+    @NguoiCapNhat INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        BEGIN TRANSACTION;
+
+        -- Kiểm tra hóa đơn có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon)
+            THROW 50001, N'Hóa đơn không tồn tại!', 1;
+
+        -- Kiểm tra trạng thái hóa đơn (chỉ cho phép xóa hóa đơn tạm - Chờ thanh toán)
+        IF NOT EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon AND TrangThai = N'Chờ thanh toán')
+            THROW 50002, N'Chỉ có thể xóa hóa đơn đang ở trạng thái "Chờ thanh toán"!', 1;
+
+        -- Hoàn lại số lượng vật liệu trong kho nếu có chi tiết hóa đơn
+        IF EXISTS (SELECT 1 FROM ChiTietHoaDon WHERE MaHoaDon = @MaHoaDon)
+        BEGIN
+            UPDATE QLVatLieu
+            SET SoLuong = v.SoLuong + cthd.SoLuong
+            FROM QLVatLieu v
+            INNER JOIN ChiTietHoaDon cthd ON v.MaVatLieu = cthd.MaVatLieu
+            WHERE cthd.MaHoaDon = @MaHoaDon;
+
+            -- Xóa chi tiết hóa đơn
+            DELETE FROM ChiTietHoaDon
+            WHERE MaHoaDon = @MaHoaDon;
+        END
+
+        -- Xóa hóa đơn
+        DELETE FROM QLHoaDon
+        WHERE MaHoaDon = @MaHoaDon;
+
+        -- Ghi log hoạt động
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLHoaDon', @MaHoaDon, N'Xóa tạm', N'Chờ thanh toán', N'Đã xóa', N'Xóa hóa đơn tạm khi đóng form');
+
+        -- Commit transaction nếu thành công
+        COMMIT TRANSACTION;
+
+        SELECT N'Xóa hóa đơn tạm thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        -- Rollback nếu có lỗi
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        -- Ném lỗi ra ngoài để xử lý
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_TimKiemKhachHang
+    @MaKhachHang INT = NULL,        -- Mã khách hàng (có thể NULL)
+    @Ten NVARCHAR(100) = NULL       -- Tên khách hàng (có thể NULL)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        kh.MaKhachHang,
+        kh.Ten,
+        kh.NgaySinh,
+        kh.GioiTinh,
+        kh.SDT,
+        kh.Email,
+        kh.DiaChi,
+        kh.TenNguoiTao,
+        tk.TenDangNhap AS NguoiTao,
+        kh.NgayTao,
+        kh.TrangThai
+    FROM QLKH kh
+    LEFT JOIN QLTK tk ON kh.NguoiTao = tk.MaTK
+    WHERE 
+        -- Tìm theo MaKhachHang nếu được cung cấp
+        (@MaKhachHang IS NULL OR kh.MaKhachHang = @MaKhachHang)
+        AND 
+        -- Tìm theo Ten nếu được cung cấp (tìm kiếm gần đúng)
+        (@Ten IS NULL OR kh.Ten LIKE '%' + @Ten + '%')
+        -- Chỉ lấy khách hàng có trạng thái hợp lệ
+        AND kh.TrangThai IN (N'Hoạt động')
+    ORDER BY kh.NgayTao DESC;
+END;
+GO
+ALTER PROCEDURE sp_ThemVatLieu
+    @Ten NVARCHAR(100),
+    @Loai INT,
+    @DonGiaNhap DECIMAL(18,2),
+    @DonGiaBan DECIMAL(18,2),
+    @DonViTinh NVARCHAR(50),
+    @MaKho INT,
+    @HinhAnh VARBINARY(MAX) = NULL, -- Hình ảnh có thể null
+    @GhiChu NVARCHAR(255) = NULL    -- Ghi chú có thể null
+AS
+BEGIN
+    INSERT INTO QLVatLieu (Ten, Loai, DonGiaNhap, DonGiaBan, DonViTinh, SoLuong, MaKho, TrangThai, HinhAnh, GhiChu)
+    VALUES (@Ten, @Loai, @DonGiaNhap, @DonGiaBan, @DonViTinh, 0, @MaKho, N'Hoạt động', @HinhAnh, @GhiChu);
+END;
+GO
+Create PROCEDURE sp_CapNhatVatLieu
+    @MaVatLieu INT,
+    @Ten NVARCHAR(100),
+    @Loai INT,
+    @DonGiaNhap DECIMAL(18,2),
+    @DonGiaBan DECIMAL(18,2),
+    @DonViTinh NVARCHAR(50),
+    @MaKho INT,
+    @HinhAnh VARBINARY(MAX) = NULL,
+    @GhiChu NVARCHAR(255) = NULL,
+    @NguoiCapNhat INT
+AS
+BEGIN
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu)
+            THROW 50001, N'Vật tư không tồn tại!', 1;
+
+        UPDATE QLVatLieu
+        SET Ten = @Ten,
+            Loai = @Loai,
+            DonGiaNhap = @DonGiaNhap,
+            DonGiaBan = @DonGiaBan,
+            DonViTinh = @DonViTinh,
+            MaKho = @MaKho,
+            HinhAnh = @HinhAnh,
+            GhiChu = @GhiChu,
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiCapNhat
+        WHERE MaVatLieu = @MaVatLieu;
+
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLVatLieu', @MaVatLieu, N'Cập nhật', N'Cập nhật thông tin vật tư');
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_XoaVatLieu
+    @MaVatLieu INT,
+    @NguoiCapNhat INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Kiểm tra vật tư có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu)
+            THROW 50001, N'Vật tư không tồn tại!', 1;
+
+        -- Kiểm tra vật tư có trong đơn nhập hoặc hóa đơn không
+        IF EXISTS (SELECT 1 FROM ChiTietDonNhap WHERE MaVatLieu = @MaVatLieu)
+            OR EXISTS (SELECT 1 FROM ChiTietHoaDon WHERE MaVatLieu = @MaVatLieu)
+            THROW 50002, N'Không thể xóa vật tư vì đã có trong đơn nhập hoặc hóa đơn!', 1;
+
+        -- Xóa vật tư
+        DELETE FROM QLVatLieu
+        WHERE MaVatLieu = @MaVatLieu;
+
+        -- Ghi log
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLVatLieu', @MaVatLieu, N'Xóa', N'Xóa vật tư');
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_LayDanhSachDonViTinh
+AS
+BEGIN
+    SELECT DISTINCT DonViTinh
+    FROM QLVatLieu
+    WHERE DonViTinh IS NOT NULL
+    ORDER BY DonViTinh;
+END;
+GO
+CREATE PROCEDURE sp_LayDanhSachLoaiVatLieu
+AS
+BEGIN
+    SELECT MaLoaiVatLieu, TenLoai
+    FROM QLLoaiVatLieu
+    WHERE TrangThai = N'Hoạt động';
+END;
+GO

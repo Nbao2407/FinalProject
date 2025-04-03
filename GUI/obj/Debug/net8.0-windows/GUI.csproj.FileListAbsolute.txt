@@ -495,3 +495,4 @@ D:\Pro213\FinalProject\GUI\obj\Debug\net8.0-windows\GUI.pdb
 D:\Pro213\FinalProject\GUI\obj\Debug\net8.0-windows\GUI.genruntimeconfig.cache
 D:\Pro213\FinalProject\GUI\obj\Debug\net8.0-windows\ref\GUI.dll
 D:\Pro213\FinalProject\GUI\obj\Debug\net8.0-windows\GUI.EditNhap.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.EditNhap.resources
