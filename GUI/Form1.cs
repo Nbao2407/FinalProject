@@ -212,7 +212,7 @@ namespace GUI
             if (userList != null && userList.Count > 0)
             {
                 DTO_TK tk = userList[0];
-                user = new DTO_TK
+                user = new DTO_TK()
                 {
                     maTK = tk.maTK,             
                     tenDangNhap = tk.tenDangNhap, 

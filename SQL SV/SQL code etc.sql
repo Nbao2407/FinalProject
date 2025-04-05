@@ -686,14 +686,13 @@ BEGIN
     VALUES (@Ten, @Loai, @DonGiaNhap, @DonGiaBan, @DonViTinh, 0, @MaKho, N'Hoạt động', @HinhAnh, @GhiChu);
 END;
 GO
-Create PROCEDURE sp_CapNhatVatLieu
+Alter PROCEDURE sp_CapNhatVatLieu
     @MaVatLieu INT,
     @Ten NVARCHAR(100),
     @Loai INT,
     @DonGiaNhap DECIMAL(18,2),
     @DonGiaBan DECIMAL(18,2),
     @DonViTinh NVARCHAR(50),
-    @MaKho INT,
     @HinhAnh VARBINARY(MAX) = NULL,
     @GhiChu NVARCHAR(255) = NULL,
     @NguoiCapNhat INT
@@ -709,7 +708,6 @@ BEGIN
             DonGiaNhap = @DonGiaNhap,
             DonGiaBan = @DonGiaBan,
             DonViTinh = @DonViTinh,
-            MaKho = @MaKho,
             HinhAnh = @HinhAnh,
             GhiChu = @GhiChu,
             NgayCapNhat = GETDATE(),

@@ -45,12 +45,9 @@ namespace GUI
         }
         private void ConfigureDataGridView()
         {
-            dataGridView.AutoGenerateColumns = false;
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaLoaiVatLieu", DataPropertyName = "MaLoaiVatLieu", HeaderText = "Mã Loại" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenLoai", DataPropertyName = "TenLoai", HeaderText = "Tên Loại" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", DataPropertyName = "TrangThai", HeaderText = "Trạng thái" });
-
-
+            dataGridView.Columns["MaLoaiVatLieu"].HeaderText= "Mã loại";
+            dataGridView.Columns["TenLoai"].HeaderText = "Tên loại";
+            dataGridView.Columns["TrangThai"].HeaderText = "Trạng thái";
             DataGridViewHelper.CustomizeDataGridView(dataGridView);
             ResizeColumns();
         }

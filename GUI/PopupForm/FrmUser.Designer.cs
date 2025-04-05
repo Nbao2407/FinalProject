@@ -46,7 +46,7 @@ namespace GUI
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
             BtnChangePass = new ReaLTaiizor.Controls.Button();
             btnSave = new ReaLTaiizor.Controls.Button();
-            button1 = new ReaLTaiizor.Controls.Button();
+            btnCancel = new ReaLTaiizor.Controls.Button();
             panel1 = new Panel();
             parrotPictureBox2 = new ReaLTaiizor.Controls.ParrotPictureBox();
             UserName = new ReaLTaiizor.Controls.BigLabel();
@@ -129,12 +129,12 @@ namespace GUI
             TbAddress.EdgeColor = Color.White;
             TbAddress.Font = new Font("Tahoma", 11F);
             TbAddress.ForeColor = Color.FromArgb(85, 85, 85);
-            TbAddress.Location = new Point(383, 64);
+            TbAddress.Location = new Point(392, 64);
             TbAddress.MaxLength = 32767;
             TbAddress.Multiline = false;
             TbAddress.Name = "TbAddress";
             TbAddress.ReadOnly = false;
-            TbAddress.Size = new Size(300, 28);
+            TbAddress.Size = new Size(291, 28);
             TbAddress.TabIndex = 28;
             TbAddress.TextAlignment = HorizontalAlignment.Left;
             TbAddress.UseSystemPasswordChar = false;
@@ -163,7 +163,7 @@ namespace GUI
             TbNote.EdgeColor = Color.White;
             TbNote.Font = new Font("Tahoma", 11F);
             TbNote.ForeColor = Color.FromArgb(85, 85, 85);
-            TbNote.Location = new Point(17, 239);
+            TbNote.Location = new Point(17, 230);
             TbNote.MaxLength = 32767;
             TbNote.Multiline = false;
             TbNote.Name = "TbNote";
@@ -206,7 +206,7 @@ namespace GUI
             roundedPanel1.Controls.Add(bigLabel5);
             roundedPanel1.Location = new Point(9, 191);
             roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(704, 305);
+            roundedPanel1.Size = new Size(704, 280);
             roundedPanel1.TabIndex = 27;
             // 
             // bigLabel9
@@ -217,7 +217,7 @@ namespace GUI
             bigLabel9.BackColor = Color.Transparent;
             bigLabel9.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel9.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel9.Location = new Point(17, 204);
+            bigLabel9.Location = new Point(392, 27);
             bigLabel9.Name = "bigLabel9";
             bigLabel9.Size = new Size(70, 21);
             bigLabel9.TabIndex = 23;
@@ -231,7 +231,7 @@ namespace GUI
             bigLabel4.BackColor = Color.Transparent;
             bigLabel4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel4.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel4.Location = new Point(17, 119);
+            bigLabel4.Location = new Point(17, 116);
             bigLabel4.Name = "bigLabel4";
             bigLabel4.Size = new Size(53, 21);
             bigLabel4.TabIndex = 14;
@@ -245,7 +245,7 @@ namespace GUI
             bigLabel2.BackColor = Color.Transparent;
             bigLabel2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel2.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel2.Location = new Point(383, 39);
+            bigLabel2.Location = new Point(17, 197);
             bigLabel2.Name = "bigLabel2";
             bigLabel2.Size = new Size(65, 21);
             bigLabel2.TabIndex = 21;
@@ -259,7 +259,7 @@ namespace GUI
             bigLabel3.BackColor = Color.Transparent;
             bigLabel3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel3.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel3.Location = new Point(15, 39);
+            bigLabel3.Location = new Point(15, 27);
             bigLabel3.Name = "bigLabel3";
             bigLabel3.Size = new Size(125, 21);
             bigLabel3.TabIndex = 6;
@@ -273,7 +273,7 @@ namespace GUI
             bigLabel5.BackColor = Color.Transparent;
             bigLabel5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel5.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel5.Location = new Point(383, 119);
+            bigLabel5.Location = new Point(392, 116);
             bigLabel5.Name = "bigLabel5";
             bigLabel5.Size = new Size(40, 21);
             bigLabel5.TabIndex = 16;
@@ -291,7 +291,7 @@ namespace GUI
             BtnChangePass.Image = null;
             BtnChangePass.ImageAlign = ContentAlignment.MiddleRight;
             BtnChangePass.InactiveColor = Color.FromArgb(0, 131, 143);
-            BtnChangePass.Location = new Point(9, 518);
+            BtnChangePass.Location = new Point(9, 497);
             BtnChangePass.Margin = new Padding(3, 3, 160, 3);
             BtnChangePass.Name = "BtnChangePass";
             BtnChangePass.Padding = new Padding(0, 0, 100, 0);
@@ -315,7 +315,7 @@ namespace GUI
             btnSave.Image = null;
             btnSave.ImageAlign = ContentAlignment.MiddleRight;
             btnSave.InactiveColor = Color.FromArgb(76, 175, 80);
-            btnSave.Location = new Point(590, 518);
+            btnSave.Location = new Point(590, 496);
             btnSave.Margin = new Padding(3, 3, 160, 3);
             btnSave.Name = "btnSave";
             btnSave.Padding = new Padding(0, 0, 100, 0);
@@ -327,29 +327,30 @@ namespace GUI
             btnSave.Text = "Lưu";
             btnSave.TextAlignment = StringAlignment.Center;
             // 
-            // button1
+            // btnCancel
             // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.BackColor = Color.Transparent;
-            button1.BorderColor = Color.FromArgb(52, 73, 94);
-            button1.Cursor = Cursors.Hand;
-            button1.EnteredBorderColor = Color.Transparent;
-            button1.EnteredColor = Color.FromArgb(32, 34, 37);
-            button1.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Image = null;
-            button1.ImageAlign = ContentAlignment.MiddleRight;
-            button1.InactiveColor = Color.FromArgb(161, 161, 161);
-            button1.Location = new Point(450, 518);
-            button1.Margin = new Padding(3, 3, 160, 3);
-            button1.Name = "button1";
-            button1.Padding = new Padding(0, 0, 100, 0);
-            button1.PressedBorderColor = Color.Green;
-            button1.PressedColor = Color.Green;
-            button1.RightToLeft = RightToLeft.Yes;
-            button1.Size = new Size(123, 28);
-            button1.TabIndex = 11;
-            button1.Text = "Bỏ qua";
-            button1.TextAlignment = StringAlignment.Center;
+            btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCancel.BackColor = Color.Transparent;
+            btnCancel.BorderColor = Color.FromArgb(52, 73, 94);
+            btnCancel.Cursor = Cursors.Hand;
+            btnCancel.EnteredBorderColor = Color.Transparent;
+            btnCancel.EnteredColor = Color.FromArgb(32, 34, 37);
+            btnCancel.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Image = null;
+            btnCancel.ImageAlign = ContentAlignment.MiddleRight;
+            btnCancel.InactiveColor = Color.FromArgb(161, 161, 161);
+            btnCancel.Location = new Point(448, 496);
+            btnCancel.Margin = new Padding(3, 3, 160, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Padding = new Padding(0, 0, 100, 0);
+            btnCancel.PressedBorderColor = Color.Green;
+            btnCancel.PressedColor = Color.Green;
+            btnCancel.RightToLeft = RightToLeft.Yes;
+            btnCancel.Size = new Size(123, 28);
+            btnCancel.TabIndex = 11;
+            btnCancel.Text = "Bỏ qua";
+            btnCancel.TextAlignment = StringAlignment.Center;
+            btnCancel.Click += btnCancel_Click;
             // 
             // panel1
             // 
@@ -384,6 +385,7 @@ namespace GUI
             parrotPictureBox2.TabIndex = 30;
             parrotPictureBox2.Text = "parrotPictureBox2";
             parrotPictureBox2.TextRenderingType = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+            parrotPictureBox2.Click += parrotPictureBox2_Click;
             // 
             // UserName
             // 
@@ -439,7 +441,7 @@ namespace GUI
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(725, 558);
+            ClientSize = new Size(725, 536);
             Controls.Add(LblID);
             Controls.Add(parrotPictureBox1);
             Controls.Add(panel1);
@@ -449,7 +451,7 @@ namespace GUI
             Controls.Add(TxtVaitro);
             Controls.Add(bigLabel1);
             Controls.Add(BtnChangePass);
-            Controls.Add(button1);
+            Controls.Add(btnCancel);
             Controls.Add(btnSave);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.None;
@@ -482,7 +484,7 @@ namespace GUI
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
         private ReaLTaiizor.Controls.Button BtnChangePass;
         private ReaLTaiizor.Controls.Button btnSave;
-        private ReaLTaiizor.Controls.Button button1;
+        private ReaLTaiizor.Controls.Button btnCancel;
         private Panel panel1;
         private ReaLTaiizor.Controls.BigLabel UserName;
         private ReaLTaiizor.Controls.BigLabel bigLabel1;

@@ -200,12 +200,10 @@ SELECT maTK, tenDangNhap, email, sdt, ChucVu, trangThai, ngayTao , GHICHU ,DiaCh
 
 
 BACKUP DATABASE QLVT 
-TO DISK = 'I:\Pro213\SQL SV\Backup\QLVT.bak'
+TO DISK = 'D:\Pro213\FinalProject\SQL SV\Backup\QLVT.bak'
 WITH FORMAT, INIT, 
 NAME = 'Backup QLVT';
 
-		ALTER TABLE NCC
-DROP COLUMN NguoiTao;
-ALTER TABLE NCC
-ADD NguoiTao INT REFERENCES QLTK(MaTK);
+ALter table QLTK add
+    SDT NVARCHAR(15) CHECK (SDT LIKE '[0-9]%' AND LEN(SDT) BETWEEN 10 AND 15)
 

@@ -48,6 +48,7 @@
             // 
             btnCancel.BackColor = Color.Transparent;
             btnCancel.BorderColor = Color.FromArgb(52, 73, 94);
+            btnCancel.CausesValidation = false;
             btnCancel.Cursor = Cursors.Hand;
             btnCancel.EnteredBorderColor = Color.FromArgb(165, 37, 37);
             btnCancel.EnteredColor = Color.FromArgb(32, 34, 37);

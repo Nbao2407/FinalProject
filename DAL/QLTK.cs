@@ -125,7 +125,7 @@ namespace DAL
                 using (SqlConnection conn = DBConnect.GetConnection())
                 {
                     conn.Open();
-                    string query = "SELECT maTK, tenDangNhap, email, sdt, ChucVu, GHICHU ,DiaChi, ngayTao  FROM QLTK WHERE maTk = @maTk";
+                    string query = "SELECT maTK, TenDangNhap, Email, ChucVu,SDT, GHICHU ,DiaChi FROM QLTK WHERE maTk = @maTk";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@maTk", id); 
@@ -140,8 +140,7 @@ namespace DAL
                                     reader.GetString(3),
                                     reader.GetString(4),
                                     reader.GetString(5),
-                                    reader.GetString(6), 
-                                    reader.GetDateTime(7)
+                                    reader.GetString(6)
                                 ));
                             }
                         }

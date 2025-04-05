@@ -1,42 +1,55 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "I:\\Pro213\\GUI\\",
+  "WorkspaceRootPath": "D:\\Pro213\\FinalProject\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_tk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\ncc\\addncc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:ncc\\addncc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\qltk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\helpler\\validationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:helpler\\validationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\ncc\\addncc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:ncc\\addncc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:popupform\\frmuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|d:\\pro213\\finalproject\\dal\\qltk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|d:\\pro213\\finalproject\\dto\\dto_tk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|d:\\pro213\\finalproject\\gui\\customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\popupform\\frmuser.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:popupform\\frmuser.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\customer\\popupcmer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\customer\\popupcmer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\popupcmer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\customer\\editcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|D:\\Pro213\\FinalProject\\GUI\\customer\\editcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\editcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -55,93 +68,134 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "FrmUser.Designer.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\PopupForm\\FrmUser.Designer.cs",
-              "RelativeDocumentMoniker": "PopupForm\\FrmUser.Designer.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\PopupForm\\FrmUser.Designer.cs",
-              "RelativeToolTip": "PopupForm\\FrmUser.Designer.cs",
-              "ViewState": "AgIAAGkBAAAAAAAAAAASwIIBAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-05T07:30:43.307Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "QLTK.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\QLTK.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\QLTK.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\QLTK.cs",
-              "RelativeToolTip": "..\\DAL\\QLTK.cs",
-              "ViewState": "AgIAAHEAAAAAAAAAAAAcwIcAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-05T07:16:23.277Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "DTO_User.cs",
-              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_User.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_User.cs",
-              "ToolTip": "I:\\Pro213\\DTO\\DTO_User.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_User.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAqwBUAAAAAAAAAAAAAAA==",
+              "Title": "ValidationHelper.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Helpler\\ValidationHelper.cs",
+              "RelativeDocumentMoniker": "Helpler\\ValidationHelper.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Helpler\\ValidationHelper.cs",
+              "RelativeToolTip": "Helpler\\ValidationHelper.cs",
+              "ViewState": "AQIAACQAAAAAAAAAAAAQwBwAAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-05T07:01:24.371Z",
+              "WhenOpened": "2025-04-05T09:24:40.591Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AddNcc.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\NCC\\AddNcc.cs",
+              "RelativeDocumentMoniker": "NCC\\AddNcc.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\NCC\\AddNcc.cs",
+              "RelativeToolTip": "NCC\\AddNcc.cs",
+              "ViewState": "AQIAAFUAAAAAAAAAAAAswGIAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-05T09:24:33.44Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DTO_TK.cs",
-              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_TK.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_TK.cs",
-              "ToolTip": "I:\\Pro213\\DTO\\DTO_TK.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_TK.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAgwCQAAAAfAAAAAAAAAA==",
+              "Title": "AddNcc.cs [Design]",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\NCC\\AddNcc.cs",
+              "RelativeDocumentMoniker": "NCC\\AddNcc.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\NCC\\AddNcc.cs [Design]",
+              "RelativeToolTip": "NCC\\AddNcc.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-05T06:57:04.366Z",
+              "WhenOpened": "2025-04-05T09:18:53.862Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FrmType.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\_Type\\FrmType.cs",
+              "RelativeDocumentMoniker": "_Type\\FrmType.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\_Type\\FrmType.cs",
+              "RelativeToolTip": "_Type\\FrmType.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADQAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-05T08:57:30.675Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
+              "Title": "FrmType.cs [Design]",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\_Type\\FrmType.cs",
+              "RelativeDocumentMoniker": "_Type\\FrmType.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\_Type\\FrmType.cs [Design]",
+              "RelativeToolTip": "_Type\\FrmType.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-05T08:57:28.405Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DTO_TK.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\DTO\\DTO_TK.cs",
+              "RelativeDocumentMoniker": "..\\DTO\\DTO_TK.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\DTO\\DTO_TK.cs",
+              "RelativeToolTip": "..\\DTO\\DTO_TK.cs",
+              "ViewState": "AQIAAA8AAAAAAAAAAAA3wCgAAAB4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-05T08:46:05.166Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "QLTK.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\DAL\\QLTK.cs",
+              "RelativeDocumentMoniker": "..\\DAL\\QLTK.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\DAL\\QLTK.cs",
+              "RelativeToolTip": "..\\DAL\\QLTK.cs",
+              "ViewState": "AQIAAHUAAAAAAAAAAAAswJcAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-05T08:35:59.866Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "Form1.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Form1.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Form1.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAAMUAAAAAAAAAAADgv98AAAASAAAAAAAAAA==",
+              "ViewState": "AQIAAMsAAAAAAAAAAAA4wNYAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-05T06:48:21.259Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "FrmUser.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\PopupForm\\FrmUser.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\PopupForm\\FrmUser.cs",
               "RelativeDocumentMoniker": "PopupForm\\FrmUser.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\PopupForm\\FrmUser.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\PopupForm\\FrmUser.cs",
               "RelativeToolTip": "PopupForm\\FrmUser.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAADgvzgAAAAQAAAAAAAAAA==",
+              "ViewState": "AQIAABUAAAAAAAAAAAAkwFQAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-05T06:32:36.948Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "FrmUser.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\PopupForm\\FrmUser.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\PopupForm\\FrmUser.cs",
               "RelativeDocumentMoniker": "PopupForm\\FrmUser.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\PopupForm\\FrmUser.cs [Design]",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\PopupForm\\FrmUser.cs [Design]",
               "RelativeToolTip": "PopupForm\\FrmUser.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-05T06:31:19.907Z",
@@ -156,22 +210,16 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
+            }
+          ]
+        },
+        {
+          "DockedHeight": 54,
+          "SelectedChildIndex": -1,
+          "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             }
           ]
         }
@@ -183,9 +231,9 @@
       "FloatingWindowState": {
         "Id": "2d79701e-1a70-489d-9a3e-33582bad66ae",
         "Display": 0,
-        "X": 969,
-        "Y": -49,
-        "Width": 2238,
+        "X": 153,
+        "Y": 0,
+        "Width": 1772,
         "Height": 906,
         "WindowState": 0
       },
@@ -196,39 +244,37 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "EditCustomer.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Customer\\EditCustomer.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Customer\\EditCustomer.cs",
               "RelativeDocumentMoniker": "Customer\\EditCustomer.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Customer\\EditCustomer.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Customer\\EditCustomer.cs",
               "RelativeToolTip": "Customer\\EditCustomer.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAQwFcAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-04T21:28:02.23Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "PopupCmer.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Customer\\PopupCmer.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Customer\\PopupCmer.cs",
               "RelativeDocumentMoniker": "Customer\\PopupCmer.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Customer\\PopupCmer.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Customer\\PopupCmer.cs",
               "RelativeToolTip": "Customer\\PopupCmer.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAowEQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-04T10:14:50.11Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "FrmCustomer.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Customer\\FrmCustomer.cs",
+              "DocumentMoniker": "D:\\Pro213\\FinalProject\\GUI\\Customer\\FrmCustomer.cs",
               "RelativeDocumentMoniker": "Customer\\FrmCustomer.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Customer\\FrmCustomer.cs",
+              "ToolTip": "D:\\Pro213\\FinalProject\\GUI\\Customer\\FrmCustomer.cs",
               "RelativeToolTip": "Customer\\FrmCustomer.cs",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAIwFYAAAAnAAAAAAAAAA==",
+              "ViewState": "AQIAAMcAAAAAAAAAAAAswAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-04T10:10:09.314Z",
               "EditorCaption": ""

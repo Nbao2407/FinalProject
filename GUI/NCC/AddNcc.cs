@@ -102,6 +102,7 @@ namespace GUI.NCC
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            this.AutoValidate = AutoValidate.Disable;
             this.Close();
         }
 
@@ -116,6 +117,7 @@ namespace GUI.NCC
                     MessageBox.Show("Thêm nhà cung cấp thành công!");
                     _parentForm.Loaddata();
                     ClearInputFields();
+                    this.Close();
                 }
             }
             catch (Exception ex)

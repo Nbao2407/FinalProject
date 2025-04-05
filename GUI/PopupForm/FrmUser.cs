@@ -35,7 +35,7 @@ namespace GUI
         public FrmUser(DTO_TK tk)
         {
             InitializeComponent();
-            LoadData(tk); 
+            LoadData(tk);
             this.FormBorderStyle = FormBorderStyle.None;
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
             RoundedPictureBox roundedPictureBox = new RoundedPictureBox();
@@ -48,22 +48,20 @@ namespace GUI
             if (tk != null)
             {
                 LblID.Text = tk.maTK.ToString();
-
+                UserName.Text = tk.tenDangNhap.ToString();
                 PlaceholderHelper.SetDataAsPlaceholder(TbName, tk.tenDangNhap ?? "Không có tên đăng nhập");
                 PlaceholderHelper.SetDataAsPlaceholder(TbEmail, tk.email ?? "Không có email");
                 PlaceholderHelper.SetDataAsPlaceholder(TxtVaitro, tk.quyen ?? "Không có vai trò");
                 PlaceholderHelper.SetDataAsPlaceholder(TbPhone, tk.sdt ?? "Không có số điện thoại");
                 PlaceholderHelper.SetDataAsPlaceholder(TbAddress, tk.diaChi ?? "Không có địa chỉ");
                 PlaceholderHelper.SetDataAsPlaceholder(TbNote, tk.ghichu ?? "Không có ghi chú");
-
-                
             }
             else
             {
                 MessageBox.Show("Không tìm thấy thông tin người dùng!");
             }
         }
-           
+
 
 
         private void FrmUser_Load(object sender, EventArgs e)
@@ -72,7 +70,16 @@ namespace GUI
 
         private void parrotPictureBox2_Click(object sender, EventArgs e)
         {
-            this.Close(); 
+            this.Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            TbPhone.Text = string.Empty;
+            TbName.Text = string.Empty;
+            TbEmail.Text = string.Empty;
+            TbNote.Text = string.Empty;
+            TbAddress.Text = string.Empty;
         }
     }
 }
