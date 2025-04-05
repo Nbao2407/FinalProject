@@ -32,9 +32,9 @@ namespace GUI
         {
             label2 = new Label();
             bigLabel2 = new ReaLTaiizor.Controls.BigLabel();
-            bigLabel4 = new ReaLTaiizor.Controls.BigLabel();
+            lblNgTao = new ReaLTaiizor.Controls.BigLabel();
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
-            bigLabel6 = new ReaLTaiizor.Controls.BigLabel();
+            lblName = new ReaLTaiizor.Controls.BigLabel();
             TbPhone = new TextBox();
             panel2 = new Panel();
             TbEmail = new TextBox();
@@ -48,8 +48,8 @@ namespace GUI
             panel5 = new Panel();
             roundedPictureBox1 = new RoundedPictureBox();
             ID = new ReaLTaiizor.Controls.BigLabel();
-            poisonDateTime1 = new ReaLTaiizor.Controls.PoisonDateTime();
             panel3 = new Panel();
+            Ngay = new TextBox();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             SuspendLayout();
@@ -76,17 +76,17 @@ namespace GUI
             bigLabel2.TabIndex = 12;
             bigLabel2.Text = "Ngày tạo :";
             // 
-            // bigLabel4
+            // lblNgTao
             // 
-            bigLabel4.AutoSize = true;
-            bigLabel4.BackColor = Color.Transparent;
-            bigLabel4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            bigLabel4.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel4.Location = new Point(125, 101);
-            bigLabel4.Name = "bigLabel4";
-            bigLabel4.Size = new Size(19, 21);
-            bigLabel4.TabIndex = 11;
-            bigLabel4.Text = "X";
+            lblNgTao.AutoSize = true;
+            lblNgTao.BackColor = Color.Transparent;
+            lblNgTao.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblNgTao.ForeColor = Color.FromArgb(80, 80, 80);
+            lblNgTao.Location = new Point(125, 101);
+            lblNgTao.Name = "lblNgTao";
+            lblNgTao.Size = new Size(19, 21);
+            lblNgTao.TabIndex = 11;
+            lblNgTao.Text = "X";
             // 
             // bigLabel5
             // 
@@ -100,23 +100,23 @@ namespace GUI
             bigLabel5.TabIndex = 10;
             bigLabel5.Text = "Người tạo :";
             // 
-            // bigLabel6
+            // lblName
             // 
-            bigLabel6.AutoSize = true;
-            bigLabel6.BackColor = Color.Transparent;
-            bigLabel6.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            bigLabel6.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel6.Location = new Point(28, 59);
-            bigLabel6.Name = "bigLabel6";
-            bigLabel6.Size = new Size(57, 37);
-            bigLabel6.TabIndex = 9;
-            bigLabel6.Text = "Tên";
+            lblName.AutoSize = true;
+            lblName.BackColor = Color.Transparent;
+            lblName.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblName.ForeColor = Color.FromArgb(80, 80, 80);
+            lblName.Location = new Point(28, 59);
+            lblName.Name = "lblName";
+            lblName.Size = new Size(57, 37);
+            lblName.TabIndex = 9;
+            lblName.Text = "Tên";
             // 
             // TbPhone
             // 
             TbPhone.BackColor = SystemColors.Control;
             TbPhone.BorderStyle = BorderStyle.None;
-            TbPhone.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            TbPhone.Font = new Font("Microsoft Sans Serif", 9.75F);
             TbPhone.ForeColor = Color.Black;
             TbPhone.Location = new Point(32, 215);
             TbPhone.Multiline = true;
@@ -136,7 +136,7 @@ namespace GUI
             // 
             TbEmail.BackColor = SystemColors.Control;
             TbEmail.BorderStyle = BorderStyle.None;
-            TbEmail.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            TbEmail.Font = new Font("Microsoft Sans Serif", 9.75F);
             TbEmail.ForeColor = Color.Black;
             TbEmail.Location = new Point(466, 218);
             TbEmail.Multiline = true;
@@ -166,7 +166,7 @@ namespace GUI
             // 
             TbAddress.BackColor = SystemColors.Control;
             TbAddress.BorderStyle = BorderStyle.None;
-            TbAddress.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            TbAddress.Font = new Font("Microsoft Sans Serif", 9.75F);
             TbAddress.ForeColor = Color.Black;
             TbAddress.Location = new Point(32, 302);
             TbAddress.Multiline = true;
@@ -203,6 +203,7 @@ namespace GUI
             BtnDelete.Size = new Size(67, 30);
             BtnDelete.TabIndex = 34;
             BtnDelete.Text = "Xóa";
+            BtnDelete.Click += BtnDelete_Click;
             // 
             // BtnEdit
             // 
@@ -257,27 +258,9 @@ namespace GUI
             ID.ForeColor = Color.FromArgb(80, 80, 80);
             ID.Location = new Point(221, 72);
             ID.Name = "ID";
-            ID.Size = new Size(32, 21);
+            ID.Size = new Size(19, 21);
             ID.TabIndex = 42;
-            ID.Text = "Mã";
-            // 
-            // poisonDateTime1
-            // 
-            poisonDateTime1.CalendarFont = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            poisonDateTime1.CalendarForeColor = SystemColors.ActiveCaptionText;
-            poisonDateTime1.CalendarTitleForeColor = SystemColors.ActiveCaption;
-            poisonDateTime1.CalendarTrailingForeColor = SystemColors.ActiveCaptionText;
-            poisonDateTime1.Checked = false;
-            poisonDateTime1.Format = DateTimePickerFormat.Short;
-            poisonDateTime1.Location = new Point(307, 101);
-            poisonDateTime1.MinimumSize = new Size(0, 29);
-            poisonDateTime1.Name = "poisonDateTime1";
-            poisonDateTime1.Size = new Size(100, 29);
-            poisonDateTime1.Style = ReaLTaiizor.Enum.Poison.ColorStyle.Black;
-            poisonDateTime1.TabIndex = 43;
-            poisonDateTime1.UseCustomBackColor = true;
-            poisonDateTime1.UseCustomForeColor = true;
-            poisonDateTime1.UseStyleColors = true;
+            ID.Text = "2";
             // 
             // panel3
             // 
@@ -288,13 +271,25 @@ namespace GUI
             panel3.Size = new Size(1, 20);
             panel3.TabIndex = 44;
             // 
+            // Ngay
+            // 
+            Ngay.BackColor = SystemColors.Control;
+            Ngay.BorderStyle = BorderStyle.None;
+            Ngay.Font = new Font("Microsoft Sans Serif", 9.75F);
+            Ngay.ForeColor = Color.Black;
+            Ngay.Location = new Point(307, 104);
+            Ngay.Multiline = true;
+            Ngay.Name = "Ngay";
+            Ngay.Size = new Size(149, 24);
+            Ngay.TabIndex = 45;
+            // 
             // PopNcc
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(869, 428);
+            Controls.Add(Ngay);
             Controls.Add(panel3);
-            Controls.Add(poisonDateTime1);
             Controls.Add(ID);
             Controls.Add(panel5);
             Controls.Add(BtnEdit);
@@ -309,13 +304,14 @@ namespace GUI
             Controls.Add(panel2);
             Controls.Add(label2);
             Controls.Add(bigLabel2);
-            Controls.Add(bigLabel4);
+            Controls.Add(lblNgTao);
             Controls.Add(bigLabel5);
-            Controls.Add(bigLabel6);
+            Controls.Add(lblName);
             FormBorderStyle = FormBorderStyle.None;
             Name = "PopNcc";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Form2";
+            Load += PopNcc_Load;
             panel5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             ResumeLayout(false);
@@ -326,9 +322,9 @@ namespace GUI
 
         private Label label2;
         private ReaLTaiizor.Controls.BigLabel bigLabel2;
-        private ReaLTaiizor.Controls.BigLabel bigLabel4;
+        private ReaLTaiizor.Controls.BigLabel lblNgTao;
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
-        private ReaLTaiizor.Controls.BigLabel bigLabel6;
+        private ReaLTaiizor.Controls.BigLabel lblName;
         private TextBox TbPhone;
         private Panel panel2;
         private TextBox TbEmail;
@@ -342,7 +338,7 @@ namespace GUI
         private Panel panel5;
         private RoundedPictureBox roundedPictureBox1;
         private ReaLTaiizor.Controls.BigLabel ID;
-        private ReaLTaiizor.Controls.PoisonDateTime poisonDateTime1;
         private Panel panel3;
+        private TextBox Ngay;
     }
 }

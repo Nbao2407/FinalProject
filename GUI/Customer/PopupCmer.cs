@@ -27,8 +27,6 @@ namespace GUI
         {
             if (khach != null)
             {
-
-
                 if (khach == null) return;
 
                 isManualToggle = false;
@@ -266,12 +264,10 @@ namespace GUI
 
         private void SetToggleState(bool state)
         {
-            isManualToggle = false; // Vô hiệu hóa xử lý sự kiện
+            isManualToggle = false;
             toggleEdit1.Toggled = state;
-            isManualToggle = true;  // Kích hoạt lại sự kiện 
+            isManualToggle = true;
         }
-
-
     }
 
 }

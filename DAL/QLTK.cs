@@ -116,5 +116,44 @@ namespace DAL
                 }
             }
         }
+        public List<DTO_TK> GetTkByID(int id)
+        {
+            List<DTO_TK> danhSachTk = new List<DTO_TK>();
+
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                {
+                    conn.Open();
+                    string query = "SELECT maTK, tenDangNhap, email, sdt, ChucVu, GHICHU ,DiaChi, ngayTao  FROM QLTK WHERE maTk = @maTk";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maTk", id); 
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                danhSachTk.Add(new DTO_TK(
+                                    reader.GetInt32(0),
+                                    reader.GetString(1),
+                                    reader.GetString(2),
+                                    reader.GetString(3),
+                                    reader.GetString(4),
+                                    reader.GetString(5),
+                                    reader.GetString(6), 
+                                    reader.GetDateTime(7)
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception($"Database error occurred while retrieving accounts: {ex.Message}", ex);
+            }
+
+            return danhSachTk;
+        }
     }
 }

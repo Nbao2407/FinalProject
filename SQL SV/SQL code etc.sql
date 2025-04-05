@@ -800,3 +800,102 @@ BEGIN
         OR CAST(kh.MaKhachHang AS NVARCHAR) LIKE @Search
     ORDER BY MatchScore DESC, kh.Ten;
 END;
+Go
+-- Stored Procedure: Thêm Nhà Cung Cấp
+Alter PROCEDURE sp_ThemNCC
+    @TenNCC NVARCHAR(100),
+    @DiaChi NVARCHAR(255),
+    @SDT NVARCHAR(15),
+    @Email NVARCHAR(100),
+    @NguoiTao int
+AS
+BEGIN
+    BEGIN TRY
+        IF EXISTS (SELECT 1 FROM NCC WHERE Email = @Email)
+            THROW 50001, N'Email đã tồn tại!', 1;
+
+        IF @SDT NOT LIKE '[0-9]%' OR LEN(@SDT) NOT BETWEEN 10 AND 15
+            THROW 50002, N'Số điện thoại không hợp lệ!', 1;
+
+        -- Thêm NCC
+        INSERT INTO NCC (TenNCC, DiaChi, SDT, Email, NguoiTao, TrangThai)
+        VALUES (@TenNCC, @DiaChi, @SDT, @Email, @NguoiTao, N'Hoạt động');
+
+        SELECT N'Thêm nhà cung cấp thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+
+-- Stored Procedure: Sửa Nhà Cung Cấp
+ALTER PROCEDURE sp_CapNhatNCC
+    @MaNCC INT,
+    @TenNCC NVARCHAR(100),
+    @DiaChi NVARCHAR(255),
+    @SDT NVARCHAR(15),
+    @Email NVARCHAR(100),
+    @NguoiCapNhat NVARCHAR(256)
+AS
+BEGIN
+    BEGIN TRY
+        -- Debug giá trị SDT
+        PRINT 'SDT nhận được: [' + @SDT + ']';
+        PRINT 'Độ dài SDT: ' + CAST(LEN(@SDT) AS NVARCHAR(10));
+        PRINT 'Ký tự đầu tiên: ' + LEFT(@SDT, 1);
+
+        IF NOT EXISTS (SELECT 1 FROM NCC WHERE MaNCC = @MaNCC)
+            THROW 50003, N'Nhà cung cấp không tồn tại!', 1;
+
+        IF EXISTS (SELECT 1 FROM NCC WHERE Email = @Email AND MaNCC != @MaNCC)
+            THROW 50001, N'Email đã tồn tại!', 1;
+
+        IF @SDT NOT LIKE '[0-9]%' OR LEN(@SDT) NOT BETWEEN 10 AND 15
+            THROW 50002, N'Số điện thoại không hợp lệ! Phải bắt đầu bằng số và có độ dài từ 10 đến 15 ký tự.', 1;
+
+        UPDATE NCC
+        SET TenNCC = @TenNCC,
+            DiaChi = @DiaChi,
+            SDT = @SDT,
+            Email = @Email,
+            NgayTao = GETDATE(),
+            NguoiTao = @NguoiCapNhat
+        WHERE MaNCC = @MaNCC;
+
+        SELECT N'Cập nhật nhà cung cấp thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+GO
+
+Alter PROCEDURE sp_XoaNCC
+    @MaNCC INT,
+    @NguoiCapNhat int
+AS
+BEGIN
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM NCC WHERE MaNCC = @MaNCC)
+            THROW 50003, N'Nhà cung cấp không tồn tại!', 1;
+
+        IF EXISTS (SELECT 1 FROM QLDonNhap WHERE MaNCC = @MaNCC)
+            THROW 50004, N'Không thể xóa nhà cung cấp vì đã có đơn nhập liên quan!', 1;
+
+        -- Xóa NCC
+        DELETE FROM NCC
+        WHERE MaNCC = @MaNCC;
+
+        -- Ghi log
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), NULL, N'NCC', @MaNCC, N'Xóa', N'Xóa nhà cung cấp bởi ' + @NguoiCapNhat);
+
+        SELECT N'Xóa nhà cung cấp thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO

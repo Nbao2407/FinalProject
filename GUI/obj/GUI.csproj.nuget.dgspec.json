@@ -302,9 +302,6 @@
             "projectReferences": {
               "I:\\Pro213\\BUS\\BUS.csproj": {
                 "projectPath": "I:\\Pro213\\BUS\\BUS.csproj"
-              },
-              "I:\\Pro213\\DTO\\DTO.csproj": {
-                "projectPath": "I:\\Pro213\\DTO\\DTO.csproj"
               }
             }
           }

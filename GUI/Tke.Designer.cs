@@ -79,6 +79,8 @@ namespace GUI
             tableLayoutPanel4 = new TableLayoutPanel();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel4 = new Panel();
+            label3 = new Label();
+            label6 = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chartGrossRevenue).BeginInit();
             panel5.SuspendLayout();
@@ -614,20 +616,23 @@ namespace GUI
             tableLayoutPanel6.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel6.ColumnCount = 1;
             tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel6.Controls.Add(label3, 0, 4);
             tableLayoutPanel6.Controls.Add(label21, 0, 0);
             tableLayoutPanel6.Controls.Add(label17, 0, 2);
             tableLayoutPanel6.Controls.Add(lblNumCustomers, 0, 1);
             tableLayoutPanel6.Controls.Add(lblNumSuppliers, 0, 3);
-            tableLayoutPanel6.Location = new Point(30, 40);
+            tableLayoutPanel6.Controls.Add(label6, 0, 5);
+            tableLayoutPanel6.Location = new Point(16, 40);
             tableLayoutPanel6.Margin = new Padding(3, 15, 3, 3);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
-            tableLayoutPanel6.RowCount = 5;
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 50.7042236F));
+            tableLayoutPanel6.RowCount = 6;
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 50.70422F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 49.2957764F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
-            tableLayoutPanel6.Size = new Size(158, 177);
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 39F));
+            tableLayoutPanel6.Size = new Size(193, 186);
             tableLayoutPanel6.TabIndex = 5;
             // 
             // label21
@@ -638,7 +643,7 @@ namespace GUI
             label21.ForeColor = Color.FromArgb(124, 141, 181);
             label21.Location = new Point(3, 0);
             label21.Name = "label21";
-            label21.Size = new Size(115, 35);
+            label21.Size = new Size(115, 29);
             label21.TabIndex = 0;
             label21.Text = "Khách Hàng";
             // 
@@ -649,7 +654,7 @@ namespace GUI
             label17.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label17.ForeColor = Color.FromArgb(124, 141, 181);
             label17.ImageAlign = ContentAlignment.MiddleLeft;
-            label17.Location = new Point(3, 69);
+            label17.Location = new Point(3, 58);
             label17.Name = "label17";
             label17.Size = new Size(132, 34);
             label17.TabIndex = 3;
@@ -660,7 +665,7 @@ namespace GUI
             lblNumCustomers.AutoSize = true;
             lblNumCustomers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumCustomers.ForeColor = Color.WhiteSmoke;
-            lblNumCustomers.Location = new Point(3, 35);
+            lblNumCustomers.Location = new Point(3, 29);
             lblNumCustomers.Name = "lblNumCustomers";
             lblNumCustomers.RightToLeft = RightToLeft.No;
             lblNumCustomers.Size = new Size(90, 25);
@@ -673,7 +678,7 @@ namespace GUI
             lblNumSuppliers.AutoSize = true;
             lblNumSuppliers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumSuppliers.ForeColor = Color.WhiteSmoke;
-            lblNumSuppliers.Location = new Point(3, 103);
+            lblNumSuppliers.Location = new Point(3, 92);
             lblNumSuppliers.Name = "lblNumSuppliers";
             lblNumSuppliers.RightToLeft = RightToLeft.No;
             lblNumSuppliers.Size = new Size(90, 25);
@@ -737,6 +742,31 @@ namespace GUI
             panel4.Name = "panel4";
             panel4.Size = new Size(1106, 126);
             panel4.TabIndex = 19;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Left;
+            label3.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.FromArgb(124, 141, 181);
+            label3.ImageAlign = ContentAlignment.MiddleLeft;
+            label3.Location = new Point(3, 120);
+            label3.Name = "label3";
+            label3.Size = new Size(173, 26);
+            label3.TabIndex = 6;
+            label3.Text = "Hoá Đơn(chờ xử lý)";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.WhiteSmoke;
+            label6.Location = new Point(3, 146);
+            label6.Name = "label6";
+            label6.RightToLeft = RightToLeft.No;
+            label6.Size = new Size(90, 25);
+            label6.TabIndex = 7;
+            label6.Text = "100000";
             // 
             // Tke
             // 
@@ -821,5 +851,7 @@ namespace GUI
         private TableLayoutPanel tableLayoutPanel5;
         private TableLayoutPanel tableLayoutPanel6;
         private Label lblNumSuppliers;
+        private Label label3;
+        private Label label6;
     }
 }

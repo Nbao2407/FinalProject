@@ -1,5 +1,4 @@
-﻿using static GUI.Helpler.BufferedControls;
-
+﻿
 namespace GUI
 {
     partial class AddHoaDon

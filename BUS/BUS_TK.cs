@@ -17,5 +17,9 @@ namespace BUS
         {
             return DAL_TK.GetAllTk();
         }
+        public List<DTO_TK> GetTkByMa(int id)
+        {
+            return DAL_TK.GetTkByID(id);
+        }   
     }
 }

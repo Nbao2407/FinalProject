@@ -205,29 +205,39 @@ namespace GUI
 
         private void BtnUser_Click(object sender, EventArgs e)
         {
-            ShowPopup();
+            BUS_TK busTk = new BUS_TK();
+            List<DTO_TK> userList = busTk.GetTkByMa(CurrentUser.MaTK);
+            DTO_TK user = null;
+
+            if (userList != null && userList.Count > 0)
+            {
+                DTO_TK tk = userList[0];
+                user = new DTO_TK
+                {
+                    maTK = tk.maTK,             
+                    tenDangNhap = tk.tenDangNhap, 
+                    email = tk.email,
+                    quyen = tk.quyen,         
+                    sdt = tk.sdt,
+                    diaChi = tk.diaChi,
+                    ghichu = tk.ghichu,
+                };
+                ShowPopup(user);
+            }
+            else
+            {
+                MessageBox.Show("Không tìm thấy thông tin người dùng hiện tại!");
+            }
         }
 
-        private void ShowPopup()
+        private void ShowPopup(DTO_TK tk)
         {
-            Panel overlay = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(50, 0, 0, 0),
-                Parent = this,
-                Visible = true
-            };
-            this.Controls.Add(overlay);
-            overlay.BringToFront();
-            this.Resize += (s, e) => overlay.Size = this.ClientSize;
-
-            using (var popup = new FrmUser())
+            using (var popup = new FrmUser(tk))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
                 popup.StartPosition = FormStartPosition.CenterParent;
                 popup.ShowDialog();
             }
-            overlay.Dispose();
         }
     }
 }

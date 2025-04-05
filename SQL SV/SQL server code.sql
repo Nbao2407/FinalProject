@@ -196,10 +196,16 @@ DELETE FROM QLHoaDon
 WHERE NgayLap = '2025-04-03';
 
 
-
+SELECT maTK, tenDangNhap, email, sdt, ChucVu, trangThai, ngayTao , GHICHU ,DiaChi FROM QLTK WHERE maTk = 1
 
 
 BACKUP DATABASE QLVT 
 TO DISK = 'I:\Pro213\SQL SV\Backup\QLVT.bak'
 WITH FORMAT, INIT, 
 NAME = 'Backup QLVT';
+
+		ALTER TABLE NCC
+DROP COLUMN NguoiTao;
+ALTER TABLE NCC
+ADD NguoiTao INT REFERENCES QLTK(MaTK);
+

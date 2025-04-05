@@ -38,14 +38,12 @@ namespace GUI
             TbEmail = new ReaLTaiizor.Controls.DungeonTextBox();
             TbNote = new ReaLTaiizor.Controls.DungeonTextBox();
             TbPhone = new ReaLTaiizor.Controls.DungeonTextBox();
-            DateTime = new ReaLTaiizor.Controls.PoisonDateTime();
             roundedPanel1 = new RoundedPanel();
             bigLabel9 = new ReaLTaiizor.Controls.BigLabel();
             bigLabel4 = new ReaLTaiizor.Controls.BigLabel();
             bigLabel2 = new ReaLTaiizor.Controls.BigLabel();
             bigLabel3 = new ReaLTaiizor.Controls.BigLabel();
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
-            bigLabel6 = new ReaLTaiizor.Controls.BigLabel();
             BtnChangePass = new ReaLTaiizor.Controls.Button();
             btnSave = new ReaLTaiizor.Controls.Button();
             button1 = new ReaLTaiizor.Controls.Button();
@@ -54,6 +52,7 @@ namespace GUI
             UserName = new ReaLTaiizor.Controls.BigLabel();
             bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
             TxtVaitro = new ReaLTaiizor.Controls.BigLabel();
+            LblID = new ReaLTaiizor.Controls.BigLabel();
             roundedPanel1.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -164,12 +163,12 @@ namespace GUI
             TbNote.EdgeColor = Color.White;
             TbNote.Font = new Font("Tahoma", 11F);
             TbNote.ForeColor = Color.FromArgb(85, 85, 85);
-            TbNote.Location = new Point(383, 152);
+            TbNote.Location = new Point(17, 239);
             TbNote.MaxLength = 32767;
             TbNote.Multiline = false;
             TbNote.Name = "TbNote";
             TbNote.ReadOnly = false;
-            TbNote.Size = new Size(300, 28);
+            TbNote.Size = new Size(666, 28);
             TbNote.TabIndex = 30;
             TbNote.TextAlignment = HorizontalAlignment.Left;
             TbNote.UseSystemPasswordChar = false;
@@ -181,7 +180,7 @@ namespace GUI
             TbPhone.EdgeColor = Color.White;
             TbPhone.Font = new Font("Tahoma", 11F);
             TbPhone.ForeColor = Color.FromArgb(85, 85, 85);
-            TbPhone.Location = new Point(383, 239);
+            TbPhone.Location = new Point(383, 152);
             TbPhone.MaxLength = 32767;
             TbPhone.Multiline = false;
             TbPhone.Name = "TbPhone";
@@ -191,22 +190,10 @@ namespace GUI
             TbPhone.TextAlignment = HorizontalAlignment.Left;
             TbPhone.UseSystemPasswordChar = false;
             // 
-            // DateTime
-            // 
-            DateTime.Location = new Point(18, 239);
-            DateTime.MaxDate = new DateTime(2006, 1, 25, 23, 59, 59, 0);
-            DateTime.MinDate = new DateTime(1973, 1, 25, 23, 59, 59, 0);
-            DateTime.MinimumSize = new Size(0, 29);
-            DateTime.Name = "DateTime";
-            DateTime.Size = new Size(299, 29);
-            DateTime.TabIndex = 33;
-            DateTime.Value = new DateTime(2006, 1, 25, 23, 59, 59, 0);
-            // 
             // roundedPanel1
             // 
             roundedPanel1.BackColor = Color.FromArgb(217, 217, 217);
             roundedPanel1.BorderRadius = 20;
-            roundedPanel1.Controls.Add(DateTime);
             roundedPanel1.Controls.Add(TbPhone);
             roundedPanel1.Controls.Add(TbNote);
             roundedPanel1.Controls.Add(TbEmail);
@@ -217,7 +204,6 @@ namespace GUI
             roundedPanel1.Controls.Add(bigLabel2);
             roundedPanel1.Controls.Add(bigLabel3);
             roundedPanel1.Controls.Add(bigLabel5);
-            roundedPanel1.Controls.Add(bigLabel6);
             roundedPanel1.Location = new Point(9, 191);
             roundedPanel1.Name = "roundedPanel1";
             roundedPanel1.Size = new Size(704, 305);
@@ -231,7 +217,7 @@ namespace GUI
             bigLabel9.BackColor = Color.Transparent;
             bigLabel9.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel9.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel9.Location = new Point(383, 119);
+            bigLabel9.Location = new Point(17, 204);
             bigLabel9.Name = "bigLabel9";
             bigLabel9.Size = new Size(70, 21);
             bigLabel9.TabIndex = 23;
@@ -287,25 +273,11 @@ namespace GUI
             bigLabel5.BackColor = Color.Transparent;
             bigLabel5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel5.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel5.Location = new Point(383, 206);
+            bigLabel5.Location = new Point(383, 119);
             bigLabel5.Name = "bigLabel5";
             bigLabel5.Size = new Size(40, 21);
             bigLabel5.TabIndex = 16;
             bigLabel5.Text = "SĐT";
-            // 
-            // bigLabel6
-            // 
-            bigLabel6.AccessibleRole = AccessibleRole.None;
-            bigLabel6.Anchor = AnchorStyles.None;
-            bigLabel6.AutoSize = true;
-            bigLabel6.BackColor = Color.Transparent;
-            bigLabel6.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            bigLabel6.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel6.Location = new Point(17, 206);
-            bigLabel6.Name = "bigLabel6";
-            bigLabel6.Size = new Size(89, 21);
-            bigLabel6.TabIndex = 18;
-            bigLabel6.Text = "Ngày Sinh";
             // 
             // BtnChangePass
             // 
@@ -412,7 +384,6 @@ namespace GUI
             parrotPictureBox2.TabIndex = 30;
             parrotPictureBox2.Text = "parrotPictureBox2";
             parrotPictureBox2.TextRenderingType = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-            parrotPictureBox2.Click += parrotPictureBox2_Click;
             // 
             // UserName
             // 
@@ -443,20 +414,33 @@ namespace GUI
             TxtVaitro.AutoSize = true;
             TxtVaitro.BackColor = Color.Transparent;
             TxtVaitro.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            TxtVaitro.ForeColor = Color.FromArgb(30, 42, 56);
+            TxtVaitro.ForeColor = Color.Coral;
             TxtVaitro.Location = new Point(223, 109);
             TxtVaitro.Name = "TxtVaitro";
             TxtVaitro.Size = new Size(27, 30);
             TxtVaitro.TabIndex = 4;
             TxtVaitro.Text = "X";
             // 
+            // LblID
+            // 
+            LblID.AutoSize = true;
+            LblID.BackColor = Color.Transparent;
+            LblID.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            LblID.ForeColor = Color.FromArgb(30, 42, 56);
+            LblID.Location = new Point(299, 79);
+            LblID.Name = "LblID";
+            LblID.Size = new Size(27, 30);
+            LblID.TabIndex = 30;
+            LblID.Text = "X";
+            // 
             // FrmUser
             // 
             AccessibleRole = AccessibleRole.None;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(242, 242, 242);
+            BackColor = Color.White;
             ClientSize = new Size(725, 558);
+            Controls.Add(LblID);
             Controls.Add(parrotPictureBox1);
             Controls.Add(panel1);
             Controls.Add(button3);
@@ -490,14 +474,12 @@ namespace GUI
         private ReaLTaiizor.Controls.DungeonTextBox TbEmail;
         private ReaLTaiizor.Controls.DungeonTextBox TbNote;
         private ReaLTaiizor.Controls.DungeonTextBox TbPhone;
-        private ReaLTaiizor.Controls.PoisonDateTime DateTime;
         private RoundedPanel roundedPanel1;
         private ReaLTaiizor.Controls.BigLabel bigLabel9;
         private ReaLTaiizor.Controls.BigLabel bigLabel4;
         private ReaLTaiizor.Controls.BigLabel bigLabel2;
         private ReaLTaiizor.Controls.BigLabel bigLabel3;
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
-        private ReaLTaiizor.Controls.BigLabel bigLabel6;
         private ReaLTaiizor.Controls.Button BtnChangePass;
         private ReaLTaiizor.Controls.Button btnSave;
         private ReaLTaiizor.Controls.Button button1;
@@ -506,5 +488,6 @@ namespace GUI
         private ReaLTaiizor.Controls.BigLabel bigLabel1;
         private ReaLTaiizor.Controls.BigLabel TxtVaitro;
         private ReaLTaiizor.Controls.ParrotPictureBox parrotPictureBox2;
+        private ReaLTaiizor.Controls.BigLabel LblID;
     }
 }

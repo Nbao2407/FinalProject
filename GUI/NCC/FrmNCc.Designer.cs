@@ -35,21 +35,20 @@
             result = new Panel();
             button1 = new ReaLTaiizor.Controls.Button();
             pictureBox1 = new PictureBox();
-            txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
-            dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
             panel1 = new Panel();
             Tong = new Label();
             panel2 = new Panel();
+            dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
+            button3 = new ReaLTaiizor.Controls.Button();
             label1 = new Label();
             panel3 = new Panel();
             button2 = new ReaLTaiizor.Controls.Button();
             pictureBox2 = new PictureBox();
-            dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
-            button3 = new ReaLTaiizor.Controls.Button();
+            txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
@@ -96,23 +95,48 @@
             pictureBox1.TabIndex = 3;
             pictureBox1.TabStop = false;
             // 
-            // txtSearch
+            // panel1
             // 
-            txtSearch.BackColor = Color.FromArgb(236, 240, 241);
-            txtSearch.BorderColor = Color.FromArgb(180, 180, 180);
-            txtSearch.EdgeColor = SystemColors.ActiveBorder;
-            txtSearch.Font = new Font("Tahoma", 11F);
-            txtSearch.ForeColor = Color.DimGray;
-            txtSearch.Location = new Point(23, 31);
-            txtSearch.MaxLength = 32767;
-            txtSearch.Multiline = false;
-            txtSearch.Name = "txtSearch";
-            txtSearch.ReadOnly = false;
-            txtSearch.Size = new Size(223, 28);
-            txtSearch.TabIndex = 2;
-            txtSearch.TextAlignment = HorizontalAlignment.Left;
-            txtSearch.UseSystemPasswordChar = false;
-            txtSearch.TextChanged += txtSearch_TextChanged;
+            panel1.BackColor = Color.FromArgb(236, 240, 241);
+            panel1.Controls.Add(Tong);
+            panel1.Controls.Add(result);
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(pictureBox1);
+            panel1.Controls.Add(panel2);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1106, 600);
+            panel1.TabIndex = 1;
+            // 
+            // Tong
+            // 
+            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Tong.AutoSize = true;
+            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Tong.ForeColor = Color.DarkGray;
+            Tong.Location = new Point(12, 1084);
+            Tong.Name = "Tong";
+            Tong.Size = new Size(33, 13);
+            Tong.TabIndex = 8;
+            Tong.Text = "Tổng";
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.FromArgb(236, 240, 241);
+            panel2.Controls.Add(dataGridView1);
+            panel2.Controls.Add(button3);
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(panel3);
+            panel2.Controls.Add(button2);
+            panel2.Controls.Add(pictureBox2);
+            panel2.Controls.Add(txtSearch);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1106, 600);
+            panel2.TabIndex = 9;
+            panel2.Paint += panel2_Paint;
             // 
             // dataGridView1
             // 
@@ -144,7 +168,7 @@
             dataGridView1.EnableHeadersVisualStyles = false;
             dataGridView1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
             dataGridView1.GridColor = Color.FromArgb(255, 255, 255);
-            dataGridView1.Location = new Point(6, 87);
+            dataGridView1.Location = new Point(3, 69);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
@@ -159,53 +183,33 @@
             dataGridView1.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Size = new Size(1100, 463);
-            dataGridView1.TabIndex = 0;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-            dataGridView1.CellDoubleClick += PopupFrm_CellDoubleClick;
+            dataGridView1.TabIndex = 15;
+            dataGridView1.CellContentDoubleClick += PopupFrm_CellDoubleClick;
             // 
-            // panel1
+            // button3
             // 
-            panel1.BackColor = Color.FromArgb(236, 240, 241);
-            panel1.Controls.Add(Tong);
-            panel1.Controls.Add(result);
-            panel1.Controls.Add(button1);
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(txtSearch);
-            panel1.Controls.Add(panel2);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1106, 600);
-            panel1.TabIndex = 1;
-            // 
-            // Tong
-            // 
-            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            Tong.AutoSize = true;
-            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tong.ForeColor = Color.DarkGray;
-            Tong.Location = new Point(12, 1084);
-            Tong.Name = "Tong";
-            Tong.Size = new Size(34, 13);
-            Tong.TabIndex = 8;
-            Tong.Text = "Tổng";
-            // 
-            // panel2
-            // 
-            panel2.BackColor = Color.FromArgb(236, 240, 241);
-            panel2.Controls.Add(button3);
-            panel2.Controls.Add(label1);
-            panel2.Controls.Add(panel3);
-            panel2.Controls.Add(button2);
-            panel2.Controls.Add(pictureBox2);
-            panel2.Controls.Add(dataGridView1);
-            panel2.Controls.Add(dungeonTextBox1);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1106, 600);
-            panel2.TabIndex = 9;
-            panel2.Paint += panel2_Paint;
+            button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button3.BackColor = Color.Transparent;
+            button3.BorderColor = Color.FromArgb(52, 73, 94);
+            button3.Cursor = Cursors.Hand;
+            button3.EnteredBorderColor = Color.FromArgb(165, 37, 37);
+            button3.EnteredColor = Color.FromArgb(32, 34, 37);
+            button3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button3.Image = null;
+            button3.ImageAlign = ContentAlignment.MiddleRight;
+            button3.InactiveColor = Color.FromArgb(44, 62, 80);
+            button3.Location = new Point(928, 31);
+            button3.Margin = new Padding(3, 3, 160, 3);
+            button3.Name = "button3";
+            button3.Padding = new Padding(0, 0, 100, 0);
+            button3.PressedBorderColor = Color.Green;
+            button3.PressedColor = Color.Green;
+            button3.RightToLeft = RightToLeft.Yes;
+            button3.Size = new Size(129, 28);
+            button3.TabIndex = 14;
+            button3.Text = "Thêm";
+            button3.TextAlignment = StringAlignment.Center;
+            button3.Click += button3_Click;
             // 
             // label1
             // 
@@ -215,7 +219,7 @@
             label1.ForeColor = Color.DarkGray;
             label1.Location = new Point(12, 1584);
             label1.Name = "label1";
-            label1.Size = new Size(34, 13);
+            label1.Size = new Size(33, 13);
             label1.TabIndex = 8;
             label1.Text = "Tổng";
             // 
@@ -262,47 +266,22 @@
             pictureBox2.TabIndex = 3;
             pictureBox2.TabStop = false;
             // 
-            // dungeonTextBox1
+            // txtSearch
             // 
-            dungeonTextBox1.BackColor = Color.FromArgb(236, 240, 241);
-            dungeonTextBox1.BorderColor = Color.FromArgb(180, 180, 180);
-            dungeonTextBox1.EdgeColor = SystemColors.ActiveBorder;
-            dungeonTextBox1.Font = new Font("Tahoma", 11F);
-            dungeonTextBox1.ForeColor = Color.DimGray;
-            dungeonTextBox1.Location = new Point(23, 31);
-            dungeonTextBox1.MaxLength = 32767;
-            dungeonTextBox1.Multiline = false;
-            dungeonTextBox1.Name = "dungeonTextBox1";
-            dungeonTextBox1.ReadOnly = false;
-            dungeonTextBox1.Size = new Size(223, 28);
-            dungeonTextBox1.TabIndex = 2;
-            dungeonTextBox1.TextAlignment = HorizontalAlignment.Left;
-            dungeonTextBox1.UseSystemPasswordChar = false;
-            // 
-            // button3
-            // 
-            button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button3.BackColor = Color.Transparent;
-            button3.BorderColor = Color.FromArgb(52, 73, 94);
-            button3.Cursor = Cursors.Hand;
-            button3.EnteredBorderColor = Color.FromArgb(165, 37, 37);
-            button3.EnteredColor = Color.FromArgb(32, 34, 37);
-            button3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button3.Image = null;
-            button3.ImageAlign = ContentAlignment.MiddleRight;
-            button3.InactiveColor = Color.FromArgb(44, 62, 80);
-            button3.Location = new Point(928, 31);
-            button3.Margin = new Padding(3, 3, 160, 3);
-            button3.Name = "button3";
-            button3.Padding = new Padding(0, 0, 100, 0);
-            button3.PressedBorderColor = Color.Green;
-            button3.PressedColor = Color.Green;
-            button3.RightToLeft = RightToLeft.Yes;
-            button3.Size = new Size(129, 28);
-            button3.TabIndex = 14;
-            button3.Text = "Thêm";
-            button3.TextAlignment = StringAlignment.Center;
-            button3.Click += button3_Click;
+            txtSearch.BackColor = Color.FromArgb(236, 240, 241);
+            txtSearch.BorderColor = Color.FromArgb(180, 180, 180);
+            txtSearch.EdgeColor = SystemColors.ActiveBorder;
+            txtSearch.Font = new Font("Tahoma", 11F);
+            txtSearch.ForeColor = Color.DimGray;
+            txtSearch.Location = new Point(23, 31);
+            txtSearch.MaxLength = 32767;
+            txtSearch.Multiline = false;
+            txtSearch.Name = "txtSearch";
+            txtSearch.ReadOnly = false;
+            txtSearch.Size = new Size(223, 28);
+            txtSearch.TabIndex = 2;
+            txtSearch.TextAlignment = HorizontalAlignment.Left;
+            txtSearch.UseSystemPasswordChar = false;
             // 
             // FrmNCc
             // 
@@ -316,11 +295,11 @@
             Text = "FrmNCc";
             Load += FrmNCc_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
@@ -330,8 +309,6 @@
         private Panel result;
         private ReaLTaiizor.Controls.Button button1;
         private PictureBox pictureBox1;
-        private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
-        private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
         private Panel panel1;
         private Label Tong;
         private Panel panel2;
@@ -339,7 +316,8 @@
         private Panel panel3;
         private ReaLTaiizor.Controls.Button button2;
         private PictureBox pictureBox2;
-        private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
+        private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private ReaLTaiizor.Controls.Button button3;
+        private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
     }
 }

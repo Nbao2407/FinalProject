@@ -9,7 +9,6 @@
       "GUI/1.0.0": {
         "dependencies": {
           "BUS": "1.0.0",
-          "DTO": "1.0.0",
           "IronPython": "3.4.2",
           "Microsoft.Data.SqlClient": "6.0.1",
           "Microsoft.EntityFrameworkCore": "9.0.3",

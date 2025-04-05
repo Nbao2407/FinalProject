@@ -38,5 +38,20 @@ namespace DTO
             this.trangThai = tranthai;
             this.ngayTao = ngayTao;
         }
+        public DTO_TK(int Matk, string tenDangNhap, string quyen, string email, string sdt, string diaChi, string ghichu, DateTime ngayTao)
+        {
+            this.maTK = Matk;
+            this.tenDangNhap = tenDangNhap;
+            this.quyen = quyen;
+            this.email = email;
+            this.sdt = sdt;
+            this.diaChi = diaChi;
+            this.ghichu = ghichu;
+            this.ngayTao = ngayTao;
+        }
+        public DTO_TK()
+        { }
+
+       
     }
 }

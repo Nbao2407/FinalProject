@@ -55,7 +55,7 @@
             btnCancel.Image = null;
             btnCancel.ImageAlign = ContentAlignment.MiddleRight;
             btnCancel.InactiveColor = Color.LightGray;
-            btnCancel.Location = new Point(636, 362);
+            btnCancel.Location = new Point(622, 297);
             btnCancel.Margin = new Padding(3, 3, 160, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Padding = new Padding(0, 0, 100, 0);
@@ -174,7 +174,7 @@
             btnSave.Image = null;
             btnSave.ImageAlign = ContentAlignment.MiddleRight;
             btnSave.InactiveColor = Color.DodgerBlue;
-            btnSave.Location = new Point(729, 362);
+            btnSave.Location = new Point(723, 297);
             btnSave.Margin = new Padding(3, 3, 160, 3);
             btnSave.Name = "btnSave";
             btnSave.Padding = new Padding(0, 0, 100, 0);
@@ -185,6 +185,7 @@
             btnSave.TabIndex = 27;
             btnSave.Text = "Lưu";
             btnSave.TextAlignment = StringAlignment.Center;
+            btnSave.Click += btnSave_Click;
             // 
             // TbAddress
             // 
@@ -216,7 +217,7 @@
             // 
             groupBox2.Controls.Add(TbAddress);
             groupBox2.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox2.Location = new Point(12, 250);
+            groupBox2.Location = new Point(13, 200);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(776, 74);
             groupBox2.TabIndex = 24;
@@ -237,7 +238,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 400);
+            ClientSize = new Size(800, 340);
             Controls.Add(btnCancel);
             Controls.Add(label4);
             Controls.Add(label5);

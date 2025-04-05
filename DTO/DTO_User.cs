@@ -19,6 +19,7 @@ namespace DTO
         public string NgayTao { get; set; }
         public string TrangThai { get; set; }
     }
+
     public static class CurrentUser
     {
         public static int MaTK { get; set; }

@@ -9,51 +9,39 @@ namespace GUI
     public partial class FrmNCc : Form
     {
         private Panel overlayPanel;
-        private BUS_Nccap busNcc = new BUS_Nccap();
+        private BUS_Ncc busNcc = new BUS_Ncc();
         private DAL_NCcap ncc = new DAL_NCcap();
-
+        private List<DTO_Ncap> danhSach;
+        private DTO_Ncap _ncc;
         public FrmNCc()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.Resize += new EventHandler(Frm_Resize);
             this.Load += FrmNCc_Load;
-            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+            ConfigureDataGridView();
 
         }
-
-        private void Loaddata()
+        private void ConfigureDataGridView()
         {
-            try
-            {
-                List<DTO_Ncap> nccList = busNcc.GetAllNcc();
-                if (nccList == null || nccList.Count == 0)
-                {
-                    MessageBox.Show("Không có dữ liệu!");
-                }
+            dataGridView1.AutoGenerateColumns = false;
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaNCC", DataPropertyName = "MaNCC", HeaderText = "Mã NCC" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenNCC", DataPropertyName = "TenNCC", HeaderText = "Tên NCC" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "SDT", DataPropertyName = "SDT", HeaderText = "Số Điện Thoại" });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "Email", DataPropertyName = "Email", HeaderText = "Email" });
 
-                dataGridView1.Columns.Clear();
-                dataGridView1.Columns.Add("MaNCC", "Mã NCC");
-                dataGridView1.Columns.Add("TenNCC", "Tên NCC");
-                dataGridView1.Columns.Add("SDT", "SĐT");
-                dataGridView1.Columns.Add("Email", "Email");
-                dataGridView1.AutoGenerateColumns = false;
-
-                foreach (var ncc in nccList)
-                {
-                    dataGridView1.Rows.Add(ncc.MaNCC, ncc.TenNCC, ncc.SDT, ncc.Email);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message);
-            }
+            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+            ResizeColumns();
+        }
+        public void Loaddata()
+        {
+            danhSach =busNcc.GetAllNcc();
+            dataGridView1.DataSource = danhSach;
         }
 
         private void FrmNCc_Load(object sender, EventArgs e)
         {
             Loaddata();
-            dataGridView1.Visible = true;
         }
 
 
@@ -120,7 +108,7 @@ namespace GUI
 
                     lbl.Click += (s, ev) =>
                     {
-                        txtSearch.Text = item.TenNCC;
+                        txtSearch.Text = $"{item.TenNCC} + {item.MaNCC}";
                         result.Visible = false;
                     };
 
@@ -138,19 +126,27 @@ namespace GUI
 
         private void PopupFrm_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            ShowPopup();
+            if (e.RowIndex >= 0)
+            {
+                DTO_Ncap ncc = dataGridView1.Rows[e.RowIndex].DataBoundItem as DTO_Ncap;
+                if (ncc != null)
+                {
+                    ShowPopup(ncc);
+                }
+            }
         }
 
-        private void ShowPopup()
+        private void ShowPopup(DTO_Ncap ncc)
         {
 
-            using (var popup = new PopNcc())
+            using (var popup = new PopNcc(this,ncc))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
 
                 popup.StartPosition = FormStartPosition.CenterParent;
 
                 popup.ShowDialog();
+                Loaddata();
             }
         }
 
@@ -166,7 +162,7 @@ namespace GUI
 
         private void button3_Click(object sender, EventArgs e)
         {
-            using (var popup = new AddNcc())
+            using (var popup = new AddNcc(this))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
 
