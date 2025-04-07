@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DAL;
 
-namespace GUI.Type
+namespace QLVT.Type
 {
     public partial class AddType : Form
     {

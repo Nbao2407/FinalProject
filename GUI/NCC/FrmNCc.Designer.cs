@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class FrmNCc
     {
@@ -197,7 +197,7 @@
             button3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button3.Image = null;
             button3.ImageAlign = ContentAlignment.MiddleRight;
-            button3.InactiveColor = Color.FromArgb(44, 62, 80);
+            button3.InactiveColor = Color.FromArgb(30, 58, 138);
             button3.Location = new Point(928, 31);
             button3.Margin = new Padding(3, 3, 160, 3);
             button3.Name = "button3";

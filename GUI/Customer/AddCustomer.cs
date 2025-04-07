@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Windows.Forms;
 
-namespace GUI
+namespace QLVT
 {
     public partial class AddCustomer : Form
     {

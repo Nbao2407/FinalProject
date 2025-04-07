@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class FrmHome
     {

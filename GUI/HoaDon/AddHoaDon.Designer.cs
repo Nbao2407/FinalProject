@@ -1,5 +1,5 @@
 ﻿
-namespace GUI
+namespace QLVT
 {
     partial class AddHoaDon
     {
@@ -27,13 +27,15 @@ namespace GUI
             panel2 = new Panel();
             BtnThanhToan = new ReaLTaiizor.Controls.Button();
             flowLayoutPanel2 = new BufferedFlowLayoutPanel();
-            SearchKhCombo = new ReaLTaiizor.Controls.AloneComboBox();
+            ketqua = new Panel();
+            SeacrhKh = new ReaLTaiizor.Controls.DungeonTextBox();
             flowLayoutPanel1 = new BufferedFlowLayoutPanel();
-            roundedPanel6 = new GUI.Helpler.RoundedPanel();
+            roundedPanel6 = new QLVT.Helper.RoundedPanel();
             lblTongSoMatHang = new Label();
             lblTong = new Label();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             searchTimer = new System.Windows.Forms.Timer(components);
+            pictureBox2 = new PictureBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -41,6 +43,7 @@ namespace GUI
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             roundedPanel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -48,8 +51,6 @@ namespace GUI
             panel1.BackColor = Color.FromArgb(236, 240, 241);
             panel1.Controls.Add(Tong);
             panel1.Controls.Add(button1);
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(txtSearch);
             panel1.Controls.Add(splitContainer1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
@@ -97,7 +98,7 @@ namespace GUI
             // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(319, 17);
+            pictureBox1.Location = new Point(376, 3);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(30, 28);
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -111,7 +112,7 @@ namespace GUI
             txtSearch.EdgeColor = SystemColors.ActiveBorder;
             txtSearch.Font = new Font("Tahoma", 11F);
             txtSearch.ForeColor = Color.DimGray;
-            txtSearch.Location = new Point(7, 17);
+            txtSearch.Location = new Point(64, 3);
             txtSearch.MaxLength = 32767;
             txtSearch.Multiline = false;
             txtSearch.Name = "txtSearch";
@@ -131,13 +132,17 @@ namespace GUI
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(pictureBox2);
             splitContainer1.Panel1.Controls.Add(panel2);
             splitContainer1.Panel1.Controls.Add(BtnThanhToan);
+            splitContainer1.Panel1.Controls.Add(pictureBox1);
             splitContainer1.Panel1.Controls.Add(flowLayoutPanel2);
+            splitContainer1.Panel1.Controls.Add(txtSearch);
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(SearchKhCombo);
+            splitContainer1.Panel2.Controls.Add(ketqua);
+            splitContainer1.Panel2.Controls.Add(SeacrhKh);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel2.Controls.Add(roundedPanel6);
             splitContainer1.Size = new Size(1104, 541);
@@ -146,7 +151,7 @@ namespace GUI
             // 
             // panel2
             // 
-            panel2.Location = new Point(4, 29);
+            panel2.Location = new Point(64, 34);
             panel2.Name = "panel2";
             panel2.Size = new Size(312, 82);
             panel2.TabIndex = 14;
@@ -183,21 +188,31 @@ namespace GUI
             flowLayoutPanel2.Size = new Size(561, 456);
             flowLayoutPanel2.TabIndex = 0;
             // 
-            // SearchKhCombo
+            // ketqua
             // 
-            SearchKhCombo.Dock = DockStyle.Left;
-            SearchKhCombo.DrawMode = DrawMode.OwnerDrawFixed;
-            SearchKhCombo.DropDownStyle = ComboBoxStyle.DropDownList;
-            SearchKhCombo.EnabledCalc = true;
-            SearchKhCombo.FormattingEnabled = true;
-            SearchKhCombo.ItemHeight = 20;
-            SearchKhCombo.Location = new Point(0, 0);
-            SearchKhCombo.Name = "SearchKhCombo";
-            SearchKhCombo.Size = new Size(270, 26);
-            SearchKhCombo.TabIndex = 17;
-            SearchKhCombo.SelectedIndexChanged += SearchKhCombo_SelectedIndexChanged;
-            SearchKhCombo.Format += SearchKhCombo_Format;
-            SearchKhCombo.TextChanged += SearchKhCombo_TextChanged;
+            ketqua.Location = new Point(6, 34);
+            ketqua.Name = "ketqua";
+            ketqua.Size = new Size(312, 82);
+            ketqua.TabIndex = 15;
+            ketqua.Visible = false;
+            // 
+            // SeacrhKh
+            // 
+            SeacrhKh.BackColor = Color.FromArgb(236, 240, 241);
+            SeacrhKh.BorderColor = Color.FromArgb(180, 180, 180);
+            SeacrhKh.EdgeColor = SystemColors.ActiveBorder;
+            SeacrhKh.Font = new Font("Tahoma", 11F);
+            SeacrhKh.ForeColor = Color.DimGray;
+            SeacrhKh.Location = new Point(3, 3);
+            SeacrhKh.MaxLength = 32767;
+            SeacrhKh.Multiline = false;
+            SeacrhKh.Name = "SeacrhKh";
+            SeacrhKh.ReadOnly = false;
+            SeacrhKh.Size = new Size(312, 28);
+            SeacrhKh.TabIndex = 10;
+            SeacrhKh.TextAlignment = HorizontalAlignment.Left;
+            SeacrhKh.UseSystemPasswordChar = false;
+            SeacrhKh.TextChanged += SeacrhKh_TextChanged;
             // 
             // flowLayoutPanel1
             // 
@@ -247,6 +262,17 @@ namespace GUI
             lblTong.TabIndex = 15;
             lblTong.Text = "500,000";
             // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = GUI.Properties.Resources.icons8_back_50;
+            pictureBox2.Location = new Point(8, 0);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(50, 36);
+            pictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox2.TabIndex = 15;
+            pictureBox2.TabStop = false;
+            pictureBox2.Click += pictureBox2_Click;
+            // 
             // AddHoaDon
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -266,6 +292,7 @@ namespace GUI
             splitContainer1.ResumeLayout(false);
             roundedPanel6.ResumeLayout(false);
             roundedPanel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 
@@ -278,12 +305,14 @@ namespace GUI
         private ReaLTaiizor.Controls.Button BtnThanhToan;
         private Label lblTong;
         private Label lblTongSoMatHang;
-        private Helpler.RoundedPanel roundedPanel6;
+        private Helper.RoundedPanel roundedPanel6;
         private BufferedFlowLayoutPanel flowLayoutPanel2;
         private BufferedFlowLayoutPanel flowLayoutPanel1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Panel panel2;
-        private ReaLTaiizor.Controls.AloneComboBox SearchKhCombo;
         private System.Windows.Forms.Timer searchTimer;
+        private ReaLTaiizor.Controls.DungeonTextBox SeacrhKh;
+        private Panel ketqua;
+        private PictureBox pictureBox2;
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
@@ -41,6 +42,45 @@ namespace DAL
             }
             return danhSach;
         }
+        public DTO_VatLieu TimVatLieuTheoTenChinhXac(string tenVatLieu)
+        {
+            DTO_VatLieu vatLieu = null;
+            string query = "SELECT MaVatLieu, Ten, DonViTinh, DonGiaNhap, SoLuongTon, MaNCC " + // Lấy đủ các cột bạn cần
+                           "FROM VatLieu " +
+                           "WHERE LOWER(Ten) = LOWER(@TenVatLieu)";
+            try
+            {
+                using (SqlConnection _conn = DBConnect.GetConnection())
+
+                {
+                    _conn.Open(); 
+                    SqlCommand cmd = new SqlCommand(query, _conn);
+                    cmd.Parameters.AddWithValue("@TenVatLieu", tenVatLieu.Trim()); 
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read()) 
+                        {
+                            vatLieu = new DTO_VatLieu
+                            {
+                                MaVatLieu = Convert.ToInt32(reader["MaVatLieu"]),
+                                Ten = reader["Ten"].ToString(),
+                                DonViTinh = reader["DonViTinh"].ToString(),
+                                DonGiaNhap = reader["DonGiaNhap"] != DBNull.Value ? Convert.ToDecimal(reader["DonGiaNhap"]) : 0,
+                                SoLuong = reader["SoLuongTon"] != DBNull.Value ? Convert.ToInt32(reader["SoLuongTon"]) : 0,
+                            };
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi DAL_VatLieu.TimVatLieuTheoTenChinhXac: {ex.Message}");
+                throw; 
+            }
+            return vatLieu;
+        }
+
         public DataTable LayVatLieuTheoMa(int maVatLieu)
         {
             using (SqlConnection conn = DBConnect.GetConnection())

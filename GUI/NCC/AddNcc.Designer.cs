@@ -1,4 +1,4 @@
-﻿namespace GUI.NCC
+﻿namespace QLVT.NCC
 {
     partial class AddNcc
     {

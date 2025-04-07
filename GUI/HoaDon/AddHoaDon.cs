@@ -3,8 +3,8 @@ using DTO;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Windows.Forms;
-
-namespace GUI
+using GUI.Helpler;
+namespace QLVT
 {
     public partial class AddHoaDon : Form
     {
@@ -12,20 +12,27 @@ namespace GUI
         private int? _maHoaDon = null;
         private List<ChiTietHoaDonTemp> chiTietHoaDonTemps = new List<ChiTietHoaDonTemp>();
         private BUS_Khach kh = new BUS_Khach();
-
+        private System.Windows.Forms.Timer debounceTimer;
+        private Color defaultLabelColor = Color.White;
+        private Color hoverLabelColor = Color.FromArgb(230, 240, 255);
+        private Form1 form1;
         public AddHoaDon(int? maHoaDon = null)
         {
             InitializeComponent();
             _maHoaDon = maHoaDon;
             this.DoubleBuffered = true;
             splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            UpdateFlowLayoutPanel1Size();
             this.Resize += AddHoaDon_Resize;
-            SearchKhCombo.DropDownStyle = ComboBoxStyle.DropDown;
-            SearchKhCombo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            SearchKhCombo.AutoCompleteSource = AutoCompleteSource.ListItems;
-
-            searchTimer.Tick += SearchTimer_Tick;
-            this.FormClosing += AddHoaDon_FormClosing;
+            debounceTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 300
+            };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
             flowLayoutPanel1.Resize += (s, e) =>
             {
                 foreach (Control ctrl in flowLayoutPanel1.Controls)
@@ -38,14 +45,14 @@ namespace GUI
         private void AddHoaDon_Load(object sender, EventArgs e)
         {
             LoadVatLieu();
-
             _maHoaDon = CreateNewHoaDon();
+
             lblTong.Text = "0";
             lblTongSoMatHang.Text = "Tổng số lượng: 0";
             AddHoaDon_Resize(this, EventArgs.Empty);
         }
-    
-    
+
+
         private void LoadVatLieu()
         {
             try
@@ -120,7 +127,6 @@ namespace GUI
 
                 flowLayoutPanel1.Controls.Add(widget2);
             }
-
             UpdateTongSoLuongVaTongTien();
         }
 
@@ -143,12 +149,14 @@ namespace GUI
                 }
 
                 int? maKhachHang = null;
-                if (!string.IsNullOrWhiteSpace(SearchKhCombo.Text) &&
-                    !SearchKhCombo.Text.Equals("Khách lẻ", StringComparison.OrdinalIgnoreCase) &&
-                    SearchKhCombo.Tag != null)
+                if (!string.IsNullOrWhiteSpace(SeacrhKh.Text))
                 {
-                    maKhachHang = Convert.ToInt32(SearchKhCombo.Tag);
-                    Console.WriteLine($"Khách hàng được chọn: {SearchKhCombo.Text} (Mã: {maKhachHang})");
+                    string[] parts = SeacrhKh.Text.Split('-');
+                    if (parts.Length > 1 && int.TryParse(parts[parts.Length - 1].Trim(), out int parsedMaKhachHang))
+                    {
+                        maKhachHang = parsedMaKhachHang;
+                        Console.WriteLine($"Khách hàng được chọn: {SeacrhKh.Text} (Mã: {maKhachHang})");
+                    }
                 }
 
                 foreach (var widget in flowLayoutPanel1.Controls.OfType<Wiget2>())
@@ -171,7 +179,7 @@ namespace GUI
 
                 if (maKhachHang.HasValue)
                 {
-                    busHoaDon.UpdateHoaDon(_maHoaDon.Value, maKhachHang,"Tiền mặt", "Chờ thanh toán", CurrentUser.MaTK);
+                    busHoaDon.UpdateHoaDon(_maHoaDon.Value, maKhachHang, "Tiền mặt", "Chờ thanh toán", CurrentUser.MaTK);
                 }
 
                 foreach (var widget in flowLayoutPanel1.Controls.OfType<Wiget2>())
@@ -182,7 +190,7 @@ namespace GUI
 
                 busHoaDon.UpdateTHoaDon(_maHoaDon.Value, "Đã thanh toán");
 
-                MessageBox.Show($"Thanh toán thành công!  (Mã: {maKhachHang})", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Thanh toán thành công! Mã khách hàng: {maKhachHang ?? -1}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 FrmHoaDon frmHoaDon = Application.OpenForms.OfType<FrmHoaDon>().FirstOrDefault();
                 if (frmHoaDon != null)
@@ -227,18 +235,9 @@ namespace GUI
                 int maTKLap = CurrentUser.MaTK;
                 int? maKhachHang = null;
 
-                if (!string.IsNullOrWhiteSpace(SearchKhCombo.Text) &&
-                    !SearchKhCombo.Text.Equals("Khách lẻ", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(SeacrhKh.Text) && int.TryParse(SeacrhKh.Text, out int parsedMaKhachHang))
                 {
-                    if (SearchKhCombo.SelectedItem is DTO_Khach selectedKhach)
-                    {
-                        maKhachHang = selectedKhach.MaKhachHang;
-                        Console.WriteLine($"Đã chọn khách hàng: {selectedKhach.MaKhachHang} - {selectedKhach.Ten}");
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Không tìm thấy mã khách hàng. Vui lòng chọn lại.");
-                    }
+                    maKhachHang = parsedMaKhachHang;
                 }
 
                 return busHoaDon.CreateHoaDon(maTKLap, maKhachHang);
@@ -249,7 +248,6 @@ namespace GUI
                 throw;
             }
         }
-
 
 
 
@@ -285,7 +283,6 @@ namespace GUI
             int maxSplitterDistance = splitContainer1.Width - 300;
             productListWidth = Math.Max(minSplitterDistance, Math.Min(productListWidth, maxSplitterDistance));
             splitContainer1.SplitterDistance = productListWidth;
-            UpdateFlowLayoutPanel1Size();
         }
 
         private void UpdateFlowLayoutPanel1Size()
@@ -325,98 +322,80 @@ namespace GUI
                 }
             }
         }
-
-        private void AddHoaDon_FormClosing(object sender, FormClosingEventArgs e)
+        private void SeacrhKh_TextChanged(object sender, EventArgs e)
         {
-            if (flowLayoutPanel1.Controls.Count == 0 && _maHoaDon.HasValue)
-            {
-                try
-                {
-                    DialogResult result = MessageBox.Show(
-                        "Hóa đơn trống sẽ bị xóa. Bạn có chắc chắn muốn đóng?",
-                        "Xác nhận",
-                        MessageBoxButtons.YesNo);
-
-                    if (result == DialogResult.Yes)
-                    {
-                        busHoaDon.DeleteHoaDonTam(_maHoaDon.Value, CurrentUser.MaTK);
-                    }
-                    else
-                    {
-                        e.Cancel = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi xóa hóa đơn tạm: " + ex.Message);
-                }
-            }
+            debounceTimer.Stop();
+            debounceTimer.Start();
         }
-        private void SearchKhCombo_TextChanged(object sender, EventArgs e)
+        private void PerformSearch()
         {
-            searchTimer.Stop();
-            searchTimer.Start();
-        }
-        private void SearchTimer_Tick(object sender, EventArgs e)
-        {
-            searchTimer.Stop();
-            string searchQuery = SearchKhCombo.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(searchQuery) || searchQuery.Equals("Khách lẻ", StringComparison.OrdinalIgnoreCase))
-            {
-                SearchKhCombo.Items.Clear();
-                SearchKhCombo.Tag = null; 
-                return;
-            }
-
+            string searchQuery = SeacrhKh.Text.Trim();
             try
             {
                 List<DTO_Khach> results = kh.TimKiemKh(searchQuery);
-
-                SearchKhCombo.Items.Clear();
-                SearchKhCombo.Tag = null; 
-
-                if (results == null || results.Count == 0)
-                {
-                    return;
-                }
-
-                foreach (var item in results)
-                {
-                    if (item == null || string.IsNullOrEmpty(item.Ten)) continue;
-
-                    SearchKhCombo.Items.Add(new { MaKhachHang = item.MaKhachHang, Ten = item.Ten });
-                }
-
-                SearchKhCombo.DroppedDown = true;
+                Console.WriteLine($"Search Query: {searchQuery}, Results: {results.Count}");
+                UpdateSearchSuggestions(results);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tìm kiếm khách hàng: {ex.Message}",
-                               "Lỗi",
-                               MessageBoxButtons.OK,
-                               MessageBoxIcon.Error);
-            }
-
-        }
-        private void SearchKhCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (SearchKhCombo.SelectedItem != null)
-            {
-                var selectedItem = SearchKhCombo.SelectedItem;
-                int maKhachHang = (int)selectedItem.GetType().GetProperty("MaKhachHang").GetValue(selectedItem);
-                string ten = (string)selectedItem.GetType().GetProperty("Ten").GetValue(selectedItem);
-
-                SearchKhCombo.Text = ten; 
-                SearchKhCombo.Tag = maKhachHang; 
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ketqua.Visible = false;
             }
         }
-        private void SearchKhCombo_Format(object sender, ListControlConvertEventArgs e)
+        private void UpdateSearchSuggestions(List<DTO_Khach> results)
         {
-            if (e.ListItem != null)
+            ketqua.Controls.Clear();
+            if (results.Any() && !string.IsNullOrWhiteSpace(SeacrhKh.Text.Trim()))
             {
-                e.Value = e.ListItem.GetType().GetProperty("Ten").GetValue(e.ListItem);
+                ketqua.Height = Math.Min(results.Count * 40, 200);
+                ketqua.BackColor = Color.Transparent;
+
+                foreach (var item in results)
+                {
+                    Label lbl = new Label
+                    {
+                        Text = $"👤 {item.Ten} - {item.MaKhachHang}",
+                        AutoSize = false,
+                        Width = ketqua.Width - 2,
+                        Height = 40,
+                        Padding = new Padding(10, 5, 5, 5),
+                        Font = new Font("Segoe UI", 11, FontStyle.Regular),
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        BorderStyle = BorderStyle.FixedSingle,
+                        Margin = new Padding(1),
+                        Tag = item
+                    };
+
+                    lbl.MouseEnter += (s, e) => { lbl.BackColor = hoverLabelColor; lbl.ForeColor = Color.FromArgb(0, 102, 204); };
+                    lbl.MouseLeave += (s, e) => { lbl.BackColor = defaultLabelColor; lbl.ForeColor = Color.FromArgb(33, 37, 41); };
+                    lbl.Click += (s, e) =>
+                    {
+                        var selectedItem = (DTO_Khach)lbl.Tag;
+                        SeacrhKh.Text = $"{selectedItem.Ten} - {selectedItem.MaKhachHang}";
+                        ketqua.Visible = false;
+                    };
+
+                    ketqua.Controls.Add(lbl);
+                }
+                ketqua.Visible = true;
             }
+            else
+            {
+                ketqua.Visible = false;
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+                busHoaDon.DeleteHoaDonTam(_maHoaDon.Value, CurrentUser.MaTK);
+                this.Controls.Clear();
+                FrmHoaDon frm = new FrmHoaDon()
+                {
+                    TopLevel = false,
+                    Dock = DockStyle.Fill
+                };
+                this.Controls.Add(frm);
+                frm.Show();
         }
     }
 }

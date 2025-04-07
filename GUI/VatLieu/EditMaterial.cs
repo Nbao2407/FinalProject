@@ -14,7 +14,7 @@ using System.Globalization;
 using ReaLTaiizor.Controls;
 using static IronPython.Modules._ast;
 
-namespace GUI.VatLieu
+namespace QLVT.VatLieu
 {
     public partial class EditMaterial : Form
     {

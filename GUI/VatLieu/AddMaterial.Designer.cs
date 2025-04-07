@@ -1,4 +1,4 @@
-﻿namespace GUI.VatLieu
+﻿namespace QLVT.VatLieu
 {
     partial class AddMaterial
     {

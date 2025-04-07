@@ -5,6 +5,7 @@ using DAL;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace BUS
 {
@@ -34,6 +35,10 @@ namespace BUS
         public void XoaNCC(int maNCC, int nguoiCapNhat)
         {
             DAL_Nccap.XoaNCC(maNCC, nguoiCapNhat);
+        }
+        public DataTable LayDSNcc()
+        {
+            return DAL_Nccap.LayDSNcc();
         }
     }
 }

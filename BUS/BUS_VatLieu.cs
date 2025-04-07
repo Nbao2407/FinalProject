@@ -29,6 +29,23 @@ namespace BUS
         {
             return dalVatLieu.LayVatLieuTheoMa2(maVatLieu);
         }
+        public DTO_VatLieu TimVatLieuTheoTenChinhXac(string tenVatLieu)
+        {
+            if (string.IsNullOrWhiteSpace(tenVatLieu))
+            {
+                return null; 
+            }
+            try
+            {
+                return dalVatLieu.TimVatLieuTheoTenChinhXac(tenVatLieu);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi trong BUS_VatLieu.TimVatLieuTheoTenChinhXac: {ex.Message}");
+                return null; 
+            }
+        }
+
         public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu,int NguoiTao)
         {
             if (string.IsNullOrEmpty(ten) || donGiaNhap < 0 || donGiaBan < 0 || string.IsNullOrEmpty(donViTinh))

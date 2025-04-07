@@ -1,9 +1,9 @@
 ﻿using BUS;
 using DTO;
-using GUI.HoaDon;
+using QLVT.HoaDon;
 using System.Data;
 
-namespace GUI
+namespace QLVT
 {
     public partial class EditHoaDon : Form
     {

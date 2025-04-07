@@ -1,8 +1,8 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
-using GUI.NCC;
+using QLVT.Helper;
+using QLVT.NCC;
 using ReaLTaiizor.Controls;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
-namespace GUI
+namespace QLVT
 {
 
     public partial class PopNcc : Form

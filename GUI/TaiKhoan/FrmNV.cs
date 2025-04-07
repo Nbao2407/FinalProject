@@ -1,16 +1,17 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
-using GUI.TaiKhoan;
-using GUI.Type;
+using QLVT.Helper;
+using QLVT.TaiKhoan;
+using QLVT.Type;
+using QLVT.VatLieu;
 
-namespace GUI
+namespace QLVT
 {
     public partial class FrmNV : Form
     {
 
-        public FrmNV()
+        public FrmNV(DTO_TK loggedInUser = null)
         {
             InitializeComponent();
             this.Resize += new EventHandler(Frm_Resize);
@@ -21,9 +22,9 @@ namespace GUI
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             LoadData();
             ResizeColumns();
-
         }
-        private void LoadData()
+
+        public void LoadData()
         {
             try
             {
@@ -36,6 +37,18 @@ namespace GUI
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     if (dataGridView1 != null)
                         dataGridView1.DataSource = null;
+                    return;
+                }
+
+                if (CurrentUser.ChucVu == "Quản lý")
+                {
+                    danhSach = danhSach.Where(nv => nv.quyen == "Nhân viên").ToList();
+                }
+                if (danhSach.Count == 0)
+                {
+                    MessageBox.Show("Không có nhân viên nào để hiển thị!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    dataGridView1.DataSource = null;
                     return;
                 }
 
@@ -56,6 +69,8 @@ namespace GUI
                 dataGridView1.Columns["Email"].HeaderText = "Email";
                 dataGridView1.Columns["Quyen"].HeaderText = "Quyền";
                 dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
+                DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+                ResizeColumns();
             }
             catch (Exception ex)
             {
@@ -63,6 +78,7 @@ namespace GUI
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void Frm_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -71,7 +87,6 @@ namespace GUI
                 dataGridView1.Height = 642;
                 dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
-
             }
             else
             {
@@ -80,9 +95,9 @@ namespace GUI
                 dataGridView1.Left = 25;
                 dataGridView1.Top = 80;
             }
-
             ResizeColumns();
         }
+
         private void ResizeColumns()
         {
             if (dataGridView1.Columns.Count == 0) return;
@@ -100,24 +115,24 @@ namespace GUI
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (var add = new AddTk())
+            using (var add = new AddTk(this))
             {
                 add.Deactivate += (s, e) => add.TopMost = true;
-
                 add.StartPosition = FormStartPosition.CenterParent;
-
                 add.ShowDialog();
             }
         }
 
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            using (var Pop = new PopupTk())
+            if (dataGridView1.CurrentRow != null)
             {
-                Pop.Deactivate += (s, e) => Pop.TopMost = true;
-                Pop.StartPosition = FormStartPosition.CenterParent;
-                Pop.ShowDialog();
-            }    
+                int tk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
+                    int maTk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
+                    PopupTk popup = new PopupTk(this, maTk);
+                    popup.StartPosition = FormStartPosition.CenterParent;
+                    popup.ShowDialog();
+            }
         }
     }
 }

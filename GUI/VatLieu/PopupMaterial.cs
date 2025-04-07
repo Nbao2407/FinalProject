@@ -1,19 +1,10 @@
 ﻿using BUS;
-using DAL;
 using DTO;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static IronPython.Modules._ast;
-using System.Globalization;
-namespace GUI.VatLieu
+namespace QLVT.VatLieu
 {
     public partial class PopupMaterial : Form
     {
@@ -43,19 +34,19 @@ namespace GUI.VatLieu
 
                     decimal giaNhap = Convert.ToDecimal(row["DonGiaNhap"]);
 
-                    TbGiaNhap.Text = giaNhap.ToString("N0", new CultureInfo("vi-VN")) + " ₫";
+                    TbGiaNhap.Text = giaNhap.ToString("N0", new CultureInfo("vi-VN"));
 
                     int maLoai = Convert.ToInt32(row["Loai"]);
                     lblType.Text = bus.LayTenLoaiTheoMa(maLoai);
 
                     decimal giaban = Convert.ToDecimal(row["DonGiaBan"]);
-                    TbGiaBan.Text = Convert.ToDecimal(row["DonGiaBan"]).ToString("N0", new CultureInfo("vi-VN")) + " ₫";
+                    TbGiaBan.Text = Convert.ToDecimal(row["DonGiaBan"]).ToString("N0", new CultureInfo("vi-VN"));
 
                     int maKho = Convert.ToInt32(row["MaKho"]);
                     lblKho.Text = bus.LayTenKhoTheoMa(maKho);
 
                     TbNote.Text = row["GhiChu"]?.ToString();
-                    int maTk = Convert.ToInt32(row["NguoiTao"]) ;
+                    int maTk = Convert.ToInt32(row["NguoiTao"]);
                     txtNgTao.Text = bus.LayTenNgTaoTheoMa(maTk);
                     dtpNgayTao.Text = row["NgayTao"].ToString();
                     Ngay.Text = dtpNgayTao.Value.ToString("dd/MM/yyyy");

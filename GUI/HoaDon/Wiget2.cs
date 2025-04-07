@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GUI
+namespace QLVT
 {
     public partial class Wiget2 : UserControl
     {

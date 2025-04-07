@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class FrmMaterial
     {
@@ -133,7 +133,7 @@
             button1.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Image = null;
             button1.ImageAlign = ContentAlignment.MiddleRight;
-            button1.InactiveColor = Color.FromArgb(44, 62, 80);
+            button1.InactiveColor = Color.FromArgb(30, 58, 138);
             button1.Location = new Point(928, 31);
             button1.Margin = new Padding(3, 3, 160, 3);
             button1.Name = "button1";
@@ -179,7 +179,7 @@
             Tong.ForeColor = Color.DarkGray;
             Tong.Location = new Point(12, 584);
             Tong.Name = "Tong";
-            Tong.Size = new Size(34, 13);
+            Tong.Size = new Size(33, 13);
             Tong.TabIndex = 8;
             Tong.Text = "Tổng";
             // 

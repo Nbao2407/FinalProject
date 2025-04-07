@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using GUI.Helper;
+using QLVT.Helper;
 using Newtonsoft.Json;
 
-namespace GUI
+namespace QLVT
 {
     public class AuthData
     {

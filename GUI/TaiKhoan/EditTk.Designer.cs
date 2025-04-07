@@ -1,4 +1,4 @@
-﻿namespace GUI.TaiKhoan
+﻿namespace QLVT.TaiKhoan
 {
     partial class EditTk
     {
@@ -29,15 +29,12 @@
         private void InitializeComponent()
         {
             TbNote = new ReaLTaiizor.Controls.DungeonRichTextBox();
-            TbAddress = new ReaLTaiizor.Controls.DungeonRichTextBox();
-            label7 = new Label();
             label6 = new Label();
             CbChucVu = new ReaLTaiizor.Controls.AloneComboBox();
-            btnCancel = new ReaLTaiizor.Controls.Button();
             label4 = new Label();
             label5 = new Label();
             TbEmail = new ReaLTaiizor.Controls.DungeonRichTextBox();
-            dungeonRichTextBox5 = new ReaLTaiizor.Controls.DungeonRichTextBox();
+            TbId = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label3 = new Label();
             TbSdt = new ReaLTaiizor.Controls.DungeonRichTextBox();
             TbName = new ReaLTaiizor.Controls.DungeonRichTextBox();
@@ -45,9 +42,12 @@
             label2 = new Label();
             groupBox2 = new GroupBox();
             label1 = new Label();
-            TgTrangthai = new ReaLTaiizor.Controls.ToggleEdit();
-            label8 = new Label();
+            btnCancel = new ReaLTaiizor.Controls.Button();
+            label7 = new Label();
+            pictureBox1 = new PictureBox();
+            TbPass = new ReaLTaiizor.Controls.SmallTextBox();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // TbNote
@@ -65,32 +65,6 @@
             TbNote.TabIndex = 42;
             TbNote.TextBackColor = Color.White;
             TbNote.WordWrap = true;
-            // 
-            // TbAddress
-            // 
-            TbAddress.AutoWordSelection = false;
-            TbAddress.BackColor = Color.Transparent;
-            TbAddress.BorderColor = Color.FromArgb(180, 180, 180);
-            TbAddress.EdgeColor = Color.White;
-            TbAddress.Font = new Font("Tahoma", 10F);
-            TbAddress.ForeColor = Color.Black;
-            TbAddress.Location = new Point(14, 298);
-            TbAddress.Name = "TbAddress";
-            TbAddress.ReadOnly = false;
-            TbAddress.Size = new Size(816, 32);
-            TbAddress.TabIndex = 42;
-            TbAddress.TextBackColor = Color.White;
-            TbAddress.WordWrap = true;
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(14, 267);
-            label7.Name = "label7";
-            label7.Size = new Size(48, 17);
-            label7.TabIndex = 57;
-            label7.Text = "Địa chỉ";
             // 
             // label6
             // 
@@ -113,30 +87,6 @@
             CbChucVu.Name = "CbChucVu";
             CbChucVu.Size = new Size(344, 26);
             CbChucVu.TabIndex = 55;
-            // 
-            // btnCancel
-            // 
-            btnCancel.BackColor = Color.Transparent;
-            btnCancel.BorderColor = Color.FromArgb(52, 73, 94);
-            btnCancel.Cursor = Cursors.Hand;
-            btnCancel.EnteredBorderColor = Color.FromArgb(165, 37, 37);
-            btnCancel.EnteredColor = Color.FromArgb(32, 34, 37);
-            btnCancel.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCancel.Image = null;
-            btnCancel.ImageAlign = ContentAlignment.MiddleRight;
-            btnCancel.InactiveColor = Color.LightGray;
-            btnCancel.Location = new Point(671, 443);
-            btnCancel.Margin = new Padding(3, 3, 160, 3);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Padding = new Padding(0, 0, 100, 0);
-            btnCancel.PressedBorderColor = Color.Green;
-            btnCancel.PressedColor = Color.Green;
-            btnCancel.RightToLeft = RightToLeft.Yes;
-            btnCancel.Size = new Size(73, 28);
-            btnCancel.TabIndex = 54;
-            btnCancel.Text = "Bỏ qua";
-            btnCancel.TextAlignment = StringAlignment.Center;
-            btnCancel.Click += btnCancel_Click;
             // 
             // label4
             // 
@@ -174,22 +124,22 @@
             TbEmail.TextBackColor = Color.White;
             TbEmail.WordWrap = true;
             // 
-            // dungeonRichTextBox5
+            // TbId
             // 
-            dungeonRichTextBox5.AutoWordSelection = false;
-            dungeonRichTextBox5.BackColor = Color.Transparent;
-            dungeonRichTextBox5.BorderColor = Color.FromArgb(180, 180, 180);
-            dungeonRichTextBox5.EdgeColor = Color.White;
-            dungeonRichTextBox5.Font = new Font("Tahoma", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            dungeonRichTextBox5.ForeColor = Color.Gray;
-            dungeonRichTextBox5.Location = new Point(444, 80);
-            dungeonRichTextBox5.Name = "dungeonRichTextBox5";
-            dungeonRichTextBox5.ReadOnly = true;
-            dungeonRichTextBox5.Size = new Size(380, 32);
-            dungeonRichTextBox5.TabIndex = 52;
-            dungeonRichTextBox5.Text = "Tự động";
-            dungeonRichTextBox5.TextBackColor = Color.White;
-            dungeonRichTextBox5.WordWrap = true;
+            TbId.AutoWordSelection = false;
+            TbId.BackColor = Color.Transparent;
+            TbId.BorderColor = Color.FromArgb(180, 180, 180);
+            TbId.EdgeColor = Color.White;
+            TbId.Font = new Font("Tahoma", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            TbId.ForeColor = Color.Gray;
+            TbId.Location = new Point(444, 80);
+            TbId.Name = "TbId";
+            TbId.ReadOnly = true;
+            TbId.Size = new Size(380, 32);
+            TbId.TabIndex = 52;
+            TbId.Text = "Tự động";
+            TbId.TextBackColor = Color.White;
+            TbId.WordWrap = true;
             // 
             // label3
             // 
@@ -244,7 +194,7 @@
             btnSave.Image = null;
             btnSave.ImageAlign = ContentAlignment.MiddleRight;
             btnSave.InactiveColor = Color.DodgerBlue;
-            btnSave.Location = new Point(764, 443);
+            btnSave.Location = new Point(764, 363);
             btnSave.Margin = new Padding(3, 3, 160, 3);
             btnSave.Name = "btnSave";
             btnSave.Padding = new Padding(0, 0, 100, 0);
@@ -255,6 +205,7 @@
             btnSave.TabIndex = 49;
             btnSave.Text = "Lưu";
             btnSave.TextAlignment = StringAlignment.Center;
+            btnSave.Click += btnSave_Click;
             // 
             // label2
             // 
@@ -270,7 +221,7 @@
             // 
             groupBox2.Controls.Add(TbNote);
             groupBox2.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox2.Location = new Point(8, 356);
+            groupBox2.Location = new Point(12, 280);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(827, 74);
             groupBox2.TabIndex = 46;
@@ -287,35 +238,77 @@
             label1.TabIndex = 43;
             label1.Text = "Chỉnh sửa tài khoản";
             // 
-            // TgTrangthai
+            // btnCancel
             // 
-            TgTrangthai.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            TgTrangthai.Location = new Point(524, 233);
-            TgTrangthai.Name = "TgTrangthai";
-            TgTrangthai.Size = new Size(41, 23);
-            TgTrangthai.TabIndex = 58;
-            TgTrangthai.Text = "toggleEdit1";
-            TgTrangthai.Toggled = false;
-            TgTrangthai.Type = ReaLTaiizor.Controls.ToggleEdit._Type.OnOff;
+            btnCancel.BackColor = Color.Transparent;
+            btnCancel.BorderColor = Color.FromArgb(52, 73, 94);
+            btnCancel.Cursor = Cursors.Hand;
+            btnCancel.EnteredBorderColor = Color.FromArgb(165, 37, 37);
+            btnCancel.EnteredColor = Color.FromArgb(32, 34, 37);
+            btnCancel.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Image = null;
+            btnCancel.ImageAlign = ContentAlignment.MiddleRight;
+            btnCancel.InactiveColor = Color.LightGray;
+            btnCancel.Location = new Point(12, 363);
+            btnCancel.Margin = new Padding(3, 3, 160, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Padding = new Padding(0, 0, 100, 0);
+            btnCancel.PressedBorderColor = Color.Green;
+            btnCancel.PressedColor = Color.Green;
+            btnCancel.RightToLeft = RightToLeft.Yes;
+            btnCancel.Size = new Size(73, 28);
+            btnCancel.TabIndex = 54;
+            btnCancel.Text = "Thoát";
+            btnCancel.TextAlignment = StringAlignment.Center;
+            btnCancel.Click += btnCancel_Click;
             // 
-            // label8
+            // label7
             // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label8.Location = new Point(444, 233);
-            label8.Name = "label8";
-            label8.Size = new Size(69, 17);
-            label8.TabIndex = 59;
-            label8.Text = "Trạng thái";
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.Location = new Point(444, 197);
+            label7.Name = "label7";
+            label7.Size = new Size(66, 17);
+            label7.TabIndex = 58;
+            label7.Text = "Mật khẩu";
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = GUI.Properties.Resources.icons8_eye_241;
+            pictureBox1.Location = new Point(795, 226);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(24, 24);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 59;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += seePW_Click;
+            // 
+            // TbPass
+            // 
+            TbPass.BackColor = Color.Transparent;
+            TbPass.BorderColor = Color.FromArgb(180, 180, 180);
+            TbPass.CustomBGColor = Color.White;
+            TbPass.Font = new Font("Tahoma", 11F);
+            TbPass.ForeColor = Color.DimGray;
+            TbPass.Location = new Point(444, 224);
+            TbPass.MaxLength = 32767;
+            TbPass.Multiline = false;
+            TbPass.Name = "TbPass";
+            TbPass.ReadOnly = false;
+            TbPass.Size = new Size(375, 28);
+            TbPass.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            TbPass.TabIndex = 60;
+            TbPass.TextAlignment = HorizontalAlignment.Left;
+            TbPass.UseSystemPasswordChar = true;
+            TbPass.TextChanged += TbPass_TextChanged;
             // 
             // EditTk
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(843, 482);
-            Controls.Add(label8);
-            Controls.Add(TgTrangthai);
-            Controls.Add(TbAddress);
+            ClientSize = new Size(843, 403);
+            Controls.Add(pictureBox1);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(CbChucVu);
@@ -323,7 +316,7 @@
             Controls.Add(label4);
             Controls.Add(label5);
             Controls.Add(TbEmail);
-            Controls.Add(dungeonRichTextBox5);
+            Controls.Add(TbId);
             Controls.Add(label3);
             Controls.Add(TbSdt);
             Controls.Add(TbName);
@@ -331,11 +324,13 @@
             Controls.Add(label2);
             Controls.Add(groupBox2);
             Controls.Add(label1);
+            Controls.Add(TbPass);
             FormBorderStyle = FormBorderStyle.None;
             Name = "EditTk";
             Text = "EditTk";
             Load += EditTk_Load;
             groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -343,15 +338,12 @@
         #endregion
 
         private ReaLTaiizor.Controls.DungeonRichTextBox TbNote;
-        private ReaLTaiizor.Controls.DungeonRichTextBox TbAddress;
-        private Label label7;
         private Label label6;
         private ReaLTaiizor.Controls.AloneComboBox CbChucVu;
-        private ReaLTaiizor.Controls.Button btnCancel;
         private Label label4;
         private Label label5;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbEmail;
-        private ReaLTaiizor.Controls.DungeonRichTextBox dungeonRichTextBox5;
+        private ReaLTaiizor.Controls.DungeonRichTextBox TbId;
         private Label label3;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbSdt;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbName;
@@ -359,7 +351,9 @@
         private Label label2;
         private GroupBox groupBox2;
         private Label label1;
-        private ReaLTaiizor.Controls.ToggleEdit TgTrangthai;
-        private Label label8;
+        private ReaLTaiizor.Controls.Button btnCancel;
+        private Label label7;
+        private PictureBox pictureBox1;
+        private ReaLTaiizor.Controls.SmallTextBox TbPass;
     }
 }

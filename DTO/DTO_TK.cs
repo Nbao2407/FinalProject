@@ -14,6 +14,7 @@ namespace DTO
         public string ghichu { get; set; }
         public string trangThai { get; set; }
         public DateTime ngayTao { get; set; }
+        public byte[] avatar { get; set; } 
         public DTO_TK(int Matk, string tenDangNhap, string matKhau, string quyen, string email, string sdt, string diaChi, string tranthai, string ghichu, DateTime ngayTao)
         {
             this.maTK = Matk;
@@ -32,7 +33,6 @@ namespace DTO
             this.maTK = Matk;
             this.tenDangNhap = tenDangNhap;
             this.email = email;
-            this.sdt = sdt;
             this.sdt = sdt;
             this.quyen = quyen;
             this.trangThai = tranthai;

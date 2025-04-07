@@ -11,9 +11,9 @@ using DTO;
 using DAL;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using BUS;
-using GUI.Helpler;
+using QLVT.Helper;
 
-namespace GUI.HoaDon
+namespace QLVT.HoaDon
 {
     public partial class PopupHoaDon : Form
     {

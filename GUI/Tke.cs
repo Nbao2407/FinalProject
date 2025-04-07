@@ -1,8 +1,8 @@
 ﻿using BUS;
-using GUI.Helpler;
+using QLVT.Helper;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace GUI
+namespace QLVT
 {
     public partial class Tke : Form
     {

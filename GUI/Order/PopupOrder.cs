@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GUI.Order
+namespace QLVT.Order
 {
     public partial class PopupOrder : Form
     {

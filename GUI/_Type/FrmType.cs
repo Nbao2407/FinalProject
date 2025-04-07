@@ -1,8 +1,8 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
-using GUI.Type;
+using QLVT.Helper;
+using QLVT.Type;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static IronPython.Modules._ast;
 
-namespace GUI
+namespace QLVT
 {
     public partial class FrmType : Form
     {

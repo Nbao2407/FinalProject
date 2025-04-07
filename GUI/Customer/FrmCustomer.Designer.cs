@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class FrmCustomer
     {
@@ -209,7 +209,7 @@
             button2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button2.Image = null;
             button2.ImageAlign = ContentAlignment.MiddleRight;
-            button2.InactiveColor = Color.FromArgb(44, 62, 80);
+            button2.InactiveColor = Color.FromArgb(30, 58, 138);
             button2.Location = new Point(929, 31);
             button2.Margin = new Padding(3, 3, 160, 3);
             button2.Name = "button2";

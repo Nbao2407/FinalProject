@@ -1,10 +1,11 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
-using GUI.Order;
+using QLVT.Helper;
+using QLVT.Order;
+using System.Data;
 
-namespace GUI
+namespace QLVT
 {
     public partial class FrmOrder : Form
     {
@@ -25,22 +26,17 @@ namespace GUI
             try
             {
                 DAL_Order dalOrder = new DAL_Order();
-                var orders = dalOrder.GetAllOrder();
-                if (orders != null)
+                DataTable orders = dalOrder.GetAllOrder(); 
+                if (orders != null && orders.Rows.Count > 0) 
                 {
                     dataGridView1.DataSource = orders;
 
-                    // Đặt tiêu đề cho các cột cần hiển thị
                     dataGridView1.Columns["MaDonNhap"].HeaderText = "Mã Đơn Nhập";
                     dataGridView1.Columns["NgayNhap"].HeaderText = "Ngày Nhập";
-                    dataGridView1.Columns["NCC"].HeaderText = "Nhà Cung Cấp";
+                    dataGridView1.Columns["TenNCC"].HeaderText = "Nhà Cung Cấp"; 
                     dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
 
-
-                    // Định dạng cột ngày
                     dataGridView1.Columns["NgayNhap"].DefaultCellStyle.Format = "dd/MM/yyyy";
-
-                    // Tự động điều chỉnh kích thước cột
                     dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
                 else
@@ -61,7 +57,6 @@ namespace GUI
                 dataGridView1.Height = 642;
                 dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
-
             }
             else
             {
@@ -73,6 +68,7 @@ namespace GUI
 
             ResizeColumns();
         }
+
         private void ResizeColumns()
         {
             if (dataGridView1.Columns.Count == 0) return;
@@ -87,7 +83,6 @@ namespace GUI
                 column.Width = variableColumnWidth;
             }
         }
-
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             ShowPopup();
@@ -107,12 +102,14 @@ namespace GUI
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using(var popup = new NhapHang()) 
+            this.Controls.Clear();
+            NhapHang nhap = new NhapHang()
             {
-                popup.Deactivate += (s, e) => popup.TopMost = true;
-                popup.StartPosition = FormStartPosition.CenterParent;
-                popup.ShowDialog();
-            }
+                TopLevel = false,
+                Dock = DockStyle.Fill
+            };
+            this.Controls.Add(nhap);
+            nhap.Show();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace GUI.TaiKhoan
+﻿namespace QLVT.TaiKhoan
 {
     partial class AddTk
     {
@@ -37,14 +37,12 @@
             TbSdt = new ReaLTaiizor.Controls.DungeonRichTextBox();
             TbName = new ReaLTaiizor.Controls.DungeonRichTextBox();
             btnSave = new ReaLTaiizor.Controls.Button();
-            TbAddress = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label2 = new Label();
             groupBox2 = new GroupBox();
             TbNote = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label1 = new Label();
             CbChucVu = new ReaLTaiizor.Controls.AloneComboBox();
             label6 = new Label();
-            label7 = new Label();
             Tbpass = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label8 = new Label();
             groupBox2.SuspendLayout();
@@ -61,7 +59,7 @@
             btnCancel.Image = null;
             btnCancel.ImageAlign = ContentAlignment.MiddleRight;
             btnCancel.InactiveColor = Color.LightGray;
-            btnCancel.Location = new Point(669, 442);
+            btnCancel.Location = new Point(660, 362);
             btnCancel.Margin = new Padding(3, 3, 160, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Padding = new Padding(0, 0, 100, 0);
@@ -180,33 +178,18 @@
             btnSave.Image = null;
             btnSave.ImageAlign = ContentAlignment.MiddleRight;
             btnSave.InactiveColor = Color.DodgerBlue;
-            btnSave.Location = new Point(762, 442);
+            btnSave.Location = new Point(756, 362);
             btnSave.Margin = new Padding(3, 3, 160, 3);
             btnSave.Name = "btnSave";
             btnSave.Padding = new Padding(0, 0, 100, 0);
             btnSave.PressedBorderColor = Color.Green;
             btnSave.PressedColor = Color.Green;
             btnSave.RightToLeft = RightToLeft.Yes;
-            btnSave.Size = new Size(60, 28);
+            btnSave.Size = new Size(66, 28);
             btnSave.TabIndex = 27;
             btnSave.Text = "Lưu";
             btnSave.TextAlignment = StringAlignment.Center;
-            // 
-            // TbAddress
-            // 
-            TbAddress.AutoWordSelection = false;
-            TbAddress.BackColor = Color.Transparent;
-            TbAddress.BorderColor = Color.FromArgb(180, 180, 180);
-            TbAddress.EdgeColor = Color.White;
-            TbAddress.Font = new Font("Tahoma", 10F);
-            TbAddress.ForeColor = Color.Black;
-            TbAddress.Location = new Point(12, 297);
-            TbAddress.Name = "TbAddress";
-            TbAddress.ReadOnly = false;
-            TbAddress.Size = new Size(816, 32);
-            TbAddress.TabIndex = 0;
-            TbAddress.TextBackColor = Color.White;
-            TbAddress.WordWrap = true;
+            btnSave.Click += btnSave_Click;
             // 
             // label2
             // 
@@ -222,7 +205,7 @@
             // 
             groupBox2.Controls.Add(TbNote);
             groupBox2.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            groupBox2.Location = new Point(6, 355);
+            groupBox2.Location = new Point(5, 267);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(827, 74);
             groupBox2.TabIndex = 24;
@@ -249,7 +232,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(12, 11);
+            label1.Location = new Point(12, 9);
             label1.Name = "label1";
             label1.Size = new Size(114, 21);
             label1.TabIndex = 21;
@@ -276,17 +259,6 @@
             label6.Size = new Size(57, 17);
             label6.TabIndex = 38;
             label6.Text = "Chức vụ";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(12, 266);
-            label7.Name = "label7";
-            label7.Size = new Size(48, 17);
-            label7.TabIndex = 39;
-            label7.Text = "Địa chỉ";
-            label7.Click += label7_Click;
             // 
             // Tbpass
             // 
@@ -318,11 +290,9 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(843, 482);
-            Controls.Add(TbAddress);
+            ClientSize = new Size(837, 406);
             Controls.Add(label8);
             Controls.Add(Tbpass);
-            Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(CbChucVu);
             Controls.Add(btnCancel);
@@ -356,13 +326,11 @@
         private ReaLTaiizor.Controls.DungeonRichTextBox TbSdt;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbName;
         private ReaLTaiizor.Controls.Button btnSave;
-        private ReaLTaiizor.Controls.DungeonRichTextBox TbAddress;
         private Label label2;
         private GroupBox groupBox2;
         private Label label1;
         private ReaLTaiizor.Controls.AloneComboBox CbChucVu;
         private Label label6;
-        private Label label7;
         private ReaLTaiizor.Controls.DungeonRichTextBox Tbpass;
         private Label label8;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbNote;

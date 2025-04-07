@@ -1,4 +1,4 @@
-﻿namespace GUI.Type
+﻿namespace QLVT.Type
 {
     partial class AddType
     {

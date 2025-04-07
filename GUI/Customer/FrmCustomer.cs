@@ -1,7 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
+using QLVT.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GUI
+namespace QLVT
 {
     public partial class FrmCustomer : Form
     {

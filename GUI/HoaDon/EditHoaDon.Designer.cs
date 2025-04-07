@@ -1,5 +1,5 @@
 ﻿
-namespace GUI
+namespace QLVT
 {
     partial class EditHoaDon
     {
@@ -27,7 +27,7 @@ namespace GUI
             flowLayoutPanel2 = new BufferedFlowLayoutPanel();
             flowLayoutPanel1 = new BufferedFlowLayoutPanel();
             dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
-            roundedPanel6 = new GUI.Helpler.RoundedPanel();
+            roundedPanel6 = new QLVT.Helper.RoundedPanel();
             lblTongSoMatHang = new Label();
             lblTong = new Label();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -270,7 +270,7 @@ namespace GUI
         private Label lblTong;
         private Label lblSL;
         private Label lblTongSoMatHang;
-        private Helpler.RoundedPanel roundedPanel6;
+        private Helper.RoundedPanel roundedPanel6;
         private BufferedFlowLayoutPanel flowLayoutPanel2;
         private BufferedFlowLayoutPanel flowLayoutPanel1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;

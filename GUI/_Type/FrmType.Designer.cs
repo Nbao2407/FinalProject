@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class FrmType
     {
@@ -32,13 +32,13 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             panel1 = new Panel();
+            CbTrangThai = new ReaLTaiizor.Controls.AloneComboBox();
             button2 = new ReaLTaiizor.Controls.Button();
             result = new Panel();
             button1 = new ReaLTaiizor.Controls.Button();
             pictureBox1 = new PictureBox();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             dataGridView = new ReaLTaiizor.Controls.PoisonDataGridView();
-            CbTrangThai = new ReaLTaiizor.Controls.AloneComboBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
@@ -60,6 +60,19 @@
             panel1.Size = new Size(1106, 600);
             panel1.TabIndex = 1;
             // 
+            // CbTrangThai
+            // 
+            CbTrangThai.DrawMode = DrawMode.OwnerDrawFixed;
+            CbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbTrangThai.EnabledCalc = true;
+            CbTrangThai.FormattingEnabled = true;
+            CbTrangThai.ItemHeight = 20;
+            CbTrangThai.Location = new Point(324, 33);
+            CbTrangThai.Name = "CbTrangThai";
+            CbTrangThai.Size = new Size(161, 26);
+            CbTrangThai.TabIndex = 11;
+            CbTrangThai.SelectedIndexChanged += CbTrangThai_SelectedIndexChanged;
+            // 
             // button2
             // 
             button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -71,7 +84,7 @@
             button2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button2.Image = null;
             button2.ImageAlign = ContentAlignment.MiddleRight;
-            button2.InactiveColor = Color.FromArgb(44, 62, 80);
+            button2.InactiveColor = Color.FromArgb(30, 58, 138);
             button2.Location = new Point(928, 31);
             button2.Margin = new Padding(3, 3, 160, 3);
             button2.Name = "button2";
@@ -120,7 +133,7 @@
             // pictureBox1
             // 
             pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = Properties.Resources.icons8_search_24;
+            pictureBox1.Image = GUI.Properties.Resources.icons8_search_24;
             pictureBox1.Location = new Point(252, 31);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(27, 28);
@@ -194,19 +207,6 @@
             dataGridView.Size = new Size(1100, 463);
             dataGridView.TabIndex = 0;
             dataGridView.CellContentDoubleClick += dataGridView_CellContentDoubleClick;
-            // 
-            // CbTrangThai
-            // 
-            CbTrangThai.DrawMode = DrawMode.OwnerDrawFixed;
-            CbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
-            CbTrangThai.EnabledCalc = true;
-            CbTrangThai.FormattingEnabled = true;
-            CbTrangThai.ItemHeight = 20;
-            CbTrangThai.Location = new Point(324, 33);
-            CbTrangThai.Name = "CbTrangThai";
-            CbTrangThai.Size = new Size(161, 26);
-            CbTrangThai.TabIndex = 11;
-            CbTrangThai.SelectedIndexChanged += CbTrangThai_SelectedIndexChanged;
             // 
             // FrmType
             // 

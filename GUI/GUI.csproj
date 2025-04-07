@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="IronPython" Version="3.4.2" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
@@ -49,6 +50,9 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Update="Tke.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\ChangePW.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

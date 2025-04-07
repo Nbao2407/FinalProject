@@ -1,4 +1,4 @@
-﻿namespace GUI.Order
+﻿namespace QLVT.Order
 {
     partial class PopupOrder
     {
@@ -34,7 +34,7 @@
             Ngay = new ReaLTaiizor.Controls.SmallTextBox();
             tableLayoutPanel1 = new TableLayoutPanel();
             lbld = new ReaLTaiizor.Controls.BigLabel();
-            roundedPictureBox1 = new Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
             panel5 = new Panel();
             BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnHuy = new ReaLTaiizor.Controls.AloneButton();
@@ -110,7 +110,7 @@
             roundedPictureBox1.BorderRadius = 20;
             roundedPictureBox1.BorderThickness = 0F;
             roundedPictureBox1.ErrorImage = null;
-            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox1.Image = GUI.Properties.Resources.icons8_close_26;
             roundedPictureBox1.InitialImage = null;
             roundedPictureBox1.Location = new Point(1012, 3);
             roundedPictureBox1.Name = "roundedPictureBox1";
@@ -122,7 +122,7 @@
             // 
             // panel5
             // 
-            panel5.BackColor = Color.FromArgb(44, 62, 80);
+            panel5.BackColor = Color.FromArgb(30, 58, 138);
             panel5.Controls.Add(roundedPictureBox1);
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
@@ -401,7 +401,7 @@
         private ReaLTaiizor.Controls.SmallTextBox Ngay;
         private TableLayoutPanel tableLayoutPanel1;
         private ReaLTaiizor.Controls.BigLabel lbld;
-        private Helpler.RoundedPictureBox roundedPictureBox1;
+        private Helper.RoundedPictureBox roundedPictureBox1;
         private Panel panel5;
         private ReaLTaiizor.Controls.AloneButton BtnDisable;
         private ReaLTaiizor.Controls.AloneButton BtnHuy;

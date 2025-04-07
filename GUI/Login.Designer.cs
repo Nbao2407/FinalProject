@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class Login
     {
@@ -53,7 +53,7 @@
             TbToken = new ReaLTaiizor.Controls.SmallTextBox();
             panel2 = new Panel();
             BtnBack = new ReaLTaiizor.Controls.HopeRoundButton();
-            paneloverlay = new GUI.Helpler.RoundedPanel();
+            paneloverlay = new QLVT.Helper.RoundedPanel();
             hopeRoundButton2 = new ReaLTaiizor.Controls.HopeRoundButton();
             panel4 = new Panel();
             tableLayoutPanel1.SuspendLayout();
@@ -215,7 +215,7 @@
             hopeRoundButton1.InfoColor = Color.FromArgb(144, 147, 153);
             hopeRoundButton1.Location = new Point(85, 4);
             hopeRoundButton1.Name = "hopeRoundButton1";
-            hopeRoundButton1.PrimaryColor = Color.FromArgb(44, 62, 80);
+            hopeRoundButton1.PrimaryColor = Color.FromArgb(30, 58, 138);
             hopeRoundButton1.Size = new Size(177, 31);
             hopeRoundButton1.SuccessColor = Color.FromArgb(103, 194, 58);
             hopeRoundButton1.TabIndex = 4;
@@ -276,7 +276,7 @@
             BtnchangePw.InfoColor = Color.FromArgb(144, 147, 153);
             BtnchangePw.Location = new Point(85, 4);
             BtnchangePw.Name = "BtnchangePw";
-            BtnchangePw.PrimaryColor = Color.FromArgb(44, 62, 80);
+            BtnchangePw.PrimaryColor = Color.FromArgb(30, 58, 138);
             BtnchangePw.Size = new Size(180, 31);
             BtnchangePw.SuccessColor = Color.FromArgb(103, 194, 58);
             BtnchangePw.TabIndex = 5;
@@ -357,10 +357,10 @@
             BtnBack.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnBack.ForeColor = Color.White;
             BtnBack.HoverTextColor = Color.FromArgb(48, 49, 51);
-            BtnBack.InfoColor = Color.FromArgb(144, 147, 153);
+            BtnBack.InfoColor = Color.DarkGray;
             BtnBack.Location = new Point(85, 4);
             BtnBack.Name = "BtnBack";
-            BtnBack.PrimaryColor = Color.FromArgb(44, 62, 80);
+            BtnBack.PrimaryColor = Color.Silver;
             BtnBack.Size = new Size(180, 31);
             BtnBack.SuccessColor = Color.FromArgb(103, 194, 58);
             BtnBack.TabIndex = 5;
@@ -370,7 +370,7 @@
             // 
             // paneloverlay
             // 
-            paneloverlay.BackColor = Color.FromArgb(44, 62, 80);
+            paneloverlay.BackColor = Color.FromArgb(30, 58, 138);
             paneloverlay.BorderRadius = 20;
             paneloverlay.Controls.Add(Title);
             paneloverlay.Location = new Point(381, 0);
@@ -402,9 +402,10 @@
             // panel4
             // 
             panel4.BackColor = Color.Transparent;
-            panel4.Location = new Point(187, 0);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(3, 0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(366, 26);
+            panel4.Size = new Size(747, 39);
             panel4.TabIndex = 6;
             // 
             // Login
@@ -461,7 +462,7 @@
         private ReaLTaiizor.Controls.HopeRoundButton BtnchangePw;
         private ReaLTaiizor.Controls.HopeRoundButton BtnBack;
         private ReaLTaiizor.Controls.BigLabel Title;
-        private Helpler.RoundedPanel paneloverlay;
+        private Helper.RoundedPanel paneloverlay;
         private ReaLTaiizor.Controls.HopeRoundButton hopeRoundButton2;
         private Panel panel4;
     }

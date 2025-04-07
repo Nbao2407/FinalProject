@@ -1,10 +1,10 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
+using QLVT.Helper;
 using Microsoft.Data.SqlClient;
 
-namespace GUI
+namespace QLVT
 {
     public partial class PopupCmer : Form
     {

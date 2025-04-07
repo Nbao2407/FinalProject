@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class Wiget2
     {
@@ -30,13 +30,13 @@
         {
             IdSp = new Label();
             lblGia = new Label();
-            roundedPanel1 = new GUI.Helpler.RoundedPanel();
+            roundedPanel1 = new QLVT.Helper.RoundedPanel();
             panel1 = new Panel();
             Title2 = new Label();
-            roundedPictureBox3 = new GUI.Helpler.RoundedPictureBox();
-            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox3 = new QLVT.Helper.RoundedPictureBox();
+            roundedPictureBox2 = new QLVT.Helper.RoundedPictureBox();
             TbSL = new TextBox();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
             roundedPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
@@ -111,7 +111,7 @@
             roundedPictureBox3.BorderColor = Color.Transparent;
             roundedPictureBox3.BorderRadius = 20;
             roundedPictureBox3.BorderThickness = 2F;
-            roundedPictureBox3.Image = Properties.Resources.icons8_plus_24;
+            roundedPictureBox3.Image = GUI.Properties.Resources.icons8_plus_24;
             roundedPictureBox3.Location = new Point(142, 55);
             roundedPictureBox3.Name = "roundedPictureBox3";
             roundedPictureBox3.Size = new Size(20, 20);
@@ -124,7 +124,7 @@
             roundedPictureBox2.BorderColor = Color.Transparent;
             roundedPictureBox2.BorderRadius = 20;
             roundedPictureBox2.BorderThickness = 2F;
-            roundedPictureBox2.Image = Properties.Resources.icons8_minus_24;
+            roundedPictureBox2.Image = GUI.Properties.Resources.icons8_minus_24;
             roundedPictureBox2.Location = new Point(59, 55);
             roundedPictureBox2.Name = "roundedPictureBox2";
             roundedPictureBox2.Size = new Size(20, 20);
@@ -151,7 +151,7 @@
             roundedPictureBox1.BorderColor = Color.Transparent;
             roundedPictureBox1.BorderRadius = 20;
             roundedPictureBox1.BorderThickness = 2F;
-            roundedPictureBox1.Image = Properties.Resources.icons8_trash_242;
+            roundedPictureBox1.Image = GUI.Properties.Resources.icons8_trash_242;
             roundedPictureBox1.Location = new Point(30, 15);
             roundedPictureBox1.Name = "roundedPictureBox1";
             roundedPictureBox1.Size = new Size(24, 24);
@@ -177,11 +177,11 @@
         private Panel panel1;
         public Label IdSp;
         public Label lblGia;
-        public Helpler.RoundedPanel roundedPanel1;
-        public Helpler.RoundedPictureBox roundedPictureBox1;
+        public Helper.RoundedPanel roundedPanel1;
+        public Helper.RoundedPictureBox roundedPictureBox1;
         public TextBox TbSL;
         public Label Title2;
-        public Helpler.RoundedPictureBox roundedPictureBox3;
-        public Helpler.RoundedPictureBox roundedPictureBox2;
+        public Helper.RoundedPictureBox roundedPictureBox3;
+        public Helper.RoundedPictureBox roundedPictureBox2;
     }
 }

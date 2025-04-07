@@ -1,4 +1,4 @@
-﻿namespace GUI.HoaDon
+﻿namespace QLVT.HoaDon
 {
     partial class PopupHoaDon
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
             panel5 = new Panel();
             lblTongCong = new Label();
             lblSoLuong = new Label();
@@ -59,7 +59,7 @@
             roundedPictureBox1.BorderRadius = 20;
             roundedPictureBox1.BorderThickness = 0F;
             roundedPictureBox1.ErrorImage = null;
-            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox1.Image = GUI.Properties.Resources.icons8_close_26;
             roundedPictureBox1.InitialImage = null;
             roundedPictureBox1.Location = new Point(847, 6);
             roundedPictureBox1.Name = "roundedPictureBox1";
@@ -71,7 +71,7 @@
             // 
             // panel5
             // 
-            panel5.BackColor = Color.FromArgb(44, 62, 80);
+            panel5.BackColor = Color.FromArgb(30, 58, 138);
             panel5.Controls.Add(roundedPictureBox1);
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
@@ -335,7 +335,7 @@
         }
 
         #endregion
-        private Helpler.RoundedPictureBox roundedPictureBox1;
+        private Helper.RoundedPictureBox roundedPictureBox1;
         private Panel panel5;
         private Label lblTongCong;
         private Label lblSoLuong;

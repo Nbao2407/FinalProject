@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class EditNhap
     {
@@ -135,7 +135,7 @@
             // pictureBox1
             // 
             pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = Properties.Resources.icons8_search_24;
+            pictureBox1.Image = GUI.Properties.Resources.icons8_search_24;
             pictureBox1.Location = new Point(202, 6);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(24, 24);
@@ -309,7 +309,7 @@
             // pictureBox2
             // 
             pictureBox2.BackColor = Color.Transparent;
-            pictureBox2.Image = Properties.Resources.icons8_search_24;
+            pictureBox2.Image = GUI.Properties.Resources.icons8_search_24;
             pictureBox2.Location = new Point(264, 45);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(29, 28);

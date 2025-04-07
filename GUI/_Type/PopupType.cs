@@ -1,7 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.TaiKhoan;
+using QLVT.TaiKhoan;
 using ReaLTaiizor.Controls;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GUI.Type
+namespace QLVT.Type
 {
     public partial class PopupType : Form
     {
@@ -119,7 +119,7 @@ namespace GUI.Type
             {
                 if (!int.TryParse(TbID.Text, out int MaLoaiVatLieu))
                 {
-                    MessageBox.Show("Mã khách hàng không hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Mã loại vật liệu không hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

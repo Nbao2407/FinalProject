@@ -4,10 +4,10 @@ using DTO;
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-using GUI.Helper;
-using GUI.Helpler;
+using QLVT.Helper;
+using QLVT.Helper;
 
-namespace GUI.NCC
+namespace QLVT.NCC
 {
     public partial class EditNcc : Form
     {

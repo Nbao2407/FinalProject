@@ -1,5 +1,5 @@
 ﻿
-namespace GUI
+namespace QLVT
 {
     partial class Tke
     {

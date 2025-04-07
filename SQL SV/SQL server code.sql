@@ -197,13 +197,19 @@ WHERE NgayLap = '2025-04-03';
 
 
 SELECT maTK, tenDangNhap, email, sdt, ChucVu, trangThai, ngayTao , GHICHU ,DiaChi FROM QLTK WHERE maTk = 1
-
+Select * from QLTK
 
 BACKUP DATABASE QLVT 
-TO DISK = 'D:\Pro213\FinalProject\SQL SV\Backup\QLVT.bak'
+TO DISK = 'I:\Pro213\SQL SV\Backup\QLVT.bak'
 WITH FORMAT, INIT, 
 NAME = 'Backup QLVT';
 
-ALter table QLTK add
-    SDT NVARCHAR(15) CHECK (SDT LIKE '[0-9]%' AND LEN(SDT) BETWEEN 10 AND 15)
+UPDATE dbo.QLTK
+SET TrangThai =  N'Bị khóa'
+WHERE MaTK= 2;
 
+SELECT * 
+FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS 
+WHERE CONSTRAINT_NAME = 'CK_QLTK_TrangThai_39508EEE';
+
+SELect MaNCC,TenNCC from NCC Where TrangThai =N'Hoạt động'

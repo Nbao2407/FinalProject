@@ -897,3 +897,371 @@ BEGIN
     END CATCH
 END;
 GO
+CREATE PROCEDURE sp_CapNhatThongTinTK
+    @MaTK INT,
+    @TenDangNhap NVARCHAR(50),
+    @Email NVARCHAR(100),
+    @SDT NVARCHAR(15),
+    @DiaChi NVARCHAR(255),
+    @Avatar VARBINARY(MAX) = NULL, 
+    @NguoiCapNhat INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Kiểm tra tài khoản có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @MaTK)
+            THROW 50001, N'Tài khoản không tồn tại!', 1;
+
+        -- Kiểm tra email hoặc tên đăng nhập đã tồn tại ở tài khoản khác chưa
+        IF EXISTS (SELECT 1 FROM QLTK WHERE (Email = @Email OR TenDangNhap = @TenDangNhap) AND MaTK != @MaTK)
+            THROW 50002, N'Tên đăng nhập hoặc email đã tồn tại!', 1;
+
+        -- Kiểm tra định dạng SDT
+        IF @SDT IS NOT NULL AND (@SDT NOT LIKE '[0-9]%' OR LEN(@SDT) NOT BETWEEN 10 AND 15)
+            THROW 50003, N'Số điện thoại không hợp lệ!', 1;
+
+        -- Cập nhật thông tin tài khoản
+        UPDATE QLTK
+        SET TenDangNhap = @TenDangNhap,
+            Email = @Email,
+            SDT = @SDT,
+            DiaChi = @DiaChi,
+            Avatar = ISNULL(@Avatar, Avatar), 
+            NgayTao = GETDATE() 
+        WHERE MaTK = @MaTK;
+
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLTK', @MaTK, N'Cập nhật', N'Cập nhật thông tin tài khoản, bao gồm avatar');
+
+        SELECT N'Cập nhật thông tin tài khoản thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_ThemTaiKhoan
+    @TenDangNhap NVARCHAR(50),
+    @MatKhau NVARCHAR(255),
+    @Email NVARCHAR(100),
+    @SDT NVARCHAR(15),
+    @ChucVu NVARCHAR(50),
+    @NguoiTao INT -- MaTK của người tạo
+AS
+BEGIN
+    BEGIN TRY
+        DECLARE @ChucVuNguoiTao NVARCHAR(50);
+        
+        -- Lấy chức vụ của người tạo
+        SELECT @ChucVuNguoiTao = ChucVu 
+        FROM QLTK 
+        WHERE MaTK = @NguoiTao;
+
+        -- Kiểm tra quyền
+        IF @ChucVuNguoiTao != N'Quản lý' AND @ChucVuNguoiTao != N'Admin'
+            THROW 50001, N'Không có quyền tạo tài khoản!', 1;
+
+        IF @ChucVuNguoiTao = N'Quản lý' AND @ChucVu != N'Nhân viên'
+            THROW 50002, N'Quản lý chỉ có thể tạo tài khoản nhân viên!', 1;
+
+        -- Mã hóa mật khẩu
+        DECLARE @MatKhauHash NVARCHAR(255) = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhau), 2);
+
+        -- Thêm tài khoản
+        INSERT INTO QLTK (TenDangNhap, MatKhau, Email, SDT, ChucVu, TrangThai, NguoiTao, NgayTao)
+        VALUES (@TenDangNhap, @MatKhauHash, @Email, @SDT, @ChucVu, N'Hoạt động', @NguoiTao, GETDATE());
+
+        -- Ghi log
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiTao, N'QLTK', SCOPE_IDENTITY(), N'Thêm', N'Tạo tài khoản mới');
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+Alter PROCEDURE sp_XoaTaiKhoan
+    @MaTK INT,              -- Mã tài khoản cần xóa
+    @NguoiCapNhat INT       -- Người thực hiện xóa (thường là người dùng hệ thống)
+AS
+BEGIN
+    BEGIN TRY
+        -- Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        BEGIN TRANSACTION;
+
+        -- Kiểm tra tài khoản có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @MaTK)
+            THROW 50001, N'Tài khoản không tồn tại!', 1;
+
+        -- Kiểm tra tài khoản có đang được tham chiếu trong các bảng khác không
+        IF EXISTS (SELECT 1 FROM QLHoaDon WHERE MaTKLap = @MaTK)
+            OR EXISTS (SELECT 1 FROM QLDonNhap WHERE MaTK = @MaTK)
+            OR EXISTS (SELECT 1 FROM QLKH WHERE NguoiTao = @MaTK)
+            OR EXISTS (SELECT 1 FROM QLVatLieu WHERE NguoiTao = @MaTK OR NguoiCapNhat = @MaTK)
+            OR EXISTS (SELECT 1 FROM PasswordResetToken WHERE MaTK = @MaTK)
+        BEGIN
+            THROW 50002, N'Không thể xóa tài khoản vì đã có giao dịch hoặc dữ liệu liên quan!', 1;
+        END
+
+        -- Xóa token reset mật khẩu liên quan (nếu có)
+        DELETE FROM PasswordResetToken
+        WHERE MaTK = @MaTK;
+
+        -- Xóa tài khoản
+        DELETE FROM QLTK
+        WHERE MaTK = @MaTK;
+
+        -- Ghi log hoạt động
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLTK', @MaTK, N'Xóa', N'Có dữ liệu', N'Đã xóa', N'Xóa tài khoản khỏi hệ thống');
+
+        -- Commit transaction nếu thành công
+        COMMIT TRANSACTION;
+
+        SELECT N'Xóa tài khoản thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        -- Rollback nếu có lỗi
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        -- Ném lỗi ra ngoài để xử lý
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_SuaTaiKhoan
+    @MaTK INT,
+    @TenDangNhap NVARCHAR(50),
+    @Email NVARCHAR(100),
+    @SDT NVARCHAR(15),
+    @ChucVu NVARCHAR(50),
+    @TrangThai NVARCHAR(20),
+    @GhiChu NVARCHAR(255),
+    @NguoiCapNhat INT
+AS
+BEGIN
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @MaTK)
+            THROW 50001, N'Tài khoản không tồn tại!', 1;
+
+        UPDATE QLTK
+        SET TenDangNhap = @TenDangNhap,
+            Email = @Email,
+            SDT = @SDT,
+            ChucVu = @ChucVu,
+            TrangThai = @TrangThai,
+            GHICHU = @GhiChu
+        WHERE MaTK = @MaTK;
+
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLTK', @MaTK, N'Sửa', N'Cập nhật thông tin tài khoản');
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+CREATE PROCEDURE sp_ThemTaiKhoan
+    @TenDangNhap NVARCHAR(50),
+    @MatKhau NVARCHAR(255),
+    @Email NVARCHAR(100),
+    @SDT NVARCHAR(15),
+    @ChucVu NVARCHAR(50),
+    @NguoiTao INT 
+AS
+BEGIN
+    BEGIN TRY
+        DECLARE @ChucVuNguoiTao NVARCHAR(50);
+        
+        -- Lấy chức vụ của người tạo
+        SELECT @ChucVuNguoiTao = ChucVu 
+        FROM QLTK 
+        WHERE MaTK = @NguoiTao;
+
+        -- Kiểm tra quyền
+        IF @ChucVuNguoiTao != N'Quản lý' AND @ChucVuNguoiTao != N'Admin'
+            THROW 50001, N'Không có quyền tạo tài khoản!', 1;
+
+        IF @ChucVuNguoiTao = N'Quản lý' AND @ChucVu != N'Nhân viên'
+            THROW 50002, N'Quản lý chỉ có thể tạo tài khoản nhân viên!', 1;
+
+        -- Mã hóa mật khẩu
+        DECLARE @MatKhauHash NVARCHAR(255) = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhau), 2);
+
+        -- Thêm tài khoản
+        INSERT INTO QLTK (TenDangNhap, MatKhau, Email, SDT, ChucVu, TrangThai, NguoiTao, NgayTao)
+        VALUES (@TenDangNhap, @MatKhauHash, @Email, @SDT, @ChucVu, N'Hoạt động', @NguoiTao, GETDATE());
+
+        -- Ghi log
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiTao, N'QLTK', SCOPE_IDENTITY(), N'Thêm', N'Tạo tài khoản mới');
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+ALTER PROCEDURE [dbo].[sp_ThemTaiKhoan]
+    @TenDangNhap NVARCHAR(50),
+    @MatKhau NVARCHAR(255),
+    @Email NVARCHAR(100),
+    @SDT NVARCHAR(15),
+    @ChucVu NVARCHAR(50),
+	@GHICHU NVARCHAR(255),
+    @NguoiTao INT 
+AS
+BEGIN
+    BEGIN TRY
+        DECLARE @ChucVuNguoiTao NVARCHAR(50);
+        
+        SELECT @ChucVuNguoiTao = ChucVu 
+        FROM QLTK 
+        WHERE MaTK = @NguoiTao;
+
+        IF @ChucVuNguoiTao != N'Quản lý' AND @ChucVuNguoiTao != N'Admin'
+            THROW 50001, N'Không có quyền tạo tài khoản!', 1;
+
+        IF @ChucVuNguoiTao = N'Quản lý' AND @ChucVu != N'Nhân viên'
+            THROW 50002, N'Quản lý chỉ có thể tạo tài khoản nhân viên!', 1;
+
+        DECLARE @MatKhauHash NVARCHAR(255) = CONVERT(NVARCHAR(255), HASHBYTES('SHA2_256', @MatKhau), 2);
+
+        INSERT INTO QLTK (TenDangNhap, MatKhau, Email, SDT, ChucVu, TrangThai,NguoiTao, GHICHU, NgayTao)
+        VALUES (@TenDangNhap, @MatKhauHash, @Email, @SDT, @ChucVu, N'Hoạt động', @NguoiTao,@GHICHU, GETDATE());
+
+        -- Ghi log
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiTao, N'QLTK', SCOPE_IDENTITY(), N'Thêm', N'Tạo tài khoản mới');
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+go
+	CREATE PROCEDURE sp_NhapHang
+    @NgayNhap DATE,                  -- Ngày nhập hàng
+    @MaNCC INT,                      -- Mã nhà cung cấp
+    @MaTK INT,                       -- Mã tài khoản người tạo đơn
+    @GhiChu NVARCHAR(255) = NULL,    -- Ghi chú (không bắt buộc)
+    @ChiTietNhap NVARCHAR(MAX),      -- Chuỗi JSON chứa danh sách chi tiết nhập hàng
+    @NguoiCapNhat INT                -- Mã tài khoản người thực hiện
+AS
+BEGIN
+    BEGIN TRY
+        -- Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        BEGIN TRANSACTION;
+
+        -- Kiểm tra nhà cung cấp có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM NCC WHERE MaNCC = @MaNCC AND TrangThai = N'Hoạt động')
+            THROW 50001, N'Nhà cung cấp không tồn tại hoặc không hoạt động!', 1;
+
+        -- Kiểm tra tài khoản có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @MaTK AND TrangThai = N'Hoạt động')
+            THROW 50002, N'Tài khoản không tồn tại hoặc bị khóa!', 1;
+
+        -- Thêm đơn nhập hàng mới
+        INSERT INTO QLDonNhap (NgayNhap, MaNCC, MaTK, TrangThai, GhiChu, NgayCapNhat, NguoiCapNhat)
+        VALUES (@NgayNhap, @MaNCC, @MaTK, N'Hoàn thành', @GhiChu, GETDATE(), @NguoiCapNhat);
+
+        -- Lấy mã đơn nhập vừa tạo
+        DECLARE @MaDonNhap INT = SCOPE_IDENTITY();
+
+        -- Tạo bảng tạm để lưu chi tiết nhập hàng từ JSON
+        DECLARE @TempChiTiet TABLE (
+            MaVatLieu INT,
+            SoLuong INT,
+            GiaNhap DECIMAL(18,2)
+        );
+
+        -- Parse JSON chi tiết nhập hàng vào bảng tạm
+        INSERT INTO @TempChiTiet (MaVatLieu, SoLuong, GiaNhap)
+        SELECT 
+            JSON_VALUE(value, '$.MaVatLieu') AS MaVatLieu,
+            JSON_VALUE(value, '$.SoLuong') AS SoLuong,
+            JSON_VALUE(value, '$.GiaNhap') AS GiaNhap
+        FROM OPENJSON(@ChiTietNhap);
+
+        -- Kiểm tra dữ liệu chi tiết nhập hàng
+        IF NOT EXISTS (SELECT 1 FROM @TempChiTiet)
+            THROW 50003, N'Danh sách chi tiết nhập hàng trống!', 1;
+
+        -- Kiểm tra các vật liệu có tồn tại và hợp lệ không
+        IF EXISTS (
+            SELECT 1 
+            FROM @TempChiTiet t
+            LEFT JOIN QLVatLieu v ON t.MaVatLieu = v.MaVatLieu
+            WHERE v.MaVatLieu IS NULL OR v.TrangThai != N'Hoạt động'
+        )
+            THROW 50004, N'Có vật liệu không tồn tại hoặc không hoạt động!', 1;
+
+        -- Kiểm tra số lượng và giá nhập
+        IF EXISTS (SELECT 1 FROM @TempChiTiet WHERE SoLuong <= 0 OR GiaNhap < 0)
+            THROW 50005, N'Số lượng hoặc giá nhập không hợp lệ!', 1;
+
+        -- Thêm chi tiết đơn nhập vào bảng ChiTietDonNhap
+        INSERT INTO ChiTietDonNhap (MaDonNhap, MaVatLieu, SoLuong, GiaNhap)
+        SELECT @MaDonNhap, MaVatLieu, SoLuong, GiaNhap
+        FROM @TempChiTiet;
+
+        -- Cập nhật số lượng tồn kho trong bảng QLVatLieu
+        UPDATE QLVatLieu
+        SET SoLuong = v.SoLuong + t.SoLuong,
+            DonGiaNhap = t.GiaNhap, -- Cập nhật giá nhập mới nhất
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiCapNhat
+        FROM QLVatLieu v
+        INNER JOIN @TempChiTiet t ON v.MaVatLieu = t.MaVatLieu;
+
+        -- Ghi log hoạt động
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLDonNhap', @MaDonNhap, N'Thêm', NULL, NULL, N'Thêm đơn nhập hàng mới');
+
+        -- Commit transaction nếu thành công
+        COMMIT TRANSACTION;
+
+        SELECT N'Nhập hàng thành công!' AS Message, @MaDonNhap AS MaDonNhap;
+    END TRY
+    BEGIN CATCH
+        -- Rollback nếu có lỗi
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        -- Ném lỗi ra ngoài để xử lý
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+GO
+Alter PROCEDURE sp_TimKiemVatLieuNameID
+    @Keyword NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @Search NVARCHAR(100) = '%' + @Keyword + '%';
+
+    SELECT 
+        MaVatLieu,
+        Ten,
+        DonViTinh,
+		DonGiaNhap,
+        DonGiaBan,
+        SoLuong
+    FROM QLVatLieu
+    WHERE 
+        (Ten LIKE @Search OR CAST(MaVatLieu AS NVARCHAR) LIKE @Search)
+        AND TrangThai = N'Hoạt động'
+    ORDER BY Ten;
+END;
+GO
+
+exec sp_NhapHang @NgayNhap='2025-04-07',@MaNCC=2,@MaTK=2,@GhiChu=N'hello',@ChiTietNhap=N'[{"MaDonNhap":0,"NgayNhap":"0001-01-01T00:00:00","NCC":null,"TrangThai":null,"MaVatLieu":6,"SoLuong":3,"GiaNhap":15800.50}]',@NguoiCapNhat=2
+SELECT name, create_date, modify_date 
+FROM sys.triggers 
+WHERE parent_id = OBJECT_ID('ChiTietDonNhap');
+DROP TRIGGER trg_CapNhatSoLuongNhap;

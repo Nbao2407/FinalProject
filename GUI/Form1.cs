@@ -2,7 +2,7 @@
 using DTO;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-namespace GUI
+namespace QLVT
 {
     public partial class Form1 : Form
     {
@@ -155,8 +155,8 @@ namespace GUI
                 if (control is Panel panel && panel.Controls.Count > 0)
                 {
                     Button button = (Button)panel.Controls[0];
-                    button.MouseEnter += (s, e) => button.BackColor = Color.FromArgb(50, 50, 50);
-                    button.MouseLeave += (s, e) => button.BackColor = Color.FromArgb(44, 62, 80);
+                    button.MouseEnter += (s, e) => button.BackColor = Color.FromArgb(147, 197, 253);
+                    button.MouseLeave += (s, e) => button.BackColor = Color.FromArgb(30, 58, 138);
                     btnSidebar.MouseEnter += (s, e) => btnSidebar.BackColor = Color.FromArgb(50, 50, 50);
                     btnSidebar.MouseLeave += (s, e) => btnSidebar.BackColor = Color.Transparent;
                 }
@@ -205,29 +205,8 @@ namespace GUI
 
         private void BtnUser_Click(object sender, EventArgs e)
         {
-            BUS_TK busTk = new BUS_TK();
-            List<DTO_TK> userList = busTk.GetTkByMa(CurrentUser.MaTK);
-            DTO_TK user = null;
-
-            if (userList != null && userList.Count > 0)
-            {
-                DTO_TK tk = userList[0];
-                user = new DTO_TK()
-                {
-                    maTK = tk.maTK,             
-                    tenDangNhap = tk.tenDangNhap, 
-                    email = tk.email,
-                    quyen = tk.quyen,         
-                    sdt = tk.sdt,
-                    diaChi = tk.diaChi,
-                    ghichu = tk.ghichu,
-                };
+            DTO_TK user = new DTO_TK();
                 ShowPopup(user);
-            }
-            else
-            {
-                MessageBox.Show("Không tìm thấy thông tin người dùng hiện tại!");
-            }
         }
 
         private void ShowPopup(DTO_TK tk)

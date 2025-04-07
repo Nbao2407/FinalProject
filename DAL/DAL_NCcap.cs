@@ -164,5 +164,17 @@ namespace DAL
                 conn.Close();
             }
         }
+        public DataTable LayDSNcc()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELect MaNCC,TenNCC from NCC Where TrangThai =N'Hoạt động'", conn);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+            }
+            return dt;
+        }
     }
 }

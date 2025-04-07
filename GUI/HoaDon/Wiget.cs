@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 
-namespace GUI
+namespace QLVT
 {
 
     public partial class Wiget : UserControl

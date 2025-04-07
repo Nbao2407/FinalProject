@@ -1,11 +1,11 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
-using GUI.TaiKhoan;
-using GUI.VatLieu;
+using QLVT.Helper;
+using QLVT.TaiKhoan;
+using QLVT.VatLieu;
 
-namespace GUI
+namespace QLVT
 {
     public partial class FrmMaterial : Form
     {

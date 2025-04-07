@@ -1,4 +1,4 @@
-﻿namespace GUI.VatLieu
+﻿namespace QLVT.VatLieu
 {
     partial class PopupMaterial
     {
@@ -34,7 +34,7 @@
             lblID = new Label();
             lblName = new ReaLTaiizor.Controls.BigLabel();
             panel5 = new Panel();
-            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox2 = new QLVT.Helper.RoundedPictureBox();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
             txtEmail = new Label();
             dtpNgayTao = new ReaLTaiizor.Controls.PoisonDateTime();
@@ -137,7 +137,7 @@
             // 
             // panel5
             // 
-            panel5.BackColor = Color.FromArgb(44, 62, 80);
+            panel5.BackColor = Color.FromArgb(30, 58, 138);
             panel5.Controls.Add(roundedPictureBox2);
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
@@ -151,7 +151,7 @@
             roundedPictureBox2.BorderRadius = 20;
             roundedPictureBox2.BorderThickness = 0F;
             roundedPictureBox2.ErrorImage = null;
-            roundedPictureBox2.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox2.Image = GUI.Properties.Resources.icons8_close_26;
             roundedPictureBox2.InitialImage = null;
             roundedPictureBox2.Location = new Point(778, 3);
             roundedPictureBox2.Name = "roundedPictureBox2";
@@ -405,7 +405,7 @@
         private Label lblKho;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbNote;
         private GroupBox groupBox1;
-        private Helpler.RoundedPictureBox roundedPictureBox2;
+        private Helper.RoundedPictureBox roundedPictureBox2;
         private PictureBox pictureBox2;
     }
 }

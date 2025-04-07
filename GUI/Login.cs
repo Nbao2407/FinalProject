@@ -9,14 +9,14 @@ using DAL;
 using System.Net.Mail;
 using System.Net;
 using System.Runtime.InteropServices;
-using GUI.Helpler;
+using QLVT.Helper;
 using Microsoft.VisualBasic.ApplicationServices;
 using DTO;
 using Mono.Unix.Native;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using BUS;
-namespace GUI
+namespace QLVT
 {
     public partial class Login : Form
     {
@@ -242,22 +242,22 @@ namespace GUI
         private void hopeRoundButton1_Click(object sender, EventArgs e)
         {
             string username = TbEmail.Text.Trim(); 
-            string password = Tbpass.Text; 
             string email = TbEmail.Text.Trim();
+            string password = Tbpass.Text;
 
             try
             {
-                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                if (string.IsNullOrWhiteSpace(password) || (string.IsNullOrWhiteSpace(username) && string.IsNullOrWhiteSpace(email)))
                 {
-                    MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập/Email và mật khẩu!", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Vui lòng nhập mật khẩu và ít nhất một trong hai: tên đăng nhập hoặc email!", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
+
                 var user = bus_Login.kiemtradangnhap(username, password, email);
                 if (user != null)
                 {
                     MessageBox.Show("Đăng nhập thành công", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    CurrentUser.SetUser(user.Id, user.username, user.role);
+                    CurrentUser.SetUser(user.Id, user.Username, user.Role);
 
                     if (RdRemenber.Checked)
                     {
@@ -267,14 +267,29 @@ namespace GUI
                     {
                         AuthStorage.ClearCredentials();
                     }
-                    Thread.Sleep(500);
-                    Form1 f = new Form1();
-                    f.Show();
+
+                    if (user.Role == "Quản lý" || user.Role == "Admin")
+                    {
+                        Form1 form = new Form1();
+                        form.Show();
+                    }
+                    else if (user.Role == "Nhân viên")
+                    {
+                        Form2 form = new Form2();
+                        form.Show();
+                    }
                     this.Hide();
                 }
                 else
                 {
-                    MessageBox.Show("Đăng nhập thất bại! Vui lòng kiểm tra lại.", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (bus_Login.CheckAccountExists(username, email) && !bus_Login.IsAccountActive(username, email))
+                    {
+                        MessageBox.Show("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên!", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tên đăng nhập, email hoặc mật khẩu không đúng!", "Cảnh Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
             catch (Exception ex)

@@ -1,6 +1,6 @@
-﻿using GUI.Helpler;
+﻿using QLVT.Helper;
 
-namespace GUI
+namespace QLVT
 {
     partial class PopNcc
     {
@@ -227,7 +227,7 @@ namespace GUI
             // 
             // panel5
             // 
-            panel5.BackColor = Color.FromArgb(44, 62, 80);
+            panel5.BackColor = Color.FromArgb(30, 58, 138);
             panel5.Controls.Add(roundedPictureBox1);
             panel5.Location = new Point(-2, 0);
             panel5.Name = "panel5";
@@ -240,7 +240,7 @@ namespace GUI
             roundedPictureBox1.BorderRadius = 20;
             roundedPictureBox1.BorderThickness = 0F;
             roundedPictureBox1.ErrorImage = null;
-            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox1.Image = GUI.Properties.Resources.icons8_close_26;
             roundedPictureBox1.InitialImage = null;
             roundedPictureBox1.Location = new Point(830, 7);
             roundedPictureBox1.Name = "roundedPictureBox1";

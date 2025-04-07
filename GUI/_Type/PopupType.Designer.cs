@@ -1,4 +1,4 @@
-﻿namespace GUI.Type
+﻿namespace QLVT.Type
 {
     partial class PopupType
     {
@@ -35,8 +35,8 @@
             btnSave = new ReaLTaiizor.Controls.Button();
             label2 = new Label();
             panel5 = new Panel();
-            roundedPictureBox2 = new GUI.Helpler.RoundedPictureBox();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPictureBox2 = new QLVT.Helper.RoundedPictureBox();
+            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
             foreverToggle1 = new ReaLTaiizor.Controls.ForeverToggle();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox2).BeginInit();
@@ -146,7 +146,7 @@
             // 
             // panel5
             // 
-            panel5.BackColor = Color.FromArgb(44, 62, 80);
+            panel5.BackColor = Color.FromArgb(30, 58, 138);
             panel5.Controls.Add(roundedPictureBox2);
             panel5.Controls.Add(roundedPictureBox1);
             panel5.Dock = DockStyle.Top;
@@ -161,7 +161,7 @@
             roundedPictureBox2.BorderRadius = 20;
             roundedPictureBox2.BorderThickness = 0F;
             roundedPictureBox2.ErrorImage = null;
-            roundedPictureBox2.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox2.Image = GUI.Properties.Resources.icons8_close_26;
             roundedPictureBox2.InitialImage = null;
             roundedPictureBox2.Location = new Point(762, 9);
             roundedPictureBox2.Name = "roundedPictureBox2";
@@ -177,7 +177,7 @@
             roundedPictureBox1.BorderRadius = 20;
             roundedPictureBox1.BorderThickness = 0F;
             roundedPictureBox1.ErrorImage = null;
-            roundedPictureBox1.Image = Properties.Resources.icons8_close_26;
+            roundedPictureBox1.Image = GUI.Properties.Resources.icons8_close_26;
             roundedPictureBox1.InitialImage = null;
             roundedPictureBox1.Location = new Point(830, 7);
             roundedPictureBox1.Name = "roundedPictureBox1";
@@ -236,8 +236,8 @@
         private ReaLTaiizor.Controls.Button btnSave;
         private Label label2;
         private Panel panel5;
-        private Helpler.RoundedPictureBox roundedPictureBox1;
-        private Helpler.RoundedPictureBox roundedPictureBox2;
+        private Helper.RoundedPictureBox roundedPictureBox1;
+        private Helper.RoundedPictureBox roundedPictureBox2;
         private ReaLTaiizor.Controls.ForeverToggle foreverToggle1;
     }
 }

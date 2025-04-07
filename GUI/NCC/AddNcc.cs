@@ -1,6 +1,6 @@
 ﻿using BUS;
 using DTO;
-using GUI.Helper;
+using QLVT.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GUI.NCC
+namespace QLVT.NCC
 {
     public partial class AddNcc : Form
     {
@@ -33,7 +33,6 @@ namespace GUI.NCC
 
         private void AddNcc_Load(object sender, EventArgs e)
         {
-
         }
         private void TbName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {

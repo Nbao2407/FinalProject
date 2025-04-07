@@ -1,4 +1,4 @@
-﻿namespace GUI.HoaDon
+﻿namespace QLVT.HoaDon
 {
     partial class LydoHuy
     {

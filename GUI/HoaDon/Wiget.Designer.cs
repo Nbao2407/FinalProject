@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class Wiget
     {
@@ -30,8 +30,8 @@
         {
             lblGia = new Label();
             TitleSp = new Label();
-            roundedPanel1 = new GUI.Helpler.RoundedPanel();
-            roundedPictureBox1 = new GUI.Helpler.RoundedPictureBox();
+            roundedPanel1 = new QLVT.Helper.RoundedPanel();
+            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
             roundedPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             SuspendLayout();
@@ -84,7 +84,7 @@
             roundedPictureBox1.BorderColor = Color.Black;
             roundedPictureBox1.BorderRadius = 20;
             roundedPictureBox1.BorderThickness = 2.5F;
-            roundedPictureBox1.Image = Properties.Resources.freepik__background__674361;
+            roundedPictureBox1.Image = GUI.Properties.Resources.freepik__background__674361;
             roundedPictureBox1.Location = new Point(14, 6);
             roundedPictureBox1.Name = "roundedPictureBox1";
             roundedPictureBox1.Size = new Size(60, 60);
@@ -109,7 +109,7 @@
         #endregion
         public Label lblGia;
         public Label TitleSp;
-        public Helpler.RoundedPictureBox roundedPictureBox1;
-        public Helpler.RoundedPanel roundedPanel1;
+        public Helper.RoundedPictureBox roundedPictureBox1;
+        public Helper.RoundedPanel roundedPanel1;
     }
 }

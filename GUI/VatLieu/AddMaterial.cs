@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GUI.VatLieu
+namespace QLVT.VatLieu
 {
     public partial class AddMaterial : Form
     {

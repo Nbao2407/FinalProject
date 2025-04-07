@@ -1,4 +1,4 @@
-﻿namespace GUI
+﻿namespace QLVT
 {
     partial class Form1
     {
@@ -81,7 +81,7 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.FromArgb(44, 62, 80);
+            panel1.BackColor = Color.FromArgb(30, 58, 138);
             panel1.Controls.Add(nightControlBox1);
             panel1.Controls.Add(btnSidebar);
             panel1.Dock = DockStyle.Top;
@@ -116,7 +116,7 @@
             // btnSidebar
             // 
             btnSidebar.BackgroundImageLayout = ImageLayout.None;
-            btnSidebar.Image = Properties.Resources.icons8_menu_24;
+            btnSidebar.Image = GUI.Properties.Resources.icons8_menu_24;
             btnSidebar.Location = new Point(0, 0);
             btnSidebar.Name = "btnSidebar";
             btnSidebar.Size = new Size(55, 45);
@@ -127,7 +127,7 @@
             // 
             // panel2
             // 
-            panel2.BackColor = Color.FromArgb(44, 62, 80);
+            panel2.BackColor = Color.FromArgb(30, 58, 138);
             panel2.Controls.Add(panel13);
             panel2.Controls.Add(panel11);
             panel2.Controls.Add(panel12);
@@ -158,10 +158,10 @@
             // 
             // button10
             // 
-            button10.BackColor = Color.FromArgb(44, 62, 80);
+            button10.BackColor = Color.FromArgb(30, 58, 138);
             button10.Cursor = Cursors.Hand;
             button10.ForeColor = Color.White;
-            button10.Image = Properties.Resources.icons8_receipt_white;
+            button10.Image = GUI.Properties.Resources.icons8_receipt_white;
             button10.ImageAlign = ContentAlignment.MiddleLeft;
             button10.Location = new Point(-9, -7);
             button10.Name = "button10";
@@ -214,10 +214,10 @@
             // 
             // button3
             // 
-            button3.BackColor = Color.FromArgb(44, 62, 80);
+            button3.BackColor = Color.FromArgb(30, 58, 138);
             button3.Cursor = Cursors.Hand;
             button3.ForeColor = Color.White;
-            button3.Image = Properties.Resources.icons8_receipt_white;
+            button3.Image = GUI.Properties.Resources.icons8_receipt_white;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Location = new Point(-9, -5);
             button3.Name = "button3";
@@ -269,10 +269,10 @@
             // 
             // button7
             // 
-            button7.BackColor = Color.FromArgb(44, 62, 80);
+            button7.BackColor = Color.FromArgb(30, 58, 138);
             button7.Cursor = Cursors.Hand;
             button7.ForeColor = Color.White;
-            button7.Image = Properties.Resources.icons8_truck_24;
+            button7.Image = GUI.Properties.Resources.icons8_truck_24;
             button7.ImageAlign = ContentAlignment.MiddleLeft;
             button7.Location = new Point(-9, -7);
             button7.Name = "button7";
@@ -310,7 +310,7 @@
             // 
             // button1
             // 
-            button1.BackColor = Color.FromArgb(44, 62, 80);
+            button1.BackColor = Color.FromArgb(30, 58, 138);
             button1.Cursor = Cursors.Hand;
             button1.ForeColor = Color.White;
             button1.Image = (Image)resources.GetObject("button1.Image");
@@ -366,7 +366,7 @@
             // 
             // BtnTke
             // 
-            BtnTke.BackColor = Color.FromArgb(44, 62, 80);
+            BtnTke.BackColor = Color.FromArgb(30, 58, 138);
             BtnTke.Cursor = Cursors.Hand;
             BtnTke.ForeColor = Color.White;
             BtnTke.Image = (Image)resources.GetObject("BtnTke.Image");
@@ -412,7 +412,7 @@
             // 
             // BtnType
             // 
-            BtnType.BackColor = Color.FromArgb(44, 62, 80);
+            BtnType.BackColor = Color.FromArgb(30, 58, 138);
             BtnType.Cursor = Cursors.Hand;
             BtnType.ForeColor = Color.White;
             BtnType.Image = (Image)resources.GetObject("BtnType.Image");
@@ -436,10 +436,10 @@
             // 
             // btnMaterial
             // 
-            btnMaterial.BackColor = Color.FromArgb(44, 62, 80);
+            btnMaterial.BackColor = Color.FromArgb(30, 58, 138);
             btnMaterial.Cursor = Cursors.Hand;
             btnMaterial.ForeColor = Color.White;
-            btnMaterial.Image = Properties.Resources.icons8_block_26;
+            btnMaterial.Image = GUI.Properties.Resources.icons8_block_26;
             btnMaterial.ImageAlign = ContentAlignment.MiddleLeft;
             btnMaterial.Location = new Point(-9, -6);
             btnMaterial.Name = "btnMaterial";
@@ -460,7 +460,7 @@
             // 
             // button2
             // 
-            button2.BackColor = Color.FromArgb(44, 62, 80);
+            button2.BackColor = Color.FromArgb(30, 58, 138);
             button2.Cursor = Cursors.Hand;
             button2.ForeColor = Color.White;
             button2.Image = (Image)resources.GetObject("button2.Image");
@@ -484,10 +484,10 @@
             // 
             // btnCustomer
             // 
-            btnCustomer.BackColor = Color.FromArgb(44, 62, 80);
+            btnCustomer.BackColor = Color.FromArgb(30, 58, 138);
             btnCustomer.Cursor = Cursors.Hand;
             btnCustomer.ForeColor = Color.White;
-            btnCustomer.Image = Properties.Resources.icons8_user_24;
+            btnCustomer.Image = GUI.Properties.Resources.icons8_user_24;
             btnCustomer.ImageAlign = ContentAlignment.MiddleLeft;
             btnCustomer.Location = new Point(-8, -12);
             btnCustomer.Name = "btnCustomer";
@@ -509,7 +509,7 @@
             // 
             // BtnUser
             // 
-            BtnUser.BackColor = Color.FromArgb(44, 62, 80);
+            BtnUser.BackColor = Color.FromArgb(30, 58, 138);
             BtnUser.ForeColor = Color.White;
             BtnUser.Image = (Image)resources.GetObject("BtnUser.Image");
             BtnUser.ImageAlign = ContentAlignment.MiddleLeft;

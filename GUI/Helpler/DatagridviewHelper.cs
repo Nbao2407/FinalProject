@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace GUI.Helpler
+namespace QLVT.Helper
 {
     public static class DataGridViewHelper
     {

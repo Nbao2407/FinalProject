@@ -1,10 +1,10 @@
 ﻿using BUS;
 using DAL;
 using DTO;
-using GUI.Helpler;
-using GUI.NCC;
+using QLVT.Helper;
+using QLVT.NCC;
 
-namespace GUI
+namespace QLVT
 {
     public partial class FrmNCc : Form
     {
