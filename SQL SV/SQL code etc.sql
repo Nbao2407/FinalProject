@@ -1264,4 +1264,31 @@ exec sp_NhapHang @NgayNhap='2025-04-07',@MaNCC=2,@MaTK=2,@GhiChu=N'hello',@ChiTi
 SELECT name, create_date, modify_date 
 FROM sys.triggers 
 WHERE parent_id = OBJECT_ID('ChiTietDonNhap');
-DROP TRIGGER trg_CapNhatSoLuongNhap;
+Go
+Alter PROCEDURE [dbo].[sp_TimKiemQLDonNhap]
+    @Keyword NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @Search NVARCHAR(100) = '%' + @Keyword + '%';
+    
+    SELECT 
+        dn.MaDonNhap,
+        dn.NgayNhap,
+        ncc.TenNCC AS TenNhaCungCap,
+        dn.TrangThai,
+        dn.GhiChu,
+        CASE 
+            WHEN CAST(dn.MaDonNhap AS NVARCHAR) = @Keyword THEN 3  
+            WHEN ncc.TenNCC LIKE '%' + @Keyword + '%' THEN 2      
+            ELSE 1                                                
+        END AS MatchScore
+    FROM QLDonNhap dn
+    INNER JOIN NCC ncc ON dn.MaNCC = ncc.MaNCC
+    WHERE 
+        CAST(dn.MaDonNhap AS NVARCHAR) LIKE @Search
+        OR ncc.TenNCC COLLATE Latin1_General_CI_AI LIKE @Search
+    ORDER BY MatchScore DESC, dn.NgayNhap DESC;
+END;
+GO
+EXEC sp_TimKiemQLDonNhap @Keyword = N'Công ty ';

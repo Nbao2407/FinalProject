@@ -3,38 +3,13 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace DAL
 {
     public class DAL_Order : DBConnect
     {
-        public List<DTO_Order> TimKiemDonNhap(int ID)
-        {
-            List<DTO_Order> danhSachOrder = new List<DTO_Order>();
-            using (SqlConnection conn = DBConnect.GetConnection())
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_TimKiemQLDonNhap", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@MaDonNhap", ID);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            danhSachOrder.Add(new DTO_Order
-                            {
-                                MaDonNhap = reader.GetInt32(0),
-                                NgayNhap = reader.GetDateTime(1),
-                                NCC = reader.GetString(2),
-                                TrangThai = reader.GetString(3),
-                            });
-                        }
-                    }
-                }
-            }
-            return danhSachOrder;
-        }
+
         public DataTable GetAllOrder()
         {
             DataTable dt = new DataTable();
@@ -48,7 +23,7 @@ namespace DAL
                 {
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
-                        adapter.Fill(dt); 
+                        adapter.Fill(dt);
                     }
                 }
             }
@@ -85,7 +60,7 @@ namespace DAL
                 }
             }
         }
-   
+
         public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string keyword)
         {
             var result = new List<DTO_VatLieu>();
@@ -108,7 +83,7 @@ namespace DAL
                                 MaVatLieu = reader.GetInt32("MaVatLieu"),
                                 Ten = reader.GetString("Ten"),
                                 DonViTinh = reader.GetString("DonViTinh"),
-                                DonGiaNhap =reader.GetDecimal("DonGiaNhap"),
+                                DonGiaNhap = reader.GetDecimal("DonGiaNhap"),
                                 DonGiaBan = reader.GetDecimal("DonGiaBan"),
                                 SoLuong = reader.GetInt32("SoLuong")
                             });
@@ -117,6 +92,67 @@ namespace DAL
                 }
             }
             return result;
+        }
+        public List<DTO_DonNhapSearchResult> TimKiemDonNhapTheoKeyword(string keyword)
+        {
+            var results = new List<DTO_DonNhapSearchResult>();
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return results; 
+            }
+            const string storedProcedure = "sp_TimKiemQLDonNhap";
+
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open(); 
+
+                using (var cmd = new SqlCommand(storedProcedure, conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@Keyword", SqlDbType.NVarChar, 100).Value = keyword;
+
+                    try
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            int maDonNhapOrd = reader.GetOrdinal("MaDonNhap");
+                            int ngayNhapOrd = reader.GetOrdinal("NgayNhap");
+                            int tenNhaCungCapOrd = reader.GetOrdinal("TenNhaCungCap");
+                            int trangThaiOrd = reader.GetOrdinal("TrangThai");
+
+                            while (reader.Read())
+                            {
+                                var dto = new DTO_DonNhapSearchResult
+                                {
+                                    MaDonNhap = reader.GetInt32(maDonNhapOrd),
+                                    TenNhaCungCap = reader.IsDBNull(tenNhaCungCapOrd)
+                                                                                    ? null // Gán null nếu là DBNull
+                                                                                    : reader.GetString(tenNhaCungCapOrd),
+                                    NgayNhap = reader.IsDBNull(ngayNhapOrd)
+                                               ? default // Giá trị mặc định cho DateTime (MinValue)
+                                               : reader.GetDateTime(ngayNhapOrd),
+
+                                    
+
+                                    TrangThai = reader.IsDBNull(trangThaiOrd)
+                                                ? null
+                                                : reader.GetString(trangThaiOrd),
+
+                                    
+
+                                };
+                                results.Add(dto);
+                            }
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"Lỗi khi thực thi SP '{storedProcedure}' với Keyword='{keyword}': {ex.Message}");
+                        throw;
+                    }
+                }
+            }
+            return results;
         }
     }
 }

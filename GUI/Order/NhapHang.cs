@@ -16,6 +16,7 @@ namespace QLVT
         private readonly BUS_TK busTk = new BUS_TK();
         private readonly BUS_Ncc busNcc = new BUS_Ncc();
         private readonly DAL_Order dalOrder = new DAL_Order();
+        private Form1 form1;
 
         private System.Windows.Forms.Timer debounceTimer;
         private readonly Color defaultLabelColor = Color.White;
@@ -59,9 +60,9 @@ namespace QLVT
             dgvChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "GiaNhap", HeaderText = "Giá Nhập", ReadOnly = false, ValueType = typeof(decimal), DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" } }); // Editable, formatted
 
             // Button Columns
-            dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Tang", HeaderText = "Tăng", Text = "+", UseColumnTextForButtonValue = true, Width = 50, FlatStyle = FlatStyle.System });
-            dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Giam", HeaderText = "Giảm", Text = "-", UseColumnTextForButtonValue = true, Width = 50, FlatStyle = FlatStyle.System });
-            dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Xoa", HeaderText = "Xoá", Text = "X", UseColumnTextForButtonValue = true, Width = 50, FlatStyle = FlatStyle.System });
+            dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Tang", HeaderText = "Tăng", Text = "+", UseColumnTextForButtonValue = true, Width = 80, FlatStyle = FlatStyle.System });
+            dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Giam", HeaderText = "Giảm", Text = "-", UseColumnTextForButtonValue = true, Width = 80, FlatStyle = FlatStyle.System });
+            dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Xoa", HeaderText = "Xoá", Text = "X", UseColumnTextForButtonValue = true, Width = 80, FlatStyle = FlatStyle.System });
 
             // Event Handlers for DGV
             dgvChiTiet.CellClick += DgvChiTiet_CellClick;
@@ -90,8 +91,8 @@ namespace QLVT
             dgvChiTiet.ColumnHeadersHeight = 40; // Increase header height
             dgvChiTiet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing; // Optional: Prevent user resizing header height
 
-            dgvChiTiet.DefaultCellStyle.BackColor = Color.FromArgb(217, 237, 247); // Very light blue
-            dgvChiTiet.DefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);    // Dark grey text
+            dgvChiTiet.DefaultCellStyle.BackColor = Color.FromArgb(217, 237, 247);
+            dgvChiTiet.DefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
             dgvChiTiet.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);          // Font: Segoe UI, 9.5pt, Regular
             dgvChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft; // Default alignment
             dgvChiTiet.DefaultCellStyle.Padding = new Padding(5, 0, 5, 0); // Add horizontal padding within cells
@@ -111,7 +112,7 @@ namespace QLVT
             if (dgvChiTiet.Columns.Contains("SoLuong"))
             {
                 dgvChiTiet.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                dgvChiTiet.Columns["SoLuong"].DefaultCellStyle.Format = "N0"; // Format as integer
+                dgvChiTiet.Columns["SoLuong"].DefaultCellStyle.Format = "N0";
             }
             if (dgvChiTiet.Columns.Contains("GiaNhap"))
             {
@@ -262,14 +263,14 @@ namespace QLVT
             if (dgvChiTiet.Rows.Count == 0 || (dgvChiTiet.Rows.Count == 1 && dgvChiTiet.Rows[0].IsNewRow)) // Kiểm tra cả trường hợp chỉ có dòng mới
             {
                 MessageBox.Show("Vui lòng thêm ít nhất một vật liệu vào đơn nhập.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSearch.Focus(); 
+                txtSearch.Focus();
                 return;
             }
 
             try
             {
                 System.DateOnly ngayNhap = DateOnly.FromDateTime(dtpNgayNhap.Value);
-                string ghiChu = Tbnote.Text.Trim(); 
+                string ghiChu = Tbnote.Text.Trim();
 
                 var chiTietNhap = new List<DTO_Order>();
                 foreach (DataGridViewRow row in dgvChiTiet.Rows)
@@ -279,8 +280,8 @@ namespace QLVT
                     bool isMaVLValid = int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out int maVL);
                     bool isSoLuongValid = int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out int soLuong);
                     bool isGiaNhapValid = decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(),
-                                                         System.Globalization.NumberStyles.Any, 
-                                                         System.Globalization.CultureInfo.CurrentCulture, 
+                                                         System.Globalization.NumberStyles.Any,
+                                                         System.Globalization.CultureInfo.CurrentCulture,
                                                          out decimal giaNhap);
 
                     if (!isMaVLValid || !isSoLuongValid || soLuong <= 0 || !isGiaNhapValid || giaNhap < 0)
@@ -289,14 +290,14 @@ namespace QLVT
                                         "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         dgvChiTiet.CurrentCell = row.Cells["SoLuong"];
                         dgvChiTiet.BeginEdit(true);
-                        return; 
+                        return;
                     }
 
                     chiTietNhap.Add(new DTO_Order
                     {
                         MaVatLieu = maVL,
                         SoLuong = soLuong,
-                        GiaNhap = giaNhap
+                        GiaNhap = (int)giaNhap
                     });
                 }
 
@@ -311,15 +312,15 @@ namespace QLVT
                 }
                 else
                 {
-                    
+
                     MessageBox.Show($"Nhập hàng thất bại: {result.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (FormatException fEx) 
+            catch (FormatException fEx)
             {
                 MessageBox.Show($"Lỗi định dạng dữ liệu: {fEx.Message}. Vui lòng kiểm tra lại các giá trị nhập.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi không xác định khi nhập hàng trong btnNhapHang_Click: {ex.ToString()}");
                 MessageBox.Show($"Đã xảy ra lỗi không mong muốn trong quá trình xử lý: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -362,7 +363,7 @@ namespace QLVT
                 {
                     Label lbl = new Label
                     {
-                        Text = $"{item.Ten} ({item.MaVatLieu}) - ĐVT: {item.DonViTinh}",
+                        Text = $"{item.Ten} ({item.MaVatLieu})",
                         Tag = item,
                         Dock = DockStyle.Top,
                         Height = 35,
@@ -408,9 +409,7 @@ namespace QLVT
                 if (row.IsNewRow) continue;
                 if (row.Cells["MaVatLieu"].Value != null && (int)row.Cells["MaVatLieu"].Value == selectedItem.MaVatLieu)
                 {
-                    MessageBox.Show("Vật liệu này đã có trong danh sách.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Optional: Highlight the existing row or increase its quantity?
-                    // row.Cells["SoLuong"].Value = (int)row.Cells["SoLuong"].Value + 1;
+                    row.Cells["SoLuong"].Value = (int)row.Cells["SoLuong"].Value + 1;
                     return;
                 }
             }
@@ -470,12 +469,12 @@ namespace QLVT
                     col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                     switch (col.Name)
                     {
-                        case "MaVatLieu": col.Width = 80; break;
+                        case "MaVatLieu": col.Width = 100; break;
                         case "DonViTinh": col.Width = 80; break;
-                        case "SoLuong": col.Width = 70; break;
-                        case "Tang": col.Width = 40; break;
-                        case "Giam": col.Width = 40; break;
-                        case "Xoa": col.Width = 40; break;
+                        case "SoLuong": col.Width = 100; break;
+                        case "Tang": col.Width = 70; break;
+                        case "Giam": col.Width = 70; break;
+                        case "Xoa": col.Width = 70; break;
                     }
                     fixedWidth += col.Width;
                 }
@@ -721,6 +720,16 @@ namespace QLVT
             }
         }
 
-      
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            this.Controls.Clear();
+            FrmOrder order = new FrmOrder()
+            {
+                TopLevel = false,
+                Dock = DockStyle.Fill
+            };
+            this.Controls.Add(order);
+            order.Show();
+        }
     }
 }

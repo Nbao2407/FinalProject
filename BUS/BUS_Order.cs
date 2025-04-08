@@ -9,21 +9,18 @@ using System.Windows.Forms;
 using DAL;
 using Microsoft.Data.SqlClient;
 using System.Data;
+
 namespace BUS
 {
     public class BUS_Order
     {
-       private   DAL_Order dal = new DAL_Order();
+        private DAL_Order dal = new DAL_Order();
 
         public DataTable GetAllOrder()
         {
             return dal.GetAllOrder();
         }
-        public List<DTO_Order> TimKiemDonNhap(int ID)
-        {
-            DAL.DAL_Order dal = new DAL.DAL_Order();
-            return dal.TimKiemDonNhap(ID);
-        }
+
         public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(
         DateOnly ngayNhap,
         int maNCC,
@@ -50,23 +47,29 @@ namespace BUS
             {
                 var dalResult = await dal.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietNhapJson, nguoiCapNhat);
 
-                return dalResult; 
+                return dalResult;
             }
-            catch (SqlException ex) 
+            catch (SqlException ex)
             {
                 return (false, $"Lỗi cơ sở dữ liệu khi nhập hàng: {ex.Message}", 0);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return (false, $"Lỗi hệ thống khi nhập hàng: {ex.Message}", 0);
             }
         }
+
         public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword))
                 return new List<DTO_VatLieu>();
 
             return await dal.TimKiemVatLieuAsync(keyword);
+        }
+
+        public List<DTO_DonNhapSearchResult> TimKiemDonNhap(string keyword)
+        {
+            return dal.TimKiemDonNhapTheoKeyword(keyword);
         }
     }
 }

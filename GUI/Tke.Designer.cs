@@ -71,16 +71,16 @@ namespace QLVT
             tableLayoutPanel2 = new TableLayoutPanel();
             panelTotalCounters = new Panel();
             tableLayoutPanel6 = new TableLayoutPanel();
+            label3 = new Label();
             label21 = new Label();
             label17 = new Label();
             lblNumCustomers = new Label();
             lblNumSuppliers = new Label();
+            label6 = new Label();
             label19 = new Label();
             tableLayoutPanel4 = new TableLayoutPanel();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel4 = new Panel();
-            label3 = new Label();
-            label6 = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chartGrossRevenue).BeginInit();
             panel5.SuspendLayout();
@@ -107,7 +107,7 @@ namespace QLVT
             label1.AutoSize = true;
             label1.Font = new Font("Microsoft Sans Serif", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.WhiteSmoke;
-            label1.Location = new Point(3, 0);
+            label1.Location = new Point(5, 2);
             label1.Name = "label1";
             label1.Size = new Size(127, 31);
             label1.TabIndex = 0;
@@ -121,7 +121,7 @@ namespace QLVT
             dtpStartDate.Enabled = false;
             dtpStartDate.Font = new Font("Microsoft Sans Serif", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpStartDate.Format = DateTimePickerFormat.Short;
-            dtpStartDate.Location = new Point(183, 7);
+            dtpStartDate.Location = new Point(182, 11);
             dtpStartDate.Name = "dtpStartDate";
             dtpStartDate.Size = new Size(128, 20);
             dtpStartDate.TabIndex = 1;
@@ -134,7 +134,7 @@ namespace QLVT
             dtpEndDate.Enabled = false;
             dtpEndDate.Font = new Font("Microsoft Sans Serif", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpEndDate.Format = DateTimePickerFormat.Short;
-            dtpEndDate.Location = new Point(355, 7);
+            dtpEndDate.Location = new Point(354, 11);
             dtpEndDate.MaxDate = new DateTime(2025, 12, 31, 0, 0, 0, 0);
             dtpEndDate.Name = "dtpEndDate";
             dtpEndDate.Size = new Size(128, 20);
@@ -392,7 +392,7 @@ namespace QLVT
             lblStartDate.AutoSize = true;
             lblStartDate.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblStartDate.ForeColor = Color.FromArgb(124, 141, 181);
-            lblStartDate.Location = new Point(181, 7);
+            lblStartDate.Location = new Point(180, 11);
             lblStartDate.MinimumSize = new Size(130, 0);
             lblStartDate.Name = "lblStartDate";
             lblStartDate.Size = new Size(130, 20);
@@ -407,7 +407,7 @@ namespace QLVT
             lblEndDate.Cursor = Cursors.Hand;
             lblEndDate.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblEndDate.ForeColor = Color.FromArgb(124, 141, 181);
-            lblEndDate.Location = new Point(353, 7);
+            lblEndDate.Location = new Point(352, 11);
             lblEndDate.MinimumSize = new Size(130, 0);
             lblEndDate.Name = "lblEndDate";
             lblEndDate.Size = new Size(130, 20);
@@ -421,7 +421,7 @@ namespace QLVT
             label12.AutoSize = true;
             label12.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label12.ForeColor = Color.FromArgb(124, 141, 181);
-            label12.Location = new Point(327, 8);
+            label12.Location = new Point(326, 12);
             label12.Name = "label12";
             label12.Size = new Size(14, 20);
             label12.TabIndex = 15;
@@ -635,6 +635,19 @@ namespace QLVT
             tableLayoutPanel6.Size = new Size(193, 186);
             tableLayoutPanel6.TabIndex = 5;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Left;
+            label3.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.FromArgb(124, 141, 181);
+            label3.ImageAlign = ContentAlignment.MiddleLeft;
+            label3.Location = new Point(3, 120);
+            label3.Name = "label3";
+            label3.Size = new Size(173, 26);
+            label3.TabIndex = 6;
+            label3.Text = "Hoá Đơn(chờ xử lý)";
+            // 
             // label21
             // 
             label21.AutoSize = true;
@@ -685,6 +698,18 @@ namespace QLVT
             lblNumSuppliers.TabIndex = 5;
             lblNumSuppliers.Text = "100000";
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.WhiteSmoke;
+            label6.Location = new Point(3, 146);
+            label6.Name = "label6";
+            label6.RightToLeft = RightToLeft.No;
+            label6.Size = new Size(90, 25);
+            label6.TabIndex = 7;
+            label6.Text = "100000";
+            // 
             // label19
             // 
             label19.AutoSize = true;
@@ -727,13 +752,13 @@ namespace QLVT
             // 
             panel4.Controls.Add(tableLayoutPanel1);
             panel4.Controls.Add(label1);
+            panel4.Controls.Add(lblStartDate);
             panel4.Controls.Add(btnOkCustomDate);
             panel4.Controls.Add(label12);
             panel4.Controls.Add(btnLast30Days);
             panel4.Controls.Add(btnLast7Days);
             panel4.Controls.Add(btnToday);
             panel4.Controls.Add(btnCustomDate);
-            panel4.Controls.Add(lblStartDate);
             panel4.Controls.Add(dtpStartDate);
             panel4.Controls.Add(lblEndDate);
             panel4.Controls.Add(dtpEndDate);
@@ -742,31 +767,6 @@ namespace QLVT
             panel4.Name = "panel4";
             panel4.Size = new Size(1106, 126);
             panel4.TabIndex = 19;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Left;
-            label3.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.FromArgb(124, 141, 181);
-            label3.ImageAlign = ContentAlignment.MiddleLeft;
-            label3.Location = new Point(3, 120);
-            label3.Name = "label3";
-            label3.Size = new Size(173, 26);
-            label3.TabIndex = 6;
-            label3.Text = "Hoá Đơn(chờ xử lý)";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.ForeColor = Color.WhiteSmoke;
-            label6.Location = new Point(3, 146);
-            label6.Name = "label6";
-            label6.RightToLeft = RightToLeft.No;
-            label6.Size = new Size(90, 25);
-            label6.TabIndex = 7;
-            label6.Text = "100000";
             // 
             // Tke
             // 

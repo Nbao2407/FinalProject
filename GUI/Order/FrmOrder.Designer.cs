@@ -35,6 +35,7 @@
             result = new Panel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
+            cboTrangThai = new ReaLTaiizor.Controls.AloneComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -87,6 +88,7 @@
             txtSearch.TabIndex = 15;
             txtSearch.TextAlignment = HorizontalAlignment.Left;
             txtSearch.UseSystemPasswordChar = false;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // dataGridView1
             // 
@@ -135,13 +137,26 @@
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Size = new Size(1100, 463);
             dataGridView1.TabIndex = 14;
-            dataGridView1.CellContentDoubleClick += dataGridView1_CellContentDoubleClick;
+            // 
+            // cboTrangThai
+            // 
+            cboTrangThai.DrawMode = DrawMode.OwnerDrawFixed;
+            cboTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboTrangThai.EnabledCalc = true;
+            cboTrangThai.FormattingEnabled = true;
+            cboTrangThai.ItemHeight = 20;
+            cboTrangThai.Location = new Point(252, 29);
+            cboTrangThai.Name = "cboTrangThai";
+            cboTrangThai.Size = new Size(204, 26);
+            cboTrangThai.TabIndex = 18;
+            cboTrangThai.SelectedIndexChanged += cboTrangThai_SelectedIndexChanged;
             // 
             // FrmOrder
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1106, 561);
+            Controls.Add(cboTrangThai);
             Controls.Add(button2);
             Controls.Add(result);
             Controls.Add(txtSearch);
@@ -160,5 +175,6 @@
         private Panel result;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
+        private ReaLTaiizor.Controls.AloneComboBox cboTrangThai;
     }
 }
