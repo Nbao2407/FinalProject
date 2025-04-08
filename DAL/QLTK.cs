@@ -179,6 +179,7 @@ namespace DAL
                 cmd.Parameters.AddWithValue("@SDT", user.Sdt);
                 cmd.Parameters.AddWithValue("@ChucVu", user.Role);
                 cmd.Parameters.AddWithValue("@NguoiTao", nguoiTao);
+                cmd.Parameters.AddWithValue("@GHICHU", user.Ghichu);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }

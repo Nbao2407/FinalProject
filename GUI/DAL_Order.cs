@@ -128,7 +128,6 @@ namespace DAL
                                     reader.GetInt32(maDonNhapOrd),
                                     reader.IsDBNull(tenNhaCungCapOrd) ? null : reader.GetString(tenNhaCungCapOrd),
                                     reader.IsDBNull(ngayNhapOrd) ? default : reader.GetDateTime(ngayNhapOrd),
-                                    null, // Assuming NguoiLap is not available in the result set
                                     reader.IsDBNull(trangThaiOrd) ? null : reader.GetString(trangThaiOrd)
                                 );
 

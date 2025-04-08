@@ -243,10 +243,10 @@ namespace QLVT
             {
                 MessageBox.Show("Vui lòng chọn Nhà cung cấp.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 CbNcc.Focus();
-                return; // Dừng xử lý
+                return; 
             }
 
-            int maTK; // Mã tài khoản người tạo/nhập
+            int maTK; 
             if (CbNgNhap.SelectedValue == null || !int.TryParse(CbNgNhap.SelectedValue.ToString(), out maTK))
             {
                 MessageBox.Show("Vui lòng chọn Người nhập hợp lệ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -260,7 +260,7 @@ namespace QLVT
                 return;
             }
 
-            if (dgvChiTiet.Rows.Count == 0 || (dgvChiTiet.Rows.Count == 1 && dgvChiTiet.Rows[0].IsNewRow)) // Kiểm tra cả trường hợp chỉ có dòng mới
+            if (dgvChiTiet.Rows.Count == 0 || (dgvChiTiet.Rows.Count == 1 && dgvChiTiet.Rows[0].IsNewRow)) 
             {
                 MessageBox.Show("Vui lòng thêm ít nhất một vật liệu vào đơn nhập.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtSearch.Focus();

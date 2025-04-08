@@ -27,6 +27,10 @@ namespace QLVT
         {
             InitializeComponent();
             this.Resize += new EventHandler(Frm_Resize);
+            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+            LoadComboBoxes();
+            LoadInitialData();
+            ResizeColumns();
             debounceTimer = new System.Windows.Forms.Timer
             {
                 Interval = 300 
@@ -58,6 +62,8 @@ namespace QLVT
 
                 if (orders != null && orders.Rows.Count > 0)
                 {
+                    this.Resize += new EventHandler(Frm_Resize);
+
                     CustomizeInitialColumns(); 
                 }
                 else
@@ -73,6 +79,8 @@ namespace QLVT
 
         private void CustomizeInitialColumns()
         {
+            this.Resize += new EventHandler(Frm_Resize);
+
             if (dataGridView1.Columns["MaDonNhap"] != null)
                 dataGridView1.Columns["MaDonNhap"].HeaderText = "Mã ĐN";
             if (dataGridView1.Columns["NgayNhap"] != null)
@@ -84,12 +92,11 @@ namespace QLVT
                 dataGridView1.Columns["TenNCC"].HeaderText = "Nhà Cung Cấp";
             if (dataGridView1.Columns["TrangThai"] != null)
                 dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void CustomizeSearchResultColumns()
         {
+            this.Resize += new EventHandler(Frm_Resize);
             if (dataGridView1.Columns["MaDonNhap"] != null)
                 dataGridView1.Columns["MaDonNhap"].HeaderText = "Mã ĐN";
             if (dataGridView1.Columns["NgayNhap"] != null)
@@ -101,8 +108,6 @@ namespace QLVT
                 dataGridView1.Columns["TenNhaCungCap"].HeaderText = "Nhà Cung Cấp";
             if (dataGridView1.Columns["TrangThai"] != null)
                 dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            this.Resize += new EventHandler(Frm_Resize);
         }
 
 
@@ -228,11 +233,11 @@ namespace QLVT
                 this.Cursor = Cursors.WaitCursor;
                 result.Visible = false;
 
-                List<DTO_DonNhapSearchResult> results = null; // Khởi tạo là null
+                List<DTO_DonNhapSearchResult> results = null; 
 
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
-                    results = new List<DTO_DonNhapSearchResult>(); // Rỗng nếu không có keyword
+                    results = new List<DTO_DonNhapSearchResult>();
                 }
                 else
                 {
@@ -246,7 +251,7 @@ namespace QLVT
                             results = orderResults.Select(order => new DTO_DonNhapSearchResult
                             {
                                 MaDonNhap = order.MaDonNhap,
-                                TenNhaCungCap = order.TenNhaCungCap, // <<< KIỂM TRA KỸ DÒNG NÀY
+                                TenNhaCungCap = order.TenNhaCungCap,
                                 NgayNhap = order.NgayNhap,
                                 TrangThai = order.TrangThai
                             }).ToList();
@@ -254,7 +259,7 @@ namespace QLVT
                         catch (Exception mapEx)
                         {
                             MessageBox.Show($"Lỗi khi map dữ liệu: {mapEx.Message}\nKiểm tra lại tên thuộc tính trong LINQ Select.", "Lỗi Mapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            results = new List<DTO_DonNhapSearchResult>(); // Đặt là rỗng nếu map lỗi
+                            results = new List<DTO_DonNhapSearchResult>(); 
                         }
                     }
                     else
@@ -265,7 +270,7 @@ namespace QLVT
 
                 if (results != null && results.Any()) 
                 {
-                    MessageBox.Show($"Mẫu sau map: ID={results[0].MaDonNhap} | NCC='{results[0].TenNhaCungCap}' | Status='{results[0].TrangThai}'"); // **GHI LẠI GIÁ TRỊ NÀY**
+                    Console.WriteLine($"Mẫu sau map: ID={results[0].MaDonNhap} | NCC='{results[0].TenNhaCungCap}' | Status='{results[0].TrangThai}'"); // **GHI LẠI GIÁ TRỊ NÀY**
                 }
 
                 if (isStatusFilterActive && results != null)
@@ -339,7 +344,6 @@ namespace QLVT
                         var selectedItem = (DTO_DonNhapSearchResult)lbl.Tag;
                         txtSearch.TextChanged -= txtSearch_TextChanged;
                         txtSearch.Text = selectedItem.MaDonNhap.ToString();
-                        txtSearch.TextChanged += txtSearch_TextChanged; 
                         result.Visible = false; 
 
                         UpdateDataGridView(new List<DTO_DonNhapSearchResult> { selectedItem });
