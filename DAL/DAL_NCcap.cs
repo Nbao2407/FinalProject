@@ -8,6 +8,8 @@ namespace DAL
 {
     public class DAL_NCcap : DBConnect
     {
+        private static readonly DAL_NCcap dal = new DAL_NCcap();
+        private SqlConnection conn = DBConnect.GetConnection();
         public List<DTO_Ncap> TimKiemNcc(string keyword)
         {
             List<DTO_Ncap> DanhsachNcc = new List<DTO_Ncap>();
@@ -164,17 +166,198 @@ namespace DAL
                 conn.Close();
             }
         }
-        public DataTable LayDSNcc()
+        public List<DTO_Ncap> LayDanhSachNccDto()
         {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = DBConnect.GetConnection())
+            List<DTO_Ncap> danhSachNcc = new List<DTO_Ncap>();
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("SELECT MaNCC, TenNCC FROM NCC WHERE TrangThai = N'Hoạt động'", conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    DTO_Ncap ncc = new DTO_Ncap
+                                    {
+                                        MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC")),
+                                        TenNCC = reader.GetString(reader.GetOrdinal("TenNCC"))
+                                    };
+                                    danhSachNcc.Add(ncc); // Thêm vào danh sách
+                                }
+                            }
+                        }
+                    } 
+                } 
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in LayDanhSachNccDto: {sqlEx.Message}");
+                // throw;
+                return new List<DTO_Ncap>(); // Trả về danh sách rỗng khi lỗi
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error in LayDanhSachNccDto: {ex.Message}");
+                // throw;
+                return new List<DTO_Ncap>(); // Trả về danh sách rỗng khi lỗi
+            }
+            return danhSachNcc; // Trả về danh sách DTO
+        }
+        public async Task<int> ThemNccAsync(DTO_Ncap ncc)
+        {
+            string query = @"
+            INSERT INTO NCC (TenNCC, DiaChi, SDT, Email, NguoiTao) -- Bỏ MaNCC, NgayTao, TrangThai
+            OUTPUT INSERTED.MaNCC
+            VALUES (@TenNCC, @DiaChi, @SDT, @Email, @NguoiTao);";
+            int newId = 0; // Mặc định là lỗi
+
+            try
+            {
+                await conn.OpenAsync();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    // Thêm tham số, xử lý NULL đúng cách
+                    cmd.Parameters.AddWithValue("@TenNCC", ncc.TenNCC);
+                    cmd.Parameters.AddWithValue("@DiaChi", (object)ncc.DiaChi ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@SDT", (object)ncc.SDT ?? DBNull.Value); // Truyền DBNull.Value nếu Sdt là null
+                    cmd.Parameters.AddWithValue("@Email", (object)ncc.Email ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@NguoiTao", (object)ncc.NguoiTao ?? DBNull.Value); // Xử lý null cho NguoiTao nếu có thể
+
+                    object result = await cmd.ExecuteScalarAsync();
+
+                    if (result != null && result != DBNull.Value)
+                    {
+                        newId = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"DAL: Failed to retrieve new MaNCC after inserting '{ncc.TenNCC}'. ExecuteScalarAsync returned null/DBNull.");
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in DAL.ThemNccAsync for '{ncc.TenNCC}': {sqlEx.Message}");
+                newId = 0; // Đảm bảo trả về lỗi
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error in DAL.ThemNccAsync for '{ncc.TenNCC}': {ex.Message}");
+                newId = 0; // Đảm bảo trả về lỗi
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    await conn.CloseAsync();
+                }
+            }
+            return newId; // Trả về ID mới hoặc 0 nếu lỗi
+        }
+        public DTO_Ncap TimNccTheoTen(string tenNcc)
+        {
+            DTO_Ncap ncc = null;
+            string query = "SELECT MaNCC, TenNCC, DiaChi, Sdt, TrangThai FROM tbl_NhaCungCap WHERE TenNCC = @TenNCC";
+
+            // string query = "SELECT MaNCC, TenNCC, DiaChi, Sdt, TrangThai FROM tbl_NhaCungCap WHERE TenNCC COLLATE Latin1_General_CI_AS = @TenNCC COLLATE Latin1_General_CI_AS";
+
+            SqlDataReader reader = null;
+            try
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand("SELect MaNCC,TenNCC from NCC Where TrangThai =N'Hoạt động'", conn);
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(dt);
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TenNCC", tenNcc);
+
+                    reader = cmd.ExecuteReader();
+
+                    // Use 'if' because we expect at most one result for an exact name match
+                    if (reader.Read())
+                    {
+                        ncc = new DTO_Ncap
+                        {
+                            // Use GetOrdinal for robustness against column order changes
+                            MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC")),
+                            TenNCC = reader.GetString(reader.GetOrdinal("TenNCC")),
+                            // Check for DBNull before reading nullable columns
+                            DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString(reader.GetOrdinal("DiaChi")),
+                            SDT = reader.IsDBNull(reader.GetOrdinal("Sdt")) ? null : reader.GetString(reader.GetOrdinal("Sdt")),
+                        };
+                    }
+                } 
             }
-            return dt;
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in DAL.TimNccTheoTen for '{tenNcc}': {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error in DAL.TimNccTheoTen for '{tenNcc}': {ex.Message}");
+            }
+            finally
+            {
+                reader?.Close(); 
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close(); 
+                }
+            }
+            return ncc; 
+        }
+
+        public async Task<int> TimHoacThemNccAsync(string tenNcc)
+        {
+            string trimmedTenNcc = tenNcc?.Trim();
+
+            if (string.IsNullOrWhiteSpace(trimmedTenNcc))
+            {
+                Console.WriteLine("Tên NCC không được để trống khi tìm hoặc thêm.");
+                return 0; 
+            }
+
+            try
+            {
+                DTO_Ncap existingNcc = dal.TimNccTheoTen(trimmedTenNcc);
+
+                if (existingNcc != null)
+                {
+                    Console.WriteLine($"BUS: Tìm thấy NCC ID: {existingNcc.MaNCC} cho tên '{trimmedTenNcc}'");
+                    return existingNcc.MaNCC;
+                }
+                else
+                {
+                    Console.WriteLine($"BUS: Không tìm thấy NCC '{trimmedTenNcc}'. Đang tạo mới...");
+                    DTO_Ncap newNcc = new DTO_Ncap
+                    {
+                        TenNCC = trimmedTenNcc,
+                        DiaChi = "Chưa cập nhật (từ Excel)", 
+                        SDT = "N/A",                       
+                    };
+
+                    int newMaNCC = await dal.ThemNccAsync(newNcc);
+
+                    if (newMaNCC > 0)
+                    {
+                        Console.WriteLine($"BUS: Đã tạo NCC mới thành công: ID {newMaNCC}, Tên '{newNcc.TenNCC}'");
+                        return newMaNCC; 
+                    }
+                    else
+                    {
+                        Console.WriteLine($"*** BUS: Lỗi khi tạo NCC mới tên '{trimmedTenNcc}'. DAL trả về ID không hợp lệ ({newMaNCC}).");
+                        return 0; 
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*** BUS: Lỗi nghiêm trọng trong TimHoacThemNccAsync cho tên '{trimmedTenNcc}': {ex.ToString()}");
+                return 0; 
+            }
         }
     }
 }

@@ -7,6 +7,8 @@ using OfficeOpenXml.Style; // Cho định dạng (nếu cần)
 using System.Collections.Generic; // Cho List
 using System.Linq; // Cho LINQ (FirstOrDefault, Any)
 using System.Globalization;
+using System.Threading.Tasks;
+
 namespace QLVT
 {
     public partial class NhapHang : Form
@@ -16,7 +18,8 @@ namespace QLVT
         private readonly BUS_TK busTk = new BUS_TK();
         private readonly BUS_Ncc busNcc = new BUS_Ncc();
         private readonly DAL_Order dalOrder = new DAL_Order();
-        private Form1 form1;
+
+        private Form1 form1; // Assuming Form1 is the main form or parent
 
         private System.Windows.Forms.Timer debounceTimer;
         private readonly Color defaultLabelColor = Color.White;
@@ -28,7 +31,6 @@ namespace QLVT
             InitializeCustomComponents();
             LoadInitialData();
         }
-
         private void InitializeCustomComponents()
         {
             this.Resize += Frm_Resize;
@@ -151,7 +153,7 @@ namespace QLVT
                 MessageBox.Show($"Lỗi khi tải dữ liệu ban đầu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // --- DebounceTimer_Tick, txtSearch_TextChanged, DgvChiTiet_CellClick, DgvChiTiet_CellEndEdit (Keep as is) ---
         private void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
@@ -166,38 +168,46 @@ namespace QLVT
 
         private void DgvChiTiet_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex < dgvChiTiet.Columns["Tang"].Index) return;
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return; // Check column index too
 
-            DataGridViewRow row = dgvChiTiet.Rows[e.RowIndex];
-            if (row.IsNewRow) return;
-
-            string columnName = dgvChiTiet.Columns[e.ColumnIndex].Name;
-            int currentSoLuong = 0;
-            bool parsed = int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out currentSoLuong);
-
-            if (!parsed) currentSoLuong = 1;
-
-            switch (columnName)
+            // Check if the click is on a button column
+            if (dgvChiTiet.Columns[e.ColumnIndex] is DataGridViewButtonColumn)
             {
-                case "Tang":
-                    row.Cells["SoLuong"].Value = currentSoLuong + 1;
-                    break;
+                DataGridViewRow row = dgvChiTiet.Rows[e.RowIndex];
+                if (row.IsNewRow) return;
 
-                case "Giam":
-                    if (currentSoLuong > 1)
-                    {
-                        row.Cells["SoLuong"].Value = currentSoLuong - 1;
-                    }
-                    break;
+                string columnName = dgvChiTiet.Columns[e.ColumnIndex].Name;
+                int currentSoLuong = 0;
+                // Try parsing, default to 0 if invalid/null before increment/decrement
+                int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out currentSoLuong);
 
-                case "Xoa":
-                    dgvChiTiet.Rows.RemoveAt(e.RowIndex);
-                    break;
-            }
+                switch (columnName)
+                {
+                    case "Tang":
+                        row.Cells["SoLuong"].Value = Math.Max(1, currentSoLuong + 1); // Ensure it doesn't go below 1 implicitly
+                        break;
 
-            if (columnName == "Tang" || columnName == "Giam" || columnName == "Xoa")
-            {
-                TinhTongSoLuongVaGiaNhap();
+                    case "Giam":
+                        if (currentSoLuong > 1) // Only decrease if greater than 1
+                        {
+                            row.Cells["SoLuong"].Value = currentSoLuong - 1;
+                        }
+                        break;
+
+                    case "Xoa":
+                        // Optional: Confirmation dialog
+                        // if (MessageBox.Show("Bạn có chắc muốn xoá dòng này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        // {
+                        dgvChiTiet.Rows.RemoveAt(e.RowIndex);
+                        // }
+                        break;
+                }
+
+                // Recalculate totals if quantity changed or row removed
+                if (columnName == "Tang" || columnName == "Giam" || columnName == "Xoa")
+                {
+                    TinhTongSoLuongVaGiaNhap();
+                }
             }
         }
 
@@ -205,7 +215,8 @@ namespace QLVT
         {
             if (e.RowIndex < 0) return;
 
-            DataGridViewCell cell = dgvChiTiet.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            DataGridViewRow row = dgvChiTiet.Rows[e.RowIndex]; // Get the row
+            DataGridViewCell cell = row.Cells[e.ColumnIndex];
             string columnName = dgvChiTiet.Columns[e.ColumnIndex].Name;
 
             if (columnName == "SoLuong")
@@ -213,24 +224,30 @@ namespace QLVT
                 string input = cell.Value?.ToString();
                 if (int.TryParse(input, out int soLuong) && soLuong > 0)
                 {
+                    // Value is valid, keep it
+                    cell.Value = soLuong; // Ensure it's stored as int
                 }
                 else
                 {
                     MessageBox.Show("Số lượng phải là một số nguyên lớn hơn 0.", "Dữ liệu không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // Revert to a default value or previous value if available
+                    // For simplicity, setting to 1 if invalid
                     cell.Value = 1;
+                    // Optional: You could store the previous value in CellBeginEdit and restore it here.
                 }
             }
             else if (columnName == "GiaNhap")
             {
                 string input = cell.Value?.ToString();
-                if (decimal.TryParse(input, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out decimal giaNhap) && giaNhap >= 0) // Allow 0 price? Adjust if needed
+                // Use NumberStyles.Any to handle potential currency symbols or separators
+                if (decimal.TryParse(input, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out decimal giaNhap) && giaNhap >= 0)
                 {
-                    cell.Value = giaNhap;
+                    cell.Value = giaNhap; // Store as decimal
                 }
                 else
                 {
                     MessageBox.Show("Giá nhập phải là một số không âm.", "Dữ liệu không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cell.Value = 0m;
+                    cell.Value = 0m; // Default to 0 if invalid
                 }
             }
 
@@ -239,14 +256,14 @@ namespace QLVT
 
         private async void btnNhapHang_Click(object sender, EventArgs e)
         {
-            if (CbNcc.SelectedValue == null)
+            if (CbNcc.SelectedValue == null || !(CbNcc.SelectedValue is int))
             {
-                MessageBox.Show("Vui lòng chọn Nhà cung cấp.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn hoặc nhập Nhà cung cấp hợp lệ (từ Excel hoặc chọn).", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 CbNcc.Focus();
-                return; 
+                return;
             }
 
-            int maTK; 
+            int maTK;
             if (CbNgNhap.SelectedValue == null || !int.TryParse(CbNgNhap.SelectedValue.ToString(), out maTK))
             {
                 MessageBox.Show("Vui lòng chọn Người nhập hợp lệ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -254,13 +271,9 @@ namespace QLVT
                 return;
             }
 
-            if (!int.TryParse(CbNcc.SelectedValue.ToString(), out int maNCC))
-            {
-                MessageBox.Show("Mã Nhà cung cấp không hợp lệ.", "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            int maNCC = (int)CbNcc.SelectedValue;
 
-            if (dgvChiTiet.Rows.Count == 0 || (dgvChiTiet.Rows.Count == 1 && dgvChiTiet.Rows[0].IsNewRow)) 
+            if (dgvChiTiet.Rows.Count == 0 || dgvChiTiet.Rows.Cast<DataGridViewRow>().All(r => r.IsNewRow)) // More robust check for empty DGV
             {
                 MessageBox.Show("Vui lòng thêm ít nhất một vật liệu vào đơn nhập.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtSearch.Focus();
@@ -273,24 +286,29 @@ namespace QLVT
                 string ghiChu = Tbnote.Text.Trim();
 
                 var chiTietNhap = new List<DTO_Order>();
+                bool dataValid = true;
                 foreach (DataGridViewRow row in dgvChiTiet.Rows)
                 {
-                    if (row.IsNewRow) continue; // Bỏ qua dòng mới (dòng trống ở cuối)
+                    if (row.IsNewRow) continue;
 
-                    bool isMaVLValid = int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out int maVL);
-                    bool isSoLuongValid = int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out int soLuong);
-                    bool isGiaNhapValid = decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(),
-                                                         System.Globalization.NumberStyles.Any,
-                                                         System.Globalization.CultureInfo.CurrentCulture,
-                                                         out decimal giaNhap);
+                    int maVL = 0;
+                    int soLuong = 0;
+                    decimal giaNhap = 0m;
 
-                    if (!isMaVLValid || !isSoLuongValid || soLuong <= 0 || !isGiaNhapValid || giaNhap < 0)
+                    bool isMaVLValid = row.Cells["MaVatLieu"].Value != null && int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out maVL);
+                    bool isSoLuongValid = row.Cells["SoLuong"].Value != null && int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out soLuong) && soLuong > 0;
+                    bool isGiaNhapValid = row.Cells["GiaNhap"].Value != null && decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out giaNhap) && giaNhap >= 0;
+
+                    if (!isMaVLValid || !isSoLuongValid || !isGiaNhapValid)
                     {
-                        MessageBox.Show($"Dữ liệu không hợp lệ tại dòng {row.Index + 1}. Vui lòng kiểm tra lại Mã vật liệu, Số lượng (phải > 0) và Giá nhập (phải >= 0).",
+                        MessageBox.Show($"Dữ liệu không hợp lệ tại dòng {row.Index + 1}. Vui lòng kiểm tra lại Mã vật liệu, Số lượng (> 0) và Giá nhập (>= 0).",
                                         "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        dgvChiTiet.CurrentCell = row.Cells["SoLuong"];
+                        dgvChiTiet.ClearSelection();
+                        row.Selected = true;
+                        dgvChiTiet.CurrentCell = row.Cells[isMaVLValid ? (isSoLuongValid ? "GiaNhap" : "SoLuong") : "MaVatLieu"];
                         dgvChiTiet.BeginEdit(true);
-                        return;
+                        dataValid = false;
+                        break;
                     }
 
                     chiTietNhap.Add(new DTO_Order
@@ -301,7 +319,20 @@ namespace QLVT
                     });
                 }
 
-                var result = await busOrder.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietNhap, maTK);
+                if (!dataValid)
+                {
+                    return;
+                }
+
+                if (!chiTietNhap.Any())
+                {
+                    MessageBox.Show("Không có chi tiết vật liệu hợp lệ nào để nhập.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int maNguoiThucHien = CurrentUser.MaTK;
+
+                var result = await busOrder.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietNhap, maNguoiThucHien);
 
                 if (result.Success)
                 {
@@ -312,18 +343,22 @@ namespace QLVT
                 }
                 else
                 {
-
                     MessageBox.Show($"Nhập hàng thất bại: {result.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (FormatException fEx)
             {
-                MessageBox.Show($"Lỗi định dạng dữ liệu: {fEx.Message}. Vui lòng kiểm tra lại các giá trị nhập.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi định dạng dữ liệu: {fEx.Message}. Vui lòng kiểm tra lại các giá trị nhập.", "Lỗi Định Dạng", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi không xác định khi nhập hàng trong btnNhapHang_Click: {ex.ToString()}");
                 MessageBox.Show($"Đã xảy ra lỗi không mong muốn trong quá trình xử lý: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+                btnNhapHang.Enabled = true;
             }
         }
 
@@ -338,7 +373,8 @@ namespace QLVT
 
             try
             {
-                List<DTO_VatLieu> results = await dalOrder.TimKiemVatLieuAsync(searchQuery);
+                QLVatLieu qlv = new QLVatLieu();
+                List<DTO_VatLieu> results = qlv.SearchProducts(searchQuery);
                 Console.WriteLine($"Search Query: {searchQuery}, Results Found: {results.Count}");
                 UpdateSearchSuggestions(results);
             }
@@ -354,80 +390,102 @@ namespace QLVT
             ketqua.SuspendLayout();
             ketqua.Controls.Clear();
 
-            if (results.Any())
+            if (results != null && results.Any()) // Add null check
             {
-                ketqua.Height = Math.Min(results.Count * 35, 210);
-                ketqua.BackColor = Color.WhiteSmoke;
+                ketqua.Height = Math.Min(results.Count * 35, 210); // Max height 210px
+                ketqua.BackColor = Color.WhiteSmoke; // Or a suitable background
 
                 foreach (var item in results)
                 {
                     Label lbl = new Label
                     {
-                        Text = $"{item.Ten} ({item.MaVatLieu})",
-                        Tag = item,
+                        // Display relevant info, e.g., Name and Code
+                        Text = $"{item.Ten} ({item.MaVatLieu}) - {item.DonViTinh}", // Added DVT
+                        Tag = item, // Store the full DTO object
                         Dock = DockStyle.Top,
                         Height = 35,
                         TextAlign = ContentAlignment.MiddleLeft,
-                        Padding = new Padding(10, 0, 0, 0),
+                        Padding = new Padding(10, 0, 0, 0), // Indent text
                         Font = new Font("Segoe UI", 10F),
-                        ForeColor = Color.FromArgb(33, 37, 41),
-                        BackColor = defaultLabelColor,
+                        ForeColor = Color.FromArgb(33, 37, 41), // Dark text color
+                        BackColor = defaultLabelColor, // Use defined default color
                         Cursor = Cursors.Hand,
+                        // Optional: Add a thin border between items
                         BorderStyle = BorderStyle.FixedSingle
                     };
 
-                    lbl.MouseEnter += (s, e) => { lbl.BackColor = hoverLabelColor; lbl.ForeColor = Color.FromArgb(0, 102, 204); };
+                    // Hover effects
+                    lbl.MouseEnter += (s, e) => { lbl.BackColor = hoverLabelColor; lbl.ForeColor = Color.FromArgb(0, 102, 204); }; // Use defined hover color
                     lbl.MouseLeave += (s, e) => { lbl.BackColor = defaultLabelColor; lbl.ForeColor = Color.FromArgb(33, 37, 41); };
 
+                    // Click event to add item to DGV
                     lbl.Click += (s, e) =>
                     {
                         if (lbl.Tag is DTO_VatLieu selectedItem)
                         {
                             AddVatLieuToDgvChiTiet(selectedItem);
-                            ketqua.Visible = false;
-                            txtSearch.Text = String.Empty;
-                            txtSearch.Focus();
+                            ketqua.Visible = false; // Hide suggestions panel
+                            txtSearch.Text = String.Empty; ; // Clear search box
+                            txtSearch.Focus(); // Return focus to search box
                         }
                     };
 
                     ketqua.Controls.Add(lbl);
-                    lbl.BringToFront();
+                    lbl.BringToFront(); // Ensure labels are drawn correctly top-down
                 }
-                ketqua.Visible = true;
+                ketqua.Visible = true; // Show the panel
             }
             else
             {
-                ketqua.Visible = false;
+                ketqua.Visible = false; // Hide if no results
             }
-            ketqua.ResumeLayout();
+            ketqua.ResumeLayout(); // Apply layout changes
         }
 
         private void AddVatLieuToDgvChiTiet(DTO_VatLieu selectedItem)
         {
+            // Check if the material already exists in the DGV
             foreach (DataGridViewRow row in dgvChiTiet.Rows)
             {
-                if (row.IsNewRow) continue;
+                if (row.IsNewRow) continue; // Skip the template row
+                // Safe check for null before accessing Value
                 if (row.Cells["MaVatLieu"].Value != null && (int)row.Cells["MaVatLieu"].Value == selectedItem.MaVatLieu)
                 {
-                    row.Cells["SoLuong"].Value = (int)row.Cells["SoLuong"].Value + 1;
-                    return;
+                    // Material exists, increment quantity
+                    int currentSoLuong = 0;
+                    int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out currentSoLuong);
+                    row.Cells["SoLuong"].Value = Math.Max(1, currentSoLuong + 1); // Increment, ensure > 0
+
+                    // Optional: Highlight the updated row
+                    dgvChiTiet.ClearSelection();
+                    row.Selected = true;
+                    dgvChiTiet.FirstDisplayedScrollingRowIndex = row.Index; // Scroll to the row
+
+                    TinhTongSoLuongVaGiaNhap(); // Recalculate totals
+                    return; // Exit the method
                 }
             }
 
+            // Material does not exist, add a new row
             int rowIndex = dgvChiTiet.Rows.Add(
                 selectedItem.MaVatLieu,
                 selectedItem.Ten,
                 selectedItem.DonViTinh,
-                1,
-                selectedItem.DonGiaNhap
+                1, // Default quantity
+                   // Use DonGiaNhap if available in DTO_VatLieu, otherwise default to 0 or prompt user
+                selectedItem.DonGiaNhap // Assuming DTO_VatLieu has DonGiaNhap
+                                        // If not, use 0m or fetch default price:
+                                        // 0m // Default to 0
             );
 
-            dgvChiTiet.FirstDisplayedScrollingRowIndex = rowIndex;
+            // Optional: Select the newly added row
             dgvChiTiet.ClearSelection();
             dgvChiTiet.Rows[rowIndex].Selected = true;
+            dgvChiTiet.FirstDisplayedScrollingRowIndex = rowIndex; // Scroll to the new row
 
-            TinhTongSoLuongVaGiaNhap();
-            panelImportExcel.Visible = false;
+            TinhTongSoLuongVaGiaNhap(); // Recalculate totals
+            panelImportExcel.Visible = false; // Hide the import prompt panel
+            CenterPanelInDataGridView(); // Recenter if needed (though visibility handles it)
         }
 
         private void TinhTongSoLuongVaGiaNhap()
@@ -437,88 +495,141 @@ namespace QLVT
 
             foreach (DataGridViewRow row in dgvChiTiet.Rows)
             {
-                if (row.IsNewRow) continue;
+                if (row.IsNewRow) continue; // Skip the 'new row' template
 
+                // Safely parse values, defaulting to 0 if parsing fails or value is null
                 int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out int soLuong);
-                decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out decimal giaNhap);
+                decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(),
+                                 System.Globalization.NumberStyles.Any, // Allow various number formats
+                                 System.Globalization.CultureInfo.CurrentCulture, // Use system's culture settings for parsing
+                                 out decimal giaNhap);
 
                 tongSoLuong += soLuong;
-                tongGiaNhap += giaNhap * soLuong;
+                tongGiaNhap += giaNhap * soLuong; // Calculate total value for the row
             }
 
-            lblSl.Text = tongSoLuong.ToString();
-            lblTongTien.Text = tongGiaNhap.ToString("N0") + " VND";
+            lblSl.Text = tongSoLuong.ToString("N0"); // Format quantity with separators
+            lblTongTien.Text = tongGiaNhap.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) + " VND"; // Format currency for Vietnam
         }
 
+        // --- Frm_Resize, ResizeColumns, CenterPanelInDataGridView (Keep as is, adjust ResizeColumns if needed after docking) ---
         private void Frm_Resize(object sender, EventArgs e)
         {
+            // ResizeColumns might need less work if Dock=Fill handles main sizing
             ResizeColumns();
-            CenterPanelInDataGridView();
+            CenterPanelInDataGridView(); // Keep centering the import panel
         }
 
         private void ResizeColumns()
         {
-            if (dgvChiTiet.Columns.Count == 0 || dgvChiTiet.ClientSize.Width == 0) return;
+            if (dgvChiTiet.Columns.Count == 0 || dgvChiTiet.ClientSize.Width <= 0) return;
 
-            int fixedWidth = 0;
-            int variableColumnCount = 0;
-            foreach (DataGridViewColumn col in dgvChiTiet.Columns)
+            try // Add try-catch for safety during resize events
             {
-                if (col.Name == "MaVatLieu" || col.Name == "DonViTinh" || col.Name == "SoLuong" || col.Name == "Tang" || col.Name == "Giam" || col.Name == "Xoa")
+                // Calculate total width available, excluding vertical scrollbar if visible
+                int availableWidth = dgvChiTiet.ClientSize.Width;
+                if (dgvChiTiet.Controls.OfType<VScrollBar>().Any(v => v.Visible))
                 {
-                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                    switch (col.Name)
+                    availableWidth -= SystemInformation.VerticalScrollBarWidth;
+                }
+
+                // Define fixed widths for specific columns
+                int fixedWidthTotal = 0;
+                int fillColumnsCount = 0;
+
+                Dictionary<string, int> fixedWidths = new Dictionary<string, int>
+                {
+                    { "MaVatLieu", 80 },
+                    { "DonViTinh", 80 },
+                    { "SoLuong", 90 },
+                    { "GiaNhap", 100 },
+                    { "Tang", 60 },
+                    { "Giam", 60 },
+                    { "Xoa", 60 }
+                };
+
+                foreach (DataGridViewColumn col in dgvChiTiet.Columns)
+                {
+                    if (!col.Visible) continue; // Skip hidden columns
+
+                    if (fixedWidths.ContainsKey(col.Name))
                     {
-                        case "MaVatLieu": col.Width = 100; break;
-                        case "DonViTinh": col.Width = 80; break;
-                        case "SoLuong": col.Width = 100; break;
-                        case "Tang": col.Width = 70; break;
-                        case "Giam": col.Width = 70; break;
-                        case "Xoa": col.Width = 70; break;
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        // Ensure width is not negative or excessively large if availableWidth is small
+                        col.Width = Math.Max(20, Math.Min(fixedWidths[col.Name], availableWidth - fixedWidthTotal - 50)); // Min width 20
+                        fixedWidthTotal += col.Width;
                     }
-                    fixedWidth += col.Width;
+                    // Identify columns that should fill remaining space (like TenVatLieu)
+                    else if (col.Name == "TenVatLieu") // Explicitly target fill column
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                        fillColumnsCount++;
+                    }
+                    else // Other columns might get a default small width or be set later
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        //col.Width = 50; // Assign a default minimum if needed
+                        //fixedWidthTotal += col.Width;
+                    }
                 }
-                else if (col.Name == "GiaNhap")
+
+                // Adjust the fill column(s) if necessary (though AutoSizeMode.Fill usually handles this)
+                // This part might be redundant if AutoSizeMode.Fill works well with Dock=Fill
+                // int remainingWidth = availableWidth - fixedWidthTotal;
+                // int widthPerFillColumn = fillColumnsCount > 0 ? Math.Max(80, remainingWidth / fillColumnsCount) : 80; // Min width 80 for fill column
+                //
+                // if (dgvChiTiet.Columns.Contains("TenVatLieu") && dgvChiTiet.Columns["TenVatLieu"].Visible)
+                // {
+                //     dgvChiTiet.Columns["TenVatLieu"].Width = widthPerFillColumn;
+                // }
+
+                // Ensure the 'Fill' column actually fills correctly after setting others
+                if (dgvChiTiet.Columns.Contains("TenVatLieu"))
                 {
-                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                    col.Width = 100;
-                    fixedWidth += col.Width;
-                }
-                else if (col.Visible)
-                {
-                    variableColumnCount++;
+                    dgvChiTiet.Columns["TenVatLieu"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    // Optional: Set a MinimumWidth for the fill column
+                    dgvChiTiet.Columns["TenVatLieu"].MinimumWidth = 150;
                 }
             }
-
-            int availableWidth = dgvChiTiet.ClientSize.Width - fixedWidth - SystemInformation.VerticalScrollBarWidth;
-            int variableColumnWidth = (variableColumnCount > 0) ? Math.Max(50, availableWidth / variableColumnCount) : 50;
-            foreach (DataGridViewColumn col in dgvChiTiet.Columns)
+            catch (Exception ex)
             {
-                if (col.Visible && col.Name != "MaVatLieu" && col.Name != "DonViTinh" && col.Name != "SoLuong" && col.Name != "GiaNhap" && col.Name != "Tang" && col.Name != "Giam" && col.Name != "Xoa")
-                {
-                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                    col.Width = variableColumnWidth;
-                }
-            }
-
-            if (dgvChiTiet.Columns.Contains("TenVatLieu"))
-            {
-                dgvChiTiet.Columns["TenVatLieu"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                Console.WriteLine($"Error during column resize: {ex.Message}");
+                // Handle or log the exception appropriately
             }
         }
 
         private void CenterPanelInDataGridView()
         {
-            if (panelImportExcel != null && dgvChiTiet != null)
+            if (panelImportExcel != null && dgvChiTiet != null && panelImportExcel.Parent == dgvChiTiet.Parent) // Ensure they share the same parent
             {
-                int centerX = dgvChiTiet.Left + (dgvChiTiet.Width - panelImportExcel.Width) / 2;
-                int centerY = dgvChiTiet.Top + (dgvChiTiet.Height - panelImportExcel.Height) / 2;
+                // Center relative to the DataGridView's bounds within its parent container
+                int dgvCenterX = dgvChiTiet.Left + dgvChiTiet.Width / 2;
+                int dgvCenterY = dgvChiTiet.Top + dgvChiTiet.Height / 2;
 
-                centerX = Math.Max(dgvChiTiet.Left, centerX);
-                centerY = Math.Max(dgvChiTiet.Top, centerY);
+                int panelX = dgvCenterX - panelImportExcel.Width / 2;
+                int panelY = dgvCenterY - panelImportExcel.Height / 2;
 
-                panelImportExcel.Left = centerX;
-                panelImportExcel.Top = centerY;
+                // Prevent panel from going outside DGV bounds (optional, depends on desired look)
+                panelX = Math.Max(dgvChiTiet.Left, panelX);
+                panelY = Math.Max(dgvChiTiet.Top, panelY);
+                // Ensure it doesn't go past the right/bottom edge either
+                if (panelX + panelImportExcel.Width > dgvChiTiet.Right)
+                    panelX = dgvChiTiet.Right - panelImportExcel.Width;
+                if (panelY + panelImportExcel.Height > dgvChiTiet.Bottom)
+                    panelY = dgvChiTiet.Bottom - panelImportExcel.Height;
+
+                panelImportExcel.Left = panelX;
+                panelImportExcel.Top = panelY;
+
+                panelImportExcel.Visible = !dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow);
+                if (panelImportExcel.Visible)
+                {
+                    panelImportExcel.BringToFront(); // Make sure it's on top if visible
+                }
+            }
+            else if (panelImportExcel != null)
+            {
+                panelImportExcel.Visible = !dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow);
             }
         }
 
@@ -526,16 +637,16 @@ namespace QLVT
         {
             dtpNgayNhap.Value = DateTime.Now;
             CbNcc.SelectedIndex = -1;
-            Tbnote.Text = String.Empty;
-            txtSearch.Text = String.Empty;
-            dgvChiTiet.Rows.Clear();
+            Tbnote.Text = string.Empty;
+            txtSearch.Text = string.Empty;
             ketqua.Visible = false;
-            panelImportExcel.Visible = true;
+            dgvChiTiet.Rows.Clear();
             TinhTongSoLuongVaGiaNhap();
+            CenterPanelInDataGridView();
             CbNcc.Focus();
         }
 
-        private void hopeRoundButton2_Click(object sender, EventArgs e)
+        private async void hopeRoundButton2_Click(object sender, EventArgs e) // Make async void
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -546,15 +657,37 @@ namespace QLVT
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    ImportExcelData(filePath);
+                    // Show wait cursor
+                    this.Cursor = Cursors.WaitCursor;
+                    hopeRoundButton2.Enabled = false; // Disable button during import
+                    try
+                    {
+                        // Call the async import method
+                        await ImportExcelDataAsync(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Catch any unexpected errors from the async method itself
+                        MessageBox.Show($"Lỗi không mong muốn trong quá trình import: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Console.WriteLine($"Lỗi Import Excel chi tiết: {ex.ToString()}");
+                    }
+                    finally
+                    {
+                        // Restore cursor and button
+                        this.Cursor = Cursors.Default;
+                        hopeRoundButton2.Enabled = true;
+                    }
                 }
             }
         }
-        private void ImportExcelData(string filePath)
+
+        private async Task ImportExcelDataAsync(string filePath) // Change to async Task
         {
             var importedItems = new List<DTO_VatLieuImport>();
-            var errorRows = new List<int>();
-
+            var errorRows = new List<string>();
+            int? determinedMaNCC = null;
+            string determinedTenNCC = null;
+            bool nccDeterminedByFile = false;
 
             try
             {
@@ -565,11 +698,81 @@ namespace QLVT
                     if (worksheet == null)
                     {
                         MessageBox.Show("File Excel không hợp lệ hoặc không có sheet nào.", "Lỗi Đọc File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        return; // Return Task directly
                     }
 
                     int rowCount = worksheet.Dimension.Rows;
                     int colCount = worksheet.Dimension.Columns;
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        bool rowHasData = false;
+                        for (int c = 1; c <= Math.Min(5, colCount); c++)
+                        {
+                            if (worksheet.Cells[row, c].Value != null && !string.IsNullOrWhiteSpace(worksheet.Cells[row, c].Value.ToString()))
+                            {
+                                rowHasData = true;
+                                break;
+                            }
+                        }
+                        if (!rowHasData) continue;
+
+                        string tenNccFromCell = null;
+                        if (colCount >= 6)
+                        {
+                            tenNccFromCell = worksheet.Cells[row, 6].Value?.ToString().Trim();
+                        }
+
+                        if(!string.IsNullOrEmpty(tenNccFromCell) && !nccDeterminedByFile)
+                   {
+                            determinedTenNCC = tenNccFromCell;
+                            Console.WriteLine($"Tìm thấy NCC trong Excel (dòng {row}): {determinedTenNCC}");
+
+                            determinedMaNCC = await busNcc.TimHoacThemNccAsync(determinedTenNCC);
+
+                            if (determinedMaNCC.HasValue && determinedMaNCC.Value > 0) // Tìm/Tạo thành công!
+                            {
+                                int validMaNCC = determinedMaNCC.Value;
+
+                                Console.WriteLine($"Đã xác định/tạo NCC: {determinedTenNCC} (ID: {validMaNCC})");
+                                nccDeterminedByFile = true;
+
+                                LoadNccComboBoxDataSource(validMaNCC);
+
+                                if (CbNcc.SelectedValue == null || !CbNcc.SelectedValue.Equals(validMaNCC))
+                                {
+                                    Console.WriteLine($"*** Cảnh báo: Không thể tự động chọn NCC mới (ID: {validMaNCC}) trong ComboBox sau khi tải lại. Kiểm tra hàm LoadNccComboBoxDataSource.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Đã chọn thành công NCC ID: {CbNcc.SelectedValue} trong ComboBox.");
+                                }
+                                break;
+                            }
+                            else 
+                            {
+                                errorRows.Add($"Dòng {row}: Không thể tìm hoặc tạo NCC '{determinedTenNCC}'. Dữ liệu từ file này sẽ không được nhập.");
+                                MessageBox.Show(errorRows.LastOrDefault() ?? "Lỗi không xác định khi tìm/tạo NCC", "Lỗi Nhà Cung Cấp", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return; // Thoát khỏi ImportExcelDataAsync vì không có NCC hợp lệ
+                            }
+                        }
+                    }
+
+                    if (!nccDeterminedByFile)
+                    {
+                        if (CbNcc.SelectedValue != null && CbNcc.SelectedValue is int selectedMaNcc)
+                        {
+                            determinedMaNCC = selectedMaNcc;
+                            determinedTenNCC = CbNcc.Text;
+                            Console.WriteLine($"Sử dụng NCC đã chọn: {determinedTenNCC} (ID: {determinedMaNCC})");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Vui lòng chọn Nhà cung cấp trước khi import hoặc đảm bảo file Excel có cột 'TenNhaCungCap' (cột 6).", "Thiếu Nhà Cung Cấp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+
                     for (int row = 2; row <= rowCount; row++)
                     {
                         try
@@ -580,84 +783,82 @@ namespace QLVT
                             string soLuongStr = worksheet.Cells[row, 4].Value?.ToString().Trim() ?? "";
                             string giaNhapStr = worksheet.Cells[row, 5].Value?.ToString().Trim() ?? "";
 
-                            if (string.IsNullOrEmpty(maVatLieuStr) && string.IsNullOrEmpty(tenVatLieu) && string.IsNullOrEmpty(soLuongStr))
+                            if ((string.IsNullOrEmpty(maVatLieuStr) && string.IsNullOrEmpty(tenVatLieu)) || string.IsNullOrEmpty(soLuongStr) || string.IsNullOrEmpty(giaNhapStr))
                             {
-                                continue;
+                                if (!string.IsNullOrEmpty(maVatLieuStr) || !string.IsNullOrEmpty(tenVatLieu) || !string.IsNullOrEmpty(donViTinh) || !string.IsNullOrEmpty(soLuongStr) || !string.IsNullOrEmpty(giaNhapStr))
+                                {
+                                    errorRows.Add($"Dòng {row}: Thiếu thông tin Mã/Tên VL hoặc Số lượng hoặc Giá nhập.");
+                                }
+                                continue; // Skip blank or incomplete rows
                             }
 
-                            int maVatLieu;
+                            int maVatLieu = 0; // Default
                             int soLuong;
                             decimal giaNhap;
+                            DTO_VatLieu vatLieuInfo = null;
 
                             bool hasMaVL = int.TryParse(maVatLieuStr, out maVatLieu);
-
-                            if (hasMaVL)
+                            if (hasMaVL && maVatLieu > 0)
                             {
-                                if (!int.TryParse(soLuongStr, out soLuong) || soLuong <= 0)
+                                vatLieuInfo = await busVatLieu.LayThongTinVatLieuAsync(maVatLieu);
+                                if (vatLieuInfo == null)
                                 {
-                                    Console.WriteLine($"Lỗi dòng {row}: Số lượng '{soLuongStr}' không hợp lệ.");
-                                    errorRows.Add(row);
+                                    errorRows.Add($"Dòng {row}: Không tìm thấy vật liệu với Mã '{maVatLieu}'.");
                                     continue;
                                 }
-                                if (!decimal.TryParse(giaNhapStr, NumberStyles.Any, CultureInfo.CurrentCulture, out giaNhap) || giaNhap < 0)
-                                {
-                                    Console.WriteLine($"Lỗi dòng {row}: Giá nhập '{giaNhapStr}' không hợp lệ.");
-                                    errorRows.Add(row);
-                                    continue;
-                                }
-
-                                importedItems.Add(new DTO_VatLieuImport
-                                {
-                                    RowNumber = row,
-                                    MaVatLieu = maVatLieu,
-                                    Ten = string.IsNullOrEmpty(tenVatLieu) ? $"Vật liệu {maVatLieu}" : tenVatLieu,
-                                    DonViTinh = donViTinh,
-                                    SoLuong = soLuong,
-                                    GiaNhap = giaNhap
-                                });
+                                tenVatLieu = string.IsNullOrEmpty(tenVatLieu) ? vatLieuInfo.Ten : tenVatLieu; // Use name from excel if provided
+                                donViTinh = string.IsNullOrEmpty(donViTinh) ? vatLieuInfo.DonViTinh : donViTinh; // Use DVT from excel if provided
                             }
                             else if (!string.IsNullOrEmpty(tenVatLieu))
                             {
-                                DTO_VatLieu foundVL = busVatLieu.TimVatLieuTheoTenChinhXac(tenVatLieu);
-
-                                if (foundVL == null)
+                                vatLieuInfo = busVatLieu.TimVatLieuTheoTenChinhXac(tenVatLieu); // Requires async method in BUS
+                                if (vatLieuInfo == null)
                                 {
-                                    Console.WriteLine($"Lỗi dòng {row}: Không tìm thấy vật liệu tên '{tenVatLieu}' trong hệ thống.");
-                                    errorRows.Add(row);
+                                    errorRows.Add($"Dòng {row}: Không tìm thấy vật liệu với Tên '{tenVatLieu}'.");
                                     continue;
                                 }
-
-                                if (!int.TryParse(soLuongStr, out soLuong) || soLuong <= 0) { errorRows.Add(row); continue; }
-                                if (!decimal.TryParse(giaNhapStr, NumberStyles.Any, CultureInfo.CurrentCulture, out giaNhap) || giaNhap < 0) { errorRows.Add(row); continue; }
-
-                                importedItems.Add(new DTO_VatLieuImport
-                                {
-                                    RowNumber = row,
-                                    MaVatLieu = foundVL.MaVatLieu,
-                                    Ten = foundVL.Ten,
-                                    DonViTinh = foundVL.DonViTinh,
-                                    SoLuong = soLuong,
-                                    GiaNhap = giaNhap
-                                });
+                                maVatLieu = vatLieuInfo.MaVatLieu;
+                                donViTinh = string.IsNullOrEmpty(donViTinh) ? vatLieuInfo.DonViTinh : donViTinh; // Use DVT from excel if provided
                             }
                             else
                             {
-                                Console.WriteLine($"Lỗi dòng {row}: Thiếu Mã Vật Liệu hoặc Tên Vật Liệu.");
-                                errorRows.Add(row);
+                                errorRows.Add($"Dòng {row}: Thiếu Mã Vật Liệu hoặc Tên Vật Liệu.");
                                 continue;
                             }
+
+                            if (!int.TryParse(soLuongStr, out soLuong) || soLuong <= 0)
+                            {
+                                errorRows.Add($"Dòng {row} (VL: {maVatLieu}): Số lượng '{soLuongStr}' không hợp lệ (> 0).");
+                                continue;
+                            }
+                            if (!decimal.TryParse(giaNhapStr, NumberStyles.Any, CultureInfo.CurrentCulture, out giaNhap) || giaNhap < 0)
+                            {
+                                errorRows.Add($"Dòng {row} (VL: {maVatLieu}): Giá nhập '{giaNhapStr}' không hợp lệ (>= 0).");
+                                continue;
+                            }
+
+                            importedItems.Add(new DTO_VatLieuImport
+                            {
+                                RowNumber = row,
+                                MaVatLieu = maVatLieu,
+                                Ten = tenVatLieu,
+                                DonViTinh = donViTinh,
+                                SoLuong = soLuong,
+                                GiaNhap = giaNhap
+                            });
                         }
                         catch (Exception exRow)
                         {
                             Console.WriteLine($"Lỗi xử lý dòng {row} trong Excel: {exRow.Message}");
-                            errorRows.Add(row);
+                            errorRows.Add($"Dòng {row}: Lỗi xử lý dữ liệu ({exRow.Message.Split('\n')[0]})"); // Add concise error
                         }
-                    }
-
+                    } 
                     if (importedItems.Any())
                     {
                         dgvChiTiet.SuspendLayout();
                         int addedCount = 0;
+                        int updatedCount = 0;
+
                         foreach (var item in importedItems)
                         {
                             bool exists = false;
@@ -668,7 +869,12 @@ namespace QLVT
                                 {
                                     int currentQty = (int)gridRow.Cells["SoLuong"].Value;
                                     gridRow.Cells["SoLuong"].Value = currentQty + item.SoLuong;
+                                    gridRow.Cells["GiaNhap"].Value = item.GiaNhap; // Update price to the one from Excel
+                                    gridRow.Cells["DonViTinh"].Value = item.DonViTinh; // Update DVT just in case
+                                    gridRow.Cells["TenVatLieu"].Value = item.Ten; // Update Name just in case
+
                                     exists = true;
+                                    updatedCount++;
                                     break;
                                 }
                             }
@@ -688,26 +894,47 @@ namespace QLVT
                         dgvChiTiet.ResumeLayout();
 
                         TinhTongSoLuongVaGiaNhap();
-                        panelImportExcel.Visible = (dgvChiTiet.RowCount == 0);
+                        panelImportExcel.Visible = false;
+                        CenterPanelInDataGridView();
 
-                        string message = $"Đã import thành công {addedCount} vật liệu.";
+                        string message = $"Import hoàn tất cho NCC: '{determinedTenNCC}'.\n" +
+                                         $"- Đã thêm mới: {addedCount} vật liệu.\n" +
+                                         $"- Đã cập nhật số lượng/giá: {updatedCount} vật liệu.";
 
-                        MessageBox.Show(message, "Import Hoàn Tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                        if (errorRows.Any())
+                        {
+                            message += $"\n\nCó {errorRows.Count} dòng lỗi không được import:\n- " +
+                                       string.Join("\n- ", errorRows.Take(10));
+                            if (errorRows.Count > 10) message += "\n- ... (và các lỗi khác)";
+                            MessageBox.Show(message, "Import Hoàn Tất (Có Lỗi)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else
+                        {
+                            MessageBox.Show(message, "Import Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
                     else if (!errorRows.Any())
                     {
-                        MessageBox.Show("Không tìm thấy dữ liệu hợp lệ để import trong file Excel.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Không tìm thấy dữ liệu vật liệu hợp lệ để import trong file Excel.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show($"Import thất bại. Có lỗi tại các dòng Excel sau: {string.Join(", ", errorRows)}.\nXem Console hoặc Log để biết chi tiết.", "Lỗi Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        string errorMessage = $"Import thất bại. Không có vật liệu nào được thêm.\n" +
+                                             $"Có {errorRows.Count} dòng lỗi:\n- " +
+                                             string.Join("\n- ", errorRows.Take(10)); 
+                        if (errorRows.Count > 10) errorMessage += "\n- ... (và các lỗi khác)";
+                        MessageBox.Show(errorMessage, "Lỗi Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             catch (IOException ioEx)
             {
                 MessageBox.Show($"Lỗi truy cập file: {ioEx.Message}\nFile có thể đang được mở bởi ứng dụng khác.", "Lỗi File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (InvalidOperationException invOpEx) when (invOpEx.Message.Contains("license")) 
+            {
+                MessageBox.Show($"Lỗi thư viện Excel (EPPlus): {invOpEx.Message}\nVui lòng đảm bảo EPPlus license context được thiết lập (ExcelPackage.LicenseContext).", "Lỗi License EPPlus", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(invOpEx.ToString());
             }
             catch (InvalidOperationException invOpEx)
             {
@@ -719,17 +946,113 @@ namespace QLVT
                 Console.WriteLine($"Lỗi Import Excel chi tiết: {ex.ToString()}");
             }
         }
+        private void LoadNccComboBoxDataSource(int? selectMaNCC = null) // Thêm tham số tùy chọn
+        {
+            try
+            {
+                List<DTO_Ncap> dataSource = busNcc.LayDSNcc();
 
+                if (selectMaNCC.HasValue && dataSource != null)
+                {
+                    bool foundInList = dataSource.Any(n => n.MaNCC == selectMaNCC.Value);
+                    Console.WriteLine($"LoadNccComboBoxDataSource: Trying to select ID {selectMaNCC.Value}. Found in fetched list: {foundInList}.");
+                }
+
+                CbNcc.DataSource = null;
+                CbNcc.DisplayMember = "TenNCC";
+                CbNcc.ValueMember = "MaNCC";
+                CbNcc.DataSource = dataSource; 
+
+                bool selectionMade = false;
+                if (selectMaNCC.HasValue && dataSource != null && dataSource.Any(n => n.MaNCC == selectMaNCC.Value))
+                {
+                    CbNcc.SelectedValue = selectMaNCC.Value;
+                    if (CbNcc.SelectedValue != null && CbNcc.SelectedValue.Equals(selectMaNCC.Value))
+                    {
+                        Console.WriteLine($"LoadNccComboBoxDataSource: Successfully selected ID {selectMaNCC.Value}.");
+                        selectionMade = true;
+                    }
+                    else
+                    {
+                        var itemToSelect = dataSource.FirstOrDefault(n => n.MaNCC == selectMaNCC.Value);
+                        if (itemToSelect != null)
+                        {
+                            CbNcc.SelectedItem = itemToSelect;
+                            if (CbNcc.SelectedItem == itemToSelect)
+                            {
+                                Console.WriteLine($"LoadNccComboBoxDataSource: Successfully selected ID {selectMaNCC.Value} using SelectedItem.");
+                                selectionMade = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"*** LoadNccComboBoxDataSource: FAILED to select ID {selectMaNCC.Value} using SelectedValue AND SelectedItem.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"*** LoadNccComboBoxDataSource: FAILED to select ID {selectMaNCC.Value} using SelectedValue. Item could not be refound for SelectedItem attempt.");
+                        }
+                    }
+                }
+
+                if (!selectionMade)
+                {
+                    CbNcc.SelectedIndex = -1;
+                    if (selectMaNCC.HasValue)
+                    {
+                        Console.WriteLine($"LoadNccComboBoxDataSource: Could not select requested ID {selectMaNCC.Value}. Set SelectedIndex to -1.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"LoadNccComboBoxDataSource: No specific ID requested. Set SelectedIndex to -1.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách Nhà cung cấp: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"*** EXCEPTION in LoadNccComboBoxDataSource: {ex.ToString()}");
+                CbNcc.DataSource = null;
+                CbNcc.SelectedIndex = -1;
+            }
+        }
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            this.Controls.Clear();
-            FrmOrder order = new FrmOrder()
+            if (dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow))
             {
-                TopLevel = false,
-                Dock = DockStyle.Fill
-            };
-            this.Controls.Add(order);
-            order.Show();
+                var confirmResult = MessageBox.Show("Bạn có dữ liệu chưa lưu. Thoát mà không lưu?",
+                                                 "Xác nhận Thoát",
+                                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirmResult == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
+            Control parentControl = this.Parent; // Get the container this form is in
+            if (parentControl != null)
+            {
+                parentControl.Controls.Remove(this); // Remove this form
+                this.Dispose(); // Dispose resources of this form
+
+                FrmOrder order = new FrmOrder()
+                {
+                    TopLevel = false,
+                    Dock = DockStyle.Fill,
+                    FormBorderStyle = FormBorderStyle.None // Ensure it fills correctly
+                };
+                parentControl.Controls.Add(order);
+                order.Show();
+            }
+            else
+            {
+                this.Close();
+            }
+        }
+
+        private void dgvChiTiet_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Console.WriteLine($"CellContentClick: Row {e.RowIndex}, Col {e.ColumnIndex}");
         }
     }
 }

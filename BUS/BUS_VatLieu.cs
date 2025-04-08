@@ -45,7 +45,38 @@ namespace BUS
                 return null; 
             }
         }
-
+        public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string searchQuery)
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return new List<DTO_VatLieu>(); 
+            }
+            try
+            {
+                return await dalVatLieu.TimKiemVatLieuAsync(searchQuery.Trim());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi trong BUS_VatLieu.TimKiemVatLieuAsync: {ex.Message}");
+                return new List<DTO_VatLieu>();
+            }
+        }
+        public async Task<DTO_VatLieu> LayThongTinVatLieuAsync(int maVatLieu)
+        {
+            if (maVatLieu <= 0)
+            {
+                return null; 
+            }
+            try
+            {
+                return await dalVatLieu.LayThongTinVatLieuAsync(maVatLieu);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi trong BUS_VatLieu.LayThongTinVatLieuAsync cho mã {maVatLieu}: {ex.Message}");
+                return null;
+            }
+        }
         public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu,int NguoiTao)
         {
             if (string.IsNullOrEmpty(ten) || donGiaNhap < 0 || donGiaBan < 0 || string.IsNullOrEmpty(donViTinh))

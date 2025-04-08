@@ -11,6 +11,7 @@ namespace DAL
 {
     public class QLVatLieu : DBConnect
     {
+        private SqlConnection conn = DBConnect.GetConnection();
         public List<DTO_VatLieu> LayTatCaVatLieu()
         {
             List<DTO_VatLieu> danhSach = new List<DTO_VatLieu>();
@@ -42,12 +43,74 @@ namespace DAL
             }
             return danhSach;
         }
+        public async Task<DTO_VatLieu> LayThongTinVatLieuAsync(int maVatLieu)
+        {
+            DTO_VatLieu vatLieu = null;
+            string query = @"
+    SELECT
+        MaVatLieu,
+        Ten ,    
+        DonViTinh,
+        SoLuong, 
+        DonGiaNhap,
+         TrangThai
+    FROM QLVatLieu 
+    WHERE MaVatLieu = @MaVatLieu
+      AND TrangThai = N'Hoạt động';";
+            try
+            {
+                await conn.OpenAsync();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaVatLieu", maVatLieu);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync()) 
+                        {
+                            vatLieu = MapReaderToVatLieu(reader);
+                        }
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in DAL_VatLieu.LayThongTinVatLieuAsync for ID {maVatLieu}: {sqlEx.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error in DAL_VatLieu.LayThongTinVatLieuAsync for ID {maVatLieu}: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    await conn.CloseAsync();
+                }
+            }
+            return vatLieu;
+        }
+        private DTO_VatLieu MapReaderToVatLieu(SqlDataReader reader)
+        {
+            return new DTO_VatLieu
+            {
+                MaVatLieu = reader.GetInt32(reader.GetOrdinal("MaVatLieu")),
+                Ten = reader.GetString(reader.GetOrdinal("Ten")), 
+                DonViTinh = reader.GetString(reader.GetOrdinal("DonViTinh")),
+                SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")), 
+                DonGiaNhap = reader.IsDBNull(reader.GetOrdinal("DonGiaNhap")) ? 0m : reader.GetDecimal(reader.GetOrdinal("DonGiaNhap"))
+                // Không đọc TrangThai nếu SELECT không có
+            };
+        }
+
         public DTO_VatLieu TimVatLieuTheoTenChinhXac(string tenVatLieu)
         {
             DTO_VatLieu vatLieu = null;
-            string query = "SELECT MaVatLieu, Ten, DonViTinh, DonGiaNhap, SoLuongTon, MaNCC " + // Lấy đủ các cột bạn cần
-                           "FROM VatLieu " +
-                           "WHERE LOWER(Ten) = LOWER(@TenVatLieu)";
+            string query = "SELECT MaVatLieu, Ten, DonViTinh, DonGiaNhap, SoLuong" +
+                           "FROM QLVatLieu" +
+                           "WHERE LOWER(Ten) = LOWER(N'@Ten')";
             try
             {
                 using (SqlConnection _conn = DBConnect.GetConnection())
@@ -55,7 +118,7 @@ namespace DAL
                 {
                     _conn.Open(); 
                     SqlCommand cmd = new SqlCommand(query, _conn);
-                    cmd.Parameters.AddWithValue("@TenVatLieu", tenVatLieu.Trim()); 
+                    cmd.Parameters.AddWithValue("@Ten", tenVatLieu.Trim()); 
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -67,7 +130,7 @@ namespace DAL
                                 Ten = reader["Ten"].ToString(),
                                 DonViTinh = reader["DonViTinh"].ToString(),
                                 DonGiaNhap = reader["DonGiaNhap"] != DBNull.Value ? Convert.ToDecimal(reader["DonGiaNhap"]) : 0,
-                                SoLuong = reader["SoLuongTon"] != DBNull.Value ? Convert.ToInt32(reader["SoLuongTon"]) : 0,
+                                SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToInt32(reader["SoLuong"]) : 0,
                             };
                         }
                     }
@@ -133,6 +196,52 @@ namespace DAL
                 da.Fill(dt);
                 return dt;
             }
+        }
+        public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string searchQuery)
+        {
+            List<DTO_VatLieu> dsVatLieu = new List<DTO_VatLieu>();
+            string query = @"
+                SELECT MaVatLieu, Ten, DonViTinh, SoLuong, DonGiaNhap -- Các cột cần lấy
+                FROM QlVatLieu -- Thay tên bảng nếu khác
+                WHERE CAST(MaVatLieu AS VARCHAR(20)) LIKE @SearchQuery OR TenVatLieu LIKE @SearchQuery
+                -- AND TrangThai = 1 -- Chỉ lấy vật liệu đang hoạt động (tùy chọn)
+                ORDER BY TenVatLieu;";
+
+            try
+            {
+                await conn.OpenAsync();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    // Thêm ký tự đại diện '%' vào tham số
+                    cmd.Parameters.AddWithValue("@SearchQuery", $"%{searchQuery}%");
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            dsVatLieu.Add(MapReaderToVatLieu(reader));
+                        }
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in DAL_VatLieu.TimKiemVatLieuAsync: {sqlEx.Message}");
+                throw; 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error in DAL_VatLieu.TimKiemVatLieuAsync: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    await conn.CloseAsync();
+                }
+            }
+            return dsVatLieu;
         }
         public DataTable LayVatLieuTheoMa2(int maVatLieu)
         {

@@ -36,9 +36,69 @@ namespace BUS
         {
             DAL_Nccap.XoaNCC(maNCC, nguoiCapNhat);
         }
-        public DataTable LayDSNcc()
+        public List<DTO_Ncap> LayDSNcc()
         {
-            return DAL_Nccap.LayDSNcc();
+            try
+            {
+                return DAL_Nccap.LayDanhSachNccDto(); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi trong BUS khi gọi LayDanhSachNccDto: {ex.Message}");
+                return new List<DTO_Ncap>(); 
+            }
+        }
+        public async Task<int?> TimHoacThemNccAsync(string tenNCC)
+        {
+            if (string.IsNullOrWhiteSpace(tenNCC))
+            {
+                Console.WriteLine("BUS Error: Tên nhà cung cấp không được để trống.");
+                return null; // Hoặc throw tùy theo ngữ cảnh gọi
+            }
+
+            string trimmedTenNcc = tenNCC.Trim();
+
+            try
+            {
+                DTO_Ncap existingNcc = DAL_Nccap.TimNccTheoTen(trimmedTenNcc); 
+                                                                          
+                if (existingNcc != null)
+                {
+                    Console.WriteLine($"BUS: Tìm thấy NCC ID: {existingNcc.MaNCC} cho tên '{trimmedTenNcc}'");
+                    return existingNcc.MaNCC;
+                }
+                else
+                {
+                    Console.WriteLine($"BUS: Không tìm thấy NCC '{trimmedTenNcc}'. Đang tạo mới...");
+                    DTO_Ncap nccToAdd = new DTO_Ncap
+                    {
+                        TenNCC = trimmedTenNcc,
+                        DiaChi = null, 
+                        SDT = null,    
+                        Email = null,  
+                        NguoiTao =CurrentUser.MaTK
+                        
+                    };
+
+                    int newMaNCC = await DAL_Nccap.ThemNccAsync(nccToAdd); // Quan trọng: Phải có hàm này trong DAL
+
+                    if (newMaNCC > 0)
+                    {
+                        Console.WriteLine($"BUS: Đã tạo NCC mới thành công: ID {newMaNCC}, Tên '{nccToAdd.TenNCC}'");
+                        return newMaNCC; // Trả về ID MỚI được trả từ DAL
+                    }
+                    else
+                    {
+                        Console.WriteLine($"*** BUS: Lỗi khi tạo NCC '{trimmedTenNcc}'. Hàm DAL trả về {newMaNCC}.");
+                        return null; 
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*** BUS Lỗi nghiêm trọng trong TimHoacThemNccAsync cho tên '{trimmedTenNcc}': {ex.ToString()}");
+                return null; // Báo hiệu thất bại do exception
+            }
         }
     }
 }

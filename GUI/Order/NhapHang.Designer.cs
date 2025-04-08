@@ -546,6 +546,7 @@
             dgvChiTiet.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvChiTiet.Size = new Size(798, 530);
             dgvChiTiet.TabIndex = 8;
+            dgvChiTiet.CellContentClick += dgvChiTiet_CellContentClick;
             // 
             // NhapHang
             // 
