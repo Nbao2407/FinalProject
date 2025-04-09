@@ -16,7 +16,7 @@ namespace BUS
     {
         private DAL_Order dal = new DAL_Order();
 
-        public DataTable GetAllOrder()
+        public List<DTO_Order> GetAllOrder()
         {
             return dal.GetAllOrder();
         }
@@ -27,7 +27,8 @@ namespace BUS
         int maTK,
         string ghiChu,
         List<DTO_Order> chiTietNhap,
-        int nguoiCapNhat)
+        int nguoiCapNhat
+        )
         {
             if (maNCC <= 0 || maTK <= 0 || nguoiCapNhat <= 0)
                 return (false, "Thông tin mã NCC, tài khoản hoặc người cập nhật không hợp lệ.", 0);
@@ -71,5 +72,7 @@ namespace BUS
         {
             return dal.TimKiemDonNhapTheoKeyword(keyword);
         }
+       
+
     }
 }

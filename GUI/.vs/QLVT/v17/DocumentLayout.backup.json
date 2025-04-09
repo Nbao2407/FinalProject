@@ -3,55 +3,49 @@
   "WorkspaceRootPath": "I:\\Pro213\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\qlvatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\nhaphang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\nhaphang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|i:\\pro213\\bus\\bus_vatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_nccap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\nhaphang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\nhaphang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|i:\\pro213\\bus\\bus_ncc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\taikhoan\\addtk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:taikhoan\\addtk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_vatlieuimport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|i:\\pro213\\bus\\bus_order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:_type\\frmtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_donnhapsearchresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\hoadon\\wiget.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:hoadon\\wiget.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\frmorder.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\frmorder.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|I:\\Pro213\\GUI\\hoadon\\frmhoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:hoadon\\frmhoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\frmcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -61,7 +55,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 447,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -73,191 +67,142 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DTO_Order.cs",
-              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_Order.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_Order.cs",
-              "ToolTip": "I:\\Pro213\\DTO\\DTO_Order.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_Order.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAA8wBwAAAAnAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "NhapHang.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\NhapHang.cs",
+              "RelativeDocumentMoniker": "Order\\NhapHang.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Order\\NhapHang.cs*",
+              "RelativeToolTip": "Order\\NhapHang.cs*",
+              "ViewState": "AgIAAJcBAAAAAAAAAAAAAFUEAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T12:13:25.269Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "BUS_VatLieu.cs",
-              "DocumentMoniker": "I:\\Pro213\\BUS\\BUS_VatLieu.cs",
-              "RelativeDocumentMoniker": "..\\BUS\\BUS_VatLieu.cs",
-              "ToolTip": "I:\\Pro213\\BUS\\BUS_VatLieu.cs",
-              "RelativeToolTip": "..\\BUS\\BUS_VatLieu.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAADgv0cAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T12:11:54.942Z",
+              "WhenOpened": "2025-04-09T06:21:17.422Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "BUS_Ncc.cs",
-              "DocumentMoniker": "I:\\Pro213\\BUS\\BUS_Ncc.cs",
-              "RelativeDocumentMoniker": "..\\BUS\\BUS_Ncc.cs",
-              "ToolTip": "I:\\Pro213\\BUS\\BUS_Ncc.cs",
-              "RelativeToolTip": "..\\BUS\\BUS_Ncc.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAADwv1kAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T12:07:52.656Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DAL_NCcap.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_NCcap.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\DAL_NCcap.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\DAL_NCcap.cs",
-              "RelativeToolTip": "..\\DAL\\DAL_NCcap.cs",
-              "ViewState": "AgIAAKEAAAAAAAAAAAAQwKgAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T11:46:39.839Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "QLVatLieu.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\QLVatLieu.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\QLVatLieu.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\QLVatLieu.cs*",
-              "RelativeToolTip": "..\\DAL\\QLVatLieu.cs*",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAUwDUAAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T12:02:21.603Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "DTO_VatLieuImport.cs",
-              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_VatLieuImport.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_VatLieuImport.cs",
-              "ToolTip": "I:\\Pro213\\DTO\\DTO_VatLieuImport.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_VatLieuImport.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T11:49:19.26Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "NhapHang.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\NhapHang.cs",
-              "RelativeDocumentMoniker": "Order\\NhapHang.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\NhapHang.cs",
-              "RelativeToolTip": "Order\\NhapHang.cs",
-              "ViewState": "AgIAAA4DAAAAAAAAAAASwCIDAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T11:30:46.904Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "NhapHang.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\NhapHang.cs",
-              "RelativeDocumentMoniker": "Order\\NhapHang.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\NhapHang.cs [Design]",
-              "RelativeToolTip": "Order\\NhapHang.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T11:30:40.365Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "DTO_DonNhapSearchResult.cs",
-              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_DonNhapSearchResult.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_DonNhapSearchResult.cs",
-              "ToolTip": "I:\\Pro213\\DTO\\DTO_DonNhapSearchResult.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_DonNhapSearchResult.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBMAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T19:15:45.723Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Wiget.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\HoaDon\\Wiget.cs",
-              "RelativeDocumentMoniker": "HoaDon\\Wiget.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\HoaDon\\Wiget.cs",
-              "RelativeToolTip": "HoaDon\\Wiget.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:10:21.937Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AddTk.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\TaiKhoan\\AddTk.cs",
-              "RelativeDocumentMoniker": "TaiKhoan\\AddTk.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\TaiKhoan\\AddTk.cs",
-              "RelativeToolTip": "TaiKhoan\\AddTk.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAAAFYAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:10:21.064Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "FrmOrder.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
-              "RelativeDocumentMoniker": "Order\\FrmOrder.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
-              "RelativeToolTip": "Order\\FrmOrder.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAvwBkAAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T09:57:47.191Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
               "Title": "DAL_Order.cs",
               "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_Order.cs",
               "RelativeDocumentMoniker": "..\\DAL\\DAL_Order.cs",
               "ToolTip": "I:\\Pro213\\DAL\\DAL_Order.cs",
               "RelativeToolTip": "..\\DAL\\DAL_Order.cs",
-              "ViewState": "AgIAAG0AAAAAAAAAAAAAAJQAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAJQAAAAAAAAAAAAAALUAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T13:32:24.739Z"
+              "WhenOpened": "2025-04-08T23:34:57.636Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 4,
               "Title": "BUS_Order.cs",
               "DocumentMoniker": "I:\\Pro213\\BUS\\BUS_Order.cs",
               "RelativeDocumentMoniker": "..\\BUS\\BUS_Order.cs",
               "ToolTip": "I:\\Pro213\\BUS\\BUS_Order.cs",
               "RelativeToolTip": "..\\BUS\\BUS_Order.cs",
-              "ViewState": "AgIAADEAAAAAAAAAAAApwEcAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAewEoAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T11:45:34.519Z"
+              "WhenOpened": "2025-04-08T23:20:37.933Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "FrmHoaDon.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\HoaDon\\FrmHoaDon.cs",
-              "RelativeDocumentMoniker": "HoaDon\\FrmHoaDon.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\HoaDon\\FrmHoaDon.cs [Design]",
-              "RelativeToolTip": "HoaDon\\FrmHoaDon.cs [Design]",
+              "DocumentIndex": 3,
+              "Title": "FrmType.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\_Type\\FrmType.cs",
+              "RelativeDocumentMoniker": "_Type\\FrmType.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\_Type\\FrmType.cs [Design]",
+              "RelativeToolTip": "_Type\\FrmType.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T09:57:21.549Z"
+              "WhenOpened": "2025-04-08T23:10:28.835Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FrmOrder.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
+              "RelativeDocumentMoniker": "Order\\FrmOrder.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
+              "RelativeToolTip": "Order\\FrmOrder.cs",
+              "ViewState": "AgIAABABAAAAAAAAAAAIwDUBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T22:52:19.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FrmOrder.Designer.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\FrmOrder.Designer.cs",
+              "RelativeDocumentMoniker": "Order\\FrmOrder.Designer.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Order\\FrmOrder.Designer.cs",
+              "RelativeToolTip": "Order\\FrmOrder.Designer.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAswBcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T23:08:14.494Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DTO_DonNhapSearchResult.cs",
+              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_DonNhapSearchResult.cs",
+              "RelativeDocumentMoniker": "..\\DTO\\DTO_DonNhapSearchResult.cs",
+              "ToolTip": "I:\\Pro213\\DTO\\DTO_DonNhapSearchResult.cs",
+              "RelativeToolTip": "..\\DTO\\DTO_DonNhapSearchResult.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAgAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T23:01:15.86Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FrmCustomer.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Customer\\FrmCustomer.cs",
+              "RelativeDocumentMoniker": "Customer\\FrmCustomer.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Customer\\FrmCustomer.cs",
+              "RelativeToolTip": "Customer\\FrmCustomer.cs",
+              "ViewState": "AgIAALcAAAAAAAAAAAAYwMAAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T22:53:25.155Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "NhapHang.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\NhapHang.cs",
+              "RelativeDocumentMoniker": "Order\\NhapHang.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Order\\NhapHang.cs [Design]*",
+              "RelativeToolTip": "Order\\NhapHang.cs [Design]*",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T22:48:58.477Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FrmCustomer.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Customer\\FrmCustomer.cs",
+              "RelativeDocumentMoniker": "Customer\\FrmCustomer.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Customer\\FrmCustomer.cs [Design]",
+              "RelativeToolTip": "Customer\\FrmCustomer.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T22:48:48.499Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "FrmOrder.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
+              "RelativeDocumentMoniker": "Order\\FrmOrder.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs [Design]",
+              "RelativeToolTip": "Order\\FrmOrder.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T22:47:04.534Z",
+              "EditorCaption": " [Design]"
             }
           ]
         },
@@ -294,6 +239,40 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "1729b74a-182b-45f7-8b14-c9de23f0c76b",
+        "Display": 0,
+        "X": 667,
+        "Y": -49,
+        "Width": 1581,
+        "Height": 796,
+        "WindowState": 0
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FrmType.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\_Type\\FrmType.cs",
+              "RelativeDocumentMoniker": "_Type\\FrmType.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\_Type\\FrmType.cs",
+              "RelativeToolTip": "_Type\\FrmType.cs",
+              "ViewState": "AgIAAGAAAAAAAAAAAAArwHUAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T23:10:30.47Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -21,8 +21,9 @@ namespace QLVT
         private  BUS_Order _busOrder = new BUS_Order();
         private  DAL_Order _dalOrder = new DAL_Order();
         private List<DTO_DonNhapSearchResult> currentSearchResults;
-
-
+        private List<DTO_Order> danhSach;
+        private BindingSource orderBindingSource = new BindingSource();
+        private DataTable initialOrderData;
         public FrmOrder()
         {
             InitializeComponent();
@@ -33,9 +34,13 @@ namespace QLVT
             ResizeColumns();
             debounceTimer = new System.Windows.Forms.Timer
             {
-                Interval = 300 
+                Interval = 300
             };
-            debounceTimer.Tick += DebounceTimer_Tick; ;
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
         }
 
         private void DebounceTimer_Tick(object sender, EventArgs e)
@@ -79,7 +84,6 @@ namespace QLVT
 
         private void CustomizeInitialColumns()
         {
-            this.Resize += new EventHandler(Frm_Resize);
 
             if (dataGridView1.Columns["MaDonNhap"] != null)
                 dataGridView1.Columns["MaDonNhap"].HeaderText = "Mã ĐN";
@@ -96,7 +100,6 @@ namespace QLVT
 
         private void CustomizeSearchResultColumns()
         {
-            this.Resize += new EventHandler(Frm_Resize);
             if (dataGridView1.Columns["MaDonNhap"] != null)
                 dataGridView1.Columns["MaDonNhap"].HeaderText = "Mã ĐN";
             if (dataGridView1.Columns["NgayNhap"] != null)
@@ -115,20 +118,19 @@ namespace QLVT
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
-                dataGridView1.Width = 1100;
+                dataGridView1.Width = 1150;
                 dataGridView1.Height = 642;
                 dataGridView1.Left = (this.ClientSize.Width) / 2;
                 dataGridView1.Top = (this.ClientSize.Height - 642) / 2;
             }
-            else if(this.WindowState == FormWindowState.Maximized)
+            else
             {
-                dataGridView1.Width = this.ClientSize.Width-20;
+                dataGridView1.Width = this.ClientSize.Width;
                 dataGridView1.Height = this.ClientSize.Height - 80;
                 dataGridView1.Left = 25;
                 dataGridView1.Top = 80;
             }
             ResizeColumns();
-
         }
 
         private void ResizeColumns()
@@ -138,23 +140,13 @@ namespace QLVT
             int totalWidth = dataGridView1.ClientSize.Width;
             int fixedColumnWidth = 50;
             int variableColumnCount = dataGridView1.Columns.Count;
+            int variableColumnWidth = (totalWidth - fixedColumnWidth) / variableColumnCount;
 
-            int variableColumnWidth = 0; 
-            if (variableColumnCount > 0) 
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
-                variableColumnWidth = (totalWidth - fixedColumnWidth) / variableColumnCount;
-            }
-
-
-            if (variableColumnWidth > 0)
-            {
-                foreach (DataGridViewColumn column in dataGridView1.Columns)
-                {
-                    column.Width = variableColumnWidth;
-                }
+                column.Width = variableColumnWidth;
             }
         }
-
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -222,99 +214,61 @@ namespace QLVT
             cboTrangThai.SelectedIndex = 0;
         }
 
+
         private void PerformSearch()
         {
-            string keyword = txtSearch.Text.Trim();
+            string searchQuery = txtSearch.Text.Trim();
             string selectedTrangThai = cboTrangThai.SelectedItem?.ToString();
-            bool isStatusFilterActive = selectedTrangThai != null && selectedTrangThai != "-- Tất cả TT --";
 
             try
             {
-                this.Cursor = Cursors.WaitCursor;
-                result.Visible = false;
+                DAL_Order da = new DAL_Order();
+                List<DTO_Order> results = da.SearchOrder(searchQuery);
 
-                List<DTO_DonNhapSearchResult> results = null; 
-
-                if (string.IsNullOrWhiteSpace(keyword))
+                if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
-                    results = new List<DTO_DonNhapSearchResult>();
-                }
-                else
-                {
-                    var orderResults = _busOrder.TimKiemDonNhap(keyword);
-
-
-                    if (orderResults != null && orderResults.Count > 0)
-                    {
-                        try
-                        {
-                            results = orderResults.Select(order => new DTO_DonNhapSearchResult
-                            {
-                                MaDonNhap = order.MaDonNhap,
-                                TenNhaCungCap = order.TenNhaCungCap,
-                                NgayNhap = order.NgayNhap,
-                                TrangThai = order.TrangThai
-                            }).ToList();
-                        }
-                        catch (Exception mapEx)
-                        {
-                            MessageBox.Show($"Lỗi khi map dữ liệu: {mapEx.Message}\nKiểm tra lại tên thuộc tính trong LINQ Select.", "Lỗi Mapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            results = new List<DTO_DonNhapSearchResult>(); 
-                        }
-                    }
-                    else
-                    {
-                        results = new List<DTO_DonNhapSearchResult>();
-                    }
+                    results = results.Where(kh => kh.TrangThai == selectedTrangThai).ToList();
                 }
 
-                if (results != null && results.Any()) 
-                {
-                    Console.WriteLine($"Mẫu sau map: ID={results[0].MaDonNhap} | NCC='{results[0].TenNhaCungCap}' | Status='{results[0].TrangThai}'"); // **GHI LẠI GIÁ TRỊ NÀY**
-                }
+                UpdateSearchSuggestions(results);
 
-                if (isStatusFilterActive && results != null)
-                {
-                    int countBeforeFilter = results.Count;
-                    results = results.Where(r => r.TrangThai != null && r.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)).ToList();
-                    int countAfterFilter = results.Count; 
-                    MessageBox.Show($"Lọc theo trạng thái '{selectedTrangThai}': Trước={countBeforeFilter}, Sau={countAfterFilter}"); // **GHI LẠI GIÁ TRỊ NÀY**
-                }
-
-                currentSearchResults = results ?? new List<DTO_DonNhapSearchResult>();
-
-                UpdateSearchSuggestions(currentSearchResults);
-                UpdateDataGridView(currentSearchResults);
+                UpdateDataGridView(searchQuery, results);
             }
-            finally
+            catch (Exception ex)
             {
-                this.Cursor = Cursors.Default;
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                result.Visible = false;
+                dataGridView1.DataSource = null;
             }
         }
 
-        private void UpdateDataGridView(List<DTO_DonNhapSearchResult> results)
+
+
+        private void UpdateDataGridView(string searchQuery, List<DTO_Order> results)
         {
-            dataGridView1.DataSource = null;
-            if (results != null && results.Count > 0)
+            BUS_Order bus = new BUS_Order();
+            if (searchQuery.Length > 0)
             {
                 dataGridView1.DataSource = results;
-                CustomizeSearchResultColumns();
-
             }
             else
             {
-                dataGridView1.DataSource = null;
-
+                var all = bus.GetAllOrder();
+                if (!string.IsNullOrEmpty(cboTrangThai.SelectedItem?.ToString()))
+                {
+                    all = all.Where(kh => kh.TrangThai == cboTrangThai.SelectedItem.ToString()).ToList();
+                }
+                dataGridView1.DataSource = all;
             }
         }
 
 
-        private void UpdateSearchSuggestions(List<DTO_DonNhapSearchResult> results)
+        private void UpdateSearchSuggestions(List<DTO_Order> results)
         {
-            result.Controls.Clear();
+            result.Controls.Clear(); // Panel holding suggestion labels
             if (results != null && results.Any() && txtSearch.Text.Trim().Length > 0)
             {
-                result.Height = Math.Min(results.Count * 35, 180); 
+                result.Height = Math.Min(results.Count * 35, 180); // Limit height
                 result.BackColor = Color.White;
 
 
@@ -322,10 +276,10 @@ namespace QLVT
                 {
                     Label lbl = new Label
                     {
-                        Text = $"{item.MaDonNhap}-{item.TenNhaCungCap ?? "N/A"}", 
+                        Text = $"{item.MaDonNhap} - {item.TenNhaCungCap ?? "N/A"}", // Use DTO properties
                         AutoSize = false,
-                        Dock = DockStyle.Top, 
-                        Height = 35,         
+                        Dock = DockStyle.Top,
+                        Height = 35,
                         TextAlign = ContentAlignment.MiddleLeft,
                         Padding = new Padding(10, 0, 0, 0),
                         Font = new Font("Segoe UI", 10f),
@@ -341,16 +295,20 @@ namespace QLVT
 
                     lbl.Click += (s, e) =>
                     {
-                        var selectedItem = (DTO_DonNhapSearchResult)lbl.Tag;
+                        var selectedItem = (DTO_Order)lbl.Tag;
                         txtSearch.TextChanged -= txtSearch_TextChanged;
                         txtSearch.Text = selectedItem.MaDonNhap.ToString();
-                        result.Visible = false; 
+                        txtSearch.TextChanged += txtSearch_TextChanged;
 
-                        UpdateDataGridView(new List<DTO_DonNhapSearchResult> { selectedItem });
+                        result.Visible = false; // Hide suggestions
+
+                        orderBindingSource.DataSource = new List<DTO_Order> { selectedItem };
+                        CustomizeSearchResultColumns(); 
+                        ResizeColumns();
                     };
 
                     result.Controls.Add(lbl);
-                    lbl.BringToFront(); 
+                    lbl.BringToFront();
                 }
                 result.Visible = true;
             }
@@ -359,11 +317,20 @@ namespace QLVT
                 result.Visible = false;
             }
         }
+
         private void cboTrangThai_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PerformSearch();
+            string filter = cboTrangThai.SelectedItem.ToString();
+            if (filter == "-- Tất cả TT --")
+            {
+                dataGridView1.DataSource = danhSach;
+            }
+            else
+            {
+                var filteredList = danhSach.Where(k => k.TrangThai == filter).ToList();
+                dataGridView1.DataSource = filteredList;
+            }
         }
-
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             debounceTimer.Stop();

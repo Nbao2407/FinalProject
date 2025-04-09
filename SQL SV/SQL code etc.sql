@@ -1291,4 +1291,6 @@ BEGIN
     ORDER BY MatchScore DESC, dn.NgayNhap DESC;
 END;
 GO
-EXEC sp_TimKiemQLDonNhap @Keyword = N'Công ty ';
+Delete  From NCC where TenNCC=N'Công ty xây dựng Hà tiên'
+SELECT * FROM QLVatLieu
+WHERE TenNCC = N'Công ty xây dựng Hà tiên';

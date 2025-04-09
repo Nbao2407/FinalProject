@@ -138,7 +138,7 @@ namespace QLVT
             TbEmail.BorderStyle = BorderStyle.None;
             TbEmail.Font = new Font("Microsoft Sans Serif", 9.75F);
             TbEmail.ForeColor = Color.Black;
-            TbEmail.Location = new Point(466, 218);
+            TbEmail.Location = new Point(463, 217);
             TbEmail.Multiline = true;
             TbEmail.Name = "TbEmail";
             TbEmail.Size = new Size(374, 24);
@@ -147,7 +147,7 @@ namespace QLVT
             // panel1
             // 
             panel1.BackColor = Color.Black;
-            panel1.Location = new Point(466, 244);
+            panel1.Location = new Point(463, 241);
             panel1.Name = "panel1";
             panel1.Size = new Size(377, 1);
             panel1.TabIndex = 20;
@@ -156,7 +156,7 @@ namespace QLVT
             // 
             txtEmail.AutoSize = true;
             txtEmail.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtEmail.Location = new Point(466, 190);
+            txtEmail.Location = new Point(466, 187);
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(48, 21);
             txtEmail.TabIndex = 19;
@@ -256,7 +256,7 @@ namespace QLVT
             ID.BackColor = Color.Transparent;
             ID.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ID.ForeColor = Color.FromArgb(80, 80, 80);
-            ID.Location = new Point(221, 72);
+            ID.Location = new Point(803, 75);
             ID.Name = "ID";
             ID.Size = new Size(19, 21);
             ID.TabIndex = 42;

@@ -56,6 +56,7 @@
             button2 = new ReaLTaiizor.Controls.Button();
             button1 = new ReaLTaiizor.Controls.Button();
             panel2 = new Panel();
+            CbLocNCC = new ReaLTaiizor.Controls.AloneComboBox();
             bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             pictureBox1 = new PictureBox();
@@ -438,6 +439,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(CbLocNCC);
             panel2.Controls.Add(bigLabel1);
             panel2.Controls.Add(txtSearch);
             panel2.Controls.Add(pictureBox1);
@@ -447,6 +449,19 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1106, 33);
             panel2.TabIndex = 13;
+            // 
+            // CbLocNCC
+            // 
+            CbLocNCC.DrawMode = DrawMode.OwnerDrawFixed;
+            CbLocNCC.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbLocNCC.EnabledCalc = true;
+            CbLocNCC.FormattingEnabled = true;
+            CbLocNCC.ItemHeight = 20;
+            CbLocNCC.Location = new Point(613, 4);
+            CbLocNCC.Name = "CbLocNCC";
+            CbLocNCC.Size = new Size(188, 26);
+            CbLocNCC.TabIndex = 38;
+            CbLocNCC.SelectedIndexChanged += CbLocNCC_SelectedIndexChanged;
             // 
             // bigLabel1
             // 
@@ -606,5 +621,6 @@
         private ReaLTaiizor.Controls.AloneComboBox CbNgNhap;
         private Label label2;
         private Label lblNgTao;
+        private ReaLTaiizor.Controls.AloneComboBox CbLocNCC;
     }
 }

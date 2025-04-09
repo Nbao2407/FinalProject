@@ -12,7 +12,6 @@ namespace DTO
         public DateTime NgayNhap { get; set; }
         public string TenNhaCungCap { get; set; }
         public string TrangThai { get; set; }
-        public string GhiChu { get; set; }
         public DTO_DonNhapSearchResult(int maDonNhap, string tenNhaCungCap, DateTime ngayNhap, string trangThai)
         {
             MaDonNhap = maDonNhap;

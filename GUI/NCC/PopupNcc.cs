@@ -46,16 +46,21 @@ namespace QLVT
 
         public void LoadDataToControls(DTO_Ncap Ncc)
         {
-            if (Ncc != null)
+            // Check if Ncc is null
+            if (Ncc == null)
             {
-                ID.Text = Ncc.MaNCC.ToString();
-                lblName.Text = Ncc.TenNCC;
-                Ngay.Text = Ncc.NgayTao.ToString("dd/MM/yyyy");
-                lblNgTao.Text = DAL_NCcap.GetCreatorNameById(Ncc.NguoiTao);
-                TbPhone.Text = Ncc.SDT;
-                TbEmail.Text = Ncc.Email.ToString();
-                TbAddress.Text = Ncc.DiaChi.ToString();
+                MessageBox.Show("No supplier data provided.");
+                return;
             }
+
+            // Assuming these are UI controls (e.g., TextBox)
+            ID.Text = Ncc.MaNCC.ToString(); // int, so no null issue
+            lblName.Text = Ncc.TenNCC ?? string.Empty; // Handle null with empty string
+            TbAddress.Text = Ncc.DiaChi ?? string.Empty; // Handle null with empty string
+            TbPhone.Text = Ncc.SDT ?? string.Empty;       // Handle null with empty string
+            TbEmail.Text = Ncc.Email ?? string.Empty;   // Handle null with empty string
+            Ngay.Text = Ncc.NgayTao.ToString("dd/MM/yyyy");
+            lblNgTao.Text = Ncc.NguoiTao.ToString();  // int, no null issue
         }
 
 

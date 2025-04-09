@@ -10,6 +10,56 @@ namespace DAL
     {
         private static readonly DAL_NCcap dal = new DAL_NCcap();
         private SqlConnection conn = DBConnect.GetConnection();
+        private DTO_Ncap MapReaderToNcc(SqlDataReader reader)
+        { 
+            return new DTO_Ncap
+            {
+                MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC")),
+                TenNCC = reader.GetString(reader.GetOrdinal("TenNCC")),
+                DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString(reader.GetOrdinal("DiaChi")),
+                SDT = reader.IsDBNull(reader.GetOrdinal("SDT")) ? null : reader.GetString(reader.GetOrdinal("SDT")),
+                Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
+                NguoiTao =reader.GetInt32(reader.GetOrdinal("NguoiTao"))
+            };
+        }
+        public DTO_Ncap LayThongTinNCC(int maNCC) 
+        {
+            DTO_Ncap ncc = null; 
+            string query = @"
+                SELECT MaNCC, TenNCC, DiaChi, SDT, Email, NguoiTao, NgayTao, TrangThai
+                FROM NCC
+                WHERE MaNCC = @MaNCC";
+
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection()) // Hoặc this.conn nếu dùng kế thừa
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaNCC", maNCC);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read()) // Chỉ mong đợi một kết quả
+                            {
+                                ncc = MapReaderToNcc(reader);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in DAL.LayThongTinNCC for ID {maNCC}: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error in DAL.LayThongTinNCC for ID {maNCC}: {ex.Message}");
+            }
+            return ncc; 
+        }
+
         public List<DTO_Ncap> TimKiemNcc(string keyword)
         {
             List<DTO_Ncap> DanhsachNcc = new List<DTO_Ncap>();
@@ -63,9 +113,9 @@ namespace DAL
                                 {
                                     MaNCC = reader.GetInt32(0),
                                     TenNCC = reader.GetString(1),
-                                    DiaChi = reader.GetString(2),
-                                    SDT = reader.GetString(3),
-                                    Email = reader.GetString(4),
+                                    DiaChi = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                    SDT = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                    Email = reader.IsDBNull(4) ? null : reader.GetString(4),
                                     NgayTao = reader.GetDateTime(5),
                                     NguoiTao = reader.GetInt32(6),
                                 });
@@ -221,7 +271,6 @@ namespace DAL
                 await conn.OpenAsync();
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    // Thêm tham số, xử lý NULL đúng cách
                     cmd.Parameters.AddWithValue("@TenNCC", ncc.TenNCC);
                     cmd.Parameters.AddWithValue("@DiaChi", (object)ncc.DiaChi ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@SDT", (object)ncc.SDT ?? DBNull.Value); // Truyền DBNull.Value nếu Sdt là null
@@ -262,9 +311,8 @@ namespace DAL
         public DTO_Ncap TimNccTheoTen(string tenNcc)
         {
             DTO_Ncap ncc = null;
-            string query = "SELECT MaNCC, TenNCC, DiaChi, Sdt, TrangThai FROM tbl_NhaCungCap WHERE TenNCC = @TenNCC";
 
-            // string query = "SELECT MaNCC, TenNCC, DiaChi, Sdt, TrangThai FROM tbl_NhaCungCap WHERE TenNCC COLLATE Latin1_General_CI_AS = @TenNCC COLLATE Latin1_General_CI_AS";
+            string query = "SELECT MaNCC, TenNCC, DiaChi, SDT, TrangThai FROM NCC WHERE TenNCC COLLATE Latin1_General_CI_AS = @TenNCC COLLATE Latin1_General_CI_AS";
 
             SqlDataReader reader = null;
             try
@@ -276,12 +324,10 @@ namespace DAL
 
                     reader = cmd.ExecuteReader();
 
-                    // Use 'if' because we expect at most one result for an exact name match
                     if (reader.Read())
                     {
                         ncc = new DTO_Ncap
                         {
-                            // Use GetOrdinal for robustness against column order changes
                             MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC")),
                             TenNCC = reader.GetString(reader.GetOrdinal("TenNCC")),
                             // Check for DBNull before reading nullable columns

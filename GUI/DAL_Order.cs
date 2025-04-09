@@ -1,4 +1,4 @@
-using DTO;
+﻿using DTO;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
@@ -45,7 +45,6 @@ namespace DAL
                     command.Parameters.AddWithValue("@GhiChu", (object)ghiChu ?? DBNull.Value);
                     command.Parameters.AddWithValue("@ChiTietNhap", chiTietNhap);
                     command.Parameters.AddWithValue("@NguoiCapNhat", nguoiCapNhat);
-
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())
@@ -56,7 +55,7 @@ namespace DAL
                         }
                     }
 
-                    return (false, "Kh�ng nh?n ???c ph?n h?i t? c? s? d? li?u.", 0);
+                    return (false, "Không nh?n ???c ph?n h?i t? c? s? d? li?u.", 0);
                 }
             }
         }
@@ -143,6 +142,35 @@ namespace DAL
                 }
             }
             return results;
+        }
+        public List<DTO_Order> SearchOrder(string keyword)
+        {
+            List<DTO_Order> danhSachL = new List<DTO_Order>();
+
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_TimKiemQLDonNhap", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Keyword", keyword);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            danhSachL.Add(new DTO_Order
+                            {
+                                MaDonNhap = reader.GetInt32(0),
+                                TenNCC = reader.GetString(1),
+                                NgayNhap = reader.GetDateTime(2),
+                                TrangThai = reader.GetString(3)
+                            });
+                        }
+                    }
+                }
+            }
+            return danhSachL;
         }
     }
 }

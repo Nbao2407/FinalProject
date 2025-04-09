@@ -13,20 +13,44 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+
+                // Dispose the timer
+                if (debounceTimer != null)
+                {
+                    debounceTimer.Tick -= DebounceTimer_Tick;
+                    debounceTimer.Dispose();
+                    debounceTimer = null;
+                }
+
+                // Dispose the BindingSource
+                if (orderBindingSource != null)
+                {
+                    orderBindingSource.Dispose();
+                    orderBindingSource = null;
+                }
+
+                // Dispose the DataTable if needed (usually managed by GC unless holding external resources)
+                if (initialOrderData != null)
+                {
+                    initialOrderData.Dispose();
+                    initialOrderData = null;
+                }
             }
             base.Dispose(disposing);
         }
+#region Windows Form Designer generated code
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
+/// <summary>
+/// Required method for Designer support - do not modify
+/// the contents of this method with the code editor.
+/// </summary>
+private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
@@ -121,7 +145,7 @@
             dataGridView1.EnableHeadersVisualStyles = false;
             dataGridView1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
             dataGridView1.GridColor = Color.FromArgb(255, 255, 255);
-            dataGridView1.Location = new Point(3, 70);
+            dataGridView1.Location = new Point(3, 90);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
@@ -155,7 +179,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1106, 561);
+            ClientSize = new Size(1106, 600);
             Controls.Add(cboTrangThai);
             Controls.Add(button2);
             Controls.Add(result);

@@ -35,6 +35,7 @@ CREATE TABLE NCC (
     NgayTao DATETIME DEFAULT GETDATE(),
     TrangThai NVARCHAR(20) CHECK (TrangThai IN (N'Hoạt động', N'Bị khóa')) DEFAULT N'Hoạt động'
 );
+Select * from NCC
 
 -- 4. Bảng Quản lý khách hàng (Lưu trữ thông tin khách hàng)
 CREATE TABLE QLKH (
@@ -189,12 +190,20 @@ WHERE kh.TenNguoiTao IS NULL;
 DELETE FROM ChiTietHoaDon
 WHERE MaHoaDon IN (
     SELECT MaHoaDon FROM QLHoaDon
-    WHERE NgayLap = '2025-04-03'
+    WHERE NgayLap = '2025-04-07'
 );
 
 DELETE FROM QLHoaDon
-WHERE NgayLap = '2025-04-03';
+WHERE NgayLap = '2025-04-07';
 
+DELETE FROM ChiTietDonNhap
+WHERE MaCTDN IN (
+    SELECT MaCTDN FROM QLDonNhap
+    WHERE NgayNhap = '2025-04-07'
+);
+
+DELETE FROM QLDonNhap
+WHERE NgayNhap = '2025-04-07';
 
 SELECT maTK, tenDangNhap, email, sdt, ChucVu, trangThai, ngayTao , GHICHU ,DiaChi FROM QLTK WHERE maTk = 1
 Select * from QLTK
@@ -213,3 +222,5 @@ FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS
 WHERE CONSTRAINT_NAME = 'CK_QLTK_TrangThai_39508EEE';
 
 SELect MaNCC,TenNCC from NCC Where TrangThai =N'Hoạt động'
+
+SELECT MaNCC, TenNCC, DiaChi, SDT, Email, NgayTao, NguoiTao FROM NCC

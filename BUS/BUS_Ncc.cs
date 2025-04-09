@@ -48,12 +48,29 @@ namespace BUS
                 return new List<DTO_Ncap>(); 
             }
         }
+        public DTO_Ncap LayThongTinNCC(int maNCC) 
+        {
+            if (maNCC <= 0)
+            {
+                return null; // Mã không hợp lệ
+            }
+            try
+            {
+                return DAL_Nccap.LayThongTinNCC(maNCC); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi trong BUS_Ncc.LayThongTinNCC cho mã {maNCC}: {ex.Message}");
+                // Xử lý lỗi
+                return null;
+            }
+        }
         public async Task<int?> TimHoacThemNccAsync(string tenNCC)
         {
             if (string.IsNullOrWhiteSpace(tenNCC))
             {
                 Console.WriteLine("BUS Error: Tên nhà cung cấp không được để trống.");
-                return null; // Hoặc throw tùy theo ngữ cảnh gọi
+                return null; 
             }
 
             string trimmedTenNcc = tenNCC.Trim();

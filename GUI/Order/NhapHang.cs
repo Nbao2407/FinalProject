@@ -8,6 +8,8 @@ using System.Collections.Generic; // Cho List
 using System.Linq; // Cho LINQ (FirstOrDefault, Any)
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Text;
+using Microsoft.VisualBasic;
 
 namespace QLVT
 {
@@ -18,9 +20,9 @@ namespace QLVT
         private readonly BUS_TK busTk = new BUS_TK();
         private readonly BUS_Ncc busNcc = new BUS_Ncc();
         private readonly DAL_Order dalOrder = new DAL_Order();
-
-        private Form1 form1; // Assuming Form1 is the main form or parent
-
+        private List<VatLieuExcelDayDu> _loadedExcelData = null;
+        private bool _isImportMode = false;
+        private Form1 form1;
         private System.Windows.Forms.Timer debounceTimer;
         private readonly Color defaultLabelColor = Color.White;
         private readonly Color hoverLabelColor = Color.FromArgb(230, 240, 255);
@@ -54,7 +56,15 @@ namespace QLVT
             dgvChiTiet.AutoGenerateColumns = false;
             dgvChiTiet.Columns.Clear(); // Ensure it's clean before adding
 
-            // Define Columns
+            dgvChiTiet.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "TenNCC",
+                HeaderText = "Nhà Cung Cấp",
+                ReadOnly = true, 
+                Frozen = true,   
+                Width = 180    
+            });
+
             dgvChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "MaVatLieu", HeaderText = "Mã", ReadOnly = true, ValueType = typeof(int) });
             dgvChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenVatLieu", HeaderText = "Tên", ReadOnly = true, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
             dgvChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "DonViTinh", HeaderText = "Đơn Vị", ReadOnly = true });
@@ -66,16 +76,18 @@ namespace QLVT
             dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Giam", HeaderText = "Giảm", Text = "-", UseColumnTextForButtonValue = true, Width = 80, FlatStyle = FlatStyle.System });
             dgvChiTiet.Columns.Add(new DataGridViewButtonColumn { Name = "Xoa", HeaderText = "Xoá", Text = "X", UseColumnTextForButtonValue = true, Width = 80, FlatStyle = FlatStyle.System });
 
-            // Event Handlers for DGV
             dgvChiTiet.CellClick += DgvChiTiet_CellClick;
             dgvChiTiet.CellEndEdit += DgvChiTiet_CellEndEdit;
-            dgvChiTiet.RowsAdded += (s, e) => panelImportExcel.Visible = (dgvChiTiet.RowCount == 0);
-            dgvChiTiet.RowsRemoved += (s, e) => panelImportExcel.Visible = (dgvChiTiet.RowCount == 0);
-
-            // Apply initial column sizing
+            dgvChiTiet.RowsAdded += (s, e) => UpdatePanelVisibility();
+            dgvChiTiet.RowsRemoved += (s, e) => UpdatePanelVisibility();
             ResizeColumns();
         }
 
+        private void UpdatePanelVisibility()
+        {
+            panelImportExcel.Visible = !_isImportMode && !dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow);
+            CenterPanelInDataGridView();
+        }
         private void ConfigureDgvChiTietStyles()
         {
             dgvChiTiet.BorderStyle = BorderStyle.None;
@@ -256,109 +268,191 @@ namespace QLVT
 
         private async void btnNhapHang_Click(object sender, EventArgs e)
         {
-            if (CbNcc.SelectedValue == null || !(CbNcc.SelectedValue is int))
+            if (_isImportMode)
             {
-                MessageBox.Show("Vui lòng chọn hoặc nhập Nhà cung cấp hợp lệ (từ Excel hoặc chọn).", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                CbNcc.Focus();
-                return;
-            }
+                this.Cursor = Cursors.WaitCursor;
+                btnNhapHang.Enabled = false; // Vô hiệu hóa nút trong khi xử lý
 
-            int maTK;
-            if (CbNgNhap.SelectedValue == null || !int.TryParse(CbNgNhap.SelectedValue.ToString(), out maTK))
-            {
-                MessageBox.Show("Vui lòng chọn Người nhập hợp lệ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                CbNgNhap.Focus();
-                return;
-            }
+                var groupedDataFromGrid = new Dictionary<string, List<DTO_Order>>(); // Key là TenNCC
+                var newNccPotentialInfo = new Dictionary<string, VatLieuExcelDayDu>(); // Lưu chi tiết NCC mới tiềm năng
+                var rowsWithErrorAfterEdit = new List<string>(); // Lỗi phát hiện khi đọc lại DGV
 
-            int maNCC = (int)CbNcc.SelectedValue;
-
-            if (dgvChiTiet.Rows.Count == 0 || dgvChiTiet.Rows.Cast<DataGridViewRow>().All(r => r.IsNewRow)) // More robust check for empty DGV
-            {
-                MessageBox.Show("Vui lòng thêm ít nhất một vật liệu vào đơn nhập.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSearch.Focus();
-                return;
-            }
-
-            try
-            {
-                System.DateOnly ngayNhap = DateOnly.FromDateTime(dtpNgayNhap.Value);
-                string ghiChu = Tbnote.Text.Trim();
-
-                var chiTietNhap = new List<DTO_Order>();
-                bool dataValid = true;
+                // --- 1. Đọc và nhóm dữ liệu từ DGV ---
                 foreach (DataGridViewRow row in dgvChiTiet.Rows)
                 {
                     if (row.IsNewRow) continue;
 
-                    int maVL = 0;
-                    int soLuong = 0;
-                    decimal giaNhap = 0m;
+                    string tenNCC = row.Cells["TenNCC"].Value?.ToString();
+                    if (string.IsNullOrEmpty(tenNCC))
+                    {
+                        rowsWithErrorAfterEdit.Add($"Dòng {row.Index + 1}: Thiếu tên Nhà cung cấp sau khi sửa đổi.");
+                        continue;
+                    }
 
-                    bool isMaVLValid = row.Cells["MaVatLieu"].Value != null && int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out maVL);
-                    bool isSoLuongValid = row.Cells["SoLuong"].Value != null && int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out soLuong) && soLuong > 0;
-                    bool isGiaNhapValid = row.Cells["GiaNhap"].Value != null && decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out giaNhap) && giaNhap >= 0;
+                    bool isMaVLValid = int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out int maVL) && maVL > 0; // Cần Mã VL hợp lệ
+                    bool isSoLuongValid = int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out int soLuong) && soLuong > 0;
+                    bool isGiaNhapValid = decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out decimal giaNhap) && giaNhap >= 0;
 
                     if (!isMaVLValid || !isSoLuongValid || !isGiaNhapValid)
                     {
-                        MessageBox.Show($"Dữ liệu không hợp lệ tại dòng {row.Index + 1}. Vui lòng kiểm tra lại Mã vật liệu, Số lượng (> 0) và Giá nhập (>= 0).",
-                                        "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        dgvChiTiet.ClearSelection();
-                        row.Selected = true;
-                        dgvChiTiet.CurrentCell = row.Cells[isMaVLValid ? (isSoLuongValid ? "GiaNhap" : "SoLuong") : "MaVatLieu"];
-                        dgvChiTiet.BeginEdit(true);
-                        dataValid = false;
-                        break;
+                        rowsWithErrorAfterEdit.Add($"Dòng {row.Index + 1} (NCC: {tenNCC}): Dữ liệu Mã VL/SL/Giá không hợp lệ sau khi sửa đổi.");
+                        continue; // Bỏ qua dòng lỗi vật liệu
                     }
 
-                    chiTietNhap.Add(new DTO_Order
+                    DTO_Order chiTiet = new DTO_Order
                     {
                         MaVatLieu = maVL,
                         SoLuong = soLuong,
-                        GiaNhap = (int)giaNhap
-                    });
-                }
+                        GiaNhap = (int)giaNhap // Hoặc decimal
+                    };
 
-                if (!dataValid)
+                    if (!groupedDataFromGrid.ContainsKey(tenNCC))
+                    {
+                        groupedDataFromGrid[tenNCC] = new List<DTO_Order>();
+                    }
+                    groupedDataFromGrid[tenNCC].Add(chiTiet);
+
+                    if (!newNccPotentialInfo.ContainsKey(tenNCC))
+                    {
+                        var originalData = _loadedExcelData?.FirstOrDefault(d => d.TenNCC == tenNCC);
+                        if (originalData != null)
+                        {
+                            newNccPotentialInfo[tenNCC] = originalData; // Lưu lại để lấy SĐT, Email... sau
+                        }
+                    }
+                } // End foreach DGV rows
+
+                if (rowsWithErrorAfterEdit.Any())
                 {
+                    MessageBox.Show("Có lỗi dữ liệu trên lưới sau khi sửa đổi:\n- " + string.Join("\n- ", rowsWithErrorAfterEdit), "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.Cursor = Cursors.Default;
+                    btnNhapHang.Enabled = true;
                     return;
                 }
-
-                if (!chiTietNhap.Any())
+                if (!groupedDataFromGrid.Any())
                 {
-                    MessageBox.Show("Không có chi tiết vật liệu hợp lệ nào để nhập.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    MessageBox.Show("Không có dữ liệu hợp lệ nào trên lưới để tạo phiếu.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Cursor = Cursors.Default;
+                    btnNhapHang.Enabled = true;
+                    ResetToManualMode(); 
                 }
 
+
+                var ordersForExistingNcc = new Dictionary<int, List<DTO_Order>>();
+                var ordersForNewNcc = new Dictionary<string, List<DTO_Order>>();
+                var createdNccMapping = new Dictionary<string, int>();
+                var nccCreationErrors = new List<string>();
+
+                foreach (var kvp in groupedDataFromGrid)
+                {
+                    string tenNCC = kvp.Key;
+                    List<DTO_Order> details = kvp.Value;
+                    DAL_NCcap da = new DAL_NCcap();
+                    DTO_Ncap existingNcc = da.TimNccTheoTen(tenNCC); // Tìm trong DB
+
+                    if (existingNcc != null)
+                    {
+                        ordersForExistingNcc[existingNcc.MaNCC] = details; // Thêm vào nhóm NCC đã có
+                    }
+                    else
+                    {
+                        ordersForNewNcc[tenNCC] = details; // Thêm vào nhóm NCC mới cần tạo
+
+                        if (!createdNccMapping.ContainsKey(tenNCC) && !nccCreationErrors.Contains(tenNCC)) // Chỉ tạo 1 lần
+                        {
+                            VatLieuExcelDayDu nccDetails = null;
+                            newNccPotentialInfo.TryGetValue(tenNCC, out nccDetails); // Lấy SĐT, Email... đã lưu
+
+                            try
+                            {
+                                int newId = await da.ThemNccAsync(new DTO_Ncap
+                                {
+                                    TenNCC = tenNCC,
+                                    SDT = nccDetails?.SdtNcc, 
+                                    DiaChi = nccDetails?.DiaChiNcc,
+                                    Email = nccDetails?.EmailNcc,
+                                    NguoiTao = CurrentUser.MaTK
+                                });
+
+                                if (newId > 0)
+                                {
+                                    createdNccMapping[tenNCC] = newId;
+                                }
+                                else
+                                {
+                                    nccCreationErrors.Add(tenNCC); 
+                                }
+                            }
+                            catch (Exception exCreateNcc)
+                            {
+                                Console.WriteLine($"Lỗi khi tạo NCC '{tenNCC}': {exCreateNcc}");
+                                nccCreationErrors.Add(tenNCC);
+                            }
+                        }
+                    }
+                }
+
+                int successCount = 0;
+                int pendingCount = 0;
+                int failCount = 0;
+                var results = new List<string>();
+
+                if (!int.TryParse(CbNgNhap.SelectedValue?.ToString(), out int maTK)) { return; }
+                System.DateOnly ngayNhap = DateOnly.FromDateTime(dtpNgayNhap.Value);
+                string ghiChu = Tbnote.Text.Trim();
                 int maNguoiThucHien = CurrentUser.MaTK;
 
-                var result = await busOrder.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietNhap, maNguoiThucHien);
-
-                if (result.Success)
+                foreach (var kvp in ordersForExistingNcc)
                 {
-                    MessageBox.Show($"Nhập hàng thành công! Mã đơn nhập: {result.MaDonNhap}\nTổng tiền: {lblTongTien.Text}\nSố lượng: {lblSl.Text}",
-                                    "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    int maNCC = kvp.Key;
+                    List<DTO_Order> chiTiet = kvp.Value;
+                    string tenNCCDisplay = busNcc.LayThongTinNCC(maNCC)?.TenNCC ?? $"NCC {maNCC}";
+                    try
+                    {
+                        string chiTietJson = Newtonsoft.Json.JsonConvert.SerializeObject(chiTiet);
+                        var result = await dalOrder.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietJson, maNguoiThucHien);
+                        if (result.Success) { successCount++; results.Add($" - {tenNCCDisplay}: Thành công (Mã ĐN: {result.MaDonNhap})"); }
+                        else { failCount++; results.Add($" - {tenNCCDisplay}: Thất bại ({result.Message})"); }
+                    }
+                    catch (Exception ex) { failCount++; results.Add($" - {tenNCCDisplay}: Lỗi hệ thống ({ex.Message})"); }
+                }
 
-                    ClearForm();
-                }
-                else
+                foreach (var kvp in ordersForNewNcc)
                 {
-                    MessageBox.Show($"Nhập hàng thất bại: {result.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string tenNCC = kvp.Key;
+                    List<DTO_Order> chiTiet = kvp.Value;
+
+                    if (createdNccMapping.TryGetValue(tenNCC, out int newMaNCC))
+                    {
+                        try
+                        {
+                            var result = await busOrder.NhapHangAsync(ngayNhap, newMaNCC, maTK, ghiChu, chiTiet, maNguoiThucHien);
+                            if (result.Success) { pendingCount++; results.Add($" - {tenNCC} (Mới): Thành công - Chờ xử lý (Mã ĐN: {result.MaDonNhap})"); }
+                            else { failCount++; results.Add($" - {tenNCC} (Mới): Thất bại tạo đơn ({result.Message})"); }
+                        }
+                        catch (Exception ex) { failCount++; results.Add($" - {tenNCC} (Mới): Lỗi hệ thống khi tạo đơn ({ex.Message})"); }
+                    }
+                    else // NCC này tạo bị lỗi
+                    {
+                        failCount++; // Coi như đơn hàng thất bại
+                        results.Add($" - {tenNCC} (Mới): Thất bại (Không tạo được NCC)");
+                    }
                 }
-            }
-            catch (FormatException fEx)
-            {
-                MessageBox.Show($"Lỗi định dạng dữ liệu: {fEx.Message}. Vui lòng kiểm tra lại các giá trị nhập.", "Lỗi Định Dạng", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi không xác định khi nhập hàng trong btnNhapHang_Click: {ex.ToString()}");
-                MessageBox.Show($"Đã xảy ra lỗi không mong muốn trong quá trình xử lý: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
+
+                string finalMessage = $"Kết quả Tạo Phiếu:\nThành công: {successCount} đơn.\nThất bại: {failCount} đơn.\n\nChi tiết:\n" + string.Join("\n", results);
+                MessageBoxIcon icon = (failCount > 0 || nccCreationErrors.Any()) ? MessageBoxIcon.Warning : MessageBoxIcon.Information;
+                MessageBox.Show(finalMessage, "Tạo Phiếu thành công", MessageBoxButtons.OK, icon);
+
+                ResetToManualMode(); 
+
                 this.Cursor = Cursors.Default;
-                btnNhapHang.Enabled = true;
+            }
+            else
+            {
+                // Dán code gốc của btnNhapHang_Click vào đây
+                // ...
+                // Ví dụ gọi lại hàm cũ nếu bạn tách ra:
+                // await XuLyNhapHangThuCongAsync();
             }
         }
 
@@ -410,15 +504,12 @@ namespace QLVT
                         ForeColor = Color.FromArgb(33, 37, 41), // Dark text color
                         BackColor = defaultLabelColor, // Use defined default color
                         Cursor = Cursors.Hand,
-                        // Optional: Add a thin border between items
                         BorderStyle = BorderStyle.FixedSingle
                     };
 
-                    // Hover effects
                     lbl.MouseEnter += (s, e) => { lbl.BackColor = hoverLabelColor; lbl.ForeColor = Color.FromArgb(0, 102, 204); }; // Use defined hover color
                     lbl.MouseLeave += (s, e) => { lbl.BackColor = defaultLabelColor; lbl.ForeColor = Color.FromArgb(33, 37, 41); };
 
-                    // Click event to add item to DGV
                     lbl.Click += (s, e) =>
                     {
                         if (lbl.Tag is DTO_VatLieu selectedItem)
@@ -609,10 +700,8 @@ namespace QLVT
                 int panelX = dgvCenterX - panelImportExcel.Width / 2;
                 int panelY = dgvCenterY - panelImportExcel.Height / 2;
 
-                // Prevent panel from going outside DGV bounds (optional, depends on desired look)
                 panelX = Math.Max(dgvChiTiet.Left, panelX);
                 panelY = Math.Max(dgvChiTiet.Top, panelY);
-                // Ensure it doesn't go past the right/bottom edge either
                 if (panelX + panelImportExcel.Width > dgvChiTiet.Right)
                     panelX = dgvChiTiet.Right - panelImportExcel.Width;
                 if (panelY + panelImportExcel.Height > dgvChiTiet.Bottom)
@@ -646,48 +735,13 @@ namespace QLVT
             CbNcc.Focus();
         }
 
-        private async void hopeRoundButton2_Click(object sender, EventArgs e) // Make async void
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Excel Files|*.xlsx;*.xls";
-                openFileDialog.Title = "Chọn file Excel để nhập hàng";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string filePath = openFileDialog.FileName;
-                    // Show wait cursor
-                    this.Cursor = Cursors.WaitCursor;
-                    hopeRoundButton2.Enabled = false; // Disable button during import
-                    try
-                    {
-                        // Call the async import method
-                        await ImportExcelDataAsync(filePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Catch any unexpected errors from the async method itself
-                        MessageBox.Show($"Lỗi không mong muốn trong quá trình import: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Console.WriteLine($"Lỗi Import Excel chi tiết: {ex.ToString()}");
-                    }
-                    finally
-                    {
-                        // Restore cursor and button
-                        this.Cursor = Cursors.Default;
-                        hopeRoundButton2.Enabled = true;
-                    }
-                }
-            }
-        }
 
-        private async Task ImportExcelDataAsync(string filePath) // Change to async Task
+        private async Task LoadExcelToGridAndFilterAsync(string filePath)
         {
-            var importedItems = new List<DTO_VatLieuImport>();
-            var errorRows = new List<string>();
-            int? determinedMaNCC = null;
-            string determinedTenNCC = null;
-            bool nccDeterminedByFile = false;
+            _loadedExcelData = new List<VatLieuExcelDayDu>(); // Khởi tạo list mới
+            var errorMessages = new List<string>(); // Lưu lỗi chung khi đọc
+            bool hasValidData = false; // Cờ kiểm tra có dữ liệu hợp lệ không
 
             try
             {
@@ -698,18 +752,25 @@ namespace QLVT
                     if (worksheet == null)
                     {
                         MessageBox.Show("File Excel không hợp lệ hoặc không có sheet nào.", "Lỗi Đọc File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return; // Return Task directly
+                        return; // Thoát sớm
                     }
 
-                    int rowCount = worksheet.Dimension.Rows;
-                    int colCount = worksheet.Dimension.Columns;
+                    int rowCount = worksheet.Dimension?.Rows ?? 0;
+                    int colCount = worksheet.Dimension?.Columns ?? 0;
+
+                    if (rowCount <= 1)
+                    {
+                        MessageBox.Show("File Excel không có dữ liệu.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return; // Thoát sớm
+                    }
 
                     for (int row = 2; row <= rowCount; row++)
                     {
                         bool rowHasData = false;
-                        for (int c = 1; c <= Math.Min(5, colCount); c++)
+                        for (int col = 1; col <= 6; col++) 
                         {
-                            if (worksheet.Cells[row, c].Value != null && !string.IsNullOrWhiteSpace(worksheet.Cells[row, c].Value.ToString()))
+                            if (worksheet.Cells[row, col]?.Value != null &&
+                                !string.IsNullOrWhiteSpace(worksheet.Cells[row, col].Value.ToString()))
                             {
                                 rowHasData = true;
                                 break;
@@ -717,233 +778,240 @@ namespace QLVT
                         }
                         if (!rowHasData) continue;
 
-                        string tenNccFromCell = null;
-                        if (colCount >= 6)
+                        var dataRow = new VatLieuExcelDayDu { RowNum = row };
+                        string rowError = null; // Lỗi của riêng dòng này
+
+                        try // Bắt lỗi trên từng dòng đọc
                         {
-                            tenNccFromCell = worksheet.Cells[row, 6].Value?.ToString().Trim();
-                        }
+                            dataRow.MaVatLieuStr = worksheet.Cells[row, 1]?.Value?.ToString().Trim() ?? "";
+                            dataRow.TenVatLieu = worksheet.Cells[row, 2]?.Value?.ToString().Trim() ?? "";
+                            dataRow.DonViTinh = worksheet.Cells[row, 3]?.Value?.ToString().Trim() ?? "";
+                            dataRow.SoLuongStr = worksheet.Cells[row, 4]?.Value?.ToString().Trim() ?? "";
+                            dataRow.GiaNhapStr = worksheet.Cells[row, 5]?.Value?.ToString().Trim() ?? "";
+                            dataRow.TenNCC = worksheet.Cells[row, 6]?.Value?.ToString().Trim(); // Lấy cả tên NCC có thể null/empty
 
-                        if(!string.IsNullOrEmpty(tenNccFromCell) && !nccDeterminedByFile)
-                   {
-                            determinedTenNCC = tenNccFromCell;
-                            Console.WriteLine($"Tìm thấy NCC trong Excel (dòng {row}): {determinedTenNCC}");
+                            if (colCount >= 7) dataRow.SdtNcc = worksheet.Cells[row, 7]?.Value?.ToString().Trim();
+                            if (colCount >= 8) dataRow.DiaChiNcc = worksheet.Cells[row, 8]?.Value?.ToString().Trim();
+                            if (colCount >= 9) dataRow.EmailNcc = worksheet.Cells[row, 9]?.Value?.ToString().Trim();
 
-                            determinedMaNCC = await busNcc.TimHoacThemNccAsync(determinedTenNCC);
-
-                            if (determinedMaNCC.HasValue && determinedMaNCC.Value > 0) // Tìm/Tạo thành công!
+                            if (string.IsNullOrEmpty(dataRow.TenNCC)) 
                             {
-                                int validMaNCC = determinedMaNCC.Value;
-
-                                Console.WriteLine($"Đã xác định/tạo NCC: {determinedTenNCC} (ID: {validMaNCC})");
-                                nccDeterminedByFile = true;
-
-                                LoadNccComboBoxDataSource(validMaNCC);
-
-                                if (CbNcc.SelectedValue == null || !CbNcc.SelectedValue.Equals(validMaNCC))
-                                {
-                                    Console.WriteLine($"*** Cảnh báo: Không thể tự động chọn NCC mới (ID: {validMaNCC}) trong ComboBox sau khi tải lại. Kiểm tra hàm LoadNccComboBoxDataSource.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Đã chọn thành công NCC ID: {CbNcc.SelectedValue} trong ComboBox.");
-                                }
-                                break;
+                                rowError = "Thiếu tên NCC";
                             }
-                            else 
+                            else if ((string.IsNullOrEmpty(dataRow.MaVatLieuStr) && string.IsNullOrEmpty(dataRow.TenVatLieu)))
                             {
-                                errorRows.Add($"Dòng {row}: Không thể tìm hoặc tạo NCC '{determinedTenNCC}'. Dữ liệu từ file này sẽ không được nhập.");
-                                MessageBox.Show(errorRows.LastOrDefault() ?? "Lỗi không xác định khi tìm/tạo NCC", "Lỗi Nhà Cung Cấp", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return; // Thoát khỏi ImportExcelDataAsync vì không có NCC hợp lệ
+                                rowError = "Thiếu Mã/Tên VL";
                             }
-                        }
-                    }
-
-                    if (!nccDeterminedByFile)
-                    {
-                        if (CbNcc.SelectedValue != null && CbNcc.SelectedValue is int selectedMaNcc)
-                        {
-                            determinedMaNCC = selectedMaNcc;
-                            determinedTenNCC = CbNcc.Text;
-                            Console.WriteLine($"Sử dụng NCC đã chọn: {determinedTenNCC} (ID: {determinedMaNCC})");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Vui lòng chọn Nhà cung cấp trước khi import hoặc đảm bảo file Excel có cột 'TenNhaCungCap' (cột 6).", "Thiếu Nhà Cung Cấp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                    }
-
-                    for (int row = 2; row <= rowCount; row++)
-                    {
-                        try
-                        {
-                            string maVatLieuStr = worksheet.Cells[row, 1].Value?.ToString().Trim() ?? "";
-                            string tenVatLieu = worksheet.Cells[row, 2].Value?.ToString().Trim() ?? "";
-                            string donViTinh = worksheet.Cells[row, 3].Value?.ToString().Trim() ?? "";
-                            string soLuongStr = worksheet.Cells[row, 4].Value?.ToString().Trim() ?? "";
-                            string giaNhapStr = worksheet.Cells[row, 5].Value?.ToString().Trim() ?? "";
-
-                            if ((string.IsNullOrEmpty(maVatLieuStr) && string.IsNullOrEmpty(tenVatLieu)) || string.IsNullOrEmpty(soLuongStr) || string.IsNullOrEmpty(giaNhapStr))
+                            else if (string.IsNullOrEmpty(dataRow.SoLuongStr) || !int.TryParse(dataRow.SoLuongStr, out int sl) || sl <= 0)
                             {
-                                if (!string.IsNullOrEmpty(maVatLieuStr) || !string.IsNullOrEmpty(tenVatLieu) || !string.IsNullOrEmpty(donViTinh) || !string.IsNullOrEmpty(soLuongStr) || !string.IsNullOrEmpty(giaNhapStr))
-                                {
-                                    errorRows.Add($"Dòng {row}: Thiếu thông tin Mã/Tên VL hoặc Số lượng hoặc Giá nhập.");
-                                }
-                                continue; // Skip blank or incomplete rows
+                                rowError = $"Số lượng '{dataRow.SoLuongStr}' không hợp lệ";
                             }
-
-                            int maVatLieu = 0; // Default
-                            int soLuong;
-                            decimal giaNhap;
-                            DTO_VatLieu vatLieuInfo = null;
-
-                            bool hasMaVL = int.TryParse(maVatLieuStr, out maVatLieu);
-                            if (hasMaVL && maVatLieu > 0)
+                            else if (string.IsNullOrEmpty(dataRow.GiaNhapStr) || !decimal.TryParse(dataRow.GiaNhapStr, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal gn) || gn < 0)
                             {
-                                vatLieuInfo = await busVatLieu.LayThongTinVatLieuAsync(maVatLieu);
-                                if (vatLieuInfo == null)
-                                {
-                                    errorRows.Add($"Dòng {row}: Không tìm thấy vật liệu với Mã '{maVatLieu}'.");
-                                    continue;
-                                }
-                                tenVatLieu = string.IsNullOrEmpty(tenVatLieu) ? vatLieuInfo.Ten : tenVatLieu; // Use name from excel if provided
-                                donViTinh = string.IsNullOrEmpty(donViTinh) ? vatLieuInfo.DonViTinh : donViTinh; // Use DVT from excel if provided
-                            }
-                            else if (!string.IsNullOrEmpty(tenVatLieu))
-                            {
-                                vatLieuInfo = busVatLieu.TimVatLieuTheoTenChinhXac(tenVatLieu); // Requires async method in BUS
-                                if (vatLieuInfo == null)
-                                {
-                                    errorRows.Add($"Dòng {row}: Không tìm thấy vật liệu với Tên '{tenVatLieu}'.");
-                                    continue;
-                                }
-                                maVatLieu = vatLieuInfo.MaVatLieu;
-                                donViTinh = string.IsNullOrEmpty(donViTinh) ? vatLieuInfo.DonViTinh : donViTinh; // Use DVT from excel if provided
+                                rowError = $"Giá nhập '{dataRow.GiaNhapStr}' không hợp lệ";
                             }
                             else
                             {
-                                errorRows.Add($"Dòng {row}: Thiếu Mã Vật Liệu hoặc Tên Vật Liệu.");
-                                continue;
+                                hasValidData = true; // Có ít nhất 1 dòng có vẻ hợp lệ
                             }
-
-                            if (!int.TryParse(soLuongStr, out soLuong) || soLuong <= 0)
-                            {
-                                errorRows.Add($"Dòng {row} (VL: {maVatLieu}): Số lượng '{soLuongStr}' không hợp lệ (> 0).");
-                                continue;
-                            }
-                            if (!decimal.TryParse(giaNhapStr, NumberStyles.Any, CultureInfo.CurrentCulture, out giaNhap) || giaNhap < 0)
-                            {
-                                errorRows.Add($"Dòng {row} (VL: {maVatLieu}): Giá nhập '{giaNhapStr}' không hợp lệ (>= 0).");
-                                continue;
-                            }
-
-                            importedItems.Add(new DTO_VatLieuImport
-                            {
-                                RowNumber = row,
-                                MaVatLieu = maVatLieu,
-                                Ten = tenVatLieu,
-                                DonViTinh = donViTinh,
-                                SoLuong = soLuong,
-                                GiaNhap = giaNhap
-                            });
                         }
-                        catch (Exception exRow)
+                        catch (Exception exReadCell)
                         {
-                            Console.WriteLine($"Lỗi xử lý dòng {row} trong Excel: {exRow.Message}");
-                            errorRows.Add($"Dòng {row}: Lỗi xử lý dữ liệu ({exRow.Message.Split('\n')[0]})"); // Add concise error
+                            rowError = $"Lỗi đọc ô: {exReadCell.Message}";
                         }
-                    } 
-                    if (importedItems.Any())
+
+                        dataRow.RowError = rowError; // Lưu lỗi vào dòng
+                        _loadedExcelData.Add(dataRow); // Thêm cả dòng lỗi vào list để xử lý sau
+
+                    } // end for loop
+
+                    if (!hasValidData && _loadedExcelData.Any()) // Có đọc được dòng nhưng toàn lỗi
                     {
-                        dgvChiTiet.SuspendLayout();
-                        int addedCount = 0;
-                        int updatedCount = 0;
-
-                        foreach (var item in importedItems)
-                        {
-                            bool exists = false;
-                            foreach (DataGridViewRow gridRow in dgvChiTiet.Rows)
-                            {
-                                if (gridRow.IsNewRow) continue;
-                                if (gridRow.Cells["MaVatLieu"].Value != null && (int)gridRow.Cells["MaVatLieu"].Value == item.MaVatLieu)
-                                {
-                                    int currentQty = (int)gridRow.Cells["SoLuong"].Value;
-                                    gridRow.Cells["SoLuong"].Value = currentQty + item.SoLuong;
-                                    gridRow.Cells["GiaNhap"].Value = item.GiaNhap; // Update price to the one from Excel
-                                    gridRow.Cells["DonViTinh"].Value = item.DonViTinh; // Update DVT just in case
-                                    gridRow.Cells["TenVatLieu"].Value = item.Ten; // Update Name just in case
-
-                                    exists = true;
-                                    updatedCount++;
-                                    break;
-                                }
-                            }
-
-                            if (!exists)
-                            {
-                                dgvChiTiet.Rows.Add(
-                                    item.MaVatLieu,
-                                    item.Ten,
-                                    item.DonViTinh,
-                                    item.SoLuong,
-                                    item.GiaNhap
-                                );
-                                addedCount++;
-                            }
-                        }
-                        dgvChiTiet.ResumeLayout();
-
-                        TinhTongSoLuongVaGiaNhap();
-                        panelImportExcel.Visible = false;
-                        CenterPanelInDataGridView();
-
-                        string message = $"Import hoàn tất cho NCC: '{determinedTenNCC}'.\n" +
-                                         $"- Đã thêm mới: {addedCount} vật liệu.\n" +
-                                         $"- Đã cập nhật số lượng/giá: {updatedCount} vật liệu.";
-
-                        if (errorRows.Any())
-                        {
-                            message += $"\n\nCó {errorRows.Count} dòng lỗi không được import:\n- " +
-                                       string.Join("\n- ", errorRows.Take(10));
-                            if (errorRows.Count > 10) message += "\n- ... (và các lỗi khác)";
-                            MessageBox.Show(message, "Import Hoàn Tất (Có Lỗi)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-                        else
-                        {
-                            MessageBox.Show(message, "Import Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        MessageBox.Show("Không tìm thấy dòng dữ liệu vật liệu hợp lệ nào trong file Excel.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        _loadedExcelData = null; // Đánh dấu là không có dữ liệu để load
+                        return;
                     }
-                    else if (!errorRows.Any())
+                    if (!_loadedExcelData.Any()) 
                     {
-                        MessageBox.Show("Không tìm thấy dữ liệu vật liệu hợp lệ để import trong file Excel.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Không đọc được dữ liệu nào từ file Excel.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
                     }
-                    else
+
+
+                    var nccFilterList = new List<NccFilterItem>();
+                    nccFilterList.Add(new NccFilterItem { TenNCC = "-- Tất cả Nhà Cung Cấp --" }); // Mục chọn tất cả
+
+                    var uniqueNccNames = _loadedExcelData
+                                        .Where(d => !string.IsNullOrEmpty(d.TenNCC) && d.RowError == null) // Chỉ lấy NCC từ các dòng hợp lệ
+                                        .Select(d => d.TenNCC)
+                                        .Distinct()
+                                        .OrderBy(name => name);
+
+                    foreach (var name in uniqueNccNames)
                     {
-                        string errorMessage = $"Import thất bại. Không có vật liệu nào được thêm.\n" +
-                                             $"Có {errorRows.Count} dòng lỗi:\n- " +
-                                             string.Join("\n- ", errorRows.Take(10)); 
-                        if (errorRows.Count > 10) errorMessage += "\n- ... (và các lỗi khác)";
-                        MessageBox.Show(errorMessage, "Lỗi Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        nccFilterList.Add(new NccFilterItem { TenNCC = name });
+                    }
+
+                    CbLocNCC.DataSource = null;
+                    CbLocNCC.DisplayMember = "TenNCC";
+                    CbLocNCC.ValueMember = "TenNCC"; // Dùng tên để lọc
+                    CbLocNCC.DataSource = nccFilterList;
+                    CbLocNCC.SelectedIndex = 0; // Chọn "Tất cả"
+
+                    FilterAndDisplayDgvChiTiet();
+
+                } // end using package
+            }
+            catch (IOException ioEx) { /*...*/ errorMessages.Add($"Lỗi IO: {ioEx.Message}"); _loadedExcelData = null; }
+            catch (InvalidOperationException invOpEx) when (invOpEx.Message.Contains("license")) { /*...*/ errorMessages.Add($"Lỗi License: {invOpEx.Message}"); _loadedExcelData = null; }
+            catch (InvalidOperationException invOpEx) { /*...*/ errorMessages.Add($"Lỗi định dạng file: {invOpEx.Message}"); _loadedExcelData = null; }
+            catch (Exception ex) { /*...*/ errorMessages.Add($"Lỗi không xác định: {ex.Message}"); _loadedExcelData = null; }
+
+            // Hiển thị lỗi chung nếu có
+            if (errorMessages.Any())
+            {
+                MessageBox.Show("Đã xảy ra lỗi khi đọc file Excel:\n- " + string.Join("\n- ", errorMessages), "Lỗi Đọc File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void FilterAndDisplayDgvChiTiet()
+        {
+            dgvChiTiet.Rows.Clear();
+            if (_loadedExcelData == null || !_loadedExcelData.Any()) return; // Không có dữ liệu để hiển thị
+
+            string selectedNccName = CbLocNCC.SelectedValue?.ToString();
+            bool showAll = (selectedNccName == "-- Tất cả Nhà Cung Cấp --");
+
+            var filteredData = showAll
+                ? _loadedExcelData // Lấy tất cả
+                : _loadedExcelData.Where(d => d.TenNCC == selectedNccName); // Lọc theo tên
+
+            dgvChiTiet.SuspendLayout(); // Tạm dừng vẽ
+            foreach (var dataRow in filteredData)
+            {
+                int.TryParse(dataRow.SoLuongStr, out int soLuong);
+                decimal.TryParse(dataRow.GiaNhapStr, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal giaNhap);
+                int.TryParse(dataRow.MaVatLieuStr, out int maVatLieu); // Parse cả mã VL
+
+                string tenVL = dataRow.TenVatLieu;
+                string dvt = dataRow.DonViTinh;
+
+                dgvChiTiet.Rows.Add(
+                    dataRow.TenNCC,
+                    maVatLieu > 0 ? (object)maVatLieu : DBNull.Value, 
+                    tenVL,
+                    dvt,
+                    soLuong > 0 ? (object)soLuong : DBNull.Value,
+                    giaNhap >= 0 ? (object)giaNhap : DBNull.Value, 
+                    "+", "-", "X" 
+                );
+
+                if (!string.IsNullOrEmpty(dataRow.RowError))
+                {
+                    dgvChiTiet.Rows[dgvChiTiet.RowCount - 1].DefaultCellStyle.BackColor = Color.LightPink;
+
+                    if (!string.IsNullOrEmpty(dataRow.RowError))
+                    {
+                        DataGridViewCell errorCell = dgvChiTiet.Rows[dgvChiTiet.RowCount - 1].Cells[0]; // Use the first cell of the row to display the tooltip
+                        errorCell.ToolTipText = dataRow.RowError; // Set the tooltip text for the cell
                     }
                 }
             }
-            catch (IOException ioEx)
+            dgvChiTiet.ResumeLayout();
+            TinhTongSoLuongVaGiaNhap(); // Tính tổng dựa trên DGV hiện tại
+            UpdatePanelVisibility(); // Cập nhật panel import
+        }
+        private void CbLocNCC_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isImportMode && CbLocNCC.Focused)
             {
-                MessageBox.Show($"Lỗi truy cập file: {ioEx.Message}\nFile có thể đang được mở bởi ứng dụng khác.", "Lỗi File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FilterAndDisplayDgvChiTiet();
             }
-            catch (InvalidOperationException invOpEx) when (invOpEx.Message.Contains("license")) 
+        }
+        private void UpdateUIForMode()
+        {
+            if (_isImportMode)
             {
-                MessageBox.Show($"Lỗi thư viện Excel (EPPlus): {invOpEx.Message}\nVui lòng đảm bảo EPPlus license context được thiết lập (ExcelPackage.LicenseContext).", "Lỗi License EPPlus", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine(invOpEx.ToString());
+                CbNcc.Visible = false;       
+                CbLocNCC.Visible = true;      // Hiện C
+                txtSearch.Enabled = false;    // Tắt tìm kiếm tay
+                ketqua.Visible = false;
+                btnNhapHang.Text = "Tạo Phiếu Nhập Từ Excel";
+                btnNhapHang.Enabled = _loadedExcelData != null && _loadedExcelData.Any(d => d.RowError == null);
             }
-            catch (InvalidOperationException invOpEx)
+            else
             {
-                MessageBox.Show($"Lỗi đọc file Excel: {invOpEx.Message}\nĐịnh dạng file không được hỗ trợ hoặc file bị lỗi.", "Lỗi Định Dạng", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CbNcc.Visible = true;       
+                CbLocNCC.Visible = false;     
+                CbLocNCC.DataSource = null;  
+                txtSearch.Enabled = true;    
+                btnNhapHang.Text = "Nhập Hàng";
+                btnNhapHang.Enabled = CbNcc.SelectedIndex >= 0 && dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow);
             }
-            catch (Exception ex)
+            UpdatePanelVisibility();
+        }
+        private void ResetToManualMode()
+        {
+            _isImportMode = false;
+            _loadedExcelData = null;
+
+            dgvChiTiet.Rows.Clear();
+            TinhTongSoLuongVaGiaNhap();
+
+            LoadNccComboBoxDataSource(); // Gọi hàm load CbNcc gốc
+
+            UpdateUIForMode(); // Cập nhật giao diện về trạng thái nhập tay
+
+            CbNcc.Focus(); // Đặt focus về CbNcc
+        }
+        private async void hopeRoundButton2_Click(object sender, EventArgs e) 
+        {
+            if (_isImportMode)
             {
-                MessageBox.Show($"Đã xảy ra lỗi không mong muốn trong quá trình import: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine($"Lỗi Import Excel chi tiết: {ex.ToString()}");
+                var confirm = MessageBox.Show("Bạn đang ở chế độ xem dữ liệu Excel. Load file mới sẽ xóa dữ liệu hiện tại. Tiếp tục?",
+                                              "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirm == DialogResult.No) return;
+            }
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Excel Files|*.xlsx;*.xls";
+                openFileDialog.Title = "Chọn file Excel để load dữ liệu nhập hàng";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    this.Cursor = Cursors.WaitCursor;
+                    hopeRoundButton2.Enabled = false; // Tạm tắt nút load
+                    btnNhapHang.Enabled = false; // Tạm tắt nút tạo phiếu
+
+                    try
+                    {
+                        await LoadExcelToGridAndFilterAsync(filePath); // Gọi hàm load mới
+
+                        // Chỉ chuyển sang chế độ Import nếu load thành công và có dữ liệu
+                        if (_loadedExcelData != null && _loadedExcelData.Any())
+                        {
+                            _isImportMode = true;
+                            UpdateUIForMode(); // Hàm cập nhật giao diện theo chế độ
+                        }
+                        else
+                        {
+                            // Nếu load không thành công hoặc không có dữ liệu, reset về manual
+                            ResetToManualMode();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi không mong muốn khi xử lý file Excel: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ResetToManualMode(); // Reset về manual nếu có lỗi nghiêm trọng
+                    }
+                    finally
+                    {
+                        this.Cursor = Cursors.Default;
+                        hopeRoundButton2.Enabled = true; // Bật lại nút load
+                                                         // Nút btnNhapHang sẽ được bật/tắt trong UpdateUIForMode
+                    }
+                }
             }
         }
         private void LoadNccComboBoxDataSource(int? selectMaNCC = null) // Thêm tham số tùy chọn
@@ -1029,17 +1097,17 @@ namespace QLVT
                 }
             }
 
-            Control parentControl = this.Parent; // Get the container this form is in
+            Control parentControl = this.Parent;
             if (parentControl != null)
             {
-                parentControl.Controls.Remove(this); // Remove this form
-                this.Dispose(); // Dispose resources of this form
+                parentControl.Controls.Remove(this);
+                this.Dispose(); 
 
                 FrmOrder order = new FrmOrder()
                 {
                     TopLevel = false,
                     Dock = DockStyle.Fill,
-                    FormBorderStyle = FormBorderStyle.None // Ensure it fills correctly
+                    FormBorderStyle = FormBorderStyle.None
                 };
                 parentControl.Controls.Add(order);
                 order.Show();

@@ -28,23 +28,126 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmCustomer));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmCustomer));
-            dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
-            txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
-            pictureBox1 = new PictureBox();
-            button1 = new ReaLTaiizor.Controls.Button();
-            result = new Panel();
-            Tong = new Label();
-            panel1 = new Panel();
-            CbTrangThai = new ReaLTaiizor.Controls.AloneComboBox();
             button2 = new ReaLTaiizor.Controls.Button();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            CbTrangThai = new ReaLTaiizor.Controls.AloneComboBox();
+            panel1 = new Panel();
+            Tong = new Label();
+            result = new Panel();
+            pictureBox1 = new PictureBox();
+            txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
+            dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
+            // 
+            // button2
+            // 
+            button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button2.BackColor = Color.Transparent;
+            button2.BorderColor = Color.FromArgb(52, 73, 94);
+            button2.Cursor = Cursors.Hand;
+            button2.EnteredBorderColor = Color.FromArgb(165, 37, 37);
+            button2.EnteredColor = Color.FromArgb(32, 34, 37);
+            button2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button2.Image = null;
+            button2.ImageAlign = ContentAlignment.MiddleRight;
+            button2.InactiveColor = Color.FromArgb(30, 58, 138);
+            button2.Location = new Point(929, 31);
+            button2.Margin = new Padding(3, 3, 160, 3);
+            button2.Name = "button2";
+            button2.Padding = new Padding(0, 0, 100, 0);
+            button2.PressedBorderColor = Color.Green;
+            button2.PressedColor = Color.Green;
+            button2.RightToLeft = RightToLeft.Yes;
+            button2.Size = new Size(129, 28);
+            button2.TabIndex = 9;
+            button2.Text = "Thêm";
+            button2.TextAlignment = StringAlignment.Center;
+            button2.Click += button2_Click;
+            // 
+            // CbTrangThai
+            // 
+            CbTrangThai.DrawMode = DrawMode.OwnerDrawFixed;
+            CbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbTrangThai.EnabledCalc = true;
+            CbTrangThai.FormattingEnabled = true;
+            CbTrangThai.ItemHeight = 20;
+            CbTrangThai.Location = new Point(295, 33);
+            CbTrangThai.Name = "CbTrangThai";
+            CbTrangThai.Size = new Size(161, 26);
+            CbTrangThai.TabIndex = 10;
+            CbTrangThai.SelectedIndexChanged += CbTrangThai_SelectedIndexChanged;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.FromArgb(236, 240, 241);
+            panel1.Controls.Add(result);
+            panel1.Controls.Add(CbTrangThai);
+            panel1.Controls.Add(button2);
+            panel1.Controls.Add(Tong);
+            panel1.Controls.Add(pictureBox1);
+            panel1.Controls.Add(txtSearch);
+            panel1.Controls.Add(dataGridView1);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1106, 600);
+            panel1.TabIndex = 1;
+            // 
+            // Tong
+            // 
+            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Tong.AutoSize = true;
+            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Tong.ForeColor = Color.DarkGray;
+            Tong.Location = new Point(12, 1084);
+            Tong.Name = "Tong";
+            Tong.Size = new Size(33, 13);
+            Tong.TabIndex = 8;
+            Tong.Text = "Tổng";
+            // 
+            // result
+            // 
+            result.BackColor = Color.Transparent;
+            result.Location = new Point(23, 62);
+            result.Name = "result";
+            result.Size = new Size(223, 54);
+            result.TabIndex = 6;
+            result.Visible = false;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(252, 31);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(27, 28);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 3;
+            pictureBox1.TabStop = false;
+            // 
+            // txtSearch
+            // 
+            txtSearch.BackColor = Color.FromArgb(236, 240, 241);
+            txtSearch.BorderColor = Color.FromArgb(180, 180, 180);
+            txtSearch.EdgeColor = SystemColors.ActiveBorder;
+            txtSearch.Font = new Font("Tahoma", 11F);
+            txtSearch.ForeColor = Color.DimGray;
+            txtSearch.Location = new Point(23, 31);
+            txtSearch.MaxLength = 32767;
+            txtSearch.Multiline = false;
+            txtSearch.Name = "txtSearch";
+            txtSearch.ReadOnly = false;
+            txtSearch.Size = new Size(223, 28);
+            txtSearch.TabIndex = 2;
+            txtSearch.TextAlignment = HorizontalAlignment.Left;
+            txtSearch.UseSystemPasswordChar = false;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // dataGridView1
             // 
@@ -94,135 +197,6 @@
             dataGridView1.TabIndex = 0;
             dataGridView1.CellContentDoubleClick += dataGridView1_CellClick;
             // 
-            // txtSearch
-            // 
-            txtSearch.BackColor = Color.FromArgb(236, 240, 241);
-            txtSearch.BorderColor = Color.FromArgb(180, 180, 180);
-            txtSearch.EdgeColor = SystemColors.ActiveBorder;
-            txtSearch.Font = new Font("Tahoma", 11F);
-            txtSearch.ForeColor = Color.DimGray;
-            txtSearch.Location = new Point(23, 31);
-            txtSearch.MaxLength = 32767;
-            txtSearch.Multiline = false;
-            txtSearch.Name = "txtSearch";
-            txtSearch.ReadOnly = false;
-            txtSearch.Size = new Size(223, 28);
-            txtSearch.TabIndex = 2;
-            txtSearch.TextAlignment = HorizontalAlignment.Left;
-            txtSearch.UseSystemPasswordChar = false;
-            txtSearch.TextChanged += txtSearch_TextChanged;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(252, 31);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(27, 28);
-            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox1.TabIndex = 3;
-            pictureBox1.TabStop = false;
-            // 
-            // button1
-            // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.BackColor = Color.Transparent;
-            button1.BorderColor = Color.FromArgb(52, 73, 94);
-            button1.Cursor = Cursors.Hand;
-            button1.EnteredBorderColor = Color.FromArgb(165, 37, 37);
-            button1.EnteredColor = Color.FromArgb(32, 34, 37);
-            button1.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Image = null;
-            button1.ImageAlign = ContentAlignment.MiddleRight;
-            button1.InactiveColor = Color.FromArgb(44, 62, 80);
-            button1.Location = new Point(1834, 31);
-            button1.Margin = new Padding(3, 3, 160, 3);
-            button1.Name = "button1";
-            button1.Padding = new Padding(0, 0, 100, 0);
-            button1.PressedBorderColor = Color.Green;
-            button1.PressedColor = Color.Green;
-            button1.RightToLeft = RightToLeft.Yes;
-            button1.Size = new Size(129, 28);
-            button1.TabIndex = 5;
-            button1.Text = "Thêm";
-            button1.TextAlignment = StringAlignment.Center;
-            // 
-            // result
-            // 
-            result.BackColor = Color.Transparent;
-            result.Location = new Point(23, 62);
-            result.Name = "result";
-            result.Size = new Size(223, 54);
-            result.TabIndex = 6;
-            result.Visible = false;
-            // 
-            // Tong
-            // 
-            Tong.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            Tong.AutoSize = true;
-            Tong.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tong.ForeColor = Color.DarkGray;
-            Tong.Location = new Point(12, 1084);
-            Tong.Name = "Tong";
-            Tong.Size = new Size(33, 13);
-            Tong.TabIndex = 8;
-            Tong.Text = "Tổng";
-            // 
-            // panel1
-            // 
-            panel1.BackColor = Color.FromArgb(236, 240, 241);
-            panel1.Controls.Add(result);
-            panel1.Controls.Add(CbTrangThai);
-            panel1.Controls.Add(button2);
-            panel1.Controls.Add(Tong);
-            panel1.Controls.Add(button1);
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(txtSearch);
-            panel1.Controls.Add(dataGridView1);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1106, 600);
-            panel1.TabIndex = 1;
-            // 
-            // CbTrangThai
-            // 
-            CbTrangThai.DrawMode = DrawMode.OwnerDrawFixed;
-            CbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
-            CbTrangThai.EnabledCalc = true;
-            CbTrangThai.FormattingEnabled = true;
-            CbTrangThai.ItemHeight = 20;
-            CbTrangThai.Location = new Point(295, 33);
-            CbTrangThai.Name = "CbTrangThai";
-            CbTrangThai.Size = new Size(161, 26);
-            CbTrangThai.TabIndex = 10;
-            CbTrangThai.SelectedIndexChanged += CbTrangThai_SelectedIndexChanged;
-            // 
-            // button2
-            // 
-            button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button2.BackColor = Color.Transparent;
-            button2.BorderColor = Color.FromArgb(52, 73, 94);
-            button2.Cursor = Cursors.Hand;
-            button2.EnteredBorderColor = Color.FromArgb(165, 37, 37);
-            button2.EnteredColor = Color.FromArgb(32, 34, 37);
-            button2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button2.Image = null;
-            button2.ImageAlign = ContentAlignment.MiddleRight;
-            button2.InactiveColor = Color.FromArgb(30, 58, 138);
-            button2.Location = new Point(929, 31);
-            button2.Margin = new Padding(3, 3, 160, 3);
-            button2.Name = "button2";
-            button2.Padding = new Padding(0, 0, 100, 0);
-            button2.PressedBorderColor = Color.Green;
-            button2.PressedColor = Color.Green;
-            button2.RightToLeft = RightToLeft.Yes;
-            button2.Size = new Size(129, 28);
-            button2.TabIndex = 9;
-            button2.Text = "Thêm";
-            button2.TextAlignment = StringAlignment.Center;
-            button2.Click += button2_Click;
-            // 
             // FrmCustomer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -232,23 +206,22 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmCustomer";
             Text = "FrmCustomer";
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
-        private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
-        private PictureBox pictureBox1;
-        private ReaLTaiizor.Controls.Button button1;
-        private Panel result;
-        private Label Tong;
-        private Panel panel1;
         private ReaLTaiizor.Controls.Button button2;
         private ReaLTaiizor.Controls.AloneComboBox CbTrangThai;
+        private Panel panel1;
+        private Panel result;
+        private Label Tong;
+        private PictureBox pictureBox1;
+        private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
+        private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
     }
 }
