@@ -50,7 +50,7 @@
             // 
             txtLyDo.BackColor = Color.Transparent;
             txtLyDo.BorderColor = Color.FromArgb(180, 180, 180);
-            txtLyDo.CustomBGColor = Color.White;
+            txtLyDo.CustomBGColor = Color.LightGray;
             txtLyDo.Font = new Font("Tahoma", 11F);
             txtLyDo.ForeColor = Color.DimGray;
             txtLyDo.Location = new Point(12, 54);
@@ -107,17 +107,18 @@
             hopeRoundButton2.WarningColor = Color.FromArgb(230, 162, 60);
             hopeRoundButton2.Click += hopeRoundButton2_Click;
             // 
-            // lblLydo
+            // LydoHuy
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             ClientSize = new Size(400, 184);
             Controls.Add(hopeRoundButton2);
             Controls.Add(hopeRoundButton1);
             Controls.Add(txtLyDo);
             Controls.Add(bigLabel1);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "lblLydo";
+            Name = "LydoHuy";
             StartPosition = FormStartPosition.CenterParent;
             Text = "LydoHuy";
             ResumeLayout(false);

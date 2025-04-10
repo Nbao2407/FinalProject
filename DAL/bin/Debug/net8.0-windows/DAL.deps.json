@@ -588,10 +588,7 @@
           "WinForms.DataVisualization": "1.10.0"
         },
         "runtime": {
-          "DTO.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DTO.dll": {}
         }
       }
     }

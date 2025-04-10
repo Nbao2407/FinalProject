@@ -59,7 +59,7 @@ namespace QLVT
                 DataPropertyName = "NgayNhap", 
                 Width = 100,
                 ReadOnly = true,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" } // Định dạng ngày
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" } 
             });
 
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
@@ -67,7 +67,7 @@ namespace QLVT
                 Name = "colTenNCC",
                 HeaderText = "Nhà Cung Cấp",
                 DataPropertyName = "TenNCC",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, // Cho cột này tự dãn ra
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 ReadOnly = true
             });
 
@@ -75,7 +75,7 @@ namespace QLVT
             {
                 Name = "colTrangThai",
                 HeaderText = "Trạng Thái",
-                DataPropertyName = "TrangThai", // Liên kết với thuộc tính DTO
+                DataPropertyName = "TrangThai", 
                 Width = 120,
                 ReadOnly = true
             });
@@ -187,18 +187,18 @@ namespace QLVT
 
                 Console.WriteLine($"Popup for Order ID: {orderId} closed.");
 
-                bool dataMayHaveChanged = popup.DataChanged; // Giả sử popup có thuộc tính báo hiệu thay đổi
+                bool dataMayHaveChanged = popup.DataChanged; 
                 if (dataMayHaveChanged)
                 {
                     Console.WriteLine("Data may have changed, reloading initial data...");
-                    LoadInitialData(); // Cách đơn giản nhất là tải lại toàn bộ
+                    LoadInitialData();
                 }
             }
         }
 
-        private void button2_Click(object sender, EventArgs e) // Nút "Thêm"
+        private void button2_Click(object sender, EventArgs e) 
         {
-            Control parentControl = this.Parent; // Lấy container cha
+            Control parentControl = this.Parent; 
             if (parentControl != null)
             {
                 parentControl.Controls.Remove(this);
@@ -249,7 +249,7 @@ namespace QLVT
                     );
                 }
 
-                List<DTO_Order> suggestionResults = new List<DTO_Order>(); // Khởi tạo danh sách rỗng cho gợi ý
+                List<DTO_Order> suggestionResults = new List<DTO_Order>(); 
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
                     suggestionResults = suggestionSource.Where(order =>
@@ -267,7 +267,7 @@ namespace QLVT
 
                 Action<DTO_Order> clickAction = selectedItem => {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
-                    txtSearch.Text = selectedItem.MaDonNhap.ToString(); // Điền Mã ĐN vào ô search
+                    txtSearch.Text = selectedItem.MaDonNhap.ToString(); 
                     txtSearch.TextChanged += txtSearch_TextChanged;
 
                     var itemToShow = new List<DTO_Order> { selectedItem };

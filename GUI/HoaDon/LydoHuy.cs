@@ -17,7 +17,6 @@ namespace QLVT.HoaDon
         {
             InitializeComponent();
         }
-
         private void hopeRoundButton1_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtLyDo.Text))

@@ -35,7 +35,7 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             lblID = new Label();
             lblName = new ReaLTaiizor.Controls.BigLabel();
-            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
+            roundedPictureBox1 = new Helper.RoundedPictureBox();
             panel5 = new Panel();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
             txtEmail = new Label();
@@ -305,7 +305,7 @@
             TbNote.EdgeColor = Color.White;
             TbNote.Font = new Font("Tahoma", 10F);
             TbNote.ForeColor = Color.Black;
-            TbNote.Location = new Point(6, 26);
+            TbNote.Location = new Point(6, 30);
             TbNote.Name = "TbNote";
             TbNote.ReadOnly = false;
             TbNote.Size = new Size(800, 24);
@@ -335,6 +335,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             ClientSize = new Size(843, 385);
             Controls.Add(TgTrangthai);
             Controls.Add(groupBox2);

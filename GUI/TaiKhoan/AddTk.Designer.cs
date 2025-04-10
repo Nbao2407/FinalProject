@@ -290,6 +290,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             ClientSize = new Size(837, 406);
             Controls.Add(label8);
             Controls.Add(Tbpass);

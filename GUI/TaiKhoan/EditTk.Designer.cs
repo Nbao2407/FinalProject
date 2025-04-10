@@ -249,7 +249,7 @@
             btnCancel.Image = null;
             btnCancel.ImageAlign = ContentAlignment.MiddleRight;
             btnCancel.InactiveColor = Color.LightGray;
-            btnCancel.Location = new Point(12, 363);
+            btnCancel.Location = new Point(14, 363);
             btnCancel.Margin = new Padding(3, 3, 160, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Padding = new Padding(0, 0, 100, 0);
@@ -307,6 +307,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             ClientSize = new Size(843, 403);
             Controls.Add(pictureBox1);
             Controls.Add(label7);

@@ -33,6 +33,8 @@
             nightControlBox1 = new ReaLTaiizor.Controls.NightControlBox();
             btnSidebar = new PictureBox();
             panel2 = new Panel();
+            panel14 = new Panel();
+            btnXuatHang = new Button();
             panel13 = new Panel();
             button10 = new Button();
             button12 = new Button();
@@ -67,6 +69,7 @@
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)btnSidebar).BeginInit();
             panel2.SuspendLayout();
+            panel14.SuspendLayout();
             panel13.SuspendLayout();
             panel11.SuspendLayout();
             panel12.SuspendLayout();
@@ -128,6 +131,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(30, 58, 138);
+            panel2.Controls.Add(panel14);
             panel2.Controls.Add(panel13);
             panel2.Controls.Add(panel11);
             panel2.Controls.Add(panel12);
@@ -145,6 +149,29 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(223, 641);
             panel2.TabIndex = 1;
+            // 
+            // panel14
+            // 
+            panel14.Controls.Add(btnXuatHang);
+            panel14.Location = new Point(4, 465);
+            panel14.Name = "panel14";
+            panel14.Size = new Size(215, 45);
+            panel14.TabIndex = 15;
+            // 
+            // btnXuatHang
+            // 
+            btnXuatHang.BackColor = Color.FromArgb(30, 58, 138);
+            btnXuatHang.Cursor = Cursors.Hand;
+            btnXuatHang.ForeColor = Color.White;
+            btnXuatHang.Image = GUI.Properties.Resources.icons8_receipt_white;
+            btnXuatHang.ImageAlign = ContentAlignment.MiddleLeft;
+            btnXuatHang.Location = new Point(-9, -5);
+            btnXuatHang.Name = "btnXuatHang";
+            btnXuatHang.Padding = new Padding(15, 0, 0, 0);
+            btnXuatHang.Size = new Size(228, 59);
+            btnXuatHang.TabIndex = 5;
+            btnXuatHang.Text = "Xuất hàng";
+            btnXuatHang.UseVisualStyleBackColor = false;
             // 
             // panel13
             // 
@@ -553,6 +580,7 @@
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)btnSidebar).EndInit();
             panel2.ResumeLayout(false);
+            panel14.ResumeLayout(false);
             panel13.ResumeLayout(false);
             panel11.ResumeLayout(false);
             panel12.ResumeLayout(false);
@@ -603,5 +631,7 @@
         private Panel panel6;
         private Microsoft.Data.SqlClient.SqlCommand sqlCommand1;
         private Panel panelMain;
+        private Panel panel14;
+        private Button btnXuatHang;
     }
 }

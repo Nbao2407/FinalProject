@@ -14,7 +14,6 @@ namespace QLVT
         private const int SidebarExpandedWidth = 223;
         private const int SidebarCollapsedWidth = 60;
         private System.Windows.Forms.Timer sidebarTimer = new System.Windows.Forms.Timer();
-
         public Form1()
         {
             InitializeComponent();
@@ -30,8 +29,9 @@ namespace QLVT
             panel1.MouseDown += Form1_MouseDown;
             panel1.MouseMove += Form1_MouseMove;
             panel1.MouseUp += Form1_MouseUp;
+            Quyen();
         }
-      
+
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             dragging = true;
@@ -184,7 +184,7 @@ namespace QLVT
             panelMain.Controls.Add(childForm);
             childForm.Show();
         }
-    
+
         private void button2_Click(object sender, EventArgs e) => OpenChildForm(new FrmHome());
 
         private void btnCustomer_Click(object sender, EventArgs e) => OpenChildForm(new FrmCustomer());
@@ -206,9 +206,16 @@ namespace QLVT
         private void BtnUser_Click(object sender, EventArgs e)
         {
             DTO_TK user = new DTO_TK();
-                ShowPopup(user);
+            ShowPopup(user);
         }
-
+        private void Quyen()
+        {
+            if (CurrentUser.ChucVu == "Nhân viên") ;
+            {
+                button1.Enabled = false;
+                panel14.Location = new Point(4, 260);
+            }
+        }
         private void ShowPopup(DTO_TK tk)
         {
             using (var popup = new FrmUser(tk))
@@ -217,6 +224,11 @@ namespace QLVT
                 popup.StartPosition = FormStartPosition.CenterParent;
                 popup.ShowDialog();
             }
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

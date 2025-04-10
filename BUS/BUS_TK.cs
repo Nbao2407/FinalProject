@@ -44,7 +44,7 @@ namespace BUS
         {
             return value.All(char.IsDigit);
         }
-        public bool UpdateAccount(int maTK, string tenDangNhap, string email, string sdt, byte[] avatar,string ghichu, int nguoiCapNhat)
+        public bool UpdateAccount(int maTK, string tenDangNhap, string email, string sdt, byte[] avatar, int nguoiCapNhat)
         {
             if (string.IsNullOrWhiteSpace(tenDangNhap) || tenDangNhap.Length > 50)
                 throw new ArgumentException("Tên đăng nhập không hợp lệ!");
@@ -55,7 +55,7 @@ namespace BUS
             if (avatar != null && avatar.Length > 10485760) 
                 throw new ArgumentException("Kích thước avatar vượt quá 10MB!");
 
-            return DAL_TK.UpdateAccount(maTK, tenDangNhap, email, sdt, avatar,ghichu,nguoiCapNhat);
+            return DAL_TK.UpdateAccount(maTK, tenDangNhap, email, sdt, avatar,nguoiCapNhat);
         }
         public void ThemTaiKhoan(DTO_User user, int nguoiTao)
         {

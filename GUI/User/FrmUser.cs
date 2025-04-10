@@ -123,7 +123,7 @@ namespace QLVT
                 int nguoiCapNhat = CurrentUser.MaTK;
                 string ghichu = TbNote.Text;
                 int MaTk = int.Parse(LblID.Text);
-                busTk.UpdateAccount(MaTk, tenDangNhap, email, sdt, avatarData, ghichu, nguoiCapNhat);
+                busTk.UpdateAccount(MaTk, tenDangNhap, email, sdt, avatarData, nguoiCapNhat);
                 MessageBox.Show("Cập nhật thông tin thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
             }

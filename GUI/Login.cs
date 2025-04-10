@@ -268,17 +268,9 @@ namespace QLVT
                         AuthStorage.ClearCredentials();
                     }
 
-                    if (user.Role == "Quản lý" || user.Role == "Admin")
-                    {
                         Form1 form = new Form1();
                         form.Show();
-                    }
-                    else if (user.Role == "Nhân viên")
-                    {
-                        Form2 form = new Form2();
-                        form.Show();
-                    }
-                    this.Hide();
+                        this.Hide();
                 }
                 else
                 {

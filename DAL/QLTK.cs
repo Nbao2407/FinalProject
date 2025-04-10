@@ -130,7 +130,7 @@ namespace DAL
                 return dt;
             }
         }
-        public bool UpdateAccount(int maTK, string tenDangNhap, string email, string sdt,  byte[] avatar, string ghichu,int nguoiCapNhat)
+        public bool UpdateAccount(int maTK, string tenDangNhap, string email, string sdt,  byte[] avatar,int nguoiCapNhat)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -139,11 +139,11 @@ namespace DAL
                     conn.Open();
                     SqlCommand cmd = new SqlCommand("sp_CapNhatThongTinTK", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@MaTk" ,SqlDbType.Int) { Value = maTK});
                     cmd.Parameters.Add(new SqlParameter("@TenDangNhap", SqlDbType.NVarChar, 50) { Value = tenDangNhap });
                     cmd.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 100) { Value = email });
                     cmd.Parameters.Add(new SqlParameter("@SDT", SqlDbType.NVarChar, 15) { Value = sdt ?? (object)DBNull.Value });
                     cmd.Parameters.Add(new SqlParameter("@Avatar", SqlDbType.VarBinary, -1) { Value = avatar ?? (object)DBNull.Value });
-                    cmd.Parameters.Add(new SqlParameter("@Ghichu", SqlDbType.NVarChar, 255) { Value = ghichu ?? (object)DBNull.Value });
                     cmd.Parameters.Add(new SqlParameter("@NguoiCapNhat", SqlDbType.Int) { Value = nguoiCapNhat });
 
                     cmd.ExecuteNonQuery();

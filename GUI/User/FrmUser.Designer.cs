@@ -163,7 +163,7 @@ namespace QLVT
             TbPhone.EdgeColor = Color.White;
             TbPhone.Font = new Font("Tahoma", 11F);
             TbPhone.ForeColor = Color.FromArgb(85, 85, 85);
-            TbPhone.Location = new Point(383, 152);
+            TbPhone.Location = new Point(383, 64);
             TbPhone.MaxLength = 32767;
             TbPhone.Multiline = false;
             TbPhone.Name = "TbPhone";
@@ -240,7 +240,7 @@ namespace QLVT
             bigLabel5.BackColor = Color.Transparent;
             bigLabel5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             bigLabel5.ForeColor = Color.FromArgb(30, 42, 56);
-            bigLabel5.Location = new Point(392, 116);
+            bigLabel5.Location = new Point(392, 28);
             bigLabel5.Name = "bigLabel5";
             bigLabel5.Size = new Size(40, 21);
             bigLabel5.TabIndex = 16;
