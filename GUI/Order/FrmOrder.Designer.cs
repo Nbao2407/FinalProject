@@ -23,34 +23,19 @@
                 // Dispose the timer
                 if (debounceTimer != null)
                 {
-                    debounceTimer.Tick -= DebounceTimer_Tick;
                     debounceTimer.Dispose();
                     debounceTimer = null;
-                }
-
-                // Dispose the BindingSource
-                if (orderBindingSource != null)
-                {
-                    orderBindingSource.Dispose();
-                    orderBindingSource = null;
-                }
-
-                // Dispose the DataTable if needed (usually managed by GC unless holding external resources)
-                if (initialOrderData != null)
-                {
-                    initialOrderData.Dispose();
-                    initialOrderData = null;
                 }
             }
             base.Dispose(disposing);
         }
-#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-/// <summary>
-/// Required method for Designer support - do not modify
-/// the contents of this method with the code editor.
-/// </summary>
-private void InitializeComponent()
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
@@ -90,6 +75,8 @@ private void InitializeComponent()
             // 
             // result
             // 
+            result.BackColor = Color.White;
+            result.BorderStyle = BorderStyle.FixedSingle;
             result.Location = new Point(23, 56);
             result.Name = "result";
             result.Size = new Size(223, 45);
@@ -161,6 +148,7 @@ private void InitializeComponent()
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Size = new Size(1100, 463);
             dataGridView1.TabIndex = 14;
+            dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
             // cboTrangThai
             // 
@@ -188,7 +176,6 @@ private void InitializeComponent()
             FormBorderStyle = FormBorderStyle.None;
             Name = "FrmOrder";
             Text = "FrmOrder";
-            Load += FrmOrder_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }

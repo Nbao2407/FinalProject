@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using QLVT.Helper;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,10 @@ namespace QLVT
         private BUS_Khach busKhach = new BUS_Khach();
         private QLKH kh = new QLKH();
         private List<DTO_Khach> danhSachKhach;
-        private System.Windows.Forms.Timer debounceTimer; 
+        private System.Windows.Forms.Timer debounceTimer;
         private Color defaultLabelColor = Color.White;
         private Color hoverLabelColor = Color.FromArgb(230, 240, 255);
+
         public FrmCustomer()
         {
             InitializeComponent();
@@ -31,7 +33,7 @@ namespace QLVT
             ConfigureDataGridView();
             debounceTimer = new System.Windows.Forms.Timer
             {
-                Interval = 300 
+                Interval = 300
             };
             debounceTimer.Tick += (s, e) =>
             {
@@ -65,7 +67,7 @@ namespace QLVT
 
         public void LoadKhachHang()
         {
-            danhSachKhach = busKhach.LayDanhSachKhach(); 
+            danhSachKhach = busKhach.LayDanhSachKhach();
             dataGridView1.DataSource = danhSachKhach;
             DataGridViewHelper.FormatDateColumns(dataGridView1, "NgaySinh");
         }
@@ -103,118 +105,105 @@ namespace QLVT
                 column.Width = variableColumnWidth;
             }
         }
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             debounceTimer.Stop();
             debounceTimer.Start();
         }
+
         private void PerformSearch()
         {
-            string searchQuery = txtSearch.Text.Trim();
-            string selectedTrangThai = CbTrangThai.SelectedItem?.ToString(); 
+            string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+            string selectedTrangThai = CbTrangThai.SelectedItem?.ToString();
+            if (selectedTrangThai == "-- Tất cả TT --") { selectedTrangThai = null; }
+
+            Console.WriteLine($"PerformSearch for suggestions. Query: '{searchQuery}', Status: '{selectedTrangThai ?? "All"}'");
 
             try
             {
-                List<DTO_Khach> results = kh.TimKiemKhachHang(searchQuery);
+                IEnumerable<DTO_Khach> suggestionSource = danhSachKhach;
 
                 if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
-                    results = results.Where(kh => kh.TrangThai == selectedTrangThai).ToList();
+                    suggestionSource = suggestionSource.Where(order =>
+                        order.TrangThai != null &&
+                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
+                    );
                 }
 
-                UpdateSearchSuggestions(results);
+                List<DTO_Khach> suggestionResults = new List<DTO_Khach>();
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    suggestionResults = suggestionSource.Where(order =>
+                    {
+                        bool match = false;
+                        if (order.MaKhachHang.ToString().Contains(searchQuery)) match = true;
+                        if (!match && order.Ten.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        return match;
+                    }).ToList();
+                }
+                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
 
-                UpdateDataGridView(searchQuery, results);
+                Func<DTO_Khach, string> displayFunc = item => $"{item.MaKhachHang} - {item.Ten ?? "N/A"}";
+
+                Action<DTO_Khach> clickAction = selectedItem =>
+                {
+                    txtSearch.TextChanged -= txtSearch_TextChanged;
+                    txtSearch.Text = selectedItem.MaKhachHang.ToString();
+                    txtSearch.TextChanged += txtSearch_TextChanged;
+
+                    var itemToShow = new List<DTO_Khach> { selectedItem };
+                    dataGridView1.DataSource = itemToShow;
+                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaKhachHang}");
+                    ResizeColumns();
+                };
+
+                SearchHelper.UpdateSearchSuggestions(
+                    result,
+                    suggestionResults,
+                    txtSearch,
+                    38,
+                    190,
+                    displayFunc,
+                    clickAction
+                );
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                result.Visible = false;
-                dataGridView1.DataSource = null; 
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
             }
         }
-        private void UpdateDataGridView(string searchQuery, List<DTO_Khach> results)
-        {
-            if (searchQuery.Length > 0)
-            {
-                dataGridView1.DataSource = results;
-            }
-            else
-            {
-                var allCustomers = kh.GetAllKhach();
-                if (!string.IsNullOrEmpty(CbTrangThai.SelectedItem?.ToString()))
-                {
-                    allCustomers = allCustomers.Where(kh => kh.TrangThai == CbTrangThai.SelectedItem.ToString()).ToList();
-                }
-                dataGridView1.DataSource = allCustomers;
-            }
-        }
-        private void UpdateSearchSuggestions(List<DTO_Khach> results)
-        {
-            result.Controls.Clear();
-            if (results.Any() && txtSearch.Text.Trim().Length > 0)
-            {
-                result.Height = Math.Min(results.Count * 40, 200);
-                result.BackColor = Color.Transparent;
 
-                foreach (var item in results)
-                {
-                    Label lbl = new Label
-                    {
-                        Text = $"👤 {item.Ten}-{item.MaKhachHang}", 
-                        AutoSize = false,
-                        Width = result.Width - 2,
-                        Height = 40,
-                        Padding = new Padding(10, 5, 5, 5),
-                        Font = new Font("Segoe UI", 11, FontStyle.Regular),
-                        BackColor = defaultLabelColor,
-                        ForeColor = Color.FromArgb(33, 37, 41),
-                        BorderStyle = BorderStyle.FixedSingle,
-                        Margin = new Padding(1),
-                        Tag = item 
-                    };
-
-                    lbl.MouseEnter += (s, e) =>
-                    {
-                        lbl.BackColor = hoverLabelColor;
-                        lbl.ForeColor = Color.FromArgb(0, 102, 204); 
-                    };
-                    lbl.MouseLeave += (s, e) =>
-                    {
-                        lbl.BackColor = defaultLabelColor;
-                        lbl.ForeColor = Color.FromArgb(33, 37, 41);
-                    };
-
-                    lbl.Click += (s, e) =>
-                    {
-                        var selectedItem = (DTO_Khach)lbl.Tag;
-                        txtSearch.Text = selectedItem.Ten;
-                        result.Visible = false;
-                        dataGridView1.DataSource = new List<DTO_Khach> { selectedItem };
-                    };
-
-                    result.Controls.Add(lbl);
-                }
-                result.Visible = true;
-            }
-            else
-            {
-                result.Visible = false;
-            }
-        }
         private void CbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string filter = CbTrangThai.SelectedItem?.ToString();
+
+            if (danhSachKhach == null) { return; }
+
+            IEnumerable<DTO_Khach> listToShow = danhSachKhach;
+
+            if (filter != "Tất cả" && !string.IsNullOrEmpty(filter))
             {
-                string filter = CbTrangThai.SelectedItem.ToString();
-                if (filter == "Tất cả")
-                {
-                    dataGridView1.DataSource = danhSachKhach; 
-                }
-                else
-                {
-                    var filteredList = danhSachKhach.Where(k => k.TrangThai == filter).ToList();
-                    dataGridView1.DataSource = filteredList;
-                }
+                listToShow = danhSachKhach.Where(k => k.TrangThai != null && k.TrangThai.Equals(filter, StringComparison.OrdinalIgnoreCase));
             }
+
+            var filteredByStatus = listToShow.ToList();
+            dataGridView1.DataSource = filteredByStatus.Any() ? filteredByStatus : null;
+            Console.WriteLine($"DGV updated by status filter. Showing {filteredByStatus.Count} items.");
+            ResizeColumns();
+
+            if (txtSearch.Text.Length > 0)
+            {
+                txtSearch.Text = string.Empty;
+            }
+            else
+            {
+                if (result != null) result.Visible = false;
+            }
+        }
+
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -240,7 +229,6 @@ namespace QLVT
 
         private void ShowPopup()
         {
-            
             using (var popup = new AddCustomer(this))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
@@ -254,7 +242,5 @@ namespace QLVT
         {
             ShowPopup();
         }
-
-       
     }
 }

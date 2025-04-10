@@ -9,6 +9,7 @@
         public decimal DonGiaNhap { get; set; }
         public decimal DonGiaBan { get; set; }
         public string DonViTinh { get; set; }
+        public string TrangThai { get; set; }
         public int SoLuong { get; set; }
 
         public DTO_VatLieu()

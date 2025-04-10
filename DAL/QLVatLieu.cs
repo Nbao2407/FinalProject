@@ -364,7 +364,6 @@ namespace DAL
                 return dt;
             }
         }
-
         public DataTable LayDanhSachDonViTinh()
         {
             using (SqlConnection conn = DBConnect.GetConnection())

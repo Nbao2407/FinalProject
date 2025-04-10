@@ -87,6 +87,7 @@
             txtSearch.TabIndex = 15;
             txtSearch.TextAlignment = HorizontalAlignment.Left;
             txtSearch.UseSystemPasswordChar = false;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // dataGridView1
             // 
@@ -118,7 +119,7 @@
             dataGridView1.EnableHeadersVisualStyles = false;
             dataGridView1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
             dataGridView1.GridColor = Color.FromArgb(255, 255, 255);
-            dataGridView1.Location = new Point(3, 70);
+            dataGridView1.Location = new Point(12, 76);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;

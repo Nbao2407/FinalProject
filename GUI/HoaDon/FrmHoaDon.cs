@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.HoaDon;
 using System;
@@ -22,7 +23,9 @@ namespace QLVT
         private DTO_HoaDon dalhoaDon = new DTO_HoaDon();
         private DAL_HoaDon dalHoaDon = new DAL_HoaDon();
         private FrmHoaDon _parentForm;
+        private System.Windows.Forms.Timer debounceTimer;
         private List<DTO_HoaDon> hoaDons = new List<DTO_HoaDon>();
+        private List<DTO_HoaDon> danhSach = new List<DTO_HoaDon>();
         private List<ChiTietHoaDon> chiTietHoaDon = new List<ChiTietHoaDon>();
         private int? maHoaDon;
 
@@ -31,6 +34,8 @@ namespace QLVT
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.Resize += new EventHandler(Frm_Resize);
+            SetupDebounceTimer();
+            LoadComboBoxes();
         }
 
         private void FrmHoaDon_Load(object sender, EventArgs e)
@@ -96,7 +101,15 @@ namespace QLVT
                 MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        private void SetupDebounceTimer()
+        {
+            debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
+        }
         private void dgvHoaDon_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -144,6 +157,8 @@ namespace QLVT
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            debounceTimer.Stop();
+            debounceTimer.Start();
         }
 
         public void OpenEdit(int? maHoaDon)
@@ -189,52 +204,106 @@ namespace QLVT
                 }
         }
 
+        private void LoadComboBoxes()
+        {
+            CbTrangthai.Items.Clear();
+            CbTrangthai.Items.Add("-- Tất cả TT --");
+            CbTrangthai.Items.Add("Hoàn thành");
+            CbTrangthai.Items.Add("Đang xử lý");
+            CbTrangthai.Items.Add("Đã hủy");
+            CbTrangthai.SelectedIndex = 0;
+        }
 
+        private void PerformSearch()
+        {
+            string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+            string selectedTrangThai = CbTrangthai.SelectedItem?.ToString();
+            if (selectedTrangThai == "-- Tất cả TT --") { selectedTrangThai = null; }
 
-        //private void txtSearch_TextChanged(object sender, EventArgs e)
-        //{
-        //    string searchQuery = txtSearch.Text.Trim();
+            Console.WriteLine($"PerformSearch for suggestions. Query: '{searchQuery}', Status: '{selectedTrangThai ?? "All"}'");
 
-        //    if (searchQuery.Length > 0)
-        //    {
-        //        List<DTO_VatLieu> results = busHoaDon.Sea(searchQuery);
-        //        result.Controls.Clear();
-        //        result.Height = Math.Min(results.Count * 40, 200); // Giới hạn chiều cao
+            try
+            {
+                IEnumerable<DTO_HoaDon> suggestionSource = danhSach;
 
-        //        foreach (var item in results)
-        //        {
-        //            Label lbl = new Label
-        //            {
-        //                Text = item.TenLoai,
-        //                AutoSize = false,
-        //                Width = result.Width,
-        //                Height = 40,
-        //                Padding = new Padding(5),
-        //                Font = new Font("Arial", 11, FontStyle.Bold),
-        //                BackColor = Color.White,
-        //                ForeColor = Color.Black,
-        //                BorderStyle = BorderStyle.FixedSingle
-        //            };
+                if (!string.IsNullOrEmpty(selectedTrangThai))
+                {
+                    suggestionSource = suggestionSource.Where(order =>
+                        order.TrangThai != null &&
+                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
+                    );
+                }
 
-        //            lbl.Click += (s, ev) =>
-        //            {
-        //                txtSearch.Text = item.TenLoai;
-        //                result.Visible = false;
-        //            };
+                List<DTO_HoaDon> suggestionResults = new List<DTO_HoaDon>(); 
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    suggestionResults = suggestionSource.Where(order =>
+                    {
+                        bool match = false;
+                        if (order.MaHoaDon.ToString().Contains(searchQuery)) match = true;
+                        if (!match && order.TenKhachHang.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        return match;
+                    }).ToList();
+                }
 
-        //            result.Controls.Add(lbl);
-        //        }
-        //        result.Visible = true;
-        //    }
-        //    else
-        //    {
-        //        result.Visible = false;
-        //    }
+                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
 
-        //    // Load dữ liệu lên DataGridView
-        //    dataGridView.DataSource = searchQuery.Length > 0
-        //        ? vl.SearchProducts(searchQuery)
-        //        : vl.LayTatCaVatLieu();
-        //}
+                Func<DTO_HoaDon, string> displayFunc = item => $"{item.MaHoaDon} - {item.TenKhachHang ?? "N/A"}";
+
+                Action<DTO_HoaDon> clickAction = selectedItem => {
+                    txtSearch.TextChanged -= txtSearch_TextChanged;
+                    txtSearch.Text = selectedItem.MaHoaDon.ToString(); 
+                    txtSearch.TextChanged += txtSearch_TextChanged;
+
+                    var itemToShow = new List<DTO_HoaDon> { selectedItem };
+                    dataGridView1.DataSource = itemToShow;
+                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaHoaDon}");
+                    ResizeColumns();
+                };
+
+                SearchHelper.UpdateSearchSuggestions(
+                    result,
+                    suggestionResults,
+                    txtSearch,
+                    38,
+                    190,
+                    displayFunc,
+                    clickAction
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
+            }
+        }
+        private void cboTrangThai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string filter = CbTrangthai.SelectedItem?.ToString();
+
+            if (danhSach == null) { return; }
+
+            IEnumerable<DTO_HoaDon> listToShow = danhSach;
+
+            if (filter != "-- Tất cả TT --" && !string.IsNullOrEmpty(filter))
+            {
+                listToShow = danhSach.Where(k => k.TrangThai != null && k.TrangThai.Equals(filter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var filteredByStatus = listToShow.ToList();
+            dataGridView1.DataSource = filteredByStatus.Any() ? filteredByStatus : null;
+            Console.WriteLine($"DGV updated by status filter. Showing {filteredByStatus.Count} items.");
+            ResizeColumns();
+
+            if (txtSearch.Text.Length > 0)
+            {
+                txtSearch.Text = string.Empty;
+            }
+            else
+            {
+                if (result != null) result.Visible = false;
+            }
+        }
+
     }
 }

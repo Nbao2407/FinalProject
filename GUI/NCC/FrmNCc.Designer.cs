@@ -136,7 +136,6 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1106, 600);
             panel2.TabIndex = 9;
-            panel2.Paint += panel2_Paint;
             // 
             // dataGridView1
             // 
@@ -282,6 +281,7 @@
             txtSearch.TabIndex = 2;
             txtSearch.TextAlignment = HorizontalAlignment.Left;
             txtSearch.UseSystemPasswordChar = false;
+            txtSearch.TextChanged += txtSearch_TextChanged_1;
             // 
             // FrmNCc
             // 

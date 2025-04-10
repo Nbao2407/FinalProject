@@ -31,58 +31,42 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            panel1 = new Panel();
             button2 = new ReaLTaiizor.Controls.Button();
             button1 = new ReaLTaiizor.Controls.Button();
-            pictureBox1 = new PictureBox();
+            panel2 = new Panel();
+            btnCancelImport = new ReaLTaiizor.Controls.HopeRoundButton();
+            CbLocNCC = new ReaLTaiizor.Controls.AloneComboBox();
+            bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
-            poisonDataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
-            label1 = new Label();
-            dungeonTextBox1 = new ReaLTaiizor.Controls.DungeonTextBox();
-            panel4 = new Panel();
+            pictureBox1 = new PictureBox();
+            pictureBox3 = new PictureBox();
+            lblNgTao = new Label();
+            label2 = new Label();
+            Tbnote = new ReaLTaiizor.Controls.SmallTextBox();
+            label7 = new Label();
+            label6 = new Label();
+            lblSl = new Label();
+            btnNhapHang = new ReaLTaiizor.Controls.HopeRoundButton();
+            dtpNgayNhap = new ReaLTaiizor.Controls.PoisonDateTime();
+            label3 = new Label();
+            lblTongTien = new Label();
+            label4 = new Label();
             button3 = new ReaLTaiizor.Controls.Button();
             button4 = new ReaLTaiizor.Controls.Button();
-            pictureBox2 = new PictureBox();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            TbSoLuong = new TextBox();
-            lblTongTien = new Label();
-            smallTextBox1 = new ReaLTaiizor.Controls.SmallTextBox();
-            poisonDateTime1 = new ReaLTaiizor.Controls.PoisonDateTime();
-            label5 = new Label();
-            TbId = new ReaLTaiizor.Controls.SmallTextBox();
-            hopeRoundButton1 = new ReaLTaiizor.Controls.HopeRoundButton();
-            pictureBox3 = new PictureBox();
-            bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
-            panel3 = new Panel();
-            smallLabel1 = new ReaLTaiizor.Controls.SmallLabel();
-            hopeRoundButton2 = new ReaLTaiizor.Controls.HopeRoundButton();
-            panel1.SuspendLayout();
+            ID = new ReaLTaiizor.Controls.SmallTextBox();
+            ketqua = new FlowLayoutPanel();
+            panel4 = new Panel();
+            TbNcc = new ReaLTaiizor.Controls.SmallTextBox();
+            CbNgNhapEdit = new ReaLTaiizor.Controls.AloneComboBox();
+            panel1 = new Panel();
+            dgvChiTietEdit = new ReaLTaiizor.Controls.PoisonDataGridView();
+            panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)poisonDataGridView1).BeginInit();
-            panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
-            panel3.SuspendLayout();
-            // 
-            // panel1
-            // 
-            panel1.BackColor = Color.FromArgb(236, 240, 241);
-            panel1.Controls.Add(panel4);
-            panel1.Controls.Add(panel3);
-            panel1.Controls.Add(bigLabel1);
-            panel1.Controls.Add(pictureBox3);
-            panel1.Controls.Add(button2);
-            panel1.Controls.Add(button1);
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(txtSearch);
-            panel1.Controls.Add(poisonDataGridView1);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1106, 561);
-            panel1.TabIndex = 2;
+            panel4.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvChiTietEdit).BeginInit();
+            SuspendLayout();
             // 
             // button2
             // 
@@ -96,7 +80,7 @@
             button2.Image = null;
             button2.ImageAlign = ContentAlignment.MiddleRight;
             button2.InactiveColor = Color.FromArgb(44, 62, 80);
-            button2.Location = new Point(1834, 31);
+            button2.Location = new Point(2740, 31);
             button2.Margin = new Padding(3, 3, 160, 3);
             button2.Name = "button2";
             button2.Padding = new Padding(0, 0, 100, 0);
@@ -120,7 +104,7 @@
             button1.Image = null;
             button1.ImageAlign = ContentAlignment.MiddleRight;
             button1.InactiveColor = Color.CornflowerBlue;
-            button1.Location = new Point(2735, 31);
+            button1.Location = new Point(3641, 31);
             button1.Margin = new Padding(3, 3, 160, 3);
             button1.Name = "button1";
             button1.Padding = new Padding(0, 0, 100, 0);
@@ -132,16 +116,66 @@
             button1.Text = "Thêm";
             button1.TextAlignment = StringAlignment.Center;
             // 
-            // pictureBox1
+            // panel2
             // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = GUI.Properties.Resources.icons8_search_24;
-            pictureBox1.Location = new Point(202, 6);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(24, 24);
-            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox1.TabIndex = 3;
-            pictureBox1.TabStop = false;
+            panel2.Controls.Add(btnCancelImport);
+            panel2.Controls.Add(CbLocNCC);
+            panel2.Controls.Add(bigLabel1);
+            panel2.Controls.Add(txtSearch);
+            panel2.Controls.Add(pictureBox1);
+            panel2.Controls.Add(pictureBox3);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1106, 33);
+            panel2.TabIndex = 13;
+            // 
+            // btnCancelImport
+            // 
+            btnCancelImport.BorderColor = Color.FromArgb(220, 223, 230);
+            btnCancelImport.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
+            btnCancelImport.DangerColor = Color.FromArgb(245, 108, 108);
+            btnCancelImport.DefaultColor = Color.FromArgb(255, 255, 255);
+            btnCancelImport.Enabled = false;
+            btnCancelImport.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancelImport.HoverTextColor = Color.FromArgb(48, 49, 51);
+            btnCancelImport.InfoColor = Color.FromArgb(144, 147, 153);
+            btnCancelImport.Location = new Point(927, 3);
+            btnCancelImport.Name = "btnCancelImport";
+            btnCancelImport.PrimaryColor = Color.Crimson;
+            btnCancelImport.Size = new Size(120, 24);
+            btnCancelImport.SuccessColor = Color.FromArgb(103, 194, 58);
+            btnCancelImport.TabIndex = 38;
+            btnCancelImport.Text = "Xoá import";
+            btnCancelImport.TextColor = Color.White;
+            btnCancelImport.Visible = false;
+            btnCancelImport.WarningColor = Color.FromArgb(230, 162, 60);
+            // 
+            // CbLocNCC
+            // 
+            CbLocNCC.DrawMode = DrawMode.OwnerDrawFixed;
+            CbLocNCC.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbLocNCC.Enabled = false;
+            CbLocNCC.EnabledCalc = true;
+            CbLocNCC.FormattingEnabled = true;
+            CbLocNCC.ItemHeight = 20;
+            CbLocNCC.Location = new Point(613, 4);
+            CbLocNCC.Name = "CbLocNCC";
+            CbLocNCC.Size = new Size(188, 26);
+            CbLocNCC.TabIndex = 38;
+            CbLocNCC.Visible = false;
+            // 
+            // bigLabel1
+            // 
+            bigLabel1.AutoSize = true;
+            bigLabel1.BackColor = Color.Transparent;
+            bigLabel1.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            bigLabel1.ForeColor = Color.FromArgb(80, 80, 80);
+            bigLabel1.Location = new Point(58, 1);
+            bigLabel1.Name = "bigLabel1";
+            bigLabel1.Size = new Size(123, 30);
+            bigLabel1.TabIndex = 11;
+            bigLabel1.Text = "Nhập hàng";
             // 
             // txtSearch
             // 
@@ -150,7 +184,7 @@
             txtSearch.EdgeColor = SystemColors.ActiveBorder;
             txtSearch.Font = new Font("Tahoma", 11F);
             txtSearch.ForeColor = Color.DimGray;
-            txtSearch.Location = new Point(193, 4);
+            txtSearch.Location = new Point(192, 1);
             txtSearch.MaxLength = 32767;
             txtSearch.Multiline = false;
             txtSearch.Name = "txtSearch";
@@ -160,103 +194,161 @@
             txtSearch.TextAlignment = HorizontalAlignment.Center;
             txtSearch.UseSystemPasswordChar = false;
             // 
-            // poisonDataGridView1
+            // pictureBox1
             // 
-            poisonDataGridView1.AllowUserToAddRows = false;
-            poisonDataGridView1.AllowUserToDeleteRows = false;
-            poisonDataGridView1.AllowUserToResizeRows = false;
-            poisonDataGridView1.Anchor = AnchorStyles.None;
-            poisonDataGridView1.BackgroundColor = Color.FromArgb(224, 224, 224);
-            poisonDataGridView1.BorderStyle = BorderStyle.None;
-            poisonDataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            poisonDataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle1.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            poisonDataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            poisonDataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle2.ForeColor = Color.FromArgb(136, 136, 136);
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            poisonDataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
-            poisonDataGridView1.EnableHeadersVisualStyles = false;
-            poisonDataGridView1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            poisonDataGridView1.GridColor = Color.FromArgb(255, 255, 255);
-            poisonDataGridView1.Location = new Point(0, 36);
-            poisonDataGridView1.Name = "poisonDataGridView1";
-            poisonDataGridView1.ReadOnly = true;
-            poisonDataGridView1.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle3.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            poisonDataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            poisonDataGridView1.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            poisonDataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            poisonDataGridView1.Size = new Size(799, 527);
-            poisonDataGridView1.TabIndex = 8;
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = GUI.Properties.Resources.icons8_search_24;
+            pictureBox1.Location = new Point(201, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(24, 24);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 3;
+            pictureBox1.TabStop = false;
             // 
-            // label1
+            // pictureBox3
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(11, 96);
-            label1.Name = "label1";
-            label1.Size = new Size(100, 17);
-            label1.TabIndex = 0;
-            label1.Text = "Mã phiếu nhập";
+            pictureBox3.Image = GUI.Properties.Resources.icons8_back_501;
+            pictureBox3.Location = new Point(2, -3);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(49, 40);
+            pictureBox3.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox3.TabIndex = 10;
+            pictureBox3.TabStop = false;
+            pictureBox3.Click += pictureBox3_Click;
             // 
-            // dungeonTextBox1
+            // lblNgTao
             // 
-            dungeonTextBox1.BackColor = Color.Transparent;
-            dungeonTextBox1.BorderColor = Color.FromArgb(180, 180, 180);
-            dungeonTextBox1.EdgeColor = SystemColors.ActiveBorder;
-            dungeonTextBox1.Font = new Font("Tahoma", 11F);
-            dungeonTextBox1.ForeColor = Color.DimGray;
-            dungeonTextBox1.Location = new Point(11, 45);
-            dungeonTextBox1.MaxLength = 32767;
-            dungeonTextBox1.Multiline = false;
-            dungeonTextBox1.Name = "dungeonTextBox1";
-            dungeonTextBox1.ReadOnly = false;
-            dungeonTextBox1.Size = new Size(256, 28);
-            dungeonTextBox1.TabIndex = 2;
-            dungeonTextBox1.TextAlignment = HorizontalAlignment.Left;
-            dungeonTextBox1.UseSystemPasswordChar = false;
+            lblNgTao.AutoSize = true;
+            lblNgTao.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblNgTao.Location = new Point(17, 384);
+            lblNgTao.Name = "lblNgTao";
+            lblNgTao.Size = new Size(71, 17);
+            lblNgTao.TabIndex = 37;
+            lblNgTao.Text = "Người Tạo";
             // 
-            // panel4
+            // label2
             // 
-            panel4.BackColor = Color.FromArgb(236, 240, 241);
-            panel4.Controls.Add(hopeRoundButton1);
-            panel4.Controls.Add(TbId);
-            panel4.Controls.Add(label5);
-            panel4.Controls.Add(poisonDateTime1);
-            panel4.Controls.Add(smallTextBox1);
-            panel4.Controls.Add(lblTongTien);
-            panel4.Controls.Add(TbSoLuong);
-            panel4.Controls.Add(label4);
-            panel4.Controls.Add(label3);
-            panel4.Controls.Add(label2);
-            panel4.Controls.Add(label1);
-            panel4.Controls.Add(button3);
-            panel4.Controls.Add(button4);
-            panel4.Controls.Add(pictureBox2);
-            panel4.Controls.Add(dungeonTextBox1);
-            panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(805, 0);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(301, 561);
-            panel4.TabIndex = 2;
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(28, 135);
+            label2.Name = "label2";
+            label2.Size = new Size(80, 17);
+            label2.TabIndex = 35;
+            label2.Text = "Người nhập";
+            // 
+            // Tbnote
+            // 
+            Tbnote.BackColor = Color.Transparent;
+            Tbnote.BorderColor = Color.FromArgb(180, 180, 180);
+            Tbnote.CustomBGColor = Color.White;
+            Tbnote.Font = new Font("Tahoma", 11F);
+            Tbnote.ForeColor = Color.DimGray;
+            Tbnote.Location = new Point(23, 277);
+            Tbnote.MaxLength = 32767;
+            Tbnote.Multiline = true;
+            Tbnote.Name = "Tbnote";
+            Tbnote.ReadOnly = false;
+            Tbnote.Size = new Size(268, 75);
+            Tbnote.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            Tbnote.TabIndex = 32;
+            Tbnote.Text = "Ghi chú";
+            Tbnote.TextAlignment = HorizontalAlignment.Left;
+            Tbnote.UseSystemPasswordChar = false;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.Location = new Point(23, 26);
+            label7.Name = "label7";
+            label7.Size = new Size(65, 17);
+            label7.TabIndex = 27;
+            label7.Text = "Mã phiếu";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.Location = new Point(33, 195);
+            label6.Name = "label6";
+            label6.Size = new Size(75, 17);
+            label6.TabIndex = 26;
+            label6.Text = "Ngày nhập";
+            // 
+            // lblSl
+            // 
+            lblSl.AutoSize = true;
+            lblSl.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblSl.Location = new Point(129, 415);
+            lblSl.Name = "lblSl";
+            lblSl.Size = new Size(15, 17);
+            lblSl.TabIndex = 19;
+            lblSl.Text = "0";
+            // 
+            // btnNhapHang
+            // 
+            btnNhapHang.BorderColor = Color.FromArgb(220, 223, 230);
+            btnNhapHang.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
+            btnNhapHang.DangerColor = Color.FromArgb(245, 108, 108);
+            btnNhapHang.DefaultColor = Color.FromArgb(255, 255, 255);
+            btnNhapHang.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnNhapHang.HoverTextColor = Color.FromArgb(48, 49, 51);
+            btnNhapHang.InfoColor = Color.FromArgb(144, 147, 153);
+            btnNhapHang.Location = new Point(59, 476);
+            btnNhapHang.Name = "btnNhapHang";
+            btnNhapHang.PrimaryColor = Color.LimeGreen;
+            btnNhapHang.Size = new Size(190, 40);
+            btnNhapHang.SuccessColor = Color.FromArgb(103, 194, 58);
+            btnNhapHang.TabIndex = 18;
+            btnNhapHang.Text = "Tạo phiếu";
+            btnNhapHang.TextColor = Color.White;
+            btnNhapHang.WarningColor = Color.FromArgb(230, 162, 60);
+            // 
+            // dtpNgayNhap
+            // 
+            dtpNgayNhap.CalendarForeColor = Color.FromArgb(30, 58, 138);
+            dtpNgayNhap.CalendarTitleBackColor = Color.FromArgb(30, 58, 138);
+            dtpNgayNhap.CalendarTitleForeColor = Color.White;
+            dtpNgayNhap.CustomFormat = "dd/MM/yyyy";
+            dtpNgayNhap.Format = DateTimePickerFormat.Custom;
+            dtpNgayNhap.Location = new Point(122, 195);
+            dtpNgayNhap.MinimumSize = new Size(0, 29);
+            dtpNgayNhap.Name = "dtpNgayNhap";
+            dtpNgayNhap.Size = new Size(166, 29);
+            dtpNgayNhap.Style = ReaLTaiizor.Enum.Poison.ColorStyle.White;
+            dtpNgayNhap.TabIndex = 15;
+            dtpNgayNhap.Value = new DateTime(2025, 4, 7, 8, 15, 57, 0);
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Location = new Point(24, 84);
+            label3.Name = "label3";
+            label3.Size = new Size(92, 17);
+            label3.TabIndex = 21;
+            label3.Text = "Nhà cung cấp";
+            // 
+            // lblTongTien
+            // 
+            lblTongTien.AutoSize = true;
+            lblTongTien.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTongTien.ForeColor = Color.LimeGreen;
+            lblTongTien.Location = new Point(197, 415);
+            lblTongTien.Name = "lblTongTien";
+            lblTongTien.Size = new Size(15, 17);
+            lblTongTien.TabIndex = 13;
+            lblTongTien.Text = "0";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Location = new Point(17, 415);
+            label4.Name = "label4";
+            label4.Size = new Size(101, 17);
+            label4.TabIndex = 11;
+            label4.Text = "Tổng tiền hàng";
             // 
             // button3
             // 
@@ -270,7 +362,7 @@
             button3.Image = null;
             button3.ImageAlign = ContentAlignment.MiddleRight;
             button3.InactiveColor = Color.FromArgb(44, 62, 80);
-            button3.Location = new Point(1029, 31);
+            button3.Location = new Point(1130, 31);
             button3.Margin = new Padding(3, 3, 160, 3);
             button3.Name = "button3";
             button3.Padding = new Padding(0, 0, 100, 0);
@@ -294,7 +386,7 @@
             button4.Image = null;
             button4.ImageAlign = ContentAlignment.MiddleRight;
             button4.InactiveColor = Color.CornflowerBlue;
-            button4.Location = new Point(1930, 31);
+            button4.Location = new Point(2031, 31);
             button4.Margin = new Padding(3, 3, 160, 3);
             button4.Name = "button4";
             button4.Padding = new Padding(0, 0, 100, 0);
@@ -306,197 +398,150 @@
             button4.Text = "Thêm";
             button4.TextAlignment = StringAlignment.Center;
             // 
-            // pictureBox2
+            // ID
             // 
-            pictureBox2.BackColor = Color.Transparent;
-            pictureBox2.Image = GUI.Properties.Resources.icons8_search_24;
-            pictureBox2.Location = new Point(264, 45);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(29, 28);
-            pictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox2.TabIndex = 3;
-            pictureBox2.TabStop = false;
+            ID.BackColor = Color.Transparent;
+            ID.BorderColor = Color.FromArgb(180, 180, 180);
+            ID.CustomBGColor = Color.White;
+            ID.Font = new Font("Tahoma", 11F);
+            ID.ForeColor = Color.DimGray;
+            ID.Location = new Point(123, 20);
+            ID.MaxLength = 32767;
+            ID.Multiline = false;
+            ID.Name = "ID";
+            ID.ReadOnly = true;
+            ID.Size = new Size(165, 28);
+            ID.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            ID.TabIndex = 33;
+            ID.Text = "Tự động";
+            ID.TextAlignment = HorizontalAlignment.Left;
+            ID.UseSystemPasswordChar = false;
             // 
-            // label2
+            // ketqua
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(11, 173);
-            label2.Name = "label2";
-            label2.Size = new Size(69, 17);
-            label2.TabIndex = 9;
-            label2.Text = "Trạng thái";
+            ketqua.Location = new Point(192, 32);
+            ketqua.Name = "ketqua";
+            ketqua.Size = new Size(340, 100);
+            ketqua.TabIndex = 31;
+            ketqua.Visible = false;
             // 
-            // label3
+            // panel4
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(137, 173);
-            label3.Name = "label3";
-            label3.Size = new Size(69, 17);
-            label3.TabIndex = 10;
-            label3.Text = "Trạng thái";
+            panel4.BackColor = Color.White;
+            panel4.Controls.Add(TbNcc);
+            panel4.Controls.Add(lblNgTao);
+            panel4.Controls.Add(CbNgNhapEdit);
+            panel4.Controls.Add(label2);
+            panel4.Controls.Add(Tbnote);
+            panel4.Controls.Add(label7);
+            panel4.Controls.Add(label6);
+            panel4.Controls.Add(label3);
+            panel4.Controls.Add(lblSl);
+            panel4.Controls.Add(btnNhapHang);
+            panel4.Controls.Add(dtpNgayNhap);
+            panel4.Controls.Add(lblTongTien);
+            panel4.Controls.Add(label4);
+            panel4.Controls.Add(button3);
+            panel4.Controls.Add(button4);
+            panel4.Controls.Add(ID);
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(805, 33);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(301, 528);
+            panel4.TabIndex = 2;
             // 
-            // label4
+            // TbNcc
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.Location = new Point(11, 238);
-            label4.Name = "label4";
-            label4.Size = new Size(101, 17);
-            label4.TabIndex = 11;
-            label4.Text = "Tổng tiền hàng";
+            TbNcc.BackColor = Color.Transparent;
+            TbNcc.BorderColor = Color.FromArgb(180, 180, 180);
+            TbNcc.CustomBGColor = Color.White;
+            TbNcc.Font = new Font("Tahoma", 11F);
+            TbNcc.ForeColor = Color.DimGray;
+            TbNcc.Location = new Point(122, 81);
+            TbNcc.MaxLength = 32767;
+            TbNcc.Multiline = true;
+            TbNcc.Name = "TbNcc";
+            TbNcc.ReadOnly = true;
+            TbNcc.Size = new Size(166, 28);
+            TbNcc.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            TbNcc.TabIndex = 38;
+            TbNcc.TextAlignment = HorizontalAlignment.Left;
+            TbNcc.UseSystemPasswordChar = false;
             // 
-            // TbSoLuong
+            // CbNgNhapEdit
             // 
-            TbSoLuong.Location = new Point(116, 237);
-            TbSoLuong.Name = "TbSoLuong";
-            TbSoLuong.Size = new Size(39, 23);
-            TbSoLuong.TabIndex = 12;
+            CbNgNhapEdit.DrawMode = DrawMode.OwnerDrawFixed;
+            CbNgNhapEdit.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbNgNhapEdit.EnabledCalc = true;
+            CbNgNhapEdit.FormattingEnabled = true;
+            CbNgNhapEdit.ItemHeight = 20;
+            CbNgNhapEdit.Location = new Point(122, 135);
+            CbNgNhapEdit.Name = "CbNgNhapEdit";
+            CbNgNhapEdit.Size = new Size(166, 26);
+            CbNgNhapEdit.TabIndex = 36;
             // 
-            // lblTongTien
+            // panel1
             // 
-            lblTongTien.AutoSize = true;
-            lblTongTien.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTongTien.Location = new Point(201, 238);
-            lblTongTien.Name = "lblTongTien";
-            lblTongTien.Size = new Size(66, 17);
-            lblTongTien.TabIndex = 13;
-            lblTongTien.Text = "Tổng tiền";
+            panel1.BackColor = Color.FromArgb(236, 240, 241);
+            panel1.Controls.Add(ketqua);
+            panel1.Controls.Add(panel4);
+            panel1.Controls.Add(button2);
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(panel2);
+            panel1.Controls.Add(dgvChiTietEdit);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1106, 561);
+            panel1.TabIndex = 3;
             // 
-            // smallTextBox1
+            // dgvChiTietEdit
             // 
-            smallTextBox1.BackColor = Color.Transparent;
-            smallTextBox1.BorderColor = Color.FromArgb(180, 180, 180);
-            smallTextBox1.CustomBGColor = Color.White;
-            smallTextBox1.Font = new Font("Tahoma", 11F);
-            smallTextBox1.ForeColor = Color.DimGray;
-            smallTextBox1.Location = new Point(116, 295);
-            smallTextBox1.MaxLength = 32767;
-            smallTextBox1.Multiline = false;
-            smallTextBox1.Name = "smallTextBox1";
-            smallTextBox1.ReadOnly = false;
-            smallTextBox1.Size = new Size(106, 28);
-            smallTextBox1.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            smallTextBox1.TabIndex = 14;
-            smallTextBox1.TextAlignment = HorizontalAlignment.Right;
-            smallTextBox1.UseSystemPasswordChar = false;
-            // 
-            // poisonDateTime1
-            // 
-            poisonDateTime1.Location = new Point(98, 10);
-            poisonDateTime1.MinimumSize = new Size(0, 29);
-            poisonDateTime1.Name = "poisonDateTime1";
-            poisonDateTime1.Size = new Size(195, 29);
-            poisonDateTime1.TabIndex = 15;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(11, 299);
-            label5.Name = "label5";
-            label5.Size = new Size(73, 17);
-            label5.TabIndex = 16;
-            label5.Text = "Người tạo ";
-            // 
-            // TbId
-            // 
-            TbId.BackColor = Color.Transparent;
-            TbId.BorderColor = Color.FromArgb(180, 180, 180);
-            TbId.CustomBGColor = Color.White;
-            TbId.Font = new Font("Tahoma", 11F);
-            TbId.ForeColor = Color.DimGray;
-            TbId.Location = new Point(187, 93);
-            TbId.MaxLength = 32767;
-            TbId.Multiline = false;
-            TbId.Name = "TbId";
-            TbId.ReadOnly = false;
-            TbId.Size = new Size(106, 28);
-            TbId.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            TbId.TabIndex = 17;
-            TbId.TextAlignment = HorizontalAlignment.Right;
-            TbId.UseSystemPasswordChar = false;
-            // 
-            // hopeRoundButton1
-            // 
-            hopeRoundButton1.BorderColor = Color.FromArgb(220, 223, 230);
-            hopeRoundButton1.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
-            hopeRoundButton1.DangerColor = Color.FromArgb(245, 108, 108);
-            hopeRoundButton1.DefaultColor = Color.FromArgb(255, 255, 255);
-            hopeRoundButton1.Font = new Font("Segoe UI", 12F);
-            hopeRoundButton1.HoverTextColor = Color.FromArgb(48, 49, 51);
-            hopeRoundButton1.InfoColor = Color.FromArgb(144, 147, 153);
-            hopeRoundButton1.Location = new Point(59, 506);
-            hopeRoundButton1.Name = "hopeRoundButton1";
-            hopeRoundButton1.PrimaryColor = Color.LimeGreen;
-            hopeRoundButton1.Size = new Size(190, 40);
-            hopeRoundButton1.SuccessColor = Color.FromArgb(103, 194, 58);
-            hopeRoundButton1.TabIndex = 18;
-            hopeRoundButton1.Text = "Hoàn thành";
-            hopeRoundButton1.TextColor = Color.White;
-            hopeRoundButton1.WarningColor = Color.FromArgb(230, 162, 60);
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Location = new Point(12, 7);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(24, 24);
-            pictureBox3.TabIndex = 10;
-            pictureBox3.TabStop = false;
-            // 
-            // bigLabel1
-            // 
-            bigLabel1.AutoSize = true;
-            bigLabel1.BackColor = Color.Transparent;
-            bigLabel1.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            bigLabel1.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel1.Location = new Point(52, 3);
-            bigLabel1.Name = "bigLabel1";
-            bigLabel1.Size = new Size(123, 30);
-            bigLabel1.TabIndex = 11;
-            bigLabel1.Text = "Nhập hàng";
-            // 
-            // panel3
-            // 
-            panel3.BackColor = Color.FromArgb(224, 224, 224);
-            panel3.Controls.Add(hopeRoundButton2);
-            panel3.Controls.Add(smallLabel1);
-            panel3.Location = new Point(285, 228);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(247, 117);
-            panel3.TabIndex = 12;
-            // 
-            // smallLabel1
-            // 
-            smallLabel1.AutoSize = true;
-            smallLabel1.BackColor = Color.Transparent;
-            smallLabel1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            smallLabel1.ForeColor = Color.Black;
-            smallLabel1.Location = new Point(8, 28);
-            smallLabel1.Name = "smallLabel1";
-            smallLabel1.Size = new Size(225, 21);
-            smallLabel1.TabIndex = 0;
-            smallLabel1.Text = "Thêm sản phẩm từ file excel";
-            // 
-            // hopeRoundButton2
-            // 
-            hopeRoundButton2.BorderColor = Color.FromArgb(220, 223, 230);
-            hopeRoundButton2.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
-            hopeRoundButton2.DangerColor = Color.FromArgb(245, 108, 108);
-            hopeRoundButton2.DefaultColor = Color.FromArgb(255, 255, 255);
-            hopeRoundButton2.Font = new Font("Segoe UI", 12F);
-            hopeRoundButton2.HoverTextColor = Color.FromArgb(48, 49, 51);
-            hopeRoundButton2.InfoColor = Color.FromArgb(144, 147, 153);
-            hopeRoundButton2.Location = new Point(25, 64);
-            hopeRoundButton2.Name = "hopeRoundButton2";
-            hopeRoundButton2.PrimaryColor = Color.FromArgb(64, 158, 255);
-            hopeRoundButton2.Size = new Size(190, 40);
-            hopeRoundButton2.SuccessColor = Color.FromArgb(103, 194, 58);
-            hopeRoundButton2.TabIndex = 1;
-            hopeRoundButton2.Text = "Chọn file";
-            hopeRoundButton2.TextColor = Color.White;
-            hopeRoundButton2.WarningColor = Color.FromArgb(230, 162, 60);
+            dgvChiTietEdit.AllowUserToAddRows = false;
+            dgvChiTietEdit.AllowUserToDeleteRows = false;
+            dgvChiTietEdit.AllowUserToResizeRows = false;
+            dgvChiTietEdit.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvChiTietEdit.BackgroundColor = Color.FromArgb(236, 240, 241);
+            dgvChiTietEdit.BorderStyle = BorderStyle.None;
+            dgvChiTietEdit.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dgvChiTietEdit.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 174, 219);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvChiTietEdit.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvChiTietEdit.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle2.ForeColor = Color.FromArgb(136, 136, 136);
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvChiTietEdit.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvChiTietEdit.EnableHeadersVisualStyles = false;
+            dgvChiTietEdit.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dgvChiTietEdit.GridColor = Color.FromArgb(255, 255, 255);
+            dgvChiTietEdit.Location = new Point(3, 32);
+            dgvChiTietEdit.Name = "dgvChiTietEdit";
+            dgvChiTietEdit.ReadOnly = true;
+            dgvChiTietEdit.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 174, 219);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle3.ForeColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvChiTietEdit.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvChiTietEdit.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dgvChiTietEdit.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvChiTietEdit.Size = new Size(801, 524);
+            dgvChiTietEdit.TabIndex = 8;
+            dgvChiTietEdit.CellContentClick += dgvChiTietEdit_CellContentClick_1;
             // 
             // EditNhap
             // 
@@ -507,47 +552,46 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "EditNhap";
             Text = "EditNhap";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)poisonDataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvChiTietEdit).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private Panel panel1;
         private ReaLTaiizor.Controls.Button button2;
         private ReaLTaiizor.Controls.Button button1;
-        private PictureBox pictureBox1;
+        private Panel panel2;
+        private ReaLTaiizor.Controls.HopeRoundButton btnCancelImport;
+        private ReaLTaiizor.Controls.AloneComboBox CbLocNCC;
+        private ReaLTaiizor.Controls.BigLabel bigLabel1;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
-        private ReaLTaiizor.Controls.PoisonDataGridView poisonDataGridView1;
-        private Label label1;
-        private Panel panel4;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox3;
+        private Label lblNgTao;
+        private Label label2;
+        private ReaLTaiizor.Controls.SmallTextBox Tbnote;
+        private Label label7;
+        private Label label6;
+        private Label lblSl;
+        private ReaLTaiizor.Controls.HopeRoundButton btnNhapHang;
+        private ReaLTaiizor.Controls.PoisonDateTime dtpNgayNhap;
+        private Label label3;
+        private Label lblTongTien;
+        private Label label4;
         private ReaLTaiizor.Controls.Button button3;
         private ReaLTaiizor.Controls.Button button4;
-        private ReaLTaiizor.Controls.DungeonTextBox dungeonTextBox1;
-        private PictureBox pictureBox2;
-        private Label label2;
-        private Label lblTongTien;
-        private TextBox TbSoLuong;
-        private Label label4;
-        private Label label3;
-        private ReaLTaiizor.Controls.SmallTextBox TbId;
-        private Label label5;
-        private ReaLTaiizor.Controls.PoisonDateTime poisonDateTime1;
-        private ReaLTaiizor.Controls.SmallTextBox smallTextBox1;
-        private ReaLTaiizor.Controls.BigLabel bigLabel1;
-        private PictureBox pictureBox3;
-        private ReaLTaiizor.Controls.HopeRoundButton hopeRoundButton1;
-        private Panel panel3;
-        private ReaLTaiizor.Controls.HopeRoundButton hopeRoundButton2;
-        private ReaLTaiizor.Controls.SmallLabel smallLabel1;
+        private ReaLTaiizor.Controls.SmallTextBox ID;
+        private FlowLayoutPanel ketqua;
+        private Panel panel4;
+        private Panel panel1;
+        private ReaLTaiizor.Controls.PoisonDataGridView dgvChiTietEdit;
+        private ReaLTaiizor.Controls.SmallTextBox TbNcc;
+        private ReaLTaiizor.Controls.AloneComboBox CbNgNhapEdit;
     }
 }

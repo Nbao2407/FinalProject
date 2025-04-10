@@ -56,6 +56,7 @@
             button2 = new ReaLTaiizor.Controls.Button();
             button1 = new ReaLTaiizor.Controls.Button();
             panel2 = new Panel();
+            btnCancelImport = new ReaLTaiizor.Controls.HopeRoundButton();
             CbLocNCC = new ReaLTaiizor.Controls.AloneComboBox();
             bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
@@ -439,6 +440,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(btnCancelImport);
             panel2.Controls.Add(CbLocNCC);
             panel2.Controls.Add(bigLabel1);
             panel2.Controls.Add(txtSearch);
@@ -450,10 +452,33 @@
             panel2.Size = new Size(1106, 33);
             panel2.TabIndex = 13;
             // 
+            // btnCancelImport
+            // 
+            btnCancelImport.BorderColor = Color.FromArgb(220, 223, 230);
+            btnCancelImport.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
+            btnCancelImport.DangerColor = Color.FromArgb(245, 108, 108);
+            btnCancelImport.DefaultColor = Color.FromArgb(255, 255, 255);
+            btnCancelImport.Enabled = false;
+            btnCancelImport.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancelImport.HoverTextColor = Color.FromArgb(48, 49, 51);
+            btnCancelImport.InfoColor = Color.FromArgb(144, 147, 153);
+            btnCancelImport.Location = new Point(934, 4);
+            btnCancelImport.Name = "btnCancelImport";
+            btnCancelImport.PrimaryColor = Color.Crimson;
+            btnCancelImport.Size = new Size(120, 24);
+            btnCancelImport.SuccessColor = Color.FromArgb(103, 194, 58);
+            btnCancelImport.TabIndex = 38;
+            btnCancelImport.Text = "Xoá import";
+            btnCancelImport.TextColor = Color.White;
+            btnCancelImport.Visible = false;
+            btnCancelImport.WarningColor = Color.FromArgb(230, 162, 60);
+            btnCancelImport.Click += btnCancelImport_Click;
+            // 
             // CbLocNCC
             // 
             CbLocNCC.DrawMode = DrawMode.OwnerDrawFixed;
             CbLocNCC.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbLocNCC.Enabled = false;
             CbLocNCC.EnabledCalc = true;
             CbLocNCC.FormattingEnabled = true;
             CbLocNCC.ItemHeight = 20;
@@ -461,6 +486,7 @@
             CbLocNCC.Name = "CbLocNCC";
             CbLocNCC.Size = new Size(188, 26);
             CbLocNCC.TabIndex = 38;
+            CbLocNCC.Visible = false;
             CbLocNCC.SelectedIndexChanged += CbLocNCC_SelectedIndexChanged;
             // 
             // bigLabel1
@@ -562,6 +588,8 @@
             dgvChiTiet.Size = new Size(798, 530);
             dgvChiTiet.TabIndex = 8;
             dgvChiTiet.CellContentClick += dgvChiTiet_CellContentClick;
+            dgvChiTiet.RowsAdded += dgvChiTiet_RowsAdded;
+            dgvChiTiet.RowsRemoved += dgvChiTiet_RowsRemoved;
             // 
             // NhapHang
             // 
@@ -622,5 +650,6 @@
         private Label label2;
         private Label lblNgTao;
         private ReaLTaiizor.Controls.AloneComboBox CbLocNCC;
+        private ReaLTaiizor.Controls.HopeRoundButton btnCancelImport;
     }
 }

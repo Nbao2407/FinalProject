@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.TaiKhoan;
 using QLVT.VatLieu;
@@ -11,6 +12,8 @@ namespace QLVT
     {
         private BUS_VatLieu busVatLieu = new BUS_VatLieu();
         private QLVatLieu vl = new QLVatLieu();
+        private System.Windows.Forms.Timer debounceTimer;
+        private List<DTO_VatLieu> danhSach;
 
         public FrmMaterial()
         {
@@ -19,12 +22,24 @@ namespace QLVT
             this.Resize += new EventHandler(FrmMaterial_Resize);
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             LoadData();
+            SetupDebounceTimer();
+            LoadComboBoxes();
         }
 
         private void FrmMaterial_Load(object sender, EventArgs e)
         {
           
             ResizeColumns();
+        }
+
+        private void SetupDebounceTimer()
+        {
+            debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
         }
 
         public void LoadData()
@@ -107,57 +122,74 @@ namespace QLVT
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            string searchQuery = txtSearch.Text.Trim();
-
-            if (searchQuery.Length > 0)
+            debounceTimer.Stop();
+            debounceTimer.Start();
+        }
+        private void PerformSearch()
+        {
+            string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+            string selectedLoai = CbLoai.DisplayMember?.ToString();
+            if (selectedLoai == "Tất cả") { selectedLoai = null; }
+            try
             {
-                List<DTO_VatLieu> results = vl.SearchProducts(searchQuery);
-                result.Controls.Clear();
-                result.Height = Math.Min(results.Count * 40, 200); // Giới hạn chiều cao
+                IEnumerable<DTO_VatLieu> suggestionSource = danhSach;
 
-                foreach (var item in results)
+               
+                if (!string.IsNullOrEmpty(selectedLoai))
                 {
-                    Label lbl = new Label
-                    {
-                        Text = item.TenLoai,
-                        AutoSize = false,
-                        Width = result.Width,
-                        Height = 40,
-                        Padding = new Padding(5),
-                        Font = new Font("Arial", 11, FontStyle.Bold),
-                        BackColor = Color.White,
-                        ForeColor = Color.Black,
-                        BorderStyle = BorderStyle.FixedSingle
-                    };
-
-                    lbl.Click += (s, ev) =>
-                    {
-                        txtSearch.Text = item.TenLoai;
-                        result.Visible = false;
-                    };
-
-                    result.Controls.Add(lbl);
+                    suggestionSource = suggestionSource.Where(order =>
+                        order.TenLoai != null &&
+                        order.TenLoai.Equals(selectedLoai, StringComparison.OrdinalIgnoreCase)
+                    );
                 }
-                result.Visible = true;
+                List<DTO_VatLieu> suggestionResults = new List<DTO_VatLieu>(); 
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    suggestionResults = suggestionSource.Where(order =>
+                    {
+                        bool match = false;
+                        if (order.MaVatLieu.ToString().Contains(searchQuery)) match = true;
+                        if (!match && order.Ten != null && order.Ten .ToLowerInvariant().Contains(searchQuery)) match = true;
+                        return match;
+                    }).ToList();
+                }
+                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+                Func<DTO_VatLieu, string> displayFunc = item => $"{item.MaVatLieu} - {item.Ten ?? "N/A"}";
+
+                Action<DTO_VatLieu> clickAction = selectedItem => {
+                    txtSearch.TextChanged -= txtSearch_TextChanged;
+                    txtSearch.Text = selectedItem.MaVatLieu.ToString(); 
+                    txtSearch.TextChanged += txtSearch_TextChanged;
+                    var itemToShow = new List<DTO_VatLieu> { selectedItem };
+                    dataGridView1.DataSource = itemToShow;
+                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaVatLieu}");
+                    ResizeColumns();
+                };
+
+                SearchHelper.UpdateSearchSuggestions(
+                    result,
+                    suggestionResults,
+                    txtSearch,
+                    38,
+                    190,
+                    displayFunc,
+                    clickAction
+                );
             }
-            else
+            catch (Exception ex)
             {
-                result.Visible = false;
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
             }
-
-            dataGridView1.DataSource = searchQuery.Length > 0
-                ? vl.SearchProducts(searchQuery)
-                : vl.LayTatCaVatLieu();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void LoadComboBoxes()
         {
+            BUS_LVL vl = new BUS_LVL();
+            CbLoai.DataSource = vl.GetAllLoaiVatLieu();
+            CbLoai.SelectedIndex = -1;
+         
         }
-
-        private void plotView1_Click(object sender, EventArgs e)
-        {
-        }
-
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dataGridView1.CurrentRow != null)

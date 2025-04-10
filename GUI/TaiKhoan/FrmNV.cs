@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.TaiKhoan;
 using QLVT.Type;
@@ -10,7 +11,8 @@ namespace QLVT
 {
     public partial class FrmNV : Form
     {
-
+        private List<DTO_TK> danhSach;
+        private System.Windows.Forms.Timer debounceTimer;
         public FrmNV(DTO_TK loggedInUser = null)
         {
             InitializeComponent();
@@ -22,8 +24,18 @@ namespace QLVT
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             LoadData();
             ResizeColumns();
-        }
+            SetupDebounceTimer();
 
+        }
+        private void SetupDebounceTimer()
+        {
+            debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
+        }
         public void LoadData()
         {
             try
@@ -128,11 +140,68 @@ namespace QLVT
             if (dataGridView1.CurrentRow != null)
             {
                 int tk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
-                    int maTk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
-                    PopupTk popup = new PopupTk(this, maTk);
-                    popup.StartPosition = FormStartPosition.CenterParent;
-                    popup.ShowDialog();
+                int maTk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
+                PopupTk popup = new PopupTk(this, maTk);
+                popup.StartPosition = FormStartPosition.CenterParent;
+                popup.ShowDialog();
             }
+        }
+
+        private void PerformSearch()
+        {
+            string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+            try
+            {
+                IEnumerable<DTO_TK> suggestionSource = danhSach;
+
+                List<DTO_TK> suggestionResults = new List<DTO_TK>(); // Khởi tạo danh sách rỗng cho gợi ý
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    suggestionResults = suggestionSource.Where(order =>
+                    {
+                        bool match = false;
+                        if (order.maTK.ToString().Contains(searchQuery)) match = true;
+                        if (!match && order.tenDangNhap.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        return match;
+                    }).ToList();
+                }
+
+                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+
+                Func<DTO_TK, string> displayFunc = item => $"{item.maTK} - {item.tenDangNhap ?? "N/A"}";
+
+                Action<DTO_TK> clickAction = selectedItem =>
+                {
+                    txtSearch.TextChanged -= txtSearch_TextChanged;
+                    txtSearch.Text = selectedItem.maTK.ToString(); // Điền Mã ĐN vào ô search
+                    txtSearch.TextChanged += txtSearch_TextChanged;
+
+                    var itemToShow = new List<DTO_TK> { selectedItem };
+                    dataGridView1.DataSource = itemToShow;
+                    ResizeColumns();
+                };
+
+                SearchHelper.UpdateSearchSuggestions(
+                    result,
+                    suggestionResults,
+                    txtSearch,
+                    38,
+                    190,
+                    displayFunc,
+                    clickAction
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
+            }
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            debounceTimer.Stop();
+            debounceTimer.Start();
         }
     }
 }

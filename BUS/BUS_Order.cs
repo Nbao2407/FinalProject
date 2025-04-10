@@ -20,7 +20,7 @@ namespace BUS
         {
             return dal.GetAllOrder();
         }
-
+    
         public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(
         DateOnly ngayNhap,
         int maNCC,
@@ -59,20 +59,12 @@ namespace BUS
                 return (false, $"Lỗi hệ thống khi nhập hàng: {ex.Message}", 0);
             }
         }
-
-        public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string keyword)
+        public DTO_OrderDetail GetOrderDetailById(int? orderId)
         {
-            if (string.IsNullOrWhiteSpace(keyword))
-                return new List<DTO_VatLieu>();
+            if (orderId <= 0) return null; 
 
-            return await dal.TimKiemVatLieuAsync(keyword);
+            return dal.GetOrderDetailById(orderId); 
         }
-
-        public List<DTO_DonNhapSearchResult> TimKiemDonNhap(string keyword)
-        {
-            return dal.TimKiemDonNhapTheoKeyword(keyword);
-        }
-       
 
     }
 }

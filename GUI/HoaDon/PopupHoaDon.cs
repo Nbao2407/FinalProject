@@ -152,7 +152,6 @@ namespace QLVT.HoaDon
                 MessageBox.Show("Không tìm thấy form cha Frm1!");
                 return;
             }
-
             this.Close();
         }
 

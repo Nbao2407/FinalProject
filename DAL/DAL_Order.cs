@@ -187,5 +187,97 @@ namespace DAL
             }
             return danhSachL;
         }
+        public DTO_OrderDetail GetOrderDetailById(int? orderId)
+        {
+            DTO_OrderDetail orderDetail = null; // Khởi tạo là null
+
+            string queryHeader = @"
+                SELECT
+                    dn.MaDonNhap, dn.NgayNhap, dn.MaNCC, ncc.TenNCC, dn.MaTK,
+                    tk.TenDangNhap AS TenNguoiTao, dn.TrangThai, dn.GhiChu,
+                    dn.NgayCapNhat, tkUpdate.TenDangNhap AS TenNguoiCapNhat, dn.NgayTao
+                FROM QLDonNhap dn
+                LEFT JOIN NCC ncc ON dn.MaNCC = ncc.MaNCC
+                LEFT JOIN QLTK tk ON dn.MaTK = tk.MaTK
+                LEFT JOIN QLTK tkUpdate ON dn.NguoiCapNhat = tkUpdate.MaTK
+                WHERE dn.MaDonNhap = @OrderId";
+
+            string queryDetails = @"
+                SELECT
+                    ctdn.MaDonNhap, ctdn.MaVatLieu, vl.Ten AS TenVatLieu,
+                    vl.DonViTinh, ctdn.SoLuong, ctdn.GiaNhap
+                FROM ChiTietDonNhap ctdn
+                INNER JOIN QLVatLieu vl ON ctdn.MaVatLieu = vl.MaVatLieu
+                WHERE ctdn.MaDonNhap = @OrderId";
+
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+
+                    using (SqlCommand cmdHeader = new SqlCommand(queryHeader, conn))
+                    {
+                        cmdHeader.Parameters.AddWithValue("@OrderId", orderId);
+                        using (SqlDataReader readerHeader = cmdHeader.ExecuteReader())
+                        {
+                            if (readerHeader.Read()) // Chỉ đọc 1 dòng header
+                            {
+                                orderDetail = new DTO_OrderDetail // Tạo đối tượng
+                                {
+                                    MaDonNhap = readerHeader.GetInt32(readerHeader.GetOrdinal("MaDonNhap")),
+                                    NgayNhap = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayNhap")),
+                                    MaNCC = readerHeader.GetInt32(readerHeader.GetOrdinal("MaNCC")),
+                                    TenNCC = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNCC")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNCC")),
+                                    MaTK = readerHeader.GetInt32(readerHeader.GetOrdinal("MaTK")),
+                                    NguoiTao = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNguoiTao")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiTao")),
+                                    TrangThai = readerHeader.IsDBNull(readerHeader.GetOrdinal("TrangThai")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TrangThai")),
+                                    GhiChu = readerHeader.IsDBNull(readerHeader.GetOrdinal("GhiChu")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("GhiChu")),
+                                    NgayCapNhat = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayCapNhat")),
+                                    NguoiCapNhatTen = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNguoiCapNhat")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiCapNhat")),
+                                    NgayTao = readerHeader.GetDateTime("NgayTao") ,
+                                    ChiTietDonNhap = new List<DTO_ChiTietDonNhap>() // Khởi tạo list chi tiết
+                                };
+                            }
+                        } 
+                    } 
+
+                    if (orderDetail != null)
+                    {
+                        using (SqlCommand cmdDetails = new SqlCommand(queryDetails, conn))
+                        {
+                            cmdDetails.Parameters.AddWithValue("@OrderId", orderId);
+                            using (SqlDataReader readerDetails = cmdDetails.ExecuteReader())
+                            {
+                                while (readerDetails.Read())
+                                {
+                                    try
+                                    {
+                                        DTO_ChiTietDonNhap detailItem = new DTO_ChiTietDonNhap
+                                        {
+                                            MaDonNhap = readerDetails.GetInt32(readerDetails.GetOrdinal("MaDonNhap")),
+                                            MaVatLieu = readerDetails.GetInt32(readerDetails.GetOrdinal("MaVatLieu")),
+                                            TenVatLieu = readerDetails.GetString(readerDetails.GetOrdinal("TenVatLieu")),
+                                            DonViTinh = readerDetails.GetString(readerDetails.GetOrdinal("DonViTinh")),
+                                            SoLuong = readerDetails.GetInt32(readerDetails.GetOrdinal("SoLuong")),
+                                            GiaNhap = readerDetails.GetDecimal(readerDetails.GetOrdinal("GiaNhap")) 
+                                        };
+                                        orderDetail.ChiTietDonNhap.Add(detailItem);
+                                    }
+                                    catch (Exception exRow) { Console.WriteLine($"Error reading order detail row: {exRow.Message}"); }
+                                }
+                            } 
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Database error in GetOrderDetailById: {ex.Message}");
+                }
+            }
+
+            return orderDetail;
+        }
+
     }
 }

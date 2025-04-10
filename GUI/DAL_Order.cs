@@ -9,9 +9,9 @@ namespace DAL
 {
     public class DAL_Order : DBConnect
     {
-        public DataTable GetAllOrder()
+        public List<DTO_Order> GetAllOrder()
         {
-            DataTable dt = new DataTable();
+            List<DTO_Order> dt = new List<DTO_Order>();
             using (SqlConnection conn = DBConnect.GetConnection())
             {
                 conn.Open();
@@ -20,9 +20,18 @@ namespace DAL
                     "FROM QLDonNhap " +
                     "LEFT JOIN NCC ON QLDonNhap.MaNCC = NCC.MaNCC", conn))
                 {
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        adapter.Fill(dt);
+                        while (reader.Read())
+                        {
+                            dt.Add(new DTO_Order
+                            {
+                                MaDonNhap = reader.GetInt32(0),
+                                NgayNhap = reader.GetDateTime(1),
+                                TenNCC = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                TrangThai = reader.IsDBNull(3) ? null : reader.GetString(3)
+                            });
+                        }
                     }
                 }
             }
@@ -95,57 +104,41 @@ namespace DAL
 
         public List<DTO_DonNhapSearchResult> TimKiemDonNhapTheoKeyword(string keyword)
         {
-            var results = new List<DTO_DonNhapSearchResult>();
-            if (string.IsNullOrWhiteSpace(keyword))
-            {
-                return results;
-            }
-            const string storedProcedure = "sp_TimKiemQLDonNhap";
-
+            List<DTO_DonNhapSearchResult> orderList = new List<DTO_DonNhapSearchResult>();
             using (SqlConnection conn = DBConnect.GetConnection())
             {
                 conn.Open();
-
-                using (var cmd = new SqlCommand(storedProcedure, conn))
+                using (SqlCommand cmd = new SqlCommand("sp_TimKiemQLDonNhap", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("@Keyword", SqlDbType.NVarChar, 100).Value = keyword;
+                    cmd.Parameters.AddWithValue("@Keyword", keyword); // Truyền keyword gốc
 
-                    try
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            int maDonNhapOrd = reader.GetOrdinal("MaDonNhap");
-                            int ngayNhapOrd = reader.GetOrdinal("NgayNhap");
-                            int tenNhaCungCapOrd = reader.GetOrdinal("TenNhaCungCap");
-                            int trangThaiOrd = reader.GetOrdinal("TrangThai");
-
-                            while (reader.Read())
+                            try
                             {
-                                var dto = new DTO_DonNhapSearchResult
-                                (
-                                    reader.GetInt32(maDonNhapOrd),
-                                    reader.IsDBNull(tenNhaCungCapOrd) ? null : reader.GetString(tenNhaCungCapOrd),
-                                    reader.IsDBNull(ngayNhapOrd) ? default : reader.GetDateTime(ngayNhapOrd),
-                                    reader.IsDBNull(trangThaiOrd) ? null : reader.GetString(trangThaiOrd)
-                                );
-
-                                results.Add(dto);
+                                DTO_DonNhapSearchResult order = new DTO_DonNhapSearchResult
+                                {
+                                    MaDonNhap = reader.GetInt32(reader.GetOrdinal("MaDonNhap")),
+                                    NgayNhap = reader.GetDateTime(reader.GetOrdinal("NgayNhap")), // Đọc đúng kiểu DateTime
+                                    TenNhaCungCap = reader.IsDBNull(reader.GetOrdinal("TenNCC")) ? null : reader.GetString(reader.GetOrdinal("TenNCC")), // Tên cột khớp với AS trong SP
+                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? null : reader.GetString(reader.GetOrdinal("TrangThai")),
+                                };
+                                orderList.Add(order);
                             }
+                            catch (Exception ex) { Console.WriteLine($"Error reading search result row from SP: {ex.Message}"); }
                         }
-                    }
-                    catch (SqlException ex)
-                    {
-                        Console.WriteLine($"L?i khi th?c thi SP '{storedProcedure}' v?i Keyword='{keyword}': {ex.Message}");
-                        throw;
                     }
                 }
             }
-            return results;
+            return orderList;
         }
-        public List<DTO_Order> SearchOrder(string keyword)
+
+        public List<DTO_DonNhapSearchResult> SearchOrder(string keyword)
         {
-            List<DTO_Order> danhSachL = new List<DTO_Order>();
+            List<DTO_DonNhapSearchResult> danhSachL = new List<DTO_DonNhapSearchResult>();
 
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -159,10 +152,10 @@ namespace DAL
                     {
                         while (reader.Read())
                         {
-                            danhSachL.Add(new DTO_Order
+                            danhSachL.Add(new DTO_DonNhapSearchResult
                             {
                                 MaDonNhap = reader.GetInt32(0),
-                                TenNCC = reader.GetString(1),
+                                TenNhaCungCap = reader.GetString(1),
                                 NgayNhap = reader.GetDateTime(2),
                                 TrangThai = reader.GetString(3)
                             });

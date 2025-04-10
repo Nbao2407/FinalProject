@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.NCC;
 
@@ -13,6 +14,8 @@ namespace QLVT
         private DAL_NCcap ncc = new DAL_NCcap();
         private List<DTO_Ncap> danhSach;
         private DTO_Ncap _ncc;
+        private System.Windows.Forms.Timer debounceTimer;
+
         public FrmNCc()
         {
             InitializeComponent();
@@ -20,8 +23,18 @@ namespace QLVT
             this.Resize += new EventHandler(Frm_Resize);
             this.Load += FrmNCc_Load;
             ConfigureDataGridView();
-
+            SetupDebounceTimer();
         }
+        private void SetupDebounceTimer()
+        {
+            debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
+        }
+
         private void ConfigureDataGridView()
         {
             dataGridView1.AutoGenerateColumns = false;
@@ -35,7 +48,7 @@ namespace QLVT
         }
         public void Loaddata()
         {
-            danhSach =busNcc.GetAllNcc();
+            danhSach = busNcc.GetAllNcc();
             dataGridView1.DataSource = danhSach;
         }
 
@@ -81,49 +94,6 @@ namespace QLVT
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            string searchQuery = txtSearch.Text.Trim();
-            var results = busNcc.TimKiemNcc(searchQuery);
-
-            if (results != null && results.Count > 0)
-            {
-                result.Controls.Clear();
-                result.Height = Math.Min(results.Count * 40, 200);
-
-                foreach (var item in results)
-                {
-                    var lbl = new Label
-                    {
-                        Text = item.TenNCC,
-                        AutoSize = false,
-                        Width = result.Width,
-                        Height = 40,
-                        Padding = new Padding(5),
-                        Font = new Font("Arial", 12, FontStyle.Bold),
-                        BackColor = Color.White,
-                        ForeColor = Color.Black,
-                        BorderStyle = BorderStyle.FixedSingle
-                    };
-
-                    lbl.Click += (s, ev) =>
-                    {
-                        txtSearch.Text = $"{item.TenNCC} + {item.MaNCC}";
-                        result.Visible = false;
-                    };
-
-                    result.Controls.Add(lbl);
-                }
-                result.Visible = true;
-            }
-            else
-            {
-                result.Visible = false;
-            }
-
-            dataGridView1.DataSource = results;
-        }
-
         private void PopupFrm_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -139,7 +109,7 @@ namespace QLVT
         private void ShowPopup(DTO_Ncap ncc)
         {
 
-            using (var popup = new PopNcc(this,ncc))
+            using (var popup = new PopNcc(this, ncc))
             {
                 popup.Deactivate += (s, e) => popup.TopMost = true;
 
@@ -148,16 +118,6 @@ namespace QLVT
                 popup.ShowDialog();
                 Loaddata();
             }
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -169,6 +129,61 @@ namespace QLVT
                 popup.StartPosition = FormStartPosition.CenterParent;
 
                 popup.ShowDialog();
+            }
+        }
+
+        private void txtSearch_TextChanged_1(object sender, EventArgs e)
+        {
+            debounceTimer.Stop();
+            debounceTimer.Start();
+        }
+        private void PerformSearch()
+        {
+            string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+            try
+            {
+                IEnumerable<DTO_Ncap> suggestionSource = danhSach;
+                List<DTO_Ncap> suggestionResults = new List<DTO_Ncap>();
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    suggestionResults = suggestionSource.Where(order =>
+                    {
+                        bool match = false;
+                        if (order.MaNCC.ToString().Contains(searchQuery)) match = true;
+                        if (!match && order.TenNCC.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        return match;
+                    }).ToList();
+                }
+
+                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+
+                Func<DTO_Ncap, string> displayFunc = item => $"{item.MaNCC}-{item.TenNCC ?? "N/A"}";
+
+                Action<DTO_Ncap> clickAction = selectedItem => {
+                    txtSearch.TextChanged -= txtSearch_TextChanged_1;
+                    txtSearch.Text = selectedItem.MaNCC.ToString(); 
+                    txtSearch.TextChanged += txtSearch_TextChanged_1;
+
+                    var itemToShow = new List<DTO_Ncap> { selectedItem };
+                    dataGridView1.DataSource = itemToShow;
+                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaNCC}");
+                    ResizeColumns();
+                };
+
+                SearchHelper.UpdateSearchSuggestions(
+                    result,
+                    suggestionResults,
+                    txtSearch,
+                    38,
+                    190,
+                    displayFunc,
+                    clickAction
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
             }
         }
     }

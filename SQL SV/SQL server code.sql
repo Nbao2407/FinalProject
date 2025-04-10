@@ -199,11 +199,11 @@ WHERE NgayLap = '2025-04-07';
 DELETE FROM ChiTietDonNhap
 WHERE MaCTDN IN (
     SELECT MaCTDN FROM QLDonNhap
-    WHERE NgayNhap = '2025-04-07'
+    WHERE NgayNhap = '2025-04-08'
 );
 
 DELETE FROM QLDonNhap
-WHERE NgayNhap = '2025-04-07';
+WHERE NgayNhap = '2025-04-08';
 
 SELECT maTK, tenDangNhap, email, sdt, ChucVu, trangThai, ngayTao , GHICHU ,DiaChi FROM QLTK WHERE maTk = 1
 Select * from QLTK
@@ -223,4 +223,4 @@ WHERE CONSTRAINT_NAME = 'CK_QLTK_TrangThai_39508EEE';
 
 SELect MaNCC,TenNCC from NCC Where TrangThai =N'Hoạt động'
 
-SELECT MaNCC, TenNCC, DiaChi, SDT, Email, NgayTao, NguoiTao FROM NCC
+SELECT * FROM QLVatLieu
