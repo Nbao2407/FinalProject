@@ -4,6 +4,7 @@ using DTO;
 using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.Type;
+using ReaLTaiizor.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,7 +56,9 @@ namespace QLVT
         public void LoadData()
         {
             danhSach = lVL.GetAllLoaiVatLieu();
+            danhSach = danhSach.AsEnumerable().Reverse().ToList();
             dataGridView.DataSource = danhSach;
+
         }
 
         private void FrmType_Load(object sender, EventArgs e)
@@ -111,60 +114,89 @@ namespace QLVT
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
-            string selectedTrangThai = CbTrangThai.SelectedItem?.ToString();
-            if (selectedTrangThai == "-- Tất cả TT --") { selectedTrangThai = null; }
+
+            string selectedTrangThai = null;
+            string selectedChucvu = null;
+            if (CbTrangThai.SelectedIndex > 0)
+            {
+                selectedTrangThai = CbTrangThai.Text;
+            }
+          
+
             try
             {
-                IEnumerable<DTO_LVL> suggestionSource = danhSach;
+                if (danhSach == null)
+                {
+                    MessageBox.Show("Danh sách gốc chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    dataGridView.DataSource = null;
+                    return;
+                }
+
+                IEnumerable<DTO_LVL> filteredSource = danhSach;
 
                 if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
-                    suggestionSource = suggestionSource.Where(order =>
-                        order.TrangThai != null &&
-                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
+                    filteredSource = filteredSource.Where(tk =>
+                        tk != null &&
+                        tk.TrangThai != null &&
+                        tk.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
                     );
                 }
 
-                List<DTO_LVL> suggestionResults = new List<DTO_LVL>(); 
+            
+
+                List<DTO_LVL> finalResults;
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
-                    suggestionResults = suggestionSource.Where(order =>
+                    finalResults = filteredSource.Where(tk =>
                     {
+                        if (tk == null) return false;
                         bool match = false;
-                        if (order.MaLoaiVatLieu.ToString().Contains(searchQuery)) match = true;
-                        if (!match && order.TenLoai != null && order.TenLoai.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        if (tk.MaLoaiVatLieu.ToString().ToLowerInvariant().Contains(searchQuery))
+                            match = true;
+                        if (!match && tk.TenLoai != null && tk.TenLoai.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                            match = true;
                         return match;
                     }).ToList();
                 }
+                else
+                {
+                    finalResults = filteredSource.Where(tk => tk != null).ToList();
+                }
 
-                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+                dataGridView.DataSource = null;
+                if (finalResults.Any())
+                {
+                    var bindingSource = new BindingSource { DataSource = finalResults };
+                    dataGridView.DataSource = bindingSource;
+                }
+                ResizeColumns();
 
-                Func<DTO_LVL, string> displayFunc = item => $"{item.MaLoaiVatLieu} - {item.TenLoai ?? "N/A"}";
-
-                Action<DTO_LVL> clickAction = selectedItem => {
+                Func<DTO_LVL, string> displayFunc = item => $"{item.MaLoaiVatLieu} - {item.TenLoai}";
+                Action<DTO_LVL> clickAction = selectedItem =>
+                {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
-                    txtSearch.Text = selectedItem.MaLoaiVatLieu.ToString(); 
+                    txtSearch.Text = selectedItem.TenLoai;
                     txtSearch.TextChanged += txtSearch_TextChanged;
-
                     var itemToShow = new List<DTO_LVL> { selectedItem };
-                    dataGridView.DataSource = itemToShow;
+                    var singleBindingSource = new BindingSource { DataSource = itemToShow };
+                    dataGridView.DataSource = singleBindingSource;
                     ResizeColumns();
+                    if (result != null) result.Visible = false;
                 };
 
                 SearchHelper.UpdateSearchSuggestions(
                     result,
-                    suggestionResults,
+                    finalResults,
                     txtSearch,
-                    38,
-                    190,
-                    displayFunc,
-                    clickAction
-                );
+                    38, 190, displayFunc, clickAction);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;
+                dataGridView.DataSource = null;
             }
         }
 
@@ -207,29 +239,7 @@ namespace QLVT
 
         private void CbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string filter = CbTrangThai.SelectedItem?.ToString();
-
-            if (danhSach == null) { return; }
-
-            IEnumerable<DTO_LVL> listToShow = danhSach; 
-
-            if (filter != "-- Tất cả TT --" && !string.IsNullOrEmpty(filter))
-            {
-                listToShow = danhSach.Where(k => k.TrangThai != null && k.TrangThai.Equals(filter, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var filteredByStatus = listToShow.ToList();
-            dataGridView.DataSource = filteredByStatus.Any() ? filteredByStatus : null;
-            ResizeColumns();
-
-            if (txtSearch.Text.Length > 0)
-            {
-                txtSearch.Text = string.Empty;
-            }
-            else
-            {
-                if (result != null) result.Visible = false;
-            }
+            PerformSearch();
         }
     }
 }

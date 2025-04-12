@@ -12,32 +12,43 @@ namespace DAL
         public List<DTO_Order> GetAllOrder()
         {
             List<DTO_Order> orders = new List<DTO_Order>();
-            using (SqlConnection conn = DBConnect.GetConnection())
+            using (SqlConnection conn = DBConnect.GetConnection()) 
             {
                 conn.Open();
                 string query = @"SELECT QLDonNhap.MaDonNhap, QLDonNhap.NgayNhap, NCC.TenNCC, QLDonNhap.TrangThai " +
-                    "FROM QLDonNhap " +
-                    "LEFT JOIN NCC ON QLDonNhap.MaNCC = NCC.MaNCC;";
+                               "FROM QLDonNhap " +
+                               "LEFT JOIN NCC ON QLDonNhap.MaNCC = NCC.MaNCC;";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
+                    try 
                     {
-                        DTO_Order order = new DTO_Order
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            MaDonNhap = reader.GetInt32(0),
-                            NgayNhap = reader.GetDateTime(1),
-                            TenNhaCungCap = reader.GetString(2),
-                            TrangThai = reader.GetString(3)
-                        };
-                        orders.Add(order);
+                            while (reader.Read())
+                            {
+                                DTO_Order order = new DTO_Order
+                                {
+                                    MaDonNhap = reader.GetInt32(0),
+                                    NgayNhap = reader.GetDateTime(1),
+
+                                    TenNCC = reader.IsDBNull(2) ? null : reader.GetString(2),
+
+                                    TrangThai = reader.IsDBNull(3) ? null : reader.GetString(3)
+                                    // ------------------
+                                };
+                                orders.Add(order);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Lỗi khi đọc dữ liệu đơn nhập: {ex.Message}");
+                        return new List<DTO_Order>();
                     }
                 }
             }
             return orders;
         }
-
         public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(DateOnly ngayNhap, int maNCC, int maTK, string ghiChu, string chiTietJson, int nguoiCapNhat)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -189,7 +200,7 @@ namespace DAL
         }
         public DTO_OrderDetail GetOrderDetailById(int? orderId)
         {
-            DTO_OrderDetail orderDetail = null; // Khởi tạo là null
+            DTO_OrderDetail orderDetail = null; 
 
             string queryHeader = @"
                 SELECT
@@ -221,7 +232,7 @@ namespace DAL
                         cmdHeader.Parameters.AddWithValue("@OrderId", orderId);
                         using (SqlDataReader readerHeader = cmdHeader.ExecuteReader())
                         {
-                            if (readerHeader.Read()) // Chỉ đọc 1 dòng header
+                            if (readerHeader.Read()) 
                             {
                                 orderDetail = new DTO_OrderDetail // Tạo đối tượng
                                 {
@@ -236,7 +247,7 @@ namespace DAL
                                     NgayCapNhat = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayCapNhat")),
                                     NguoiCapNhatTen = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNguoiCapNhat")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiCapNhat")),
                                     NgayTao = readerHeader.GetDateTime("NgayTao") ,
-                                    ChiTietDonNhap = new List<DTO_ChiTietDonNhap>() // Khởi tạo list chi tiết
+                                    ChiTietDonNhap = new List<DTO_ChiTietDonNhap>() 
                                 };
                             }
                         } 
@@ -278,6 +289,42 @@ namespace DAL
 
             return orderDetail;
         }
+        public async Task<bool> UpdateOrderFromJsonAsync(DTO_Order header, string chiTietJson, int userId)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                await conn.OpenAsync();
+                using (SqlCommand cmd = new SqlCommand("sp_CapNhatDonNhap", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
+                    cmd.Parameters.AddWithValue("@MaDonNhap", header.MaDonNhap);
+                    cmd.Parameters.AddWithValue("@NgayNhap", header.NgayNhap); // Đảm bảo kiểu DateOnly/DateTime khớp với SP
+                    cmd.Parameters.AddWithValue("@MaNCC", header.MaNCC);
+                    cmd.Parameters.AddWithValue("@MaTK", CurrentUser.MaTK); 
+                    cmd.Parameters.AddWithValue("@GhiChu", (object)header.GhiChu ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ChiTietNhap", chiTietJson);
+                    cmd.Parameters.AddWithValue("@NguoiCapNhat", userId);
+
+                    try
+                    {
+                        await cmd.ExecuteNonQueryAsync();
+                        return true; // Trả về true nếu không có lỗi
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        Console.WriteLine($"DAL SQL Error calling sp_CapNhatDonNhap: {sqlEx.Message}");
+                        throw new Exception($"Lỗi từ cơ sở dữ liệu: {sqlEx.Message}", sqlEx); // Bọc lỗi SQL
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"DAL General Error calling sp_CapNhatDonNhap: {ex.Message}");
+                        throw; // Ném lại các lỗi khác
+                    }
+                }
+            } 
+        }
+
+        // public bool UpdateOrderWithDetailsStoredProcedure(...) { ... }
     }
 }

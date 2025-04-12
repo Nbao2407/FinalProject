@@ -15,6 +15,8 @@ namespace QLVT
         private System.Windows.Forms.Timer debounceTimer;
         private Color defaultLabelColor = Color.White;
         private Color hoverLabelColor = Color.FromArgb(230, 240, 255);
+        private List<DTO_Khach> danhSachKhach = new List<DTO_Khach>();
+        private List<DTO_HoaDon> danhSach = new List<DTO_HoaDon>();
         private Form1 form1;
         public AddHoaDon(int? maHoaDon = null)
         {
@@ -310,7 +312,7 @@ namespace QLVT
                 }
             }
         }
-
+     
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             string searchText = txtSearch.Text?.ToLower() ?? "";

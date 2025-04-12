@@ -13,6 +13,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using static IronPython.Modules._ast;
 
 namespace QLVT
 {
@@ -24,6 +25,7 @@ namespace QLVT
         private readonly BUS_Order _busOrder = new BUS_Order();
         private readonly DAL_Order _dalOrder = new DAL_Order(); 
         private List<DTO_Order> danhSach = new List<DTO_Order>();
+        
         private List<DTO_DonNhapSearchResult> _allLoadedOrders = new List<DTO_DonNhapSearchResult>();
 
         public FrmOrder()
@@ -67,7 +69,6 @@ namespace QLVT
                 Name = "colTenNCC",
                 HeaderText = "Nhà Cung Cấp",
                 DataPropertyName = "TenNCC",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 ReadOnly = true
             });
 
@@ -76,7 +77,7 @@ namespace QLVT
                 Name = "colTrangThai",
                 HeaderText = "Trạng Thái",
                 DataPropertyName = "TrangThai", 
-                Width = 120,
+                Width = 100,
                 ReadOnly = true
             });
 
@@ -101,6 +102,7 @@ namespace QLVT
             try
             {
                 danhSach = _dalOrder.GetAllOrder(); 
+                danhSach = danhSach.AsEnumerable().Reverse().ToList();
 
                 if (danhSach != null && danhSach.Any())
                 {
@@ -158,44 +160,49 @@ namespace QLVT
         }
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count)
+            if (e.RowIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count && !dataGridView1.Rows[e.RowIndex].IsNewRow)
             {
                 DataGridViewRow clickedRow = dataGridView1.Rows[e.RowIndex];
 
                 if (clickedRow.DataBoundItem is DTO_Order selectedOrder)
                 {
                     int orderId = selectedOrder.MaDonNhap;
-                    Console.WriteLine($"Double clicked on Order ID: {orderId}");
-
-                    ShowPopup(orderId);
+                    ShowPopup(orderId); 
                 }
                 else
                 {
                     MessageBox.Show("Không thể xác định dữ liệu đơn hàng từ dòng được chọn.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    Console.WriteLine($"Double click on row {e.RowIndex}, but DataBoundItem is not DTO_Order. It is: {clickedRow.DataBoundItem?.GetType().Name ?? "null"}");
+                    Console.WriteLine($"Double click on row {e.RowIndex}, but DataBoundItem is not DTO_Order or is null. Actual Type: {clickedRow.DataBoundItem?.GetType().Name ?? "null"}");
                 }
             }
         }
 
-        private void ShowPopup(int? orderId) 
+        private void ShowPopup(int? orderId)
         {
-            using (var popup = new PopupOrder(orderId))
+            try
             {
-                popup.Deactivate += (s, e) => popup.TopMost = true;
-                popup.StartPosition = FormStartPosition.CenterParent;
-                popup.ShowDialog(); 
-
-                Console.WriteLine($"Popup for Order ID: {orderId} closed.");
-
-                bool dataMayHaveChanged = popup.DataChanged; 
-                if (dataMayHaveChanged)
+                using (var popup = new PopupOrder(orderId))
                 {
-                    Console.WriteLine("Data may have changed, reloading initial data...");
-                    LoadInitialData();
-                }
+
+                    popup.StartPosition = FormStartPosition.CenterParent;
+
+                    DialogResult result = popup.ShowDialog();
+
+                    bool dataMayHaveChanged = popup.DataChanged;
+                    if (dataMayHaveChanged)
+                    {
+                        Console.WriteLine("Data may have changed, reloading initial data...");
+                        LoadInitialData();
+                    }
+                } 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open or process the order details.\nError: {ex.Message}", "Popup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+   
+       
         private void button2_Click(object sender, EventArgs e) 
         {
             Control parentControl = this.Parent; 
@@ -204,7 +211,7 @@ namespace QLVT
                 parentControl.Controls.Remove(this);
                 this.Dispose();
 
-                NhapHang nhap = new NhapHang()
+                AddXuat nhap = new AddXuat()
                 {
                     TopLevel = false,
                     Dock = DockStyle.Fill,
@@ -215,7 +222,7 @@ namespace QLVT
             }
             else
             {
-                NhapHang nhap = new NhapHang();
+                AddXuat nhap = new AddXuat();
                 nhap.Show(); 
             }
         }
@@ -226,104 +233,117 @@ namespace QLVT
             cboTrangThai.Items.Add("-- Tất cả TT --");
             cboTrangThai.Items.Add("Hoàn thành");
             cboTrangThai.Items.Add("Đang xử lý"); 
-            cboTrangThai.SelectedIndex = 0;
+            cboTrangThai.SelectedIndex = -1;
         }
 
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            debounceTimer.Stop();
+            debounceTimer.Start();
+        }
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
-            string selectedTrangThai = cboTrangThai.SelectedItem?.ToString();
-            if (selectedTrangThai == "-- Tất cả TT --") { selectedTrangThai = null; }
 
-            Console.WriteLine($"PerformSearch for suggestions. Query: '{searchQuery}', Status: '{selectedTrangThai ?? "All"}'");
+            string selectedTrangThai = null;
+            if (cboTrangThai.SelectedIndex > 0) 
+            {
+                selectedTrangThai = cboTrangThai.Text; 
+            }
 
             try
             {
+                if (danhSach == null)
+                {
+                    MessageBox.Show("Danh sách đơn nhập chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    dataGridView1.DataSource = null; // Clear grid nếu danh sách null
+                    return;
+                }
+
                 IEnumerable<DTO_Order> suggestionSource = danhSach;
 
                 if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
                     suggestionSource = suggestionSource.Where(order =>
-                        order.TrangThai != null &&
-                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
+                        order != null && // Thêm kiểm tra order không null cho an toàn
+                        order.TrangThai != null && // Kiểm tra trạng thái không null
+                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase) // So sánh trạng thái
                     );
                 }
 
-                List<DTO_Order> suggestionResults = new List<DTO_Order>(); 
+                List<DTO_Order> suggestionResults; // Khai báo ở đây
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
                     suggestionResults = suggestionSource.Where(order =>
                     {
+                        if (order == null) return false; // Bỏ qua nếu order bị null
+
                         bool match = false;
-                        if (order.MaDonNhap.ToString().Contains(searchQuery)) match = true;
-                        if (!match && order.TenNCC != null && order.TenNCC.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        if (order.MaDonNhap.ToString().ToLowerInvariant().Contains(searchQuery))
+                        {
+                            match = true;
+                        }
+
+                        if (!match && order.TenNCC != null &&
+                            order.TenNCC.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            match = true;
+                        }
                         return match;
-                    }).ToList(); 
+                    }).ToList();
+                }
+                else
+                {
+                    suggestionResults = suggestionSource.Where(order => order != null).ToList();
                 }
 
-                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
 
-                Func<DTO_Order, string> displayFunc = item => $"{item.MaDonNhap} - {item.TenNCC ?? "N/A"}";
+                dataGridView1.DataSource = null;
+                if (suggestionResults.Any())
+                {
+                    dataGridView1.DataSource = suggestionResults;
+                }
+
+                Func<DTO_Order, string> displayFunc = item => $"{item.MaDonNhap} - {item.TenNCC}";
 
                 Action<DTO_Order> clickAction = selectedItem => {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
-                    txtSearch.Text = selectedItem.MaDonNhap.ToString(); 
+                    txtSearch.Text = selectedItem.TenNCC;
                     txtSearch.TextChanged += txtSearch_TextChanged;
-
                     var itemToShow = new List<DTO_Order> { selectedItem };
-                    dataGridView1.DataSource = itemToShow;
-                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaDonNhap}");
-                    ResizeColumns(); 
+                    dataGridView1.DataSource = itemToShow; 
+                    ResizeColumns();
+                    if (result != null) result.Visible = false; // Ẩn panel gợi ý
                 };
 
-                SearchHelper.UpdateSearchSuggestions( 
+                SearchHelper.UpdateSearchSuggestions(
                     result,
-                    suggestionResults, 
+                    suggestionResults,
                     txtSearch,
-                    38,
+                    38, 
                     190,
                     displayFunc,
-                    clickAction 
+                    clickAction
                 );
+            }
+            catch (NullReferenceException nre) 
+            {
+                MessageBox.Show($"Lỗi tham chiếu null khi tìm kiếm: {nre.Message}\nKiểm tra xem có đối tượng 'order' nào bị null trong danh sách không.\n{nre.StackTrace}", "Lỗi Null Reference", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khác khi tìm kiếm: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
             }
         }
 
         private void cboTrangThai_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string filter = cboTrangThai.SelectedItem?.ToString();
-
-            if (danhSach == null) { return; }
-
-            IEnumerable<DTO_Order> listToShow = danhSach; 
-
-            if (filter != "-- Tất cả TT --" && !string.IsNullOrEmpty(filter))
-            {
-                listToShow = danhSach.Where(k => k.TrangThai != null && k.TrangThai.Equals(filter, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var filteredByStatus = listToShow.ToList();
-            dataGridView1.DataSource = filteredByStatus.Any() ? filteredByStatus : null;
-            Console.WriteLine($"DGV updated by status filter. Showing {filteredByStatus.Count} items.");
-            ResizeColumns();
-
-            if (txtSearch.Text.Length > 0)
-            {
-                txtSearch.Text=string.Empty; 
-            }
-            else
-            {
-                if (result != null) result.Visible = false;
-            }
-        }
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            debounceTimer.Stop();
-            debounceTimer.Start();
+            PerformSearch();
         }
     }
 }

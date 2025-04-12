@@ -1,5 +1,8 @@
 ﻿using BUS;
+using DAL;
 using DTO;
+using Microsoft.VisualBasic;
+using QLVT.HoaDon;
 using QLVT.Order;
 using System;
 using System.Collections.Generic;
@@ -33,6 +36,7 @@ namespace QLVT
             SetupEditDataGridView();
             ConfigureDgvChiTietStyles();
             CalculateAndDisplayTotals();
+            dgvChiTietEdit.CellClick += DgvChiTiet_CellClick;
         }
 
         private void LoadComboBoxes()
@@ -300,12 +304,147 @@ namespace QLVT
         private void pictureBox3_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            Control parentControl = this.Parent;
+            if (parentControl != null)
+            {
+                parentControl.Controls.Remove(this);
+                this.Dispose();
+
+                FrmXuat nhap = new FrmXuat()
+                {
+                    TopLevel = false,
+                    Dock = DockStyle.Fill,
+                    FormBorderStyle = FormBorderStyle.None
+                };
+                parentControl.Controls.Add(nhap);
+                nhap.Show();
+            }
+            else
+            {
+                FrmXuat nhap = new FrmXuat();
+                nhap.Show();
+            }
         }
 
         private void dgvChiTietEdit_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
         {
 
         }
+
+        private async void btnNhapHang_Click(object sender, EventArgs e)
+        {
+            DateTime ngayNhapMoi = dtpNgayNhap.Value.Date;
+            string ghiChuMoi = Tbnote.Text.Trim();
+            int maTkNguoiNhap = _originalOrderData.MaTK; 
+            if (CbNgNhapEdit.Enabled && CbNgNhapEdit.SelectedValue != null && CurrentUser.ChucVu !="Nhân viên")
+            {
+                maTkNguoiNhap = (int)CbNgNhapEdit.SelectedValue;
+            }
+            List<DTO_ChiTietDonNhap> chiTietDaSua = new List<DTO_ChiTietDonNhap>();
+            foreach (DataGridViewRow row in dgvChiTietEdit.Rows)
+            {
+                if (row.IsNewRow) continue;
+                if (row.DataBoundItem is DTO_ChiTietDonNhap originalDetail)
+                {
+                    DTO_ChiTietDonNhap editedDetail = new DTO_ChiTietDonNhap
+                    {
+                        MaDonNhap = int.Parse(ID.Text),
+                        MaVatLieu = originalDetail.MaVatLieu,
+                        SoLuong = int.TryParse(row.Cells["SoLuong"].Value?.ToString() ?? "0", out int sl) ? sl : 0,
+                        GiaNhap = decimal.TryParse(row.Cells["GiaNhap"].Value?.ToString() ?? "0", NumberStyles.Any, CultureInfo.CurrentCulture, out decimal gn) ? gn : 0m
+                        // Lấy thêm TenVatLieu, DonViTinh nếu cần truyền đi đâu đó, nhưng không cần cho SP này
+                    };
+                    chiTietDaSua.Add(editedDetail);
+                }
+            }
+
+            if (!chiTietDaSua.Any()) { /*...*/ return; }
+            foreach (var detail in chiTietDaSua) { if (detail.SoLuong <= 0 || detail.GiaNhap < 0) { /*...*/ return; } }
+
+
+            bool success = false;
+            try
+            {
+                DTO_Order headerUpdate = new DTO_Order
+                {
+                    MaDonNhap = int.Parse(ID.Text),
+                    NgayNhap = ngayNhapMoi, 
+                    GhiChu = ghiChuMoi,
+                    NguoiNhap = maTkNguoiNhap, 
+                    MaNCC = _originalOrderData.MaNCC 
+                };
+
+                btnNhapHang.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
+
+                success = await _busOrder.UpdateOrderAsync(headerUpdate, chiTietDaSua, CurrentUser.MaTK);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi lưu thay đổi:\n{ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                success = false;
+            }
+            finally
+            {
+                btnNhapHang.Enabled = true;
+                this.Cursor = Cursors.Default;
+            }
+
+            if (success)
+            {
+                MessageBox.Show("Lưu thay đổi thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                Control parentControl = this.Parent;
+                if (parentControl != null)
+                {
+                    parentControl.Controls.Remove(this);
+                    this.Dispose();
+
+                    FrmXuat nhap = new FrmXuat()
+                    {
+                        TopLevel = false,
+                        Dock = DockStyle.Fill,
+                        FormBorderStyle = FormBorderStyle.None
+                    };
+                    parentControl.Controls.Add(nhap);
+                    nhap.Show();
+                }
+                else
+                {
+                    FrmXuat nhap = new FrmXuat();
+                    nhap.Show();
+                }
+            }
+        }
+        private void DgvChiTiet_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+            if (dgvChiTietEdit.Columns[e.ColumnIndex] is DataGridViewButtonColumn)
+            {
+                DataGridViewRow row = dgvChiTietEdit.Rows[e.RowIndex];
+                if (row.IsNewRow) return;
+                string columnName = dgvChiTietEdit.Columns[e.ColumnIndex].Name;
+                int currentSoLuong = 0;
+                int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out currentSoLuong);
+                switch (columnName)
+                {
+                    case "Tang":
+                        row.Cells["SoLuong"].Value = Math.Max(1, currentSoLuong + 1);
+                        break;
+                    case "Giam":
+                        if (currentSoLuong > 1)
+                        {
+                            row.Cells["SoLuong"].Value = currentSoLuong - 1;
+                        }
+                        break;
+                }
+                if (columnName == "Tang" || columnName == "Giam")
+                {
+                    CalculateAndDisplayTotals();
+                }
+            }
+        }
+
+
     }
 }

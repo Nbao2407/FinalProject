@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using DAL;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Newtonsoft.Json;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace BUS
 {
@@ -42,7 +44,7 @@ namespace BUS
                     return (false, "Chi tiết nhập hàng chứa thông tin không hợp lệ.", 0);
             }
 
-            string chiTietNhapJson = JsonSerializer.Serialize(chiTietNhap);
+            string chiTietNhapJson = JsonConvert.SerializeObject(chiTietNhap);
 
             try
             {
@@ -65,6 +67,40 @@ namespace BUS
 
             return dal.GetOrderDetailById(orderId); 
         }
+        public async Task<bool> UpdateOrderAsync(DTO_Order updatedHeader, List<DTO_ChiTietDonNhap> updatedDetails, int userId)
+        {
+            if (updatedHeader == null || updatedDetails == null || updatedHeader.MaDonNhap <= 0)
+            {
+                throw new ArgumentException("Dữ liệu đầu vào không hợp lệ để cập nhật đơn hàng.");
+            }
+            if (!updatedDetails.Any()) 
+            {
+                throw new InvalidOperationException("Đơn nhập hàng phải có ít nhất một chi tiết.");
+            }
+            if (updatedDetails.Any(d => d.SoLuong <= 0 || d.GiaNhap < 0))
+            {
+                throw new InvalidOperationException("Số lượng hoặc giá nhập trong chi tiết không hợp lệ.");
+            }
+            var jsonDetails = updatedDetails.Select(d => new {
+                d.MaVatLieu,
+                d.SoLuong,
+                d.GiaNhap
+            }).ToList();
+            string chiTietJson = JsonConvert.SerializeObject(jsonDetails);
 
+            try
+            {
+                bool result = await dal.UpdateOrderFromJsonAsync(updatedHeader, chiTietJson, userId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in BUS UpdateOrderAsync: {ex.Message}");
+                throw;
+            }
+        }
+
+        // Giữ lại hàm gọi SP dùng TVP nếu muốn dùng thay thế
+        // public bool UpdateOrderWithDetailsStoredProcedure(...) { ... }
     }
 }

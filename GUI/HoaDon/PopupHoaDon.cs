@@ -135,11 +135,7 @@ namespace QLVT.HoaDon
         private void BtnEdit_Click(object sender, EventArgs e)
         {
             
-                if (lblTrangthai.Text != "Chờ thanh toán")
-                {
-                    MessageBox.Show("Chỉ có thể chỉnh sửa hóa đơn ở trạng thái 'Chờ thanh toán'!");
-                    return;
-                }
+             
                 int maHoaDon = Convert.ToInt32(lblID.Text);
             Form1 frm1 = Application.OpenForms.OfType<Form1>().FirstOrDefault();
             if (frm1 != null)

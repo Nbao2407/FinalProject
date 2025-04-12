@@ -15,12 +15,18 @@ namespace GUI.Helpler
                 int itemHeight,
                 int maxPanelHeight,
                 Func<T, string> displayFunc,
-                Action<T> clickAction) where T : class
+                Action<T> clickAction,
+                 Action resetAction = null) where T : class
             {
                 if (resultPanel == null || suggestionResults == null || txtSearch == null || displayFunc == null || clickAction == null)
                     return;
-
-                resultPanel.SuspendLayout();
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                resetAction?.Invoke();
+                resultPanel.Visible = false;
+                return;
+            }
+            resultPanel.SuspendLayout();
                 resultPanel.Controls.Clear();
                 resultPanel.BackColor = Color.White;
                 resultPanel.AutoScroll = false; 
@@ -42,7 +48,6 @@ namespace GUI.Helpler
                     {
                         currentTop = totalContentHeight - itemHeight;
                     }
-
                     for (int i = resultsList.Count - 1; i >= 0; i--)
                     {
                         var item = resultsList[i];

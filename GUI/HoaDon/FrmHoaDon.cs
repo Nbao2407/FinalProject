@@ -50,6 +50,7 @@ namespace QLVT
             try
             {
                 List<DTO_HoaDon> danhSach = busHoaDon.LayTatCaHoaDon();
+                danhSach = danhSach.AsEnumerable().Reverse().ToList();
                 if (danhSach == null || danhSach.Count == 0)
                 {
                     MessageBox.Show("Không có dữ liệu hóa đơn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);

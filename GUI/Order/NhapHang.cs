@@ -1107,7 +1107,7 @@ namespace QLVT
             {
                 parentControl.Controls.Remove(this);
                 this.Dispose();
-                FrmOrder order = new FrmOrder()
+                FrmXuat order = new FrmXuat()
                 {
                     TopLevel = false,
                     Dock = DockStyle.Fill,

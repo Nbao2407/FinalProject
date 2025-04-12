@@ -1,6 +1,7 @@
 ﻿namespace QLVT.Order
 {
     partial class PopupOrder
+
     {
         /// <summary>
         /// Required designer variable.

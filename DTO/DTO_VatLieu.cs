@@ -10,12 +10,13 @@
         public decimal DonGiaBan { get; set; }
         public string DonViTinh { get; set; }
         public string TrangThai { get; set; }
-        public int SoLuong { get; set; }
-
+        public Decimal SoLuong { get; set; }
+        public string TenKho { get; set; } 
+        public int MaKho { get; set; }
         public DTO_VatLieu()
         { }
 
-        public DTO_VatLieu(int maVatLieu, string ten, string tenLoai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int soLuong)
+        public DTO_VatLieu(int maVatLieu, string ten, string tenLoai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, Decimal soLuong)
         {
             MaVatLieu = maVatLieu;
             Ten = ten;

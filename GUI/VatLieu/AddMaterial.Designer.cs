@@ -315,6 +315,7 @@
             CbType.Name = "CbType";
             CbType.Size = new Size(300, 26);
             CbType.TabIndex = 38;
+            CbType.SelectedIndexChanged += CbType_SelectedIndexChanged;
             // 
             // btnTaiHinhAnh
             // 

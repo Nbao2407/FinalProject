@@ -55,6 +55,18 @@
     <Compile Update="User\ChangePW.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Xuathang\EditXuat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Xuathang\FrmXuat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Xuathang\AddXuat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Xuathang\PopupXuat.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -69,10 +81,6 @@
     <EmbeddedResource Update="Tke.resx">
       <DependentUpon>Tke.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Xuathang\" />
   </ItemGroup>
 
   <ItemGroup>

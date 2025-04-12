@@ -82,5 +82,22 @@ namespace QLVT.Helper
             }
             return tongSoLuong;
         }
+        public static void AddOrUpdateToTop<T>(List<T> list, T item, DataGridView dgv)
+        {
+            int existingIndex = list.IndexOf(item);
+            if (existingIndex >= 0)
+            {
+                list.RemoveAt(existingIndex); 
+            }
+            list.Insert(0, item);
+            RefreshDataGridView(dgv, list);
+        }
+
+        private static void RefreshDataGridView<T>(DataGridView dgv, List<T> list)
+        {
+            dgv.DataSource = null; 
+            dgv.DataSource = list;
+            dgv.Refresh(); 
+        }
     }
 }

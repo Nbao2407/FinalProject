@@ -39,6 +39,26 @@ namespace BUS
                 throw new Exception("Dữ liệu không hợp lệ!");
             dalVatLieu.CapNhatVatLieu(maVatLieu, ten, loai, donGiaNhap, donGiaBan, donViTinh, hinhAnh, ghiChu, nguoiCapNhat);
         }
+        public List<DTO_VatLieu> TimKiemVatLieuTheoKho(int maKho, string keyword)
+        {
+            if (maKho <= 0)
+            {
+                Console.WriteLine("BUS_VatLieu.TimKiemVatLieuTheoKho: Mã kho không hợp lệ.");
+                return new List<DTO_VatLieu>(); 
+            }
+
+            string processedKeyword = keyword?.Trim() ?? "";
+
+            try
+            {
+                return dalVatLieu.TimKiemVatLieuTheoKho(maKho, processedKeyword);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in BUS_VatLieu.TimKiemVatLieuTheoKho: {ex.Message}");
+                return new List<DTO_VatLieu>(); 
+            }
+        }
 
         public void XoaVatLieu(int maVatLieu, int nguoiCapNhat)
         {

@@ -5,6 +5,7 @@ using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.TaiKhoan;
 using QLVT.VatLieu;
+using System.Data;
 
 namespace QLVT
 {
@@ -13,7 +14,7 @@ namespace QLVT
         private BUS_VatLieu busVatLieu = new BUS_VatLieu();
         private QLVatLieu vl = new QLVatLieu();
         private System.Windows.Forms.Timer debounceTimer;
-        private List<DTO_VatLieu> danhSach;
+        private List<DTO_VatLieu> danhSach = new List<DTO_VatLieu>();
 
         public FrmMaterial()
         {
@@ -28,7 +29,7 @@ namespace QLVT
 
         private void FrmMaterial_Load(object sender, EventArgs e)
         {
-          
+
             ResizeColumns();
         }
 
@@ -55,14 +56,34 @@ namespace QLVT
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "SoLuong", HeaderText = "Số Lượng", DataPropertyName = "SoLuong" });
             dataGridView1.Columns["DonGiaNhap"].DefaultCellStyle.Format = "N0";
             dataGridView1.Columns["DonGiaBan"].DefaultCellStyle.Format = "N0";
-
-            List<DTO_VatLieu> danhSach = busVatLieu.GetAllVatLieu();
-            if (danhSach == null || danhSach.Count == 0)
+            List<DTO_VatLieu> tempData = null;
+            try
             {
-                MessageBox.Show("Không có dữ liệu vật liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tempData = busVatLieu.GetAllVatLieu();
+
+                if (tempData == null)
+                {
+                    MessageBox.Show("Không tải được danh sách vật liệu (kết quả null từ lớp BUS/DAL).", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    danhSach = new List<DTO_VatLieu>();
+                }
+                else
+                {
+                    danhSach = tempData.AsEnumerable().Reverse().ToList();
+                    if (danhSach.Count == 0)
+                    {
+                        MessageBox.Show("Không có dữ liệu vật liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
             }
-            dataGridView1.DataSource = danhSach;
-            FrmMaterial_Resize(null, null);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi nghiêm trọng khi tải hoặc xử lý dữ liệu vật liệu: {ex.Message}", "Lỗi Tải Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                danhSach = new List<DTO_VatLieu>(); // ENSURE danhSach is assigned an empty list on error
+            }
+            finally
+            {
+                dataGridView1.DataSource = danhSach;
+            }
         }
 
         private void FrmMaterial_Resize(object sender, EventArgs e)
@@ -128,13 +149,30 @@ namespace QLVT
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
-            string selectedLoai = CbLoai.DisplayMember?.ToString();
-            if (selectedLoai == "Tất cả") { selectedLoai = null; }
+
+            string selectedLoai = null;
+
+            if (CbLoai.SelectedIndex > 0)
+            {
+                selectedLoai = CbLoai.Text; 
+                                            
+                                            // if (CbLoai.SelectedValue != null && CbLoai.SelectedValue != DBNull.Value)
+                                            // {
+                                            //    selectedMaLoai = Convert.ToInt32(CbLoai.SelectedValue);
+                                            // }
+            }
+
             try
             {
+                if (danhSach == null)
+                {
+                    MessageBox.Show("Danh sách vật liệu chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    return;
+                }
+
                 IEnumerable<DTO_VatLieu> suggestionSource = danhSach;
 
-               
                 if (!string.IsNullOrEmpty(selectedLoai))
                 {
                     suggestionSource = suggestionSource.Where(order =>
@@ -142,33 +180,48 @@ namespace QLVT
                         order.TenLoai.Equals(selectedLoai, StringComparison.OrdinalIgnoreCase)
                     );
                 }
-                List<DTO_VatLieu> suggestionResults = new List<DTO_VatLieu>(); 
+
+                List<DTO_VatLieu> suggestionResults = new List<DTO_VatLieu>();
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
                     suggestionResults = suggestionSource.Where(order =>
                     {
                         bool match = false;
-                        if (order.MaVatLieu.ToString().Contains(searchQuery)) match = true;
-                        if (!match && order.Ten != null && order.Ten .ToLowerInvariant().Contains(searchQuery)) match = true;
+                        string maVatLieuStr = order.MaVatLieu.ToString().ToLowerInvariant();
+                        string tenVatLieu = order.Ten;
+                        bool maKhop = maVatLieuStr.Contains(searchQuery);
+                        bool tenKhop = !maKhop && tenVatLieu != null && tenVatLieu.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase);
+                        match = maKhop || tenKhop;
                         return match;
                     }).ToList();
                 }
-                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+                else
+                {
+                    suggestionResults = suggestionSource.ToList();
+                }
+
+
+                if (suggestionResults.Any())
+                {
+                    dataGridView1.DataSource = suggestionResults;
+                    ResizeColumns();
+                }
+                Console.WriteLine($"Found {suggestionResults.Count} suggestions."); 
                 Func<DTO_VatLieu, string> displayFunc = item => $"{item.MaVatLieu} - {item.Ten ?? "N/A"}";
 
                 Action<DTO_VatLieu> clickAction = selectedItem => {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
-                    txtSearch.Text = selectedItem.MaVatLieu.ToString(); 
+                    txtSearch.Text = selectedItem.Ten;
                     txtSearch.TextChanged += txtSearch_TextChanged;
                     var itemToShow = new List<DTO_VatLieu> { selectedItem };
-                    dataGridView1.DataSource = itemToShow;
-                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaVatLieu}");
+                    dataGridView1.DataSource = itemToShow; 
                     ResizeColumns();
+                    result.Visible = false; 
                 };
 
                 SearchHelper.UpdateSearchSuggestions(
-                    result,
-                    suggestionResults,
+                    result, 
+                    suggestionResults, 
                     txtSearch,
                     38,
                     190,
@@ -180,15 +233,46 @@ namespace QLVT
             {
                 MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
             }
+        } 
+        private void CbLoai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
         }
-
         private void LoadComboBoxes()
         {
-            BUS_LVL vl = new BUS_LVL();
-            CbLoai.DataSource = vl.GetAllLoaiVatLieu();
-            CbLoai.SelectedIndex = -1;
-         
+            try
+            {
+                DataTable dt = busVatLieu.LayDanhSachLoaiVatLieu();
+
+                if (dt == null)
+                {
+                    MessageBox.Show("Không thể lấy danh sách loại vật liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    dt = new DataTable();
+
+                }
+
+                DataRow allRow = dt.NewRow();
+
+                allRow["TenLoai"] = "Tất cả";
+                allRow["MaLoaiVatLieu"] = -1;
+
+                dt.Rows.InsertAt(allRow, 0);
+
+                CbLoai.DataSource = dt;
+                CbLoai.DisplayMember = "TenLoai";
+                CbLoai.ValueMember = "MaLoaiVatLieu";
+
+                CbLoai.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách loại vật liệu: {ex.Message}", "Lỗi ComboBox", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CbLoai.DataSource = null;
+                CbLoai.Items.Clear();
+                CbLoai.Items.Add("Lỗi tải dữ liệu");
+            }
         }
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -209,5 +293,7 @@ namespace QLVT
                 add.ShowDialog();
             }
         }
+
+       
     }
 }

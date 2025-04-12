@@ -202,7 +202,7 @@ namespace QLVT
         private void button3_Click(object sender, EventArgs e) => OpenChildForm(new FrmHoaDon());
 
         private void Ncc_Click(object sender, EventArgs e) => OpenChildForm(new FrmNCc());
-
+        private void BtnPhieu_Click(object sender, EventArgs e) => OpenChildForm(new FrmXuat());
         private void BtnUser_Click(object sender, EventArgs e)
         {
             DTO_TK user = new DTO_TK();
@@ -210,10 +210,14 @@ namespace QLVT
         }
         private void Quyen()
         {
-            if (CurrentUser.ChucVu == "Nhân viên") ;
+            if (CurrentUser.ChucVu == "Nhân viên") 
             {
                 button1.Enabled = false;
                 panel14.Location = new Point(4, 260);
+            }
+            else 
+            {
+                panel14.Location = new Point(4, 465);
             }
         }
         private void ShowPopup(DTO_TK tk)
@@ -229,6 +233,13 @@ namespace QLVT
         private void button14_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Login login = new Login();
+            this.Close();
+            login.Show();
         }
     }
 }

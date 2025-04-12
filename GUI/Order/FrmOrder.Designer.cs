@@ -148,7 +148,6 @@
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Size = new Size(1100, 463);
             dataGridView1.TabIndex = 14;
-            dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
             // cboTrangThai
             // 

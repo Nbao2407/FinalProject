@@ -21,12 +21,13 @@ namespace QLVT
             panel1 = new Panel();
             Tong = new Label();
             button1 = new ReaLTaiizor.Controls.Button();
-            pictureBox1 = new PictureBox();
-            txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             splitContainer1 = new BufferedSplitContainer();
+            pictureBox2 = new PictureBox();
             panel2 = new Panel();
             BtnThanhToan = new ReaLTaiizor.Controls.Button();
+            pictureBox1 = new PictureBox();
             flowLayoutPanel2 = new BufferedFlowLayoutPanel();
+            txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             ketqua = new Panel();
             SeacrhKh = new ReaLTaiizor.Controls.DungeonTextBox();
             flowLayoutPanel1 = new BufferedFlowLayoutPanel();
@@ -35,15 +36,14 @@ namespace QLVT
             lblTong = new Label();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             searchTimer = new System.Windows.Forms.Timer(components);
-            pictureBox2 = new PictureBox();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            roundedPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            roundedPanel6.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -94,36 +94,6 @@ namespace QLVT
             button1.Text = "Thêm";
             button1.TextAlignment = StringAlignment.Center;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(376, 3);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(30, 28);
-            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox1.TabIndex = 3;
-            pictureBox1.TabStop = false;
-            // 
-            // txtSearch
-            // 
-            txtSearch.BackColor = Color.FromArgb(236, 240, 241);
-            txtSearch.BorderColor = Color.FromArgb(180, 180, 180);
-            txtSearch.EdgeColor = SystemColors.ActiveBorder;
-            txtSearch.Font = new Font("Tahoma", 11F);
-            txtSearch.ForeColor = Color.DimGray;
-            txtSearch.Location = new Point(64, 3);
-            txtSearch.MaxLength = 32767;
-            txtSearch.Multiline = false;
-            txtSearch.Name = "txtSearch";
-            txtSearch.ReadOnly = false;
-            txtSearch.Size = new Size(312, 28);
-            txtSearch.TabIndex = 2;
-            txtSearch.Text = "Tìm hàng hóa";
-            txtSearch.TextAlignment = HorizontalAlignment.Left;
-            txtSearch.UseSystemPasswordChar = false;
-            txtSearch.TextChanged += txtSearch_TextChanged;
-            // 
             // splitContainer1
             // 
             splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -148,6 +118,17 @@ namespace QLVT
             splitContainer1.Size = new Size(1104, 541);
             splitContainer1.SplitterDistance = 569;
             splitContainer1.TabIndex = 9;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = GUI.Properties.Resources.icons8_back_50;
+            pictureBox2.Location = new Point(8, 0);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(50, 36);
+            pictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox2.TabIndex = 15;
+            pictureBox2.TabStop = false;
+            pictureBox2.Click += pictureBox2_Click;
             // 
             // panel2
             // 
@@ -178,6 +159,17 @@ namespace QLVT
             BtnThanhToan.TextAlignment = StringAlignment.Center;
             BtnThanhToan.Click += BtnThanhToan_Click;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(376, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(30, 28);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 3;
+            pictureBox1.TabStop = false;
+            // 
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
@@ -187,6 +179,25 @@ namespace QLVT
             flowLayoutPanel2.Name = "flowLayoutPanel2";
             flowLayoutPanel2.Size = new Size(561, 456);
             flowLayoutPanel2.TabIndex = 0;
+            // 
+            // txtSearch
+            // 
+            txtSearch.BackColor = Color.FromArgb(236, 240, 241);
+            txtSearch.BorderColor = Color.FromArgb(180, 180, 180);
+            txtSearch.EdgeColor = SystemColors.ActiveBorder;
+            txtSearch.Font = new Font("Tahoma", 11F);
+            txtSearch.ForeColor = Color.DimGray;
+            txtSearch.Location = new Point(64, 3);
+            txtSearch.MaxLength = 32767;
+            txtSearch.Multiline = false;
+            txtSearch.Name = "txtSearch";
+            txtSearch.ReadOnly = false;
+            txtSearch.Size = new Size(312, 28);
+            txtSearch.TabIndex = 2;
+            txtSearch.Text = "Tìm hàng hóa";
+            txtSearch.TextAlignment = HorizontalAlignment.Left;
+            txtSearch.UseSystemPasswordChar = false;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // 
             // ketqua
             // 
@@ -262,17 +273,6 @@ namespace QLVT
             lblTong.TabIndex = 15;
             lblTong.Text = "500,000";
             // 
-            // pictureBox2
-            // 
-            pictureBox2.Image = GUI.Properties.Resources.icons8_back_50;
-            pictureBox2.Location = new Point(8, 0);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(50, 36);
-            pictureBox2.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox2.TabIndex = 15;
-            pictureBox2.TabStop = false;
-            pictureBox2.Click += pictureBox2_Click;
-            // 
             // AddHoaDon
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -285,14 +285,14 @@ namespace QLVT
             Load += AddHoaDon_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             roundedPanel6.ResumeLayout(false);
             roundedPanel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 

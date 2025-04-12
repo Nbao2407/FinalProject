@@ -33,6 +33,8 @@
             nightControlBox1 = new ReaLTaiizor.Controls.NightControlBox();
             btnSidebar = new PictureBox();
             panel2 = new Panel();
+            panel15 = new Panel();
+            button5 = new Button();
             panel14 = new Panel();
             btnXuatHang = new Button();
             panel13 = new Panel();
@@ -69,6 +71,7 @@
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)btnSidebar).BeginInit();
             panel2.SuspendLayout();
+            panel15.SuspendLayout();
             panel14.SuspendLayout();
             panel13.SuspendLayout();
             panel11.SuspendLayout();
@@ -131,6 +134,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(30, 58, 138);
+            panel2.Controls.Add(panel15);
             panel2.Controls.Add(panel14);
             panel2.Controls.Add(panel13);
             panel2.Controls.Add(panel11);
@@ -150,6 +154,31 @@
             panel2.Size = new Size(223, 641);
             panel2.TabIndex = 1;
             // 
+            // panel15
+            // 
+            panel15.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            panel15.Controls.Add(button5);
+            panel15.Location = new Point(3, 529);
+            panel15.Name = "panel15";
+            panel15.Size = new Size(215, 45);
+            panel15.TabIndex = 16;
+            // 
+            // button5
+            // 
+            button5.BackColor = Color.FromArgb(30, 58, 138);
+            button5.Cursor = Cursors.Hand;
+            button5.ForeColor = Color.White;
+            button5.Image = GUI.Properties.Resources.icons8_fire_exit_24;
+            button5.ImageAlign = ContentAlignment.MiddleLeft;
+            button5.Location = new Point(-5, -10);
+            button5.Name = "button5";
+            button5.Padding = new Padding(15, 0, 0, 0);
+            button5.Size = new Size(228, 59);
+            button5.TabIndex = 5;
+            button5.Text = "Đăng xuất";
+            button5.UseVisualStyleBackColor = false;
+            button5.Click += button5_Click;
+            // 
             // panel14
             // 
             panel14.Controls.Add(btnXuatHang);
@@ -163,7 +192,7 @@
             btnXuatHang.BackColor = Color.FromArgb(30, 58, 138);
             btnXuatHang.Cursor = Cursors.Hand;
             btnXuatHang.ForeColor = Color.White;
-            btnXuatHang.Image = GUI.Properties.Resources.icons8_receipt_white;
+            btnXuatHang.Image = GUI.Properties.Resources.icons8_box_261;
             btnXuatHang.ImageAlign = ContentAlignment.MiddleLeft;
             btnXuatHang.Location = new Point(-9, -5);
             btnXuatHang.Name = "btnXuatHang";
@@ -172,6 +201,7 @@
             btnXuatHang.TabIndex = 5;
             btnXuatHang.Text = "Xuất hàng";
             btnXuatHang.UseVisualStyleBackColor = false;
+            btnXuatHang.Click += BtnPhieu_Click;
             // 
             // panel13
             // 
@@ -188,7 +218,7 @@
             button10.BackColor = Color.FromArgb(30, 58, 138);
             button10.Cursor = Cursors.Hand;
             button10.ForeColor = Color.White;
-            button10.Image = GUI.Properties.Resources.icons8_receipt_white;
+            button10.Image = GUI.Properties.Resources.icons8_supplier_24;
             button10.ImageAlign = ContentAlignment.MiddleLeft;
             button10.Location = new Point(-9, -7);
             button10.Name = "button10";
@@ -442,9 +472,9 @@
             BtnType.BackColor = Color.FromArgb(30, 58, 138);
             BtnType.Cursor = Cursors.Hand;
             BtnType.ForeColor = Color.White;
-            BtnType.Image = (Image)resources.GetObject("BtnType.Image");
+            BtnType.Image = GUI.Properties.Resources.icons8_wood_241;
             BtnType.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnType.Location = new Point(-9, -6);
+            BtnType.Location = new Point(-6, -6);
             BtnType.Name = "BtnType";
             BtnType.Padding = new Padding(15, 0, 0, 0);
             BtnType.Size = new Size(228, 59);
@@ -527,9 +557,9 @@
             // 
             // panel9
             // 
+            panel9.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             panel9.Controls.Add(BtnUser);
-            panel9.Dock = DockStyle.Bottom;
-            panel9.Location = new Point(0, 605);
+            panel9.Location = new Point(7, 593);
             panel9.Name = "panel9";
             panel9.Size = new Size(223, 36);
             panel9.TabIndex = 8;
@@ -540,7 +570,7 @@
             BtnUser.ForeColor = Color.White;
             BtnUser.Image = (Image)resources.GetObject("BtnUser.Image");
             BtnUser.ImageAlign = ContentAlignment.MiddleLeft;
-            BtnUser.Location = new Point(-16, -18);
+            BtnUser.Location = new Point(-17, -13);
             BtnUser.Name = "BtnUser";
             BtnUser.Padding = new Padding(25, 0, 0, 0);
             BtnUser.Size = new Size(243, 61);
@@ -580,6 +610,7 @@
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)btnSidebar).EndInit();
             panel2.ResumeLayout(false);
+            panel15.ResumeLayout(false);
             panel14.ResumeLayout(false);
             panel13.ResumeLayout(false);
             panel11.ResumeLayout(false);
@@ -633,5 +664,7 @@
         private Panel panelMain;
         private Panel panel14;
         private Button btnXuatHang;
+        private Panel panel15;
+        private Button button5;
     }
 }

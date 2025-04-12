@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             button2 = new ReaLTaiizor.Controls.Button();
             button1 = new ReaLTaiizor.Controls.Button();
             panel2 = new Panel();
-            btnCancelImport = new ReaLTaiizor.Controls.HopeRoundButton();
             CbLocNCC = new ReaLTaiizor.Controls.AloneComboBox();
             bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
@@ -118,7 +117,6 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(btnCancelImport);
             panel2.Controls.Add(CbLocNCC);
             panel2.Controls.Add(bigLabel1);
             panel2.Controls.Add(txtSearch);
@@ -129,27 +127,6 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1106, 33);
             panel2.TabIndex = 13;
-            // 
-            // btnCancelImport
-            // 
-            btnCancelImport.BorderColor = Color.FromArgb(220, 223, 230);
-            btnCancelImport.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
-            btnCancelImport.DangerColor = Color.FromArgb(245, 108, 108);
-            btnCancelImport.DefaultColor = Color.FromArgb(255, 255, 255);
-            btnCancelImport.Enabled = false;
-            btnCancelImport.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCancelImport.HoverTextColor = Color.FromArgb(48, 49, 51);
-            btnCancelImport.InfoColor = Color.FromArgb(144, 147, 153);
-            btnCancelImport.Location = new Point(927, 3);
-            btnCancelImport.Name = "btnCancelImport";
-            btnCancelImport.PrimaryColor = Color.Crimson;
-            btnCancelImport.Size = new Size(120, 24);
-            btnCancelImport.SuccessColor = Color.FromArgb(103, 194, 58);
-            btnCancelImport.TabIndex = 38;
-            btnCancelImport.Text = "Xoá import";
-            btnCancelImport.TextColor = Color.White;
-            btnCancelImport.Visible = false;
-            btnCancelImport.WarningColor = Color.FromArgb(230, 162, 60);
             // 
             // CbLocNCC
             // 
@@ -303,6 +280,7 @@
             btnNhapHang.Text = "Tạo phiếu";
             btnNhapHang.TextColor = Color.White;
             btnNhapHang.WarningColor = Color.FromArgb(230, 162, 60);
+            btnNhapHang.Click += btnNhapHang_Click;
             // 
             // dtpNgayNhap
             // 
@@ -505,23 +483,23 @@
             dgvChiTietEdit.BorderStyle = BorderStyle.None;
             dgvChiTietEdit.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dgvChiTietEdit.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle1.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvChiTietEdit.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(0, 174, 219);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle4.ForeColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle4.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgvChiTietEdit.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dgvChiTietEdit.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle2.ForeColor = Color.FromArgb(136, 136, 136);
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvChiTietEdit.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle5.ForeColor = Color.FromArgb(136, 136, 136);
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle5.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dgvChiTietEdit.DefaultCellStyle = dataGridViewCellStyle5;
             dgvChiTietEdit.EnableHeadersVisualStyles = false;
             dgvChiTietEdit.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
             dgvChiTietEdit.GridColor = Color.FromArgb(255, 255, 255);
@@ -529,14 +507,14 @@
             dgvChiTietEdit.Name = "dgvChiTietEdit";
             dgvChiTietEdit.ReadOnly = true;
             dgvChiTietEdit.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle3.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dgvChiTietEdit.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(0, 174, 219);
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle6.ForeColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle6.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dgvChiTietEdit.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dgvChiTietEdit.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             dgvChiTietEdit.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvChiTietEdit.Size = new Size(801, 524);
@@ -567,7 +545,6 @@
         private ReaLTaiizor.Controls.Button button2;
         private ReaLTaiizor.Controls.Button button1;
         private Panel panel2;
-        private ReaLTaiizor.Controls.HopeRoundButton btnCancelImport;
         private ReaLTaiizor.Controls.AloneComboBox CbLocNCC;
         private ReaLTaiizor.Controls.BigLabel bigLabel1;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;

@@ -183,6 +183,7 @@
             CbLoai.Name = "CbLoai";
             CbLoai.Size = new Size(161, 26);
             CbLoai.TabIndex = 13;
+            CbLoai.SelectedIndexChanged += CbLoai_SelectedIndexChanged;
             // 
             // Tong
             // 

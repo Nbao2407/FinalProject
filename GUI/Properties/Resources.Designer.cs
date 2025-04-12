@@ -153,6 +153,16 @@ namespace GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_box_261 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-box-261", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_chart_24 {
             get {
                 object obj = ResourceManager.GetObject("icons8-chart-24", resourceCulture);
@@ -283,6 +293,16 @@ namespace GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_fire_exit_24 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-fire-exit-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_home_24 {
             get {
                 object obj = ResourceManager.GetObject("icons8-home-24", resourceCulture);
@@ -296,6 +316,16 @@ namespace GUI.Properties {
         internal static System.Drawing.Bitmap icons8_lock_24 {
             get {
                 object obj = ResourceManager.GetObject("icons8-lock-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_logout_24 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-logout-24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -523,6 +553,16 @@ namespace GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_supplier_24 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-supplier-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_trash_24 {
             get {
                 object obj = ResourceManager.GetObject("icons8-trash-24", resourceCulture);
@@ -616,6 +656,16 @@ namespace GUI.Properties {
         internal static System.Drawing.Bitmap icons8_wood_24 {
             get {
                 object obj = ResourceManager.GetObject("icons8-wood-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_wood_241 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-wood-241", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

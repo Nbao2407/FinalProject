@@ -223,4 +223,176 @@ WHERE CONSTRAINT_NAME = 'CK_QLTK_TrangThai_39508EEE';
 
 SELect MaNCC,TenNCC from NCC Where TrangThai =N'Hoạt động'
 
-SELECT * FROM QLVatLieu
+ALTER TABLE QLDonNhap
+ NguoiNhap INT not null,
+    CONSTRAINT FK_QLDonNhap_QLTK_NguoiNhap FOREIGN KEY (NguoiNhap) REFERENCES QLTK(MaTK);
+
+
+ALTER PROCEDURE sp_NhapHang
+    @NgayNhap DATE,                  -- Ngày nhập hàng
+    @MaNCC INT,                      -- Mã nhà cung cấp
+    @MaTK INT,                       -- Mã tài khoản người tạo đơn
+    @GhiChu NVARCHAR(255) = NULL,    -- Ghi chú (không bắt buộc)
+    @ChiTietNhap NVARCHAR(MAX),      -- Chuỗi JSON chứa danh sách chi tiết nhập hàng
+    @NguoiCapNhat INT,               -- Mã tài khoản người cập nhật
+    @NguoiNhap INT                   -- Mã tài khoản người nhập hàng (thêm mới)
+AS
+BEGIN
+    BEGIN TRY
+        -- Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+        BEGIN TRANSACTION;
+
+        -- Kiểm tra nhà cung cấp có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM NCC WHERE MaNCC = @MaNCC AND TrangThai = N'Hoạt động')
+            THROW 50001, N'Nhà cung cấp không tồn tại hoặc không hoạt động!', 1;
+
+        -- Kiểm tra tài khoản người tạo có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @MaTK AND TrangThai = N'Hoạt động')
+            THROW 50002, N'Tài khoản người tạo không tồn tại hoặc bị khóa!', 1;
+
+        -- Kiểm tra tài khoản người nhập có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @NguoiNhap AND TrangThai = N'Hoạt động')
+            THROW 50006, N'Tài khoản người nhập không tồn tại hoặc bị khóa!', 1;
+
+        -- Thêm đơn nhập hàng mới, bao gồm cột NguoiNhap
+        INSERT INTO QLDonNhap (NgayNhap, MaNCC, MaTK, TrangThai, GhiChu, NgayCapNhat, NguoiCapNhat, NguoiNhap)
+        VALUES (@NgayNhap, @MaNCC, @MaTK, N'Hoàn thành', @GhiChu, GETDATE(), @NguoiCapNhat, @NguoiNhap);
+
+        -- Lấy mã đơn nhập vừa tạo
+        DECLARE @MaDonNhap INT = SCOPE_IDENTITY();
+
+        -- Tạo bảng tạm để lưu chi tiết nhập hàng từ JSON
+        DECLARE @TempChiTiet TABLE (
+            MaVatLieu INT,
+            SoLuong INT,
+            GiaNhap DECIMAL(18,2)
+        );
+
+        -- Parse JSON chi tiết nhập hàng vào bảng tạm
+        INSERT INTO @TempChiTiet (MaVatLieu, SoLuong, GiaNhap)
+        SELECT 
+            JSON_VALUE(value, '$.MaVatLieu') AS MaVatLieu,
+            JSON_VALUE(value, '$.SoLuong') AS SoLuong,
+            JSON_VALUE(value, '$.GiaNhap') AS GiaNhap
+        FROM OPENJSON(@ChiTietNhap);
+
+        -- Kiểm tra dữ liệu chi tiết nhập hàng
+        IF NOT EXISTS (SELECT 1 FROM @TempChiTiet)
+            THROW 50003, N'Danh sách chi tiết nhập hàng trống!', 1;
+
+        -- Kiểm tra các vật liệu có tồn tại và hợp lệ không
+        IF EXISTS (
+            SELECT 1 
+            FROM @TempChiTiet t
+            LEFT JOIN QLVatLieu v ON t.MaVatLieu = v.MaVatLieu
+            WHERE v.MaVatLieu IS NULL OR v.TrangThai != N'Hoạt động'
+        )
+            THROW 50004, N'Có vật liệu không tồn tại hoặc không hoạt động!', 1;
+
+        -- Kiểm tra số lượng và giá nhập
+        IF EXISTS (SELECT 1 FROM @TempChiTiet WHERE SoLuong <= 0 OR GiaNhap < 0)
+            THROW 50005, N'Số lượng hoặc giá nhập không hợp lệ!', 1;
+
+        -- Thêm chi tiết đơn nhập vào bảng ChiTietDonNhap
+        INSERT INTO ChiTietDonNhap (MaDonNhap, MaVatLieu, SoLuong, GiaNhap)
+        SELECT @MaDonNhap, MaVatLieu, SoLuong, GiaNhap
+        FROM @TempChiTiet;
+
+        -- Cập nhật số lượng tồn kho trong bảng QLVatLieu
+        UPDATE QLVatLieu
+        SET SoLuong = v.SoLuong + t.SoLuong,
+            DonGiaNhap = t.GiaNhap, -- Cập nhật giá nhập mới nhất
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiCapNhat
+        FROM QLVatLieu v
+        INNER JOIN @TempChiTiet t ON v.MaVatLieu = t.MaVatLieu;
+
+        -- Ghi log hoạt động
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLDonNhap', @MaDonNhap, N'Thêm', NULL, NULL, N'Thêm đơn nhập hàng mới bởi người nhập: ' + CAST(@NguoiNhap AS NVARCHAR(10)));
+
+        -- Commit transaction nếu thành công
+        COMMIT TRANSACTION;
+
+        SELECT N'Nhập hàng thành công!' AS Message, @MaDonNhap AS MaDonNhap;
+    END TRY
+    BEGIN CATCH
+        -- Rollback nếu có lỗi
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        -- Ném lỗi ra ngoài để xử lý
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+GO
+CREATE TABLE QLDonXuat (
+    MaDonXuat INT PRIMARY KEY IDENTITY,
+    NgayXuat DATE DEFAULT GETDATE(),
+    MaTK INT NOT NULL FOREIGN KEY REFERENCES QLTK(MaTK), -- Người lập đơn
+    MaHoaDon INT NULL FOREIGN KEY REFERENCES QLHoaDon(MaHoaDon), -- Liên kết với hóa đơn (nếu xuất để bán)
+    MaKhachHang INT NULL FOREIGN KEY REFERENCES QLKH(MaKhachHang), -- Khách hàng (nếu xuất để bán)
+    TrangThai NVARCHAR(50) CHECK (TrangThai IN (N'Đang xử lý', N'Hoàn thành', N'Đã hủy')) DEFAULT N'Đang xử lý',
+    GhiChu NVARCHAR(255),
+    NgayCapNhat DATETIME DEFAULT GETDATE(),
+    NguoiCapNhat INT REFERENCES QLTK(MaTK)
+);
+GO
+
+CREATE TABLE ChiTietDonXuat (
+    MaCTDX INT PRIMARY KEY IDENTITY,
+    MaDonXuat INT NOT NULL FOREIGN KEY REFERENCES QLDonXuat(MaDonXuat),
+    MaVatLieu INT NOT NULL FOREIGN KEY REFERENCES QLVatLieu(MaVatLieu),
+    SoLuong INT CHECK (SoLuong > 0),
+    DonGia DECIMAL(18,2) CHECK (DonGia >= 0) 
+);
+GO
+EXEC sp_ThemDonXuat
+    @NgayXuat = '2025-04-11',
+    @MaTK = 1,
+    @MaHoaDon = NULL,
+    @MaKhachHang = 1,
+    @GhiChu = N'Xuất kho để bán',
+    @ChiTietXuat = '[{"MaVatLieu": 1, "SoLuong": 50, "DonGia": 100000}]',
+    @NguoiCapNhat = 1;
+	SELECT MaDonXuat, NgayXuat, TrangThai, GhiChu 
+                                      FROM QLDonXuat
+									  -- Thêm cột LoaiXuat vào bảng QLDonXuat
+ALTER TABLE QLDonXuat
+ADD LoaiXuat NVARCHAR(50) NULL; -- Tạm thời cho phép NULL để cập nhật dữ liệu cũ
+GO
+
+-- Cập nhật giá trị mặc định cho các bản ghi hiện có (GIẢ SỬ LÀ 'Bán hàng')
+UPDATE QLDonXuat
+SET LoaiXuat = N'Xuất hàng'
+WHERE LoaiXuat IS NULL;
+GO
+
+-- Thêm ràng buộc NOT NULL và CHECK sau khi đã có dữ liệu
+ALTER TABLE QLDonXuat
+ALTER COLUMN LoaiXuat NVARCHAR(50) NOT NULL;
+GO
+
+ALTER TABLE QLDonXuat
+ADD CONSTRAINT CK_QLDonXuat_LoaiXuat CHECK (LoaiXuat IN (
+    N'Xuất hàng',
+    N'Chuyển kho'
+));
+GO
+
+
+ALTER TABLE QLDonXuat
+ADD CONSTRAINT CK_QLDonXuat_KhachHangTheoLoai CHECK (
+    (LoaiXuat != N'Xuất hàng' AND MaKhachHang IS NULL)
+    OR
+    (LoaiXuat = N'Xuất hàng' AND MaKhachHang IS NOT NULL)
+);
+GO
+SELECT
+                    dx.MaDonXuat, dx.NgayXuat, dx.LoaiXuat, 
+                    dx.MaHoaDon,  kh.Ten AS TenKhachHang, dx.TrangThai,dx.GhiChu
+                FROM QLDonXuat dx
+                LEFT JOIN QLKH kh ON dx.MaKhachHang = kh.MaKhachHang

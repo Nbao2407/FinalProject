@@ -16,12 +16,12 @@ namespace QLVT
             dtpStartDate.Value = DateTime.Today.AddDays(-7);
             dtpEndDate.Value = DateTime.Now;
             btnLast7Days.Select();
-        
+
             ChartHelper.SetupSplineAreaChart(chartGrossRevenue, "Tổng Doanh Thu");
             ChartHelper.SetupTop5Chart(chartTopProducts, "Top 5 Vật Liệu Bán Chạy");
             SetDataMenuButtonsUI(btnLast7Days);
-         
-                AdjustDataGridViewColumns();
+
+            AdjustDataGridViewColumns();
             this.Resize += new EventHandler(Tke_Resize);
         }
 

@@ -35,6 +35,8 @@
             result = new Panel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
             dataGridView1 = new ReaLTaiizor.Controls.PoisonDataGridView();
+            aloneComboBox1 = new ReaLTaiizor.Controls.AloneComboBox();
+            aloneComboBox2 = new ReaLTaiizor.Controls.AloneComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -137,11 +139,37 @@
             dataGridView1.TabIndex = 14;
             dataGridView1.CellContentDoubleClick += dataGridView1_CellContentDoubleClick;
             // 
+            // aloneComboBox1
+            // 
+            aloneComboBox1.DrawMode = DrawMode.OwnerDrawFixed;
+            aloneComboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            aloneComboBox1.EnabledCalc = true;
+            aloneComboBox1.FormattingEnabled = true;
+            aloneComboBox1.ItemHeight = 20;
+            aloneComboBox1.Location = new Point(276, 29);
+            aloneComboBox1.Name = "aloneComboBox1";
+            aloneComboBox1.Size = new Size(203, 26);
+            aloneComboBox1.TabIndex = 18;
+            // 
+            // aloneComboBox2
+            // 
+            aloneComboBox2.DrawMode = DrawMode.OwnerDrawFixed;
+            aloneComboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
+            aloneComboBox2.EnabledCalc = true;
+            aloneComboBox2.FormattingEnabled = true;
+            aloneComboBox2.ItemHeight = 20;
+            aloneComboBox2.Location = new Point(499, 29);
+            aloneComboBox2.Name = "aloneComboBox2";
+            aloneComboBox2.Size = new Size(203, 26);
+            aloneComboBox2.TabIndex = 19;
+            // 
             // FrmNV
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1106, 561);
+            Controls.Add(aloneComboBox2);
+            Controls.Add(aloneComboBox1);
             Controls.Add(button2);
             Controls.Add(result);
             Controls.Add(txtSearch);
@@ -160,5 +188,7 @@
         private Panel result;
         private ReaLTaiizor.Controls.DungeonTextBox txtSearch;
         private ReaLTaiizor.Controls.PoisonDataGridView dataGridView1;
+        private ReaLTaiizor.Controls.AloneComboBox aloneComboBox1;
+        private ReaLTaiizor.Controls.AloneComboBox aloneComboBox2;
     }
 }

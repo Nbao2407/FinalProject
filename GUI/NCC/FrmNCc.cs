@@ -4,12 +4,12 @@ using DTO;
 using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.NCC;
+using ReaLTaiizor.Controls;
 
 namespace QLVT
 {
     public partial class FrmNCc : Form
     {
-        private Panel overlayPanel;
         private BUS_Ncc busNcc = new BUS_Ncc();
         private DAL_NCcap ncc = new DAL_NCcap();
         private List<DTO_Ncap> danhSach;
@@ -49,6 +49,7 @@ namespace QLVT
         public void Loaddata()
         {
             danhSach = busNcc.GetAllNcc();
+            danhSach = danhSach.AsEnumerable().Reverse().ToList();
             dataGridView1.DataSource = danhSach;
         }
 
@@ -140,50 +141,72 @@ namespace QLVT
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+
+
             try
             {
-                IEnumerable<DTO_Ncap> suggestionSource = danhSach;
-                List<DTO_Ncap> suggestionResults = new List<DTO_Ncap>();
+                if (danhSach == null)
+                {
+                    MessageBox.Show("Danh sách gốc chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    dataGridView1.DataSource = null;
+                    return;
+                }
+
+                IEnumerable<DTO_Ncap> filteredSource = danhSach;
+
+
+                List<DTO_Ncap> finalResults;
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
-                    suggestionResults = suggestionSource.Where(order =>
+                    finalResults = filteredSource.Where(tk =>
                     {
+                        if (tk == null) return false;
                         bool match = false;
-                        if (order.MaNCC.ToString().Contains(searchQuery)) match = true;
-                        if (!match && order.TenNCC.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        if (tk.MaNCC.ToString().ToLowerInvariant().Contains(searchQuery))
+                            match = true;
+                        if (!match && tk.TenNCC != null && tk.TenNCC.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                            match = true;
                         return match;
                     }).ToList();
                 }
+                else
+                {
+                    finalResults = filteredSource.Where(tk => tk != null).ToList();
+                }
 
-                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+                dataGridView1.DataSource = null;
+                if (finalResults.Any())
+                {
+                    var bindingSource = new BindingSource { DataSource = finalResults };
+                    dataGridView1.DataSource = bindingSource;
+                }
+                ResizeColumns();
 
-                Func<DTO_Ncap, string> displayFunc = item => $"{item.MaNCC}-{item.TenNCC ?? "N/A"}";
-
-                Action<DTO_Ncap> clickAction = selectedItem => {
+                Func<DTO_Ncap, string> displayFunc = item => $"{item.MaNCC} - {item.TenNCC}";
+                Action<DTO_Ncap> clickAction = selectedItem =>
+                {
                     txtSearch.TextChanged -= txtSearch_TextChanged_1;
-                    txtSearch.Text = selectedItem.MaNCC.ToString(); 
+                    txtSearch.Text = selectedItem.TenNCC;
                     txtSearch.TextChanged += txtSearch_TextChanged_1;
-
                     var itemToShow = new List<DTO_Ncap> { selectedItem };
-                    dataGridView1.DataSource = itemToShow;
-                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaNCC}");
+                    var singleBindingSource = new BindingSource { DataSource = itemToShow };
+                    dataGridView1.DataSource = singleBindingSource;
                     ResizeColumns();
+                    if (result != null) result.Visible = false;
                 };
 
                 SearchHelper.UpdateSearchSuggestions(
                     result,
-                    suggestionResults,
+                    finalResults,
                     txtSearch,
-                    38,
-                    190,
-                    displayFunc,
-                    clickAction
-                );
+                    38, 190, displayFunc, clickAction);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
             }
         }
     }

@@ -29,32 +29,31 @@ namespace QLVT.Order
 
         private void PopupOrder_Load(object sender, EventArgs e)
         {
-
             dgvChiTietPopup.AutoGenerateColumns = false;
-            dgvChiTietPopup.Columns.Clear(); // Xóa cột cũ nếu có từ Designer
+            dgvChiTietPopup.Columns.Clear();
 
             dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "MaVatLieu",
                 HeaderText = "Mã",
-                DataPropertyName = "MaVatLieu", // <<< THÊM ĐÚNG TÊN THUỘC TÍNH DTO
+                DataPropertyName = "MaVatLieu",
                 ReadOnly = true,
                 ValueType = typeof(int),
-                Width = 80 // Đặt Width cụ thể
+                Width = 80
             });
             dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TenVatLieu",
                 HeaderText = "Tên",
-                DataPropertyName = "TenVatLieu", // <<< THÊM ĐÚNG TÊN THUỘC TÍNH DTO
+                DataPropertyName = "TenVatLieu",
                 ReadOnly = true,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill // Fill cho cột tên
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             });
             dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "DonViTinh",
                 HeaderText = "Đơn Vị",
-                DataPropertyName = "DonViTinh", // <<< THÊM ĐÚNG TÊN THUỘC TÍNH DTO
+                DataPropertyName = "DonViTinh",
                 ReadOnly = true,
                 Width = 80
             });
@@ -163,13 +162,10 @@ namespace QLVT.Order
                         {
                             tongSoLuong += itemChiTiet.SoLuong;
                             tongGiaTri += itemChiTiet.ThanhTien;
-
                         }
                     }
-
                     lblSoLuong.Text = tongSoLuong.ToString("N0");
                     lblTongCong.Text = tongGiaTri.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) + " VNĐ";
-
                 }
                 else
                 {
@@ -185,7 +181,7 @@ namespace QLVT.Order
         }
         private void roundedPictureBox1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Dispose();
         }
 
         private void BtnEdit_Click(object sender, EventArgs e)
@@ -194,15 +190,16 @@ namespace QLVT.Order
             Form1 frm1 = Application.OpenForms.OfType<Form1>().FirstOrDefault();
             if (frm1 != null)
             {
-                EditNhap editForm = new EditNhap(this,id);
+                EditNhap editForm = new EditNhap(this, id);
                 frm1.OpenChildForm(editForm);
+                this.Dispose();
             }
             else
             {
                 MessageBox.Show("Không tìm thấy form cha Frm1!");
                 return;
             }
-            this.Hide();
+            this.Dispose();
         }
         private void Quyen()
         {
@@ -232,6 +229,5 @@ namespace QLVT.Order
             BtnDisable.Visible = canDisable;
             BtnDisable.Enabled = canDisable;
         }
-
     }
 }

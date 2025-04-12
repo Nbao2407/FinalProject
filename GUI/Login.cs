@@ -33,6 +33,7 @@ namespace QLVT
             BtnBack.Click += BtnBack_Click;
             BtnchangePw.Click += ChangePW_Click;
             this.MouseDown += Form1_MouseDown;
+            TbEmail.Focus();
             var savedCredentials = AuthStorage.LoadCredentials();
             if (savedCredentials != null)
             {
@@ -241,7 +242,7 @@ namespace QLVT
         }
         private void hopeRoundButton1_Click(object sender, EventArgs e)
         {
-            string username = TbEmail.Text.Trim(); 
+            string username = TbEmail.Text.Trim();
             string email = TbEmail.Text.Trim();
             string password = Tbpass.Text;
 
@@ -267,10 +268,9 @@ namespace QLVT
                     {
                         AuthStorage.ClearCredentials();
                     }
-
-                        Form1 form = new Form1();
-                        form.Show();
-                        this.Hide();
+                    Form1 form = new Form1();
+                    form.Show();
+                    this.Hide();
                 }
                 else
                 {
@@ -341,10 +341,10 @@ namespace QLVT
                 TbEmail.ForeColor = Color.Black;
             }
         }
-      
+
         private void TbEmail_Leave_1(object sender, EventArgs e)
         {
-            if(TbEmail.Text == "")
+            if (TbEmail.Text == "")
             {
                 TbEmail.Text = "Email/Username";
                 TbEmail.ForeColor = Color.Gray;
@@ -400,6 +400,14 @@ namespace QLVT
                 TbNewPass.Text = "Mật khẩu mới";
                 TbNewPass.ForeColor = Color.Gray;
                 TbNewPass.UseSystemPasswordChar = false;
+            }
+        }
+
+        private void hopeRoundButton1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                hopeRoundButton1_Click(sender, e);
             }
         }
     }

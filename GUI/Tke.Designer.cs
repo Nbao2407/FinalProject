@@ -29,6 +29,7 @@ namespace QLVT
         /// </summary>
         private void InitializeComponent()
         {
+            Label label13;
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -55,7 +56,6 @@ namespace QLVT
             panel5 = new Panel();
             tableLayoutPanel5 = new TableLayoutPanel();
             dgvUnderstock = new DataGridView();
-            label13 = new Label();
             lblStartDate = new Label();
             lblEndDate = new Label();
             label12 = new Label();
@@ -81,6 +81,7 @@ namespace QLVT
             tableLayoutPanel4 = new TableLayoutPanel();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel4 = new Panel();
+            label13 = new Label();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chartGrossRevenue).BeginInit();
             panel5.SuspendLayout();
@@ -101,6 +102,17 @@ namespace QLVT
             tableLayoutPanel3.SuspendLayout();
             panel4.SuspendLayout();
             SuspendLayout();
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label13.ForeColor = Color.WhiteSmoke;
+            label13.Location = new Point(3, 0);
+            label13.Name = "label13";
+            label13.Size = new Size(171, 25);
+            label13.TabIndex = 2;
+            label13.Text = "Sản phẩm sắp hết";
             // 
             // label1
             // 
@@ -329,12 +341,13 @@ namespace QLVT
             tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel5.Controls.Add(dgvUnderstock, 0, 1);
             tableLayoutPanel5.Controls.Add(label13, 0, 0);
-            tableLayoutPanel5.Location = new Point(3, 10);
+            tableLayoutPanel5.Dock = DockStyle.Fill;
+            tableLayoutPanel5.Location = new Point(0, 0);
             tableLayoutPanel5.Name = "tableLayoutPanel5";
             tableLayoutPanel5.RowCount = 2;
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 13.7795277F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 86.2204742F));
-            tableLayoutPanel5.Size = new Size(496, 254);
+            tableLayoutPanel5.Size = new Size(504, 271);
             tableLayoutPanel5.TabIndex = 4;
             // 
             // dgvUnderstock
@@ -366,26 +379,15 @@ namespace QLVT
             dgvUnderstock.DefaultCellStyle = dataGridViewCellStyle2;
             dgvUnderstock.EnableHeadersVisualStyles = false;
             dgvUnderstock.GridColor = Color.FromArgb(80, 85, 120);
-            dgvUnderstock.Location = new Point(3, 38);
+            dgvUnderstock.Location = new Point(3, 40);
             dgvUnderstock.Name = "dgvUnderstock";
             dgvUnderstock.ReadOnly = true;
             dgvUnderstock.RowHeadersVisible = false;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(52, 73, 94);
             dgvUnderstock.RowsDefaultCellStyle = dataGridViewCellStyle3;
             dgvUnderstock.RowTemplate.Height = 35;
-            dgvUnderstock.Size = new Size(490, 213);
+            dgvUnderstock.Size = new Size(498, 228);
             dgvUnderstock.TabIndex = 3;
-            // 
-            // label13
-            // 
-            label13.AutoSize = true;
-            label13.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label13.ForeColor = Color.WhiteSmoke;
-            label13.Location = new Point(3, 0);
-            label13.Name = "label13";
-            label13.Size = new Size(171, 25);
-            label13.TabIndex = 2;
-            label13.Text = "Sản phẩm sắp hết";
             // 
             // lblStartDate
             // 
@@ -603,7 +605,7 @@ namespace QLVT
             panelTotalCounters.BackColor = Color.FromArgb(52, 73, 94);
             panelTotalCounters.Controls.Add(tableLayoutPanel6);
             panelTotalCounters.Controls.Add(label19);
-            panelTotalCounters.Dock = DockStyle.Fill;
+            panelTotalCounters.Dock = DockStyle.Top;
             panelTotalCounters.Location = new Point(5, 5);
             panelTotalCounters.Margin = new Padding(5);
             panelTotalCounters.MinimumSize = new Size(0, 200);
@@ -613,7 +615,7 @@ namespace QLVT
             // 
             // tableLayoutPanel6
             // 
-            tableLayoutPanel6.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel6.ColumnCount = 1;
             tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel6.Controls.Add(label3, 0, 4);
@@ -622,41 +624,41 @@ namespace QLVT
             tableLayoutPanel6.Controls.Add(lblNumCustomers, 0, 1);
             tableLayoutPanel6.Controls.Add(lblNumSuppliers, 0, 3);
             tableLayoutPanel6.Controls.Add(label6, 0, 5);
-            tableLayoutPanel6.Location = new Point(16, 40);
+            tableLayoutPanel6.Location = new Point(30, 40);
             tableLayoutPanel6.Margin = new Padding(3, 15, 3, 3);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
             tableLayoutPanel6.RowCount = 6;
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 50.70422F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 49.2957764F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
-            tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 39F));
-            tableLayoutPanel6.Size = new Size(193, 186);
+            tableLayoutPanel6.RowStyles.Add(new RowStyle());
+            tableLayoutPanel6.RowStyles.Add(new RowStyle());
+            tableLayoutPanel6.RowStyles.Add(new RowStyle());
+            tableLayoutPanel6.RowStyles.Add(new RowStyle());
+            tableLayoutPanel6.RowStyles.Add(new RowStyle());
+            tableLayoutPanel6.RowStyles.Add(new RowStyle());
+            tableLayoutPanel6.Size = new Size(190, 228);
             tableLayoutPanel6.TabIndex = 5;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Dock = DockStyle.Left;
-            label3.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(124, 141, 181);
             label3.ImageAlign = ContentAlignment.MiddleLeft;
-            label3.Location = new Point(3, 120);
+            label3.Location = new Point(3, 90);
             label3.Name = "label3";
-            label3.Size = new Size(173, 26);
+            label3.Size = new Size(143, 20);
             label3.TabIndex = 6;
-            label3.Text = "Hoá Đơn(chờ xử lý)";
+            label3.Text = "Hoá đơn(Chờ xử lý)";
             // 
             // label21
             // 
             label21.AutoSize = true;
             label21.Dock = DockStyle.Left;
-            label21.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label21.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label21.ForeColor = Color.FromArgb(124, 141, 181);
             label21.Location = new Point(3, 0);
             label21.Name = "label21";
-            label21.Size = new Size(115, 29);
+            label21.Size = new Size(97, 20);
             label21.TabIndex = 0;
             label21.Text = "Khách Hàng";
             // 
@@ -664,12 +666,12 @@ namespace QLVT
             // 
             label17.AutoSize = true;
             label17.Dock = DockStyle.Left;
-            label17.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label17.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label17.ForeColor = Color.FromArgb(124, 141, 181);
             label17.ImageAlign = ContentAlignment.MiddleLeft;
-            label17.Location = new Point(3, 58);
+            label17.Location = new Point(3, 45);
             label17.Name = "label17";
-            label17.Size = new Size(132, 34);
+            label17.Size = new Size(110, 20);
             label17.TabIndex = 3;
             label17.Text = "Nhà Cung cấp";
             // 
@@ -678,20 +680,20 @@ namespace QLVT
             lblNumCustomers.AutoSize = true;
             lblNumCustomers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumCustomers.ForeColor = Color.WhiteSmoke;
-            lblNumCustomers.Location = new Point(3, 29);
+            lblNumCustomers.Location = new Point(3, 20);
             lblNumCustomers.Name = "lblNumCustomers";
             lblNumCustomers.RightToLeft = RightToLeft.No;
             lblNumCustomers.Size = new Size(90, 25);
             lblNumCustomers.TabIndex = 1;
             lblNumCustomers.Text = "100000";
-            lblNumCustomers.TextAlign = ContentAlignment.MiddleCenter;
+            lblNumCustomers.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblNumSuppliers
             // 
             lblNumSuppliers.AutoSize = true;
             lblNumSuppliers.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNumSuppliers.ForeColor = Color.WhiteSmoke;
-            lblNumSuppliers.Location = new Point(3, 92);
+            lblNumSuppliers.Location = new Point(3, 65);
             lblNumSuppliers.Name = "lblNumSuppliers";
             lblNumSuppliers.RightToLeft = RightToLeft.No;
             lblNumSuppliers.Size = new Size(90, 25);
@@ -703,7 +705,7 @@ namespace QLVT
             label6.AutoSize = true;
             label6.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.WhiteSmoke;
-            label6.Location = new Point(3, 146);
+            label6.Location = new Point(3, 110);
             label6.Name = "label6";
             label6.RightToLeft = RightToLeft.No;
             label6.Size = new Size(90, 25);
@@ -713,7 +715,7 @@ namespace QLVT
             // label19
             // 
             label19.AutoSize = true;
-            label19.Dock = DockStyle.Left;
+            label19.Dock = DockStyle.Top;
             label19.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label19.ForeColor = Color.WhiteSmoke;
             label19.Location = new Point(0, 0);

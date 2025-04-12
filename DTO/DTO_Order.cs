@@ -14,11 +14,11 @@ namespace DTO
         public string NguoiTao { get; set; }
         public string TrangThai { get; set; }
         public string GhiChu { get; set; }
-        public string TenNhaCungCap { get; set; }
         public int MaVatLieu { get; set; }
         public int SoLuong { get; set; }
         public decimal GiaNhap { get; set; }
-     
+        public int NguoiNhap { get; set; }
+        public int MaNCC { get; set; }
         public DTO_Order(int MaDonNhap)
         {
             this.MaDonNhap = MaDonNhap;
@@ -26,5 +26,6 @@ namespace DTO
 
         public DTO_Order()
         { }
+       
     }
 }

@@ -29,7 +29,7 @@ namespace QLVT.VatLieu
 
         private void AddMaterial_Load(object sender, EventArgs e)
         {
-    
+
 
         }
 
@@ -81,12 +81,12 @@ namespace QLVT.VatLieu
                     MessageBox.Show("Vui lòng chọn hình ảnh Vật liệu!");
                     return;
                 }
-                
 
-                bus.ThemVatLieu(ten, loai, donGiaNhap, donGiaBan, donViTinh, maKho, hinhAnh, ghiChu,nguoiTao);
+
+                bus.ThemVatLieu(ten, loai, donGiaNhap, donGiaBan, donViTinh, maKho, hinhAnh, ghiChu, nguoiTao);
                 MessageBox.Show("Thêm vật tư thành công!");
                 this.Close();
-               frmMaterial.LoadData();
+                frmMaterial.LoadData();
             }
             catch (Exception ex)
             {
@@ -119,6 +119,11 @@ namespace QLVT.VatLieu
         }
 
         private void aloneComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CbType_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

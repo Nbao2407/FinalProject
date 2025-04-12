@@ -35,7 +35,7 @@ namespace DAL
                             reader.GetDecimal(3),
                             reader.GetDecimal(4),
                             reader.GetString(5),
-                            reader.GetInt32(6)
+                            reader.GetDecimal(6)
                         );
                         danhSach.Add(vatLieu);
                     }
@@ -130,7 +130,7 @@ namespace DAL
                                 Ten = reader["Ten"].ToString(),
                                 DonViTinh = reader["DonViTinh"].ToString(),
                                 DonGiaNhap = reader["DonGiaNhap"] != DBNull.Value ? Convert.ToDecimal(reader["DonGiaNhap"]) : 0,
-                                SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToInt32(reader["SoLuong"]) : 0,
+                                SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToDecimal(reader["SoLuong"]) : 0,
                             };
                         }
                     }
@@ -284,13 +284,62 @@ namespace DAL
                                 DonGiaBan = reader.GetDecimal(3),
                                 DonGiaNhap = reader.GetDecimal(4),
                                 DonViTinh = reader.GetString(5),
-                                SoLuong = reader.GetInt32(6)
+                                SoLuong = reader.GetDecimal(6)
                             });
                         }
                     }
                 }
             }
             return danhSach;
+        }
+
+        public List<DTO_VatLieu> TimKiemVatLieuTheoKho(int? maKho, string keyword)
+        {
+            List<DTO_VatLieu> ketQua = new List<DTO_VatLieu>();
+            string searchKeyword = string.IsNullOrEmpty(keyword) ? "" : keyword;
+
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("sp_TimKiemVatLieuTheoKho", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@MaKho", maKho);
+                cmd.Parameters.AddWithValue("@Keyword", searchKeyword);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        DTO_VatLieu vl = new DTO_VatLieu
+                        {
+                            MaVatLieu = Convert.ToInt32(reader["MaVatLieu"]),
+                            Ten = reader["Ten"] != DBNull.Value ? reader["Ten"].ToString() : string.Empty,
+                            DonGiaBan = reader["DonGiaBan"] != DBNull.Value ? Convert.ToDecimal(reader["DonGiaBan"]) : 0m,
+                            DonViTinh = reader["DonViTinh"] != DBNull.Value ? reader["DonViTinh"].ToString() : string.Empty,
+                            SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToInt32(reader["SoLuong"]) : 0, 
+                            TenKho = reader["TenKho"] != DBNull.Value ? reader["TenKho"].ToString() : string.Empty,
+                        };
+                        ketQua.Add(vl);
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"SQL Error in DAL_VatLieu.TimKiemVatLieuTheoKho: {sqlEx.Message}, SP Params: MaKho={maKho}, Keyword='{searchKeyword}'");
+            }
+            catch (Exception ex)
+            { 
+                Console.WriteLine($"Error in DAL_VatLieu.TimKiemVatLieuTheoKho: {ex.Message}");
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return ketQua;
         }
 
         public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu,int NguoiTao)

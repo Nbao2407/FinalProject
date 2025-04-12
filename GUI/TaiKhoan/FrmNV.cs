@@ -2,6 +2,7 @@
 using DAL;
 using DTO;
 using GUI.Helpler;
+using Microsoft.VisualBasic;
 using QLVT.Helper;
 using QLVT.TaiKhoan;
 using QLVT.Type;
@@ -11,12 +12,15 @@ namespace QLVT
 {
     public partial class FrmNV : Form
     {
-        private List<DTO_TK> danhSach;
+        private List<DTO_TK> danhSach = new List<DTO_TK>(); 
         private System.Windows.Forms.Timer debounceTimer;
+        private QLTK busTaiKhoan = new QLTK();
         public FrmNV(DTO_TK loggedInUser = null)
         {
             InitializeComponent();
+            LoadData();
             this.Resize += new EventHandler(Frm_Resize);
+            ConfigureDataGridViewColumns();
         }
 
         private void FrmNV_Load(object sender, EventArgs e)
@@ -25,10 +29,60 @@ namespace QLVT
             LoadData();
             ResizeColumns();
             SetupDebounceTimer();
+            LoadComboBoxes();
+            aloneComboBox1.SelectedIndexChanged += aloneComboBox1_SelectedIndexChanged;
+            aloneComboBox2.SelectedIndexChanged += aloneComboBox2_SelectedIndexChanged;
 
+        }
+        private void ConfigureDataGridViewColumns()
+        {
+            dataGridView1.AutoGenerateColumns = false; // IMPORTANT
+            dataGridView1.Columns.Clear(); // Clear any design-time columns first
+
+            // Define columns, mapping DataPropertyName to DTO_TK properties
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColMaTK", // Control column name
+                HeaderText = "Mã Tài Khoản",
+                DataPropertyName = "maTK" // Matches DTO_TK.maTK
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColTenDangNhap",
+                HeaderText = "Tên Đăng Nhập",
+                DataPropertyName = "tenDangNhap" // Matches DTO_TK.tenDangNhap
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColSDT",
+                HeaderText = "Số Điện Thoại",
+                DataPropertyName = "sdt" // Matches DTO_TK.sdt
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColEmail",
+                HeaderText = "Email",
+                DataPropertyName = "email" // Matches DTO_TK.email
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColQuyen",
+                HeaderText = "Quyền",
+                DataPropertyName = "quyen" // Matches DTO_TK.quyen
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColTrangThai",
+                HeaderText = "Trạng Thái",
+                DataPropertyName = "trangThai" // Matches DTO_TK.trangThai
+            });
+
+            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
         }
         private void SetupDebounceTimer()
         {
+            debounceTimer?.Dispose();
+
             debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
             debounceTimer.Tick += (s, e) =>
             {
@@ -40,54 +94,44 @@ namespace QLVT
         {
             try
             {
-                QLTK busNhanVien = new QLTK();
-                List<DTO_TK> danhSach = busNhanVien.GetAllTk();
+                List<DTO_TK> tempDanhSach = busTaiKhoan.GetAllTk();
 
-                if (danhSach == null || danhSach.Count == 0)
+                if (tempDanhSach == null)
                 {
-                    MessageBox.Show("Không có dữ liệu nhân viên!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    if (dataGridView1 != null)
-                        dataGridView1.DataSource = null;
-                    return;
+                    MessageBox.Show("Không thể tải danh sách tài khoản (null từ BUS/DAL).", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.danhSach = new List<DTO_TK>();
+                }
+                else
+                {
+                    this.danhSach = tempDanhSach.AsEnumerable().Reverse().ToList();
                 }
 
                 if (CurrentUser.ChucVu == "Quản lý")
                 {
-                    danhSach = danhSach.Where(nv => nv.quyen == "Nhân viên").ToList();
+                    this.danhSach = this.danhSach.Where(nv => nv != null && nv.quyen == "Nhân viên").ToList();
                 }
-                if (danhSach.Count == 0)
+
+                dataGridView1.DataSource = null; 
+                if (this.danhSach.Any()) 
+                {   
+                    
+                    
+                    var bindingSource = new BindingSource { DataSource = this.danhSach };
+                    dataGridView1.DataSource = bindingSource;
+                }
+                else
                 {
-                    MessageBox.Show("Không có nhân viên nào để hiển thị!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                     dataGridView1.DataSource = null;
-                    return;
+                    MessageBox.Show("Không có dữ liệu tài khoản phù hợp để hiển thị.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                var data = danhSach.Select(nv => new
-                {
-                    MaTK = nv.maTK,
-                    TenDangNhap = nv.tenDangNhap,
-                    SDT = nv.sdt,
-                    Email = nv.email,
-                    Quyen = nv.quyen,
-                    TrangThai = nv.trangThai
-                }).ToList();
-
-                dataGridView1.DataSource = data;
-                dataGridView1.Columns["MaTK"].HeaderText = "Mã Tài Khoản";
-                dataGridView1.Columns["TenDangNhap"].HeaderText = "Tên Đăng Nhập";
-                dataGridView1.Columns["SDT"].HeaderText = "Số Điện Thoại";
-                dataGridView1.Columns["Email"].HeaderText = "Email";
-                dataGridView1.Columns["Quyen"].HeaderText = "Quyền";
-                dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
-                DataGridViewHelper.CustomizeDataGridView(dataGridView1);
-                ResizeColumns();
+                ResizeColumns(); 
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi",
+                MessageBox.Show("Lỗi nghiêm trọng khi tải dữ liệu tài khoản: " + ex.Message, "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.danhSach = new List<DTO_TK>(); // Ensure danhSach is empty list on error
+                if (dataGridView1 != null) dataGridView1.DataSource = null;
             }
         }
 
@@ -150,58 +194,139 @@ namespace QLVT
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
+
+            string selectedTrangThai = null;
+            string selectedChucvu = null;
+            if (aloneComboBox1.SelectedIndex > 0) 
+            {
+                selectedTrangThai = aloneComboBox1.Text;
+            }
+            if (aloneComboBox2.Visible && aloneComboBox2.SelectedIndex > 0) 
+            {
+                selectedChucvu = aloneComboBox2.Text;
+            }
+
             try
             {
-                IEnumerable<DTO_TK> suggestionSource = danhSach;
+                if (danhSach == null)
+                {
+                    MessageBox.Show("Danh sách gốc chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    dataGridView1.DataSource = null;
+                    return;
+                }
 
-                List<DTO_TK> suggestionResults = new List<DTO_TK>(); // Khởi tạo danh sách rỗng cho gợi ý
+                IEnumerable<DTO_TK> filteredSource = danhSach;
+
+                if (!string.IsNullOrEmpty(selectedTrangThai))
+                {
+                    filteredSource = filteredSource.Where(tk =>
+                        tk != null &&
+                        tk.trangThai != null &&
+                        tk.trangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(selectedChucvu))
+                {
+                    filteredSource = filteredSource.Where(tk =>
+                        tk != null &&
+                        tk.quyen != null &&
+                        tk.quyen.Equals(selectedChucvu, StringComparison.OrdinalIgnoreCase)
+                    );
+                }
+
+                List<DTO_TK> finalResults;
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
-                    suggestionResults = suggestionSource.Where(order =>
+                    finalResults = filteredSource.Where(tk =>
                     {
+                        if (tk == null) return false;
                         bool match = false;
-                        if (order.maTK.ToString().Contains(searchQuery)) match = true;
-                        if (!match && order.tenDangNhap.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        if (tk.maTK.ToString().ToLowerInvariant().Contains(searchQuery))
+                            match = true;
+                        if (!match && tk.tenDangNhap != null && tk.tenDangNhap.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                            match = true;
                         return match;
                     }).ToList();
                 }
+                else
+                {
+                    finalResults = filteredSource.Where(tk => tk != null).ToList();
+                }
 
-                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+                dataGridView1.DataSource = null;
+                if (finalResults.Any())
+                {
+                    var bindingSource = new BindingSource { DataSource = finalResults };
+                    dataGridView1.DataSource = bindingSource;
+                }
+                ResizeColumns(); 
 
-                Func<DTO_TK, string> displayFunc = item => $"{item.maTK} - {item.tenDangNhap ?? "N/A"}";
-
+                Func<DTO_TK, string> displayFunc = item => $"{item.maTK} - {item.tenDangNhap}";
                 Action<DTO_TK> clickAction = selectedItem =>
                 {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
-                    txtSearch.Text = selectedItem.maTK.ToString(); // Điền Mã ĐN vào ô search
+                    txtSearch.Text = selectedItem.tenDangNhap;
                     txtSearch.TextChanged += txtSearch_TextChanged;
-
                     var itemToShow = new List<DTO_TK> { selectedItem };
-                    dataGridView1.DataSource = itemToShow;
+                    var singleBindingSource = new BindingSource { DataSource = itemToShow };
+                    dataGridView1.DataSource = singleBindingSource;
                     ResizeColumns();
+                    if (result != null) result.Visible = false;
                 };
 
                 SearchHelper.UpdateSearchSuggestions(
                     result,
-                    suggestionResults,
+                    finalResults, 
                     txtSearch,
-                    38,
-                    190,
-                    displayFunc,
-                    clickAction
-                );
+                    38, 190, displayFunc, clickAction);
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
             }
         }
-
+        private void LoadComboBoxes()
+        {
+            if (CurrentUser.ChucVu == "Quản lý")
+            {
+                aloneComboBox1.Items.Clear();
+                aloneComboBox2.Visible =false;
+                aloneComboBox1.Items.Add("-- Tất cả TT --");
+                aloneComboBox1.Items.Add("Hoạt động");
+                aloneComboBox1.Items.Add("Ngừng hoạt động");
+                aloneComboBox1.SelectedIndex = -1;
+            }
+            else
+            {
+                aloneComboBox1.Items.Clear();
+                aloneComboBox1.Items.Add("-- Tất cả TT --");
+                aloneComboBox1.Items.Add("Hoạt động");
+                aloneComboBox1.Items.Add("Ngừng hoạt động");
+                aloneComboBox1.SelectedIndex = -1;
+                aloneComboBox2.Items.Clear();
+                aloneComboBox2.Items.Add("-- Tất cả TT --");
+                aloneComboBox2.Items.Add("Admin");
+                aloneComboBox2.Items.Add("Quản lý");
+                aloneComboBox2.Items.Add("Nhân viên");
+                aloneComboBox2.SelectedIndex = -1;
+            }
+        }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             debounceTimer.Stop();
             debounceTimer.Start();
+        }
+        private void aloneComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
+        }
+        private void aloneComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
         }
     }
 }
