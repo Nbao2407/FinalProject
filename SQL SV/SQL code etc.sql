@@ -2249,3 +2249,43 @@ END;
 GO
 ALTER TABLE QLDonXuat
 ALTER COLUMN TrangThai NVARCHAR(50) CHECK (TrangThai IN (N'Đang xử lý', N'Hoàn thành', N'Đã hủy', N'Chờ hóa đơn'));
+go
+Alter PROCEDURE sp_TimKiemVatLieuTheoKho
+    @MaKho INT,
+    @Keyword NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Chuẩn hóa từ khóa để tìm kiếm với ký tự đại diện
+    DECLARE @Search NVARCHAR(100) = '%' + @Keyword + '%';
+
+    SELECT 
+        vl.MaVatLieu, 
+        vl.Ten, 
+        vl.DonGiaBan, 
+        vl.DonGiaNhap, 
+        vl.DonViTinh, 
+        vl.SoLuong,
+        k.TenKho,
+        CASE 
+            WHEN vl.Ten LIKE @Keyword + '%' THEN 3  -- Khớp ở đầu tên vật liệu
+            WHEN vl.Ten LIKE '%' + @Keyword + '%' THEN 2 -- Khớp trong tên vật liệu
+            ELSE 1 -- Khớp với loại vật liệu hoặc mã vật liệu
+        END AS MatchScore
+    FROM QLVatLieu vl  
+    JOIN Kho k ON vl.MaKho = k.MaKho
+    WHERE 
+        vl.MaKho = @MaKho
+        AND vl.TrangThai = N'Hoạt động'
+        AND (
+            vl.Ten COLLATE Latin1_General_CI_AI LIKE @Search
+            OR CAST(vl.MaVatLieu AS NVARCHAR) LIKE @Search
+        )
+    ORDER BY MatchScore DESC, vl.Ten;
+END;
+GO
+SELECT vl.MaVatLieu, vl.Ten, lv.TenLoai, vl.DonGiaNhap, vl.DonGiaBan, vl.DonViTinh, vl.SoLuong
+FROM QLVatLieu vl
+JOIN QLLoaiVatLieu lv ON vl.Loai = lv.MaLoaiVatLieu
+Select * from QLVatLieu
