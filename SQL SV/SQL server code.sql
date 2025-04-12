@@ -190,23 +190,22 @@ WHERE kh.TenNguoiTao IS NULL;
 DELETE FROM ChiTietHoaDon
 WHERE MaHoaDon IN (
     SELECT MaHoaDon FROM QLHoaDon
-    WHERE NgayLap = '2025-04-07'
+    WHERE TrangThai=N'Đã thanh toán'
 );
 
-DELETE FROM QLHoaDon
-WHERE NgayLap = '2025-04-07';
+DELETE FROM QLHoaDonx
+  WHERE TrangThai=N'Đã thanh toán'
 
 DELETE FROM ChiTietDonNhap
 WHERE MaCTDN IN (
     SELECT MaCTDN FROM QLDonNhap
-    WHERE NgayNhap = '2025-04-08'
+    WHERE TrangThai=N'Đã thanh toán'
 );
 
 DELETE FROM QLDonNhap
-WHERE NgayNhap = '2025-04-08';
+WHERE TrangThai=N'Đã thanh toán'
 
-SELECT maTK, tenDangNhap, email, sdt, ChucVu, trangThai, ngayTao , GHICHU ,DiaChi FROM QLTK WHERE maTk = 1
-Select * from QLTK
+
 
 BACKUP DATABASE QLVT 
 TO DISK = 'I:\Pro213\SQL SV\Backup\QLVT.bak'
