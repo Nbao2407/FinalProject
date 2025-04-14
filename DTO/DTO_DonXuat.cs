@@ -21,7 +21,14 @@ namespace DTO
             public DateTime? NgayCapNhat { get; set; } 
             public int? NguoiCapNhat { get; set; }
             public string TenNguoiCapNhat { get; set; }
-        }
+            public int MaCTDX { get; set; }
+            public int MaVatLieu { get; set; }
+            public string TenVatLieu { get; set; }
+            public string DonViTinh { get; set; }
+            public int SoLuong { get; set; }
+            public decimal DonGia { get; set; }
+            public int Makhonguon { get; set; }
+    }
 
         public class DTO_ChiTietDonXuat
         {
@@ -32,14 +39,16 @@ namespace DTO
             public string DonViTinh { get; set; }
             public int SoLuong { get; set; }
             public decimal DonGia { get; set; }
-            public decimal ThanhTien => SoLuong * DonGia;
+           public int MaKhoNguon { get; set; }
+        public string TenKho { get; set; } 
+        public decimal ThanhTien => SoLuong * DonGia;
         }
 
         public class DTO_ChiTietXuatInput
         {
             public int MaVatLieu { get; set; }
             public int SoLuong { get; set; }
-            public decimal DonGia { get; set; } // Giá bán tại thời điểm xuất
+            public decimal DonGia { get; set; } 
         }
 
         public class DTO_DonXuatInput

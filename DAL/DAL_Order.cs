@@ -234,7 +234,7 @@ namespace DAL
                         {
                             if (readerHeader.Read()) 
                             {
-                                orderDetail = new DTO_OrderDetail // Tạo đối tượng
+                                orderDetail = new DTO_OrderDetail 
                                 {
                                     MaDonNhap = readerHeader.GetInt32(readerHeader.GetOrdinal("MaDonNhap")),
                                     NgayNhap = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayNhap")),

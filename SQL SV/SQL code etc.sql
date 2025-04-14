@@ -1988,33 +1988,42 @@ BEGIN
     END CATCH
 END;
 GO
-CREATE TRIGGER trg_CapNhatSoLuongXuat
+ALTER TRIGGER trg_CapNhatSoLuongXuat
 ON ChiTietDonXuat
 AFTER INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(MAX);
 
-    -- Kiểm tra số lượng tồn kho
+    -- Kiểm tra tồn kho tại đúng KHO NGUỒN
     IF EXISTS (
         SELECT 1
         FROM QLVatLieu v
-        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu
-        WHERE v.SoLuong < i.SoLuong
+        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu AND v.MaKho = i.MaKhoNguon -- << THÊM ĐIỀU KIỆN KHO
+        WHERE ISNULL(v.SoLuong, 0) < i.SoLuong -- Dùng ISNULL cho chắc
     )
     BEGIN
-        RAISERROR (N'Số lượng vật liệu trong kho không đủ để xuất!', 16, 1);
+        SELECT TOP 1 @ErrorMsg = N'Số lượng VL "' + ISNULL(v.Ten, CAST(i.MaVatLieu AS VARCHAR))
+             + N'" tại Kho ID ' + CAST(i.MaKhoNguon AS VARCHAR)
+             + N' (' + CAST(ISNULL(v.SoLuong,0) AS VARCHAR) + N') không đủ cho yêu cầu (' + CAST(i.SoLuong AS VARCHAR) + N')!'
+        FROM QLVatLieu v
+        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu AND v.MaKho = i.MaKhoNguon
+        WHERE ISNULL(v.SoLuong, 0) < i.SoLuong;
+
+        RAISERROR (@ErrorMsg, 16, 1);
         ROLLBACK TRANSACTION;
+        RETURN;
     END
     ELSE
     BEGIN
-        -- Giảm số lượng tồn kho
+        -- Cập nhật kho tại đúng KHO NGUỒN
         UPDATE QLVatLieu
-        SET SoLuong = v.SoLuong - i.SoLuong,
+        SET SoLuong = ISNULL(v.SoLuong, 0) - i.SoLuong, -- Dùng ISNULL
             NgayCapNhat = GETDATE()
+            -- NguoiCapNhat = (SELECT TOP 1 NguoiCapNhat FROM QLDonXuat WHERE MaDonXuat = i.MaDonXuat) -- Lấy người cập nhật nếu cần
         FROM QLVatLieu v
-        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
-
+        INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu AND v.MaKho = i.MaKhoNguon;
         -- Ghi log hoạt động
         INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
         SELECT 
@@ -2030,7 +2039,11 @@ BEGIN
         INNER JOIN inserted i ON v.MaVatLieu = i.MaVatLieu;
     END;
 END;
+Go
+
+
 GO
+
 ALTER PROCEDURE sp_ThemDonXuat
     @NgayXuat DATE,
     @MaTK INT,
@@ -2168,6 +2181,7 @@ BEGIN
     END CATCH;
 END;
 GO
+
 CREATE PROCEDURE sp_HuyDonXuat
     @MaDonXuat INT,
     @NguoiCapNhat INT,
@@ -2248,7 +2262,7 @@ BEGIN
 END;
 GO
 ALTER TABLE QLDonXuat
-ALTER COLUMN TrangThai NVARCHAR(50) CHECK (TrangThai IN (N'Đang xử lý', N'Hoàn thành', N'Đã hủy', N'Chờ hóa đơn'));
+ALTER COLUMN TrangThai NVARCHAR(50) CHECK (TrangThai IN (N'Chờ xử lý', N'Hoàn thành', N'Đã hủy', N'Chờ hóa đơn'));
 go
 Alter PROCEDURE sp_TimKiemVatLieuTheoKho
     @MaKho INT,
@@ -2289,3 +2303,49 @@ SELECT vl.MaVatLieu, vl.Ten, lv.TenLoai, vl.DonGiaNhap, vl.DonGiaBan, vl.DonViTi
 FROM QLVatLieu vl
 JOIN QLLoaiVatLieu lv ON vl.Loai = lv.MaLoaiVatLieu
 Select * from QLVatLieu
+Alter PROCEDURE sp_LayDonXuatTheoID
+    @MaDonXuat INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Kiểm tra Đơn xuất có tồn tại
+    IF NOT EXISTS (SELECT 1 FROM QLDonXuat WHERE MaDonXuat = @MaDonXuat)
+    BEGIN
+        SELECT N'Đơn xuất không tồn tại!' AS Message;
+        RETURN;
+    END
+
+    -- Lấy thông tin header của Đơn xuất
+  SELECT 
+        dx.MaDonXuat,
+        dx.NgayXuat,
+        dx.TrangThai,
+        dx.GhiChu,
+        dx.LoaiXuat,
+        tk.TenDangNhap AS NguoiTao,
+        kh.Ten AS TenKhachHang,
+        hd.MaHoaDon,
+        hd.NgayLap AS NgayLapHoaDon,
+        hd.TongTien AS TongTienHoaDon,
+        hd.TrangThai AS TrangThaiHoaDon
+    FROM QLDonXuat dx
+    LEFT JOIN QLTK tk ON dx.MaTK = tk.MaTK
+    LEFT JOIN QLKH kh ON dx.MaKhachHang = kh.MaKhachHang
+    LEFT JOIN QLHoaDon hd ON dx.MaHoaDon = hd.MaHoaDon
+    WHERE dx.MaDonXuat = @MaDonXuat;
+    -- Lấy chi tiết Đơn xuất
+    SELECT 
+        ctdx.MaCTDX,
+        ctdx.MaVatLieu,
+        vl.Ten AS TenVatLieu,
+        ctdx.SoLuong,
+        ctdx.DonGia,
+        vl.DonViTinh,
+		ctdx.MaKhoNguon
+    FROM ChiTietDonXuat ctdx
+    INNER JOIN QLVatLieu vl ON ctdx.MaVatLieu = vl.MaVatLieu
+    WHERE ctdx.MaDonXuat = @MaDonXuat;
+END;
+GO
+EXEC sp_LayDonXuatTheoID @MaDonXuat = 1;

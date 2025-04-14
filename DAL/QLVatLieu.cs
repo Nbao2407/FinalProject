@@ -319,6 +319,7 @@ namespace DAL
                             DonViTinh = reader["DonViTinh"] != DBNull.Value ? reader["DonViTinh"].ToString() : string.Empty,
                             SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToInt32(reader["SoLuong"]) : 0, 
                             TenKho = reader["TenKho"] != DBNull.Value ? reader["TenKho"].ToString() : string.Empty,
+                            MaKho = reader.IsDBNull(reader.GetOrdinal("MaKho")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaKho"))
                         };
                         ketQua.Add(vl);
                     }
@@ -444,6 +445,40 @@ namespace DAL
             }
             return dt;
         }
-       
+        public int GetSoLuongTonKho(int maVatLieu, int maKho)
+        {
+            int soLuongTon = 0;
+            string query = "SELECT SoLuong FROM QLVatLieu WHERE MaVatLieu = @MaVatLieu AND MaKho = @MaKho";
+
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaVatLieu", maVatLieu);
+                    cmd.Parameters.AddWithValue("@MaKho", maKho);
+
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar(); 
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            soLuongTon = Convert.ToInt32(result);
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"Lỗi SQL trong DAL GetSoLuongTonKho(VL={maVatLieu}, Kho={maKho}): {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Lỗi chung trong DAL GetSoLuongTonKho(VL={maVatLieu}, Kho={maKho}): {ex.Message}");
+                    }
+                }
+            }
+            return soLuongTon;
+        }
+
     }
 }

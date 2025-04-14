@@ -41,10 +41,7 @@
             bigLabel2 = new ReaLTaiizor.Controls.BigLabel();
             txtNgTao = new ReaLTaiizor.Controls.BigLabel();
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
-            bigLabel3 = new ReaLTaiizor.Controls.BigLabel();
-            dgvChiTietPopup = new ReaLTaiizor.Controls.PoisonDataGridView();
-            lblNCC = new ReaLTaiizor.Controls.BigLabel();
-            bigLabel4 = new ReaLTaiizor.Controls.BigLabel();
+            dgvPopupChiTiet = new ReaLTaiizor.Controls.PoisonDataGridView();
             panel1 = new Panel();
             label1 = new Label();
             label2 = new Label();
@@ -53,13 +50,18 @@
             btnDuyet = new ReaLTaiizor.Controls.HopeRoundButton();
             txtGhiChuPopup = new ReaLTaiizor.Controls.AloneTextBox();
             NgayTao = new ReaLTaiizor.Controls.BigLabel();
-            lblNgayNhap = new ReaLTaiizor.Controls.BigLabel();
+            lblNgayXuat = new ReaLTaiizor.Controls.BigLabel();
             bigLabel6 = new ReaLTaiizor.Controls.BigLabel();
-            NgNhap = new ReaLTaiizor.Controls.BigLabel();
+            lblLoaiXuat = new ReaLTaiizor.Controls.BigLabel();
+            bigLabel7 = new ReaLTaiizor.Controls.BigLabel();
+            lblKh = new ReaLTaiizor.Controls.BigLabel();
+            bigLabel4 = new ReaLTaiizor.Controls.BigLabel();
+            lblHoaDonValue = new ReaLTaiizor.Controls.BigLabel();
+            bigLabel3 = new ReaLTaiizor.Controls.BigLabel();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvChiTietPopup).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPopupChiTiet).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -196,29 +198,17 @@
             bigLabel5.TabIndex = 54;
             bigLabel5.Text = "Người tạo :";
             // 
-            // bigLabel3
+            // dgvPopupChiTiet
             // 
-            bigLabel3.AutoSize = true;
-            bigLabel3.BackColor = Color.Transparent;
-            bigLabel3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            bigLabel3.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel3.Location = new Point(770, 105);
-            bigLabel3.Name = "bigLabel3";
-            bigLabel3.Size = new Size(96, 21);
-            bigLabel3.TabIndex = 74;
-            bigLabel3.Text = "Người nhập:";
-            // 
-            // dgvChiTietPopup
-            // 
-            dgvChiTietPopup.AllowUserToAddRows = false;
-            dgvChiTietPopup.AllowUserToDeleteRows = false;
-            dgvChiTietPopup.AllowUserToResizeColumns = false;
-            dgvChiTietPopup.AllowUserToResizeRows = false;
-            dgvChiTietPopup.Anchor = AnchorStyles.None;
-            dgvChiTietPopup.BackgroundColor = SystemColors.Control;
-            dgvChiTietPopup.BorderStyle = BorderStyle.None;
-            dgvChiTietPopup.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            dgvChiTietPopup.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvPopupChiTiet.AllowUserToAddRows = false;
+            dgvPopupChiTiet.AllowUserToDeleteRows = false;
+            dgvPopupChiTiet.AllowUserToResizeColumns = false;
+            dgvPopupChiTiet.AllowUserToResizeRows = false;
+            dgvPopupChiTiet.Anchor = AnchorStyles.None;
+            dgvPopupChiTiet.BackgroundColor = SystemColors.Control;
+            dgvPopupChiTiet.BorderStyle = BorderStyle.None;
+            dgvPopupChiTiet.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dgvPopupChiTiet.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 174, 219);
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -226,8 +216,8 @@
             dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(0, 198, 247);
             dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(17, 17, 17);
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dgvChiTietPopup.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvPopupChiTiet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(255, 255, 255);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -235,14 +225,14 @@
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(0, 198, 247);
             dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(17, 17, 17);
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvChiTietPopup.DefaultCellStyle = dataGridViewCellStyle2;
-            dgvChiTietPopup.EnableHeadersVisualStyles = false;
-            dgvChiTietPopup.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dgvChiTietPopup.GridColor = Color.FromArgb(255, 255, 255);
-            dgvChiTietPopup.Location = new Point(18, 189);
-            dgvChiTietPopup.Name = "dgvChiTietPopup";
-            dgvChiTietPopup.ReadOnly = true;
-            dgvChiTietPopup.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvPopupChiTiet.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvPopupChiTiet.EnableHeadersVisualStyles = false;
+            dgvPopupChiTiet.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dgvPopupChiTiet.GridColor = Color.FromArgb(255, 255, 255);
+            dgvPopupChiTiet.Location = new Point(18, 189);
+            dgvPopupChiTiet.Name = "dgvPopupChiTiet";
+            dgvPopupChiTiet.ReadOnly = true;
+            dgvPopupChiTiet.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 174, 219);
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -250,35 +240,11 @@
             dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(0, 198, 247);
             dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(17, 17, 17);
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dgvChiTietPopup.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            dgvChiTietPopup.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dgvChiTietPopup.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvChiTietPopup.Size = new Size(1006, 175);
-            dgvChiTietPopup.TabIndex = 77;
-            // 
-            // lblNCC
-            // 
-            lblNCC.AutoSize = true;
-            lblNCC.BackColor = Color.Transparent;
-            lblNCC.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblNCC.ForeColor = Color.SkyBlue;
-            lblNCC.Location = new Point(111, 146);
-            lblNCC.Name = "lblNCC";
-            lblNCC.Size = new Size(20, 21);
-            lblNCC.TabIndex = 79;
-            lblNCC.Text = "X";
-            // 
-            // bigLabel4
-            // 
-            bigLabel4.AutoSize = true;
-            bigLabel4.BackColor = Color.Transparent;
-            bigLabel4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            bigLabel4.ForeColor = Color.FromArgb(80, 80, 80);
-            bigLabel4.Location = new Point(21, 146);
-            bigLabel4.Name = "bigLabel4";
-            bigLabel4.Size = new Size(76, 21);
-            bigLabel4.TabIndex = 78;
-            bigLabel4.Text = "Tên NCC :";
+            dgvPopupChiTiet.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvPopupChiTiet.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dgvPopupChiTiet.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvPopupChiTiet.Size = new Size(1006, 175);
+            dgvPopupChiTiet.TabIndex = 77;
             // 
             // panel1
             // 
@@ -375,17 +341,17 @@
             NgayTao.TabIndex = 85;
             NgayTao.Text = "7/4/2025";
             // 
-            // lblNgayNhap
+            // lblNgayXuat
             // 
-            lblNgayNhap.AutoSize = true;
-            lblNgayNhap.BackColor = Color.Transparent;
-            lblNgayNhap.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblNgayNhap.ForeColor = Color.FromArgb(80, 80, 80);
-            lblNgayNhap.Location = new Point(617, 107);
-            lblNgayNhap.Name = "lblNgayNhap";
-            lblNgayNhap.Size = new Size(78, 21);
-            lblNgayNhap.TabIndex = 87;
-            lblNgayNhap.Text = "7/4/2025";
+            lblNgayXuat.AutoSize = true;
+            lblNgayXuat.BackColor = Color.Transparent;
+            lblNgayXuat.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblNgayXuat.ForeColor = Color.FromArgb(80, 80, 80);
+            lblNgayXuat.Location = new Point(617, 107);
+            lblNgayXuat.Name = "lblNgayXuat";
+            lblNgayXuat.Size = new Size(78, 21);
+            lblNgayXuat.TabIndex = 87;
+            lblNgayXuat.Text = "7/4/2025";
             // 
             // bigLabel6
             // 
@@ -395,30 +361,95 @@
             bigLabel6.ForeColor = Color.FromArgb(80, 80, 80);
             bigLabel6.Location = new Point(518, 107);
             bigLabel6.Name = "bigLabel6";
-            bigLabel6.Size = new Size(93, 21);
+            bigLabel6.Size = new Size(85, 21);
             bigLabel6.TabIndex = 86;
-            bigLabel6.Text = "Ngày nhập :";
+            bigLabel6.Text = "Ngày Xuất:";
             // 
-            // NgNhap
+            // lblLoaiXuat
             // 
-            NgNhap.AutoSize = true;
-            NgNhap.BackColor = Color.Transparent;
-            NgNhap.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            NgNhap.ForeColor = Color.FromArgb(80, 80, 80);
-            NgNhap.Location = new Point(872, 105);
-            NgNhap.Name = "NgNhap";
-            NgNhap.Size = new Size(78, 21);
-            NgNhap.TabIndex = 88;
-            NgNhap.Text = "7/4/2025";
+            lblLoaiXuat.AutoSize = true;
+            lblLoaiXuat.BackColor = Color.Transparent;
+            lblLoaiXuat.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblLoaiXuat.ForeColor = Color.FromArgb(80, 80, 80);
+            lblLoaiXuat.Location = new Point(872, 107);
+            lblLoaiXuat.Name = "lblLoaiXuat";
+            lblLoaiXuat.Size = new Size(83, 21);
+            lblLoaiXuat.TabIndex = 90;
+            lblLoaiXuat.Text = "Xuất hàng";
             // 
-            // PopupOrder
+            // bigLabel7
+            // 
+            bigLabel7.AutoSize = true;
+            bigLabel7.BackColor = Color.Transparent;
+            bigLabel7.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            bigLabel7.ForeColor = Color.FromArgb(80, 80, 80);
+            bigLabel7.Location = new Point(783, 107);
+            bigLabel7.Name = "bigLabel7";
+            bigLabel7.Size = new Size(77, 21);
+            bigLabel7.TabIndex = 89;
+            bigLabel7.Text = "Loại Xuất:";
+            // 
+            // lblKh
+            // 
+            lblKh.AutoSize = true;
+            lblKh.BackColor = Color.Transparent;
+            lblKh.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblKh.ForeColor = Color.FromArgb(80, 80, 80);
+            lblKh.Location = new Point(111, 146);
+            lblKh.Name = "lblKh";
+            lblKh.Size = new Size(20, 21);
+            lblKh.TabIndex = 92;
+            lblKh.Text = "X";
+            // 
+            // bigLabel4
+            // 
+            bigLabel4.AutoSize = true;
+            bigLabel4.BackColor = Color.Transparent;
+            bigLabel4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            bigLabel4.ForeColor = Color.FromArgb(80, 80, 80);
+            bigLabel4.Location = new Point(18, 146);
+            bigLabel4.Name = "bigLabel4";
+            bigLabel4.Size = new Size(91, 21);
+            bigLabel4.TabIndex = 91;
+            bigLabel4.Text = "Khách hàng";
+            // 
+            // lblHoaDonValue
+            // 
+            lblHoaDonValue.AutoSize = true;
+            lblHoaDonValue.BackColor = Color.Transparent;
+            lblHoaDonValue.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblHoaDonValue.ForeColor = Color.FromArgb(80, 80, 80);
+            lblHoaDonValue.Location = new Point(605, 146);
+            lblHoaDonValue.Name = "lblHoaDonValue";
+            lblHoaDonValue.Size = new Size(20, 21);
+            lblHoaDonValue.TabIndex = 94;
+            lblHoaDonValue.Text = "X";
+            // 
+            // bigLabel3
+            // 
+            bigLabel3.AutoSize = true;
+            bigLabel3.BackColor = Color.Transparent;
+            bigLabel3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            bigLabel3.ForeColor = Color.FromArgb(80, 80, 80);
+            bigLabel3.Location = new Point(518, 146);
+            bigLabel3.Name = "bigLabel3";
+            bigLabel3.Size = new Size(70, 21);
+            bigLabel3.TabIndex = 93;
+            bigLabel3.Text = "Hoá đơn";
+            // 
+            // PopupXuat
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1050, 561);
-            Controls.Add(dgvChiTietPopup);
-            Controls.Add(NgNhap);
-            Controls.Add(lblNgayNhap);
+            Controls.Add(lblHoaDonValue);
+            Controls.Add(bigLabel3);
+            Controls.Add(lblKh);
+            Controls.Add(bigLabel4);
+            Controls.Add(lblLoaiXuat);
+            Controls.Add(bigLabel7);
+            Controls.Add(dgvPopupChiTiet);
+            Controls.Add(lblNgayXuat);
             Controls.Add(bigLabel6);
             Controls.Add(NgayTao);
             Controls.Add(txtGhiChuPopup);
@@ -427,10 +458,7 @@
             Controls.Add(lblSoLuong);
             Controls.Add(panel1);
             Controls.Add(label2);
-            Controls.Add(lblNCC);
             Controls.Add(label1);
-            Controls.Add(bigLabel4);
-            Controls.Add(bigLabel3);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(panel5);
             Controls.Add(BtnDisable);
@@ -439,14 +467,14 @@
             Controls.Add(txtNgTao);
             Controls.Add(bigLabel5);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "PopupOrder";
+            Name = "PopupXuat";
             Text = "a";
             Load += PopupOrder_Load;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             panel5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvChiTietPopup).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPopupChiTiet).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -461,10 +489,7 @@
         private ReaLTaiizor.Controls.BigLabel bigLabel2;
         private ReaLTaiizor.Controls.BigLabel txtNgTao;
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
-        private ReaLTaiizor.Controls.BigLabel bigLabel3;
-        private ReaLTaiizor.Controls.PoisonDataGridView dgvChiTietPopup;
-        private ReaLTaiizor.Controls.BigLabel lblNCC;
-        private ReaLTaiizor.Controls.BigLabel bigLabel4;
+        private ReaLTaiizor.Controls.PoisonDataGridView dgvPopupChiTiet;
         private Panel panel1;
         private Label label1;
         private Label label2;
@@ -474,8 +499,13 @@
         private ReaLTaiizor.Controls.AloneTextBox txtGhiChuPopup;
         private Label tranthai;
         private ReaLTaiizor.Controls.BigLabel NgayTao;
-        private ReaLTaiizor.Controls.BigLabel lblNgayNhap;
+        private ReaLTaiizor.Controls.BigLabel lblNgayXuat;
         private ReaLTaiizor.Controls.BigLabel bigLabel6;
-        private ReaLTaiizor.Controls.BigLabel NgNhap;
+        private ReaLTaiizor.Controls.BigLabel lblLoaiXuat;
+        private ReaLTaiizor.Controls.BigLabel bigLabel7;
+        private ReaLTaiizor.Controls.BigLabel lblKh;
+        private ReaLTaiizor.Controls.BigLabel bigLabel4;
+        private ReaLTaiizor.Controls.BigLabel lblHoaDonValue;
+        private ReaLTaiizor.Controls.BigLabel bigLabel3;
     }
 }

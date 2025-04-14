@@ -26,43 +26,39 @@ namespace BUS
             return dalDonXuat.GetChiTietDonXuat(maDonXuat);
         }
 
-        public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int nguoiThucHien)
+        public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int? maKhoNguon, int nguoiThucHien)
         {
-            if (donXuatInput == null)
-                throw new ArgumentNullException(nameof(donXuatInput), "Thông tin đơn xuất không được rỗng.");
-            if (donXuatInput.MaTK <= 0)
-                throw new ArgumentException("Mã người lập không hợp lệ.", nameof(donXuatInput.MaTK));
-            if (donXuatInput.ChiTiet == null || !donXuatInput.ChiTiet.Any())
-                throw new ArgumentException("Chi tiết đơn xuất không được rỗng.", nameof(donXuatInput.ChiTiet));
+            if (donXuatInput == null) throw new ArgumentNullException(nameof(donXuatInput));
+            if (donXuatInput.MaTK <= 0) throw new ArgumentException("Mã người lập không hợp lệ.", nameof(donXuatInput.MaTK));
+            if (string.IsNullOrWhiteSpace(donXuatInput.LoaiXuat)) throw new ArgumentException("Loại xuất không được trống.", nameof(donXuatInput.LoaiXuat));
+            if (donXuatInput.ChiTiet == null || !donXuatInput.ChiTiet.Any()) throw new ArgumentException("Chi tiết đơn xuất không được rỗng.", nameof(donXuatInput.ChiTiet));
 
-            foreach (var item in donXuatInput.ChiTiet)
+            if (donXuatInput.LoaiXuat.Equals("Chuyển kho", StringComparison.OrdinalIgnoreCase))
             {
-                if (item.MaVatLieu <= 0)
-                    throw new ArgumentException("Chi tiết chứa Mã vật liệu không hợp lệ.", nameof(item.MaVatLieu));
-                if (item.SoLuong <= 0)
-                    throw new ArgumentException($"Số lượng cho vật liệu {item.MaVatLieu} phải lớn hơn 0.", nameof(item.SoLuong));
-                if (item.DonGia < 0)
-                    throw new ArgumentException($"Đơn giá cho vật liệu {item.MaVatLieu} không được âm.", nameof(item.DonGia));
+                if (!maKhoNguon.HasValue || maKhoNguon.Value <= 0)
+                {
+                    throw new ArgumentException("Mã kho nguồn là bắt buộc và phải hợp lệ khi chuyển kho.", nameof(maKhoNguon));
+                }
             }
-            if (string.IsNullOrWhiteSpace(donXuatInput.LoaiXuat))
-                throw new ArgumentException("Loại xuất không được để trống.", nameof(donXuatInput.LoaiXuat));
-            List<string> validTypes = new List<string> { "Xuất hàng", "Chuyển kho" };
-            if (!validTypes.Contains(donXuatInput.LoaiXuat, StringComparer.OrdinalIgnoreCase))
-                throw new ArgumentException($"Loại xuất '{donXuatInput.LoaiXuat}' không hợp lệ.", nameof(donXuatInput.LoaiXuat));
             if (donXuatInput.LoaiXuat.Equals("Xuất hàng", StringComparison.OrdinalIgnoreCase) && !donXuatInput.MaKhachHang.HasValue)
                 throw new ArgumentException("Phải chọn khách hàng cho đơn xuất bán hàng.", nameof(donXuatInput.MaKhachHang));
-            if (!donXuatInput.LoaiXuat.Equals("Xuất hàng", StringComparison.OrdinalIgnoreCase) && donXuatInput.MaKhachHang.HasValue)
-                throw new ArgumentException("Không cần chọn khách hàng cho loại xuất này.", nameof(donXuatInput.MaKhachHang));
-            if (nguoiThucHien <= 0)
-                throw new ArgumentException("Mã người thực hiện không hợp lệ.", nameof(nguoiThucHien));
+            foreach (var item in donXuatInput.ChiTiet)
+            {
+                if (item.MaVatLieu <= 0) throw new ArgumentException("Chi tiết chứa Mã vật liệu không hợp lệ.", nameof(item.MaVatLieu));
+                if (item.SoLuong <= 0) throw new ArgumentException($"Số lượng VL {item.MaVatLieu} phải > 0.", nameof(item.SoLuong));
+                if (item.DonGia < 0) throw new ArgumentException($"Đơn giá VL {item.MaVatLieu} không được âm.", nameof(item.DonGia));
+            }
+
+            if (nguoiThucHien <= 0) throw new ArgumentException("Mã người thực hiện không hợp lệ.", nameof(nguoiThucHien));
+
             try
             {
-                return dalDonXuat.ThemDonXuat(donXuatInput, nguoiThucHien);
+                return dalDonXuat.ThemDonXuat(donXuatInput, maKhoNguon, nguoiThucHien);
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"BUS ThemDonXuat SQL Error: {ex.Message}");
-                throw new Exception("Lỗi cơ sở dữ liệu khi thêm đơn xuất. Vui lòng thử lại.", ex);
+                Console.WriteLine($"BUS ThemDonXuat SQL Error: {ex.Number} - {ex.Message}");
+                throw new Exception($"Lỗi cơ sở dữ liệu khi thêm đơn xuất (SQL Error {ex.Number}). Vui lòng thử lại.", ex);
             }
             catch (Exception ex)
             {
@@ -71,6 +67,43 @@ namespace BUS
             }
         }
 
+        public List<DTO_DonXuat> GetDTO_DonXuatsbyID(int maDonXuat)
+        {
+            if (maDonXuat <= 0)
+                throw new ArgumentException("Mã đơn xuất không hợp lệ.", nameof(maDonXuat));
+            try
+            {
+                return dalDonXuat.GetDonXuatById(maDonXuat);
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"BUS GetDTO_DonXuatsbyID SQL Error: {ex.Message}");
+                throw new Exception($"Lỗi cơ sở dữ liệu khi lấy thông tin đơn xuất {maDonXuat}.", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"BUS GetDTO_DonXuatsbyID Error: {ex.Message}");
+                throw;
+            }
+        }
+        public DTO_DonXuat GetDonXuatById(int maDonXuat)
+        {
+            if (maDonXuat <= 0)
+            {
+                Console.WriteLine("BUS GetDonXuatById: MaDonXuat không hợp lệ.");
+                return null;
+            }
+
+            try
+            {
+                return dalDonXuat.GetDonXuatById(maDonXuat);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS khi gọi DAL GetDonXuatById: {ex.Message}");
+                return null;
+            }
+        }
         public bool HuyDonXuat(int maDonXuat, int nguoiHuy, string lyDo)
         {
             if (maDonXuat <= 0)

@@ -45,8 +45,8 @@ namespace QLVT
             LoadInitialData();
             InitializeCustomComponents();
             PlaceholderHelper.SetPlaceholder(txtSearch, "Tìm kiếm vật liệu và thêm");
-            dtpNgayXuat.Value = DateTime.Now;
-            dtpNgayXuat.MaxDate = DateTime.Now;
+            dtpNgayXuat.Value = DateTime.Now.Date;
+            dtpNgayXuat.MaxDate = DateTime.Now.Date;
             CbKhoDich.Visible = false;
             label1.Visible = false;
             CbKhoDich.Enabled = false;
@@ -173,18 +173,32 @@ namespace QLVT
                     MessageBox.Show("Không thể xác định người dùng hiện tại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 _dtAllKhos = await Task.Run(() => busVatLieu.LayDanhSachKho());
+
+                if (_dtAllKhos == null)
+                {
+                    MessageBox.Show("Không thể lấy danh sách kho.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    _dtAllKhos = new DataTable();
+                    if (!_dtAllKhos.Columns.Contains("MaKho")) _dtAllKhos.Columns.Add("MaKho", typeof(int));
+                    if (!_dtAllKhos.Columns.Contains("TenKho")) _dtAllKhos.Columns.Add("TenKho", typeof(string));
+                }
                 string displayMemberName = "TenKho";
                 string valueMemberName = "MaKho";
-                CbKhoNguon.DataSource = _dtAllKhos.Copy();
+                DataTable dtKhoNguon = _dtAllKhos.Copy();
+                DataRow allRowNguon = dtKhoNguon.NewRow();
+                allRowNguon[displayMemberName] = "-- Tất cả Kho --";
+                allRowNguon[valueMemberName] = -1;
+                dtKhoNguon.Rows.InsertAt(allRowNguon, 0);
+                CbKhoNguon.DataSource = null;
                 CbKhoNguon.DisplayMember = displayMemberName;
                 CbKhoNguon.ValueMember = valueMemberName;
-                CbKhoNguon.SelectedIndex = -1;
-
-                CbKhoDich.DataSource = _dtAllKhos.Copy();
+                CbKhoNguon.DataSource = dtKhoNguon;
+                CbKhoNguon.SelectedIndex = 0;
+                DataTable dtKhoDich = _dtAllKhos.Copy();
+                CbKhoDich.DataSource = null;
                 CbKhoDich.DisplayMember = displayMemberName;
                 CbKhoDich.ValueMember = valueMemberName;
+                CbKhoDich.DataSource = dtKhoDich;
                 CbKhoDich.SelectedIndex = -1;
-
                 danhSachKhach = await Task.Run(() => bUS_Khach.LayDanhSachKhach());
                 danhSachHd = await Task.Run(() => Bus.LayTatCaHoaDon());
             }
@@ -381,161 +395,115 @@ namespace QLVT
 
         private async void btnTaoPhieuXuat_Click(object sender, EventArgs e)
         {
-            if (_isImportMode)
-            {
-                MessageBox.Show("Chức năng import Excel cần được xem xét lại với logic kho.", "Chưa Hỗ Trợ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            if (_isImportMode) { /* Xử lý Excel */ return; }
 
             DTO_DonXuatInput donXuatInput = new DTO_DonXuatInput();
-            int? selectedMaKhoNguon = null;
-            int? selectedMaKhachHang = null;
-            int? selectedMaHoaDon = null;
+            int? selectedMaKhoNguonFinal = null;
 
-            if (CbKhoDich.SelectedValue is int maKho && maKho > 0)
-            {
-                selectedMaKhoNguon = maKho;
-                donXuatInput.GhiChu = $"Xuất từ kho [{maKho}]: {CbKhoDich.Text}. ";
-            }
-            else
-            {
-                MessageBox.Show("Vui lòng chọn kho nguồn.", "Thiếu Thông Tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                CbKhoDich.Focus();
-                return;
-            }
-
-            if (TgTrangthai.Checked == false)
+            if (TgTrangthai.Checked)
             {
                 donXuatInput.LoaiXuat = "Chuyển kho";
                 donXuatInput.MaKhachHang = null;
                 donXuatInput.MaHoaDon = null;
-                donXuatInput.GhiChu += Tbnote.Text.Trim();
+
+                if (CbKhoNguon.SelectedValue is int maKhoN && maKhoN > 0)
+                {
+                    selectedMaKhoNguonFinal = maKhoN;
+                    Console.WriteLine($"Debug: Selected Kho Nguon Value = {selectedMaKhoNguonFinal}");
+                }
+                else
+                {
+                    MessageBox.Show("Vui lòng chọn Kho nguồn HỢP LỆ.", "Thiếu Kho Nguồn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    CbKhoNguon.Focus(); return;
+                }
+
+                if (!(CbKhoDich.SelectedValue is int maKhoD) || maKhoD <= 0) { MessageBox.Show("Vui lòng chọn Kho đích.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning); CbKhoDich.Focus(); return; }
+                if (selectedMaKhoNguonFinal == maKhoD) { MessageBox.Show("Kho nguồn và Kho đích không được trùng nhau.", "Lỗi logic", MessageBoxButtons.OK, MessageBoxIcon.Warning); CbKhoDich.Focus(); return; } // Focus kho đích nếu trùng
+
+                donXuatInput.GhiChu = $"Chuyển từ kho: {CbKhoNguon.Text} [{selectedMaKhoNguonFinal}] đến kho: {CbKhoDich.Text} [{maKhoD}]. {Tbnote.Text.Trim()}";
             }
             else
             {
-                donXuatInput.LoaiXuat = "Bán hàng";
+                donXuatInput.LoaiXuat = "Xuất hàng";
+                if (SearchKh.Tag is int maKH && maKH > 0) { donXuatInput.MaKhachHang = maKH; }
+                else { MessageBox.Show("Vui lòng tìm và chọn khách hàng hợp lệ.", "Thiếu Khách Hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning); SearchKh.Focus(); return; }
 
-                if (SearchKh.Tag is int maKH && maKH > 0)
-                {
-                    selectedMaKhachHang = maKH;
-                    donXuatInput.MaKhachHang = selectedMaKhachHang;
-                }
-                else
-                {
-                    MessageBox.Show("Vui lòng tìm và chọn khách hàng hợp lệ.", "Thiếu Khách Hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    SearchKh.Focus();
-                    return;
-                }
-                if (!string.IsNullOrWhiteSpace(SearchHoaDon.Text))
-                {
-                    if (SearchHoaDon.Tag is int maHD && maHD > 0)
-                    {
-                        selectedMaHoaDon = maHD;
-                        donXuatInput.MaHoaDon = selectedMaHoaDon;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Mã hóa đơn nhập vào không hợp lệ hoặc chưa được xác thực.", "Hóa Đơn Không Hợp Lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        SearchHoaDon.Focus();
-                        return;
-                    }
-                }
-                else
-                {
-                    donXuatInput.MaHoaDon = null;
-                }
-                donXuatInput.GhiChu += Tbnote.Text.Trim();
+                if (SearchHoaDon.Tag is int maHD && maHD > 0) { donXuatInput.MaHoaDon = maHD; }
+                else { donXuatInput.MaHoaDon = null; }
+                donXuatInput.GhiChu = Tbnote.Text.Trim();
             }
+
             donXuatInput.NgayXuat = dtpNgayXuat.Value.Date;
-
-            if (CurrentUser.MaTK <= 0)
-            {
-                MessageBox.Show("Không xác định được người lập đơn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
             donXuatInput.MaTK = CurrentUser.MaTK;
+            if (donXuatInput.MaTK <= 0) { MessageBox.Show("Không xác định được người lập đơn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
             donXuatInput.ChiTiet = new List<DTO_ChiTietXuatInput>();
-            if (!dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow))
-            {
-                MessageBox.Show("Vui lòng thêm ít nhất một vật liệu vào chi tiết đơn xuất.", "Thiếu Chi Tiết", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
+            if (!dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow)) { MessageBox.Show("Vui lòng thêm chi tiết đơn xuất.", "Thiếu Chi Tiết", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (this.busVatLieu == null) { MessageBox.Show("Lỗi: Chưa khởi tạo BUS Vật Liệu.", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
             foreach (DataGridViewRow row in dgvChiTiet.Rows)
             {
                 if (row.IsNewRow) continue;
-                int maVl = 0;
-                int sl = 0;
+                int maVl;
+                int sl;
                 decimal gb = 0m;
-                bool maVlValid = int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out maVl) && maVl > 0;
-                bool slValid = int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out sl) && sl > 0;
-                bool gbValid = decimal.TryParse(row.Cells["GiaBan"].Value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out gb) && gb >= 0;
 
-                if (!maVlValid || !slValid || !gbValid)
+                bool maVlValid = int.TryParse(row.Cells["MaVatLieu"].Value?.ToString(), out maVl) && maVl > 0;
+                if (!maVlValid)
                 {
-                    string errorField = !maVlValid ? "Mã VL" : (!slValid ? "Số lượng (>0)" : "Giá bán (>=0)");
-                    MessageBox.Show($"Dữ liệu không hợp lệ tại dòng {row.Index + 1}. Vui lòng kiểm tra {errorField}.", "Lỗi Dữ Liệu Chi Tiết", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    dgvChiTiet.CurrentCell = row.Cells[!maVlValid ? "MaVatLieu" : (!slValid ? "SoLuong" : "GiaBan")];
+                    MessageBox.Show($"Mã vật liệu không hợp lệ tại dòng {row.Index + 1}.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvChiTiet.CurrentCell = row.Cells["MaVatLieu"];
                     return;
                 }
-                BUS_HoaDon busHoaDon = new BUS_HoaDon();
-                int maKhoNguonValue = -1;
-                if (CbKhoDich.SelectedValue is int mk && mk > 0)
+                bool slValid = int.TryParse(row.Cells["SoLuong"].Value?.ToString(), out sl) && sl > 0;
+                if (!slValid)
                 {
-                    maKhoNguonValue = mk;
-                }
-                else
-                {
-                    MessageBox.Show("Vui lòng chọn kho nguồn hợp lệ.", "Thiếu Kho Nguồn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    CbKhoDich.Focus();
-                    return;
-                }
-                BUS_DonXuat busDonXuat = new BUS_DonXuat();
-                int soLuongTon = busDonXuat.GetSoLuongTonKho(maVl, maKhoNguonValue);
-                if (sl > soLuongTon)
-                {
-                    MessageBox.Show($"Số lượng xuất ({sl}) cho vật liệu '{row.Cells["TenVatLieu"].Value}' vượt quá tồn kho ({soLuongTon}) tại kho '{CbKhoDich.Text}'.", "Không Đủ Hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Số lượng không hợp lệ tại dòng {row.Index + 1} (phải là số > 0).", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     dgvChiTiet.CurrentCell = row.Cells["SoLuong"];
                     return;
                 }
-                donXuatInput.ChiTiet.Add(new DTO_ChiTietXuatInput
+                bool gbValid = decimal.TryParse(row.Cells["GiaBan"].Value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out gb) && gb >= 0;
+                if (!gbValid)
                 {
-                    MaVatLieu = maVl,
-                    SoLuong = sl,
-                    DonGia = gb
-                });
-            }
-            this.Cursor = Cursors.WaitCursor;
-            btnXuatHang.Enabled = false;
-            try
-            {
-                int newMaDonXuat = bus.ThemDonXuat(donXuatInput, CurrentUser.MaTK);
+                    MessageBox.Show($"Giá bán không hợp lệ tại dòng {row.Index + 1} (phải là số >= 0).", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvChiTiet.CurrentCell = row.Cells["GiaBan"];
+                    return;
+                }
 
-                if (newMaDonXuat > 0)
+                int? maKhoCuaVatLieu = row.Tag as int?;
+                if (!maKhoCuaVatLieu.HasValue || maKhoCuaVatLieu.Value <= 0) { return; }
+
+                if (TgTrangthai.Checked && maKhoCuaVatLieu.Value != selectedMaKhoNguonFinal.Value)
                 {
-                    MessageBox.Show($"Tạo đơn xuất {newMaDonXuat} thành công!", "Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    ClearForm();
+                    MessageBox.Show($"Vật liệu '{row.Cells["TenVatLieu"].Value}' tại dòng {row.Index + 1} không thuộc Kho nguồn '{CbKhoNguon.Text}' đã chọn.", "Sai Kho", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
-                else
+
+                int soLuongTon = this.busVatLieu.GetSoLuongTonKho(maVl, maKhoCuaVatLieu.Value);
+                if (sl > soLuongTon)
                 {
-                    MessageBox.Show("Tạo đơn xuất thất bại (không nhận được Mã đơn mới).", "Thất Bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"SL xuất ({sl}) VL '{row.Cells["TenVatLieu"].Value}' vượt tồn ({soLuongTon}) tại kho '{row.Cells["TenKho"].Value}'.", "Không Đủ Hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvChiTiet.CurrentCell = row.Cells["SoLuong"];
+                    return;
                 }
-            }
-            catch (ArgumentException argEx)
-            {
-                MessageBox.Show($"Lỗi dữ liệu đầu vào: {argEx.Message}", "Dữ Liệu Không Hợp Lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi hệ thống khi tạo đơn xuất: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                this.Cursor = Cursors.Default;
-                btnXuatHang.Enabled = true;
+
+                donXuatInput.ChiTiet.Add(new DTO_ChiTietXuatInput { MaVatLieu = maVl, SoLuong = sl, DonGia = gb });
+
+                btnXuatHang.Enabled = false;
+                try
+                {
+                    int newMaDonXuat = await Task.Run(() => this.bus.ThemDonXuat(donXuatInput, selectedMaKhoNguonFinal, CurrentUser.MaTK));
+                    if (newMaDonXuat > 0)
+                    {
+                        MessageBox.Show($"Tạo đơn xuất {newMaDonXuat} thành công!", "Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ClearForm();
+                    }
+                    else { MessageBox.Show("Tạo đơn xuất thất bại.", "Thất Bại", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                }
+                catch (Exception ex) { MessageBox.Show($"Lỗi khi tạo đơn xuất: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                finally { this.Cursor = Cursors.Default; btnXuatHang.Enabled = true; EnableTaoPhieuButton(); }
             }
         }
+
 
         private void UpdateSearchSuggestions(List<DTO_VatLieu> searchResults)
         {
@@ -595,26 +563,30 @@ namespace QLVT
 
         private void AddVatLieuToDgvChiTiet(DTO_VatLieu selectedItem)
         {
-            if (CbKhoNguon.SelectedIndex < 0)
+            int selectedMaKhoNguon = -1;
+            if (CbKhoNguon.SelectedValue is int mk) { selectedMaKhoNguon = mk; }
+
+            if (TgTrangthai.Checked)
             {
-                MessageBox.Show("Vui lòng chọn Kho nguồn trước khi thêm vật liệu.", "Thiếu Kho Nguồn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                CbKhoNguon.Focus();
+                if (selectedMaKhoNguon <= 0)
+                {
+                    MessageBox.Show("Vui lòng chọn Kho nguồn cụ thể khi xuất chuyển kho.", "Thiếu Kho Nguồn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    CbKhoNguon.Focus();
+                    return;
+                }
+                if (selectedItem.MaKho != selectedMaKhoNguon)
+                {
+                    MessageBox.Show($"Vật liệu '{selectedItem.Ten}' không thuộc kho nguồn '{CbKhoNguon.Text}' đã chọn cho việc chuyển kho.", "Sai Kho", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (selectedItem.DonGiaBan == null || selectedItem.DonGiaBan < 0)
+            {
+                MessageBox.Show($"Vật liệu '{selectedItem.Ten}' chưa có giá bán hợp lệ.", "Thiếu Giá Bán", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            int selectedMaKhoNguon = (CbKhoNguon.SelectedValue is int mk) ? mk : -1;
-            //if (selectedItem.MaKho != selectedMaKhoNguon)
-            //{
-            //    MessageBox.Show($"Vật liệu '{selectedItem.Ten}' không thuộc kho nguồn '{CbKhoNguon.Text}' đã chọn.", "Sai Kho", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    return;
-            //}
-
-            if (selectedItem.DonGiaBan == null || selectedItem.DonGiaBan < 0)
-            {
-                MessageBox.Show($"Vật liệu '{selectedItem.Ten}' chưa có giá bán hợp lệ.", "Thiếu Giá Bán", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            decimal giaBan = selectedItem.DonGiaBan;
+            decimal giaXuat = TgTrangthai.Checked ? 0m : (selectedItem.DonGiaBan);
 
             if (dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow && Convert.ToInt32(r.Cells["MaVatLieu"].Value) == selectedItem.MaVatLieu))
             {
@@ -623,26 +595,36 @@ namespace QLVT
             }
 
             int rowIndex = dgvChiTiet.Rows.Add(
-                selectedItem.MaVatLieu,
-                selectedItem.Ten,
-                selectedItem.TenKho,
-                selectedItem.DonViTinh,
-                1,
-                giaBan,
-                giaBan * 1,
-                "+", "-", "X"
+               selectedItem.MaVatLieu,
+               selectedItem.Ten,
+               selectedItem.TenKho,
+               selectedItem.DonViTinh,
+               1,
+               giaXuat,
+               giaXuat * 1,
+               "+", "-", "X"
             );
 
-            if (rowIndex >= 0)
+            if (rowIndex >= 0 && rowIndex < dgvChiTiet.Rows.Count)
             {
+                if (selectedItem.MaKho > 0)
+                {
+                    dgvChiTiet.Rows[rowIndex].Tag = selectedItem.MaKho;
+                    Console.WriteLine($"Assigned MaKho {selectedItem.MaKho} to Tag for row {rowIndex}");
+                }
+                else
+                {
+                    Console.WriteLine($"Warning: MaKho is invalid ({selectedItem.MaKho}) for item '{selectedItem.Ten}'. Tag not set.");
+                }
                 dgvChiTiet.ClearSelection();
                 dgvChiTiet.Rows[rowIndex].Selected = true;
-                if (dgvChiTiet.Columns.Contains("SoLuong"))
-                {
-                    dgvChiTiet.CurrentCell = dgvChiTiet.Rows[rowIndex].Cells["SoLuong"];
-                }
+                if (dgvChiTiet.Columns.Contains("SoLuong")) { dgvChiTiet.CurrentCell = dgvChiTiet.Rows[rowIndex].Cells["SoLuong"]; }
                 TinhTongSoLuongVaTienBan();
                 UpdateControlsState();
+            }
+            else
+            {
+                Console.WriteLine($"Error: Invalid rowIndex {rowIndex} after adding row.");
             }
         }
 
@@ -735,15 +717,13 @@ namespace QLVT
 
         private void ClearForm()
         {
-            dtpNgayXuat.Value = DateTime.Now;
-            CbKhach.SelectedIndex = -1;
+            dtpNgayXuat.MaxDate = DateTime.Now.Date;
             Tbnote.Text = string.Empty;
             txtSearch.Text = string.Empty;
             ketqua.Visible = false;
             dgvChiTiet.Rows.Clear();
             TinhTongSoLuongVaTienBan();
             CenterPanelInDataGridView();
-            CbKhach.Focus();
         }
 
         private async Task LoadExcelToGridAndFilterAsync(string filePath)
@@ -971,12 +951,23 @@ namespace QLVT
 
         private void EnableTaoPhieuButton()
         {
-            if (_isImportMode) return;
+            if (_isImportMode) { btnXuatHang.Enabled = false; return; }
 
-            bool khoSelected = CbKhoDich.SelectedIndex >= 0;
             bool hasGridRows = dgvChiTiet.Rows.Cast<DataGridViewRow>().Any(r => !r.IsNewRow);
-            bool khOrHdSelected = true;
-            btnXuatHang.Enabled = khoSelected && hasGridRows && khOrHdSelected;
+            bool headerValid = false;
+
+            if (TgTrangthai.Checked)
+            {
+                headerValid = (CbKhoNguon.SelectedValue is int mkN && mkN > 0) &&
+                              (CbKhoDich.SelectedValue is int mkD && mkD > 0) &&
+                              (mkN != mkD);
+            }
+            else
+            {
+                headerValid = (SearchKh.Tag is int maKH && maKH > 0);
+            }
+
+            btnXuatHang.Enabled = hasGridRows && headerValid;
         }
 
         private void UpdateNhapHangButtonState()
@@ -993,7 +984,6 @@ namespace QLVT
             _isImportMode = false;
             _loadedExcelData = null;
             UpdateUIForMode();
-            CbKhach.Focus();
         }
 
         private void dgvChiTiet_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -1100,38 +1090,37 @@ namespace QLVT
             }
         }
 
-        private void TgTrangthai_CheckedChanged(object sender)
+        private void TgTrangthai_CheckedChanged(object sender, EventArgs e)
         {
-            if (TgTrangthai.Checked == false)
+            bool isChuyenKho = TgTrangthai.Checked = false;
+
+            label3.Visible = !isChuyenKho;
+            SearchKh.Visible = !isChuyenKho;
+            resultKh.Visible = false;
+
+            label2.Visible = !isChuyenKho;
+            SearchHoaDon.Visible = !isChuyenKho;
+            resultHD.Visible = false;
+
+            label1.Visible = isChuyenKho;
+            CbKhoDich.Visible = isChuyenKho;
+
+            label9.Visible = true;
+            CbKhoNguon.Visible = true;
+
+
+            if (isChuyenKho)
             {
-                CbKhoDich.Visible = false;
-                label1.Visible = false;
-                CbKhoDich.Enabled = false;
-                label3.Visible = true;
-                label2.Visible = true;
-                SearchKh.Visible = true;
-                SearchHoaDon.Visible = true;
+                SearchKh.Text = ""; SearchKh.Tag = null;
+                SearchHoaDon.Text = ""; SearchHoaDon.Tag = null;
+                LoadInitialData();
             }
             else
             {
-                resultHD.Visible = false;
-                resultKh.Visible = false;
-                resultKh.Visible = false;
-                resultHD.Visible = false;
-                SearchHoaDon.Tag = null;
-                SearchKh.Tag = null;
-                label3.Visible = false;
-                label2.Visible = false;
-                SearchKh.Visible = false;
-                SearchHoaDon.Visible = false;
-                CbKhoDich.Visible = true;
-                label1.Visible = true;
-                CbKhoDich.Enabled = true;
-                CbKhoNguon.Visible = true;
-                label9.Visible = true;
-                CbKhoNguon.Enabled = true;
-                CbKhoDich.Focus();
+                CbKhoDich.SelectedIndex = -1;
             }
+
+            EnableTaoPhieuButton();
         }
 
         private void PerformSearchKh()
@@ -1363,13 +1352,50 @@ namespace QLVT
                 CbKhoDich.SelectedIndex = -1;
             }
 
-            dgvChiTiet.Rows.Clear();
             TinhTongSoLuongVaTienBan();
             EnableTaoPhieuButton();
         }
 
         private void CbKhoDich_SelectedIndexChanged(object sender, EventArgs e)
         {
+        }
+
+        private void TgTrangthai_CheckedChanged(object sender)
+        {
+            bool isChuyenKho = TgTrangthai.Checked;
+
+            label3.Visible = !isChuyenKho;
+            SearchKh.Visible = !isChuyenKho;
+            resultKh.Visible = false;
+
+            label2.Visible = !isChuyenKho;
+            SearchHoaDon.Visible = !isChuyenKho;
+            resultHD.Visible = false;
+
+            label1.Visible = isChuyenKho;
+            CbKhoDich.Visible = isChuyenKho;
+
+            label9.Visible = true;
+            CbKhoNguon.Visible = true;
+
+
+            if (isChuyenKho)
+            {
+                SearchKh.Text = ""; SearchKh.Tag = null;
+                SearchHoaDon.Text = ""; SearchHoaDon.Tag = null;
+                LoadInitialData();
+            }
+            else
+            {
+                CbKhoDich.SelectedIndex = -1;
+            }
+
+            EnableTaoPhieuButton();
+        }
+
+        private void dtpNgayXuat_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

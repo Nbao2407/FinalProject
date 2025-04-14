@@ -134,20 +134,46 @@ namespace QLVT
         }
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && dgvDonXuat.Rows.Count > e.RowIndex)
+            if (e.RowIndex >= 0 && e.RowIndex < dgvDonXuat.Rows.Count && !dgvDonXuat.Rows[e.RowIndex].IsNewRow)
             {
-                if (dgvDonXuat.Rows[e.RowIndex].DataBoundItem is DTO_DonXuat selectedDonXuat)
+                DataGridViewRow clickedRow = dgvDonXuat.Rows[e.RowIndex];
+
+                if (clickedRow.DataBoundItem is DTO_DonXuat selectedOrder)
                 {
-                    using (var frmChiTiet = new PopupOrder(selectedDonXuat.MaDonXuat))
-                    {
-                        frmChiTiet.StartPosition = FormStartPosition.CenterParent;
-                        frmChiTiet.ShowDialog(this);
-                    }
+                    int orderId = selectedOrder.MaDonXuat;
+                    ShowPopup(orderId);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể xác định dữ liệu đơn hàng từ dòng được chọn.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Console.WriteLine($"Double click on row {e.RowIndex}, but DataBoundItem is not DTO_Order or is null. Actual Type: {clickedRow.DataBoundItem?.GetType().Name ?? "null"}");
                 }
             }
         }
+        private void ShowPopup(int orderId)
+        {
+            try
+            {
+                using (var popup = new PopupXuat(orderId))
+                {
 
+                    popup.StartPosition = FormStartPosition.CenterParent;
 
+                    DialogResult result = popup.ShowDialog();
+
+                    bool dataMayHaveChanged = popup.DataContextChanged;
+                    if (dataMayHaveChanged)
+                    {
+                        Console.WriteLine("Data may have changed, reloading initial data...");
+                        LoadAllDonXuat();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open or process the order details.\nError: {ex.Message}", "Popup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void button2_Click(object sender, EventArgs e)
         {
             Control parentControl = this.Parent;

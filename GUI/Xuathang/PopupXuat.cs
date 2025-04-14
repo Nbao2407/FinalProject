@@ -10,29 +10,109 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO;
 using System.Globalization;
+using DAL;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using QLVT.Helper;
+
 namespace QLVT.Order
 {
     public partial class PopupXuat : Form
     {
-        private int? _orderId;
-        private BUS_Order _busOrder = new BUS_Order();
-        public bool DataChanged { get; private set; } = false;
-        private int tongSoLuong = 0;
-        private decimal tongGiaTri = 0;
-        public PopupXuat(int? orderid)
+        private readonly int _maDonXuat;
+        private readonly BUS_DonXuat busDonXuat;
+        private DTO_DonXuat _loadedHeader = null;
+        private List<DTO_ChiTietDonXuat> _loadedDetails = null;
+
+        public PopupXuat(int maDonXuat)
         {
             InitializeComponent();
-            _orderId = orderid;
+            _maDonXuat = maDonXuat;
             LoadOrderDetails();
             Quyen();
+            ConfigureDetailsGrid();
+        }
+
+        private void LoadOrderData()
+        {
+            if (busDonXuat == null) return;
+
+            this.Cursor = Cursors.WaitCursor;
+            try
+            {
+                _loadedHeader = busDonXuat.GetDonXuatById(_maDonXuat);
+
+                _loadedDetails = busDonXuat.GetChiTietDonXuat(_maDonXuat);
+
+                if (_loadedHeader != null)
+                {
+                    lbld.Text = _loadedHeader.MaDonXuat.ToString();
+                    lblNgayXuat.Text = _loadedHeader.NgayXuat.ToString("dd/MM/yyyy");
+                    lblLoaiXuat.Text = _loadedHeader.LoaiXuat;
+                    txtNgTao.Text = _loadedHeader.TenNguoiLap ?? "N/A";
+                    tranthai.Text = _loadedHeader.TrangThai;
+                    txtGhiChuPopup.Text = _loadedHeader.GhiChu ?? "";
+                    if (_loadedHeader.LoaiXuat == "Xuất hàng")
+                    {
+                        lblKh.Text = !string.IsNullOrEmpty(_loadedHeader.TenKhachHang)
+                                                ? $"{_loadedHeader.MaKhachHang?.ToString() ?? "N/A"} (ID: {_loadedHeader.TenKhachHang})"
+                                                : "[Không có]";
+                        lblHoaDonValue.Text = _loadedHeader.MaHoaDon?.ToString() ?? "[Không có]";
+                    }
+                    else
+                    {
+                        string khoDichInfo = "";
+                        if (!string.IsNullOrEmpty(_loadedHeader.GhiChu) && _loadedHeader.GhiChu.Contains("đến kho:"))
+                        {
+                            khoDichInfo = _loadedHeader.GhiChu.Substring(_loadedHeader.GhiChu.IndexOf("đến kho:") + 8).Split('.')[0].Trim();
+                        }
+                        lblKh.Text = $"Kho Đích: {khoDichInfo}";
+                        lblHoaDonValue.Text = "[Không áp dụng]";
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy thông tin đơn xuất.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                    return;
+                }
+
+                dgvPopupChiTiet.DataSource = null;
+                if (_loadedDetails != null && _loadedDetails.Any())
+                {
+                    var bindingSource = new BindingSource { DataSource = _loadedDetails };
+                    dgvPopupChiTiet.DataSource = bindingSource;
+                }
+                else
+                {
+                    dgvPopupChiTiet.DataSource = null;
+                }
+                TinhTongCongPopup();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu đơn xuất: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        private void TinhTongCongPopup()
+        {
+            if (_loadedDetails == null) return;
+            int tongSL = _loadedDetails.Sum(item => item.SoLuong);
+            decimal tongTien = _loadedDetails.Sum(item => item.ThanhTien);
+            lblSoLuong.Text = tongSL.ToString("N0");
+            lblTongCong.Text = tongTien.ToString("N0") + " VNĐ";
         }
 
         private void PopupOrder_Load(object sender, EventArgs e)
         {
-            dgvChiTietPopup.AutoGenerateColumns = false;
-            dgvChiTietPopup.Columns.Clear();
+            dgvPopupChiTiet.AutoGenerateColumns = false;
+            dgvPopupChiTiet.Columns.Clear();
 
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "MaVatLieu",
                 HeaderText = "Mã",
@@ -41,7 +121,8 @@ namespace QLVT.Order
                 ValueType = typeof(int),
                 Width = 80
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TenVatLieu",
                 HeaderText = "Tên",
@@ -49,7 +130,15 @@ namespace QLVT.Order
                 ReadOnly = true,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Kho",
+                HeaderText = "Kho",
+                DataPropertyName = "Kho",
+                ReadOnly = true,
+                Visible = false
+            });
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "DonViTinh",
                 HeaderText = "Đơn Vị",
@@ -57,7 +146,7 @@ namespace QLVT.Order
                 ReadOnly = true,
                 Width = 80
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "SoLuong",
                 HeaderText = "Số Lượng",
@@ -67,17 +156,17 @@ namespace QLVT.Order
                 Width = 90,
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight }
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "GiaNhap",
-                HeaderText = "Giá Nhập",
-                DataPropertyName = "GiaNhap",
+                Name = "GiaBan",
+                HeaderText = "Giá bán",
+                DataPropertyName = "GiaBan",
                 ReadOnly = true,
                 ValueType = typeof(decimal),
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight },
                 Width = 110
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ThanhTien",
                 HeaderText = "Thành Tiền",
@@ -93,46 +182,47 @@ namespace QLVT.Order
 
         private void ConfigureDgvChiTietStyles()
         {
-            dgvChiTietPopup.BorderStyle = BorderStyle.None;
-            dgvChiTietPopup.GridColor = Color.Gainsboro;
-            dgvChiTietPopup.RowHeadersVisible = false;
-            dgvChiTietPopup.BackgroundColor = Color.White;
-            dgvChiTietPopup.EnableHeadersVisualStyles = false;
-            dgvChiTietPopup.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(66, 139, 202);
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvChiTietPopup.ColumnHeadersHeight = 40;
-            dgvChiTietPopup.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvChiTietPopup.DefaultCellStyle.BackColor = Color.FromArgb(217, 237, 247);
-            dgvChiTietPopup.DefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
-            dgvChiTietPopup.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
-            dgvChiTietPopup.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvChiTietPopup.DefaultCellStyle.Padding = new Padding(5, 0, 5, 0);
-            dgvChiTietPopup.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
-            dgvChiTietPopup.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
-            dgvChiTietPopup.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
-            dgvChiTietPopup.DefaultCellStyle.SelectionBackColor = Color.FromArgb(51, 122, 183);
-            dgvChiTietPopup.DefaultCellStyle.SelectionForeColor = Color.White;
-            if (dgvChiTietPopup.Columns.Contains("MaVatLieu"))
+            dgvPopupChiTiet.BorderStyle = BorderStyle.None;
+            dgvPopupChiTiet.GridColor = Color.Gainsboro;
+            dgvPopupChiTiet.RowHeadersVisible = false;
+            dgvPopupChiTiet.BackgroundColor = Color.White;
+            dgvPopupChiTiet.EnableHeadersVisualStyles = false;
+            dgvPopupChiTiet.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(66, 139, 202);
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvPopupChiTiet.ColumnHeadersHeight = 40;
+            dgvPopupChiTiet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvPopupChiTiet.DefaultCellStyle.BackColor = Color.FromArgb(217, 237, 247);
+            dgvPopupChiTiet.DefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
+            dgvPopupChiTiet.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
+            dgvPopupChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvPopupChiTiet.DefaultCellStyle.Padding = new Padding(5, 0, 5, 0);
+            dgvPopupChiTiet.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+            dgvPopupChiTiet.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
+            dgvPopupChiTiet.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
+            dgvPopupChiTiet.DefaultCellStyle.SelectionBackColor = Color.FromArgb(51, 122, 183);
+            dgvPopupChiTiet.DefaultCellStyle.SelectionForeColor = Color.White;
+            if (dgvPopupChiTiet.Columns.Contains("MaVatLieu"))
             {
-                dgvChiTietPopup.Columns["MaVatLieu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvPopupChiTiet.Columns["MaVatLieu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
-            if (dgvChiTietPopup.Columns.Contains("SoLuong"))
+            if (dgvPopupChiTiet.Columns.Contains("SoLuong"))
             {
-                dgvChiTietPopup.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                dgvChiTietPopup.Columns["SoLuong"].DefaultCellStyle.Format = "N0";
+                dgvPopupChiTiet.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvPopupChiTiet.Columns["SoLuong"].DefaultCellStyle.Format = "N0";
             }
-            if (dgvChiTietPopup.Columns.Contains("GiaNhap"))
+            if (dgvPopupChiTiet.Columns.Contains("GiaBan"))
             {
-                dgvChiTietPopup.Columns["GiaNhap"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvPopupChiTiet.Columns["GiaBan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             }
-            dgvChiTietPopup.RowTemplate.Height = 35;
+            dgvPopupChiTiet.RowTemplate.Height = 35;
         }
+
         private void LoadOrderDetails()
         {
-            if (_orderId <= 0)
+            if (maDonXuat <= 0)
             {
                 MessageBox.Show("Mã đơn hàng không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
@@ -141,21 +231,21 @@ namespace QLVT.Order
 
             try
             {
-                var orderDetails = _busOrder.GetOrderDetailById(_orderId);
+                var orderDetails = _busXuat.GetDTO_DonXuatsbyID(maDonXuat);
 
                 if (orderDetails != null)
                 {
-                    lbld.Text = orderDetails.MaDonNhap.ToString();
+                    lbld.Text = orderDetails.m.ToString();
                     NgayTao.Text = orderDetails.NgayTao.ToString("dd/MM/yyyy");
-                    NgNhap.Text = orderDetails.NguoiCapNhatTen;
-                    lblNCC.Text = orderDetails.TenNCC;
-                    lblNgayNhap.Text = orderDetails.NgayCapNhat.ToString("dd/MM/yyyy");
+                    NgXuat.Text = orderDetails.NguoiCapNhatTen;
+                    lblNCC.Text = orderDetails.ToArray;
+                    lblNgayXuat.Text = orderDetails.NgayCapNhat.ToString("dd/MM/yyyy");
                     tranthai.Text = orderDetails.TrangThai;
                     txtGhiChuPopup.Text = orderDetails.GhiChu;
                     txtNgTao.Text = orderDetails.NguoiTao;
-                    dgvChiTietPopup.AutoGenerateColumns = false;
-                    dgvChiTietPopup.DataSource = null;
-                    dgvChiTietPopup.DataSource = orderDetails.ChiTietDonNhap;
+                    dgvPopupChiTiet.AutoGenerateColumns = false;
+                    dgvPopupChiTiet.DataSource = null;
+                    dgvPopupChiTiet.DataSource = orderDetails.ChiTietDonNhap;
                     if (orderDetails.ChiTietDonNhap != null)
                     {
                         foreach (var itemChiTiet in orderDetails.ChiTietDonNhap)
@@ -179,6 +269,28 @@ namespace QLVT.Order
                 this.Close();
             }
         }
+
+        private void ConfigureDetailsGrid()
+        {
+            if (dgvPopupChiTiet == null) return;
+            dgvPopupChiTiet.AutoGenerateColumns = false;
+            dgvPopupChiTiet.Columns.Clear();
+            dgvPopupChiTiet.ReadOnly = true;
+            dgvPopupChiTiet.AllowUserToAddRows = false;
+
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCT_MaVL", HeaderText = "Mã VL", DataPropertyName = "MaVatLieu", Width = 60 });
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCT_TenVL", HeaderText = "Tên Vật Liệu", DataPropertyName = "TenVatLieu", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCT_DVT", HeaderText = "ĐVT", DataPropertyName = "DonViTinh", Width = 70 });
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCT_SoLuong", HeaderText = "Số Lượng", DataPropertyName = "SoLuong", Width = 80, DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" } });
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCT_DonGia", HeaderText = "Đơn Giá", DataPropertyName = "DonGia", Width = 100, DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight } });
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCT_ThanhTien", HeaderText = "Thành Tiền", DataPropertyName = "ThanhTien", Width = 110, DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight } });
+
+            if (typeof(DataGridViewHelper) != null)
+            {
+                DataGridViewHelper.CustomizeDataGridView(dgvPopupChiTiet);
+            }
+        }
+
         private void roundedPictureBox1_Click(object sender, EventArgs e)
         {
             this.Dispose();
@@ -201,6 +313,7 @@ namespace QLVT.Order
             }
             this.Dispose();
         }
+
         private void Quyen()
         {
             bool isOwner = CurrentUser.MaTK == int.Parse(lbld.Text);

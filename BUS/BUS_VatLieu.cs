@@ -32,7 +32,24 @@ namespace BUS
                 throw new Exception("Dữ liệu không hợp lệ!");
             dalVatLieu.ThemVatLieu(ten, loai, donGiaNhap, donGiaBan, donViTinh, maKho, hinhAnh, ghiChu,NguoiTao);
         }
+        public int GetSoLuongTonKho(int maVatLieu, int maKho)
+        {
+            if (maVatLieu <= 0 || maKho <= 0)
+            {
+                Console.WriteLine("BUS GetSoLuongTonKho: Mã vật liệu hoặc Mã kho không hợp lệ.");
+                return 0;
+            }
 
+            try
+            {
+                return dalVatLieu.GetSoLuongTonKho(maVatLieu, maKho);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS khi gọi DAL GetSoLuongTonKho: {ex.Message}");
+                return 0;
+            }
+        }
         public void CapNhatVatLieu(int maVatLieu, string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, byte[] hinhAnh, string ghiChu, int nguoiCapNhat)
         {
             if (maVatLieu <= 0 || string.IsNullOrEmpty(ten) || donGiaNhap < 0 || donGiaBan < 0 || string.IsNullOrEmpty(donViTinh))

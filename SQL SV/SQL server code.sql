@@ -395,3 +395,18 @@ SELECT
                     dx.MaHoaDon,  kh.Ten AS TenKhachHang, dx.TrangThai,dx.GhiChu
                 FROM QLDonXuat dx
                 LEFT JOIN QLKH kh ON dx.MaKhachHang = kh.MaKhachHang
+
+				ALTER TABLE ChiTietDonXuat
+ADD MaKhoNguon INT NULL; -- Cho phép NULL tạm thời
+
+
+UPDATE ChiTietDonXuat SET MaKhoNguon = (SELECT TOP 1 MaKho FROM QLVatLieu WHERE MaVatLieu = ChiTietDonXuat.MaVatLieu) -- Ví dụ
+
+ALTER TABLE ChiTietDonXuat
+ALTER COLUMN MaKhoNguon INT NOT NULL; -- Đặt là NOT NULL
+
+-- Thêm Foreign Key
+ALTER TABLE ChiTietDonXuat
+ADD CONSTRAINT FK_ChiTietDonXuat_KhoNguon FOREIGN KEY (MaKhoNguon) REFERENCES Kho(MaKho);
+GO
+SELECT SoLuong FROM QLVatLieu WHERE MaVatLieu = 1 AND MaKho = 1

@@ -29,10 +29,10 @@ namespace QLVT.Order
 
         private void PopupOrder_Load(object sender, EventArgs e)
         {
-            dgvChiTietPopup.AutoGenerateColumns = false;
-            dgvChiTietPopup.Columns.Clear();
+            dgvPopupChiTiet.AutoGenerateColumns = false;
+            dgvPopupChiTiet.Columns.Clear();
 
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "MaVatLieu",
                 HeaderText = "Mã",
@@ -41,7 +41,7 @@ namespace QLVT.Order
                 ValueType = typeof(int),
                 Width = 80
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TenVatLieu",
                 HeaderText = "Tên",
@@ -49,7 +49,7 @@ namespace QLVT.Order
                 ReadOnly = true,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "DonViTinh",
                 HeaderText = "Đơn Vị",
@@ -57,7 +57,7 @@ namespace QLVT.Order
                 ReadOnly = true,
                 Width = 80
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "SoLuong",
                 HeaderText = "Số Lượng",
@@ -67,7 +67,7 @@ namespace QLVT.Order
                 Width = 90,
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight }
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "GiaNhap",
                 HeaderText = "Giá Nhập",
@@ -77,7 +77,7 @@ namespace QLVT.Order
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight },
                 Width = 110
             });
-            dgvChiTietPopup.Columns.Add(new DataGridViewTextBoxColumn
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ThanhTien",
                 HeaderText = "Thành Tiền",
@@ -93,42 +93,42 @@ namespace QLVT.Order
 
         private void ConfigureDgvChiTietStyles()
         {
-            dgvChiTietPopup.BorderStyle = BorderStyle.None;
-            dgvChiTietPopup.GridColor = Color.Gainsboro;
-            dgvChiTietPopup.RowHeadersVisible = false;
-            dgvChiTietPopup.BackgroundColor = Color.White;
-            dgvChiTietPopup.EnableHeadersVisualStyles = false;
-            dgvChiTietPopup.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(66, 139, 202);
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvChiTietPopup.ColumnHeadersHeight = 40;
-            dgvChiTietPopup.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvChiTietPopup.DefaultCellStyle.BackColor = Color.FromArgb(217, 237, 247);
-            dgvChiTietPopup.DefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
-            dgvChiTietPopup.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
-            dgvChiTietPopup.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvChiTietPopup.DefaultCellStyle.Padding = new Padding(5, 0, 5, 0);
-            dgvChiTietPopup.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
-            dgvChiTietPopup.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
-            dgvChiTietPopup.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
-            dgvChiTietPopup.DefaultCellStyle.SelectionBackColor = Color.FromArgb(51, 122, 183);
-            dgvChiTietPopup.DefaultCellStyle.SelectionForeColor = Color.White;
-            if (dgvChiTietPopup.Columns.Contains("MaVatLieu"))
+            dgvPopupChiTiet.BorderStyle = BorderStyle.None;
+            dgvPopupChiTiet.GridColor = Color.Gainsboro;
+            dgvPopupChiTiet.RowHeadersVisible = false;
+            dgvPopupChiTiet.BackgroundColor = Color.White;
+            dgvPopupChiTiet.EnableHeadersVisualStyles = false;
+            dgvPopupChiTiet.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(66, 139, 202);
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvPopupChiTiet.ColumnHeadersHeight = 40;
+            dgvPopupChiTiet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvPopupChiTiet.DefaultCellStyle.BackColor = Color.FromArgb(217, 237, 247);
+            dgvPopupChiTiet.DefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
+            dgvPopupChiTiet.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
+            dgvPopupChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvPopupChiTiet.DefaultCellStyle.Padding = new Padding(5, 0, 5, 0);
+            dgvPopupChiTiet.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+            dgvPopupChiTiet.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(51, 51, 51);
+            dgvPopupChiTiet.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
+            dgvPopupChiTiet.DefaultCellStyle.SelectionBackColor = Color.FromArgb(51, 122, 183);
+            dgvPopupChiTiet.DefaultCellStyle.SelectionForeColor = Color.White;
+            if (dgvPopupChiTiet.Columns.Contains("MaVatLieu"))
             {
-                dgvChiTietPopup.Columns["MaVatLieu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvPopupChiTiet.Columns["MaVatLieu"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
-            if (dgvChiTietPopup.Columns.Contains("SoLuong"))
+            if (dgvPopupChiTiet.Columns.Contains("SoLuong"))
             {
-                dgvChiTietPopup.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                dgvChiTietPopup.Columns["SoLuong"].DefaultCellStyle.Format = "N0";
+                dgvPopupChiTiet.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvPopupChiTiet.Columns["SoLuong"].DefaultCellStyle.Format = "N0";
             }
-            if (dgvChiTietPopup.Columns.Contains("GiaNhap"))
+            if (dgvPopupChiTiet.Columns.Contains("GiaNhap"))
             {
-                dgvChiTietPopup.Columns["GiaNhap"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvPopupChiTiet.Columns["GiaNhap"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             }
-            dgvChiTietPopup.RowTemplate.Height = 35;
+            dgvPopupChiTiet.RowTemplate.Height = 35;
         }
         private void LoadOrderDetails()
         {
@@ -153,9 +153,9 @@ namespace QLVT.Order
                     tranthai.Text = orderDetails.TrangThai;
                     txtGhiChuPopup.Text = orderDetails.GhiChu;
                     txtNgTao.Text = orderDetails.NguoiTao;
-                    dgvChiTietPopup.AutoGenerateColumns = false;
-                    dgvChiTietPopup.DataSource = null;
-                    dgvChiTietPopup.DataSource = orderDetails.ChiTietDonNhap;
+                    dgvPopupChiTiet.AutoGenerateColumns = false;
+                    dgvPopupChiTiet.DataSource = null;
+                    dgvPopupChiTiet.DataSource = orderDetails.ChiTietDonNhap;
                     if (orderDetails.ChiTietDonNhap != null)
                     {
                         foreach (var itemChiTiet in orderDetails.ChiTietDonNhap)

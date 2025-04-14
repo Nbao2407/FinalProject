@@ -29,9 +29,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             tableLayoutPanel1 = new TableLayoutPanel();
             lbld = new ReaLTaiizor.Controls.BigLabel();
             tranthai = new Label();
@@ -43,7 +43,7 @@
             txtNgTao = new ReaLTaiizor.Controls.BigLabel();
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
             bigLabel3 = new ReaLTaiizor.Controls.BigLabel();
-            dgvChiTietPopup = new ReaLTaiizor.Controls.PoisonDataGridView();
+            dgvPopupChiTiet = new ReaLTaiizor.Controls.PoisonDataGridView();
             lblNCC = new ReaLTaiizor.Controls.BigLabel();
             bigLabel4 = new ReaLTaiizor.Controls.BigLabel();
             panel1 = new Panel();
@@ -60,7 +60,7 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvChiTietPopup).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPopupChiTiet).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -209,53 +209,53 @@
             bigLabel3.TabIndex = 74;
             bigLabel3.Text = "Người nhập:";
             // 
-            // dgvChiTietPopup
+            // dgvPopupChiTiet
             // 
-            dgvChiTietPopup.AllowUserToAddRows = false;
-            dgvChiTietPopup.AllowUserToDeleteRows = false;
-            dgvChiTietPopup.AllowUserToResizeColumns = false;
-            dgvChiTietPopup.AllowUserToResizeRows = false;
-            dgvChiTietPopup.Anchor = AnchorStyles.None;
-            dgvChiTietPopup.BackgroundColor = SystemColors.Control;
-            dgvChiTietPopup.BorderStyle = BorderStyle.None;
-            dgvChiTietPopup.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            dgvChiTietPopup.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle1.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvChiTietPopup.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dgvChiTietPopup.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle2.ForeColor = Color.FromArgb(136, 136, 136);
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvChiTietPopup.DefaultCellStyle = dataGridViewCellStyle2;
-            dgvChiTietPopup.EnableHeadersVisualStyles = false;
-            dgvChiTietPopup.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dgvChiTietPopup.GridColor = Color.FromArgb(255, 255, 255);
-            dgvChiTietPopup.Location = new Point(18, 189);
-            dgvChiTietPopup.Name = "dgvChiTietPopup";
-            dgvChiTietPopup.ReadOnly = true;
-            dgvChiTietPopup.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 174, 219);
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
-            dataGridViewCellStyle3.ForeColor = Color.FromArgb(255, 255, 255);
-            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(0, 198, 247);
-            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(17, 17, 17);
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dgvChiTietPopup.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            dgvChiTietPopup.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dgvChiTietPopup.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvChiTietPopup.Size = new Size(1006, 175);
-            dgvChiTietPopup.TabIndex = 77;
+            dgvPopupChiTiet.AllowUserToAddRows = false;
+            dgvPopupChiTiet.AllowUserToDeleteRows = false;
+            dgvPopupChiTiet.AllowUserToResizeColumns = false;
+            dgvPopupChiTiet.AllowUserToResizeRows = false;
+            dgvPopupChiTiet.Anchor = AnchorStyles.None;
+            dgvPopupChiTiet.BackgroundColor = SystemColors.Control;
+            dgvPopupChiTiet.BorderStyle = BorderStyle.None;
+            dgvPopupChiTiet.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dgvPopupChiTiet.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(0, 174, 219);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle4.ForeColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle4.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgvPopupChiTiet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dgvPopupChiTiet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle5.ForeColor = Color.FromArgb(136, 136, 136);
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle5.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dgvPopupChiTiet.DefaultCellStyle = dataGridViewCellStyle5;
+            dgvPopupChiTiet.EnableHeadersVisualStyles = false;
+            dgvPopupChiTiet.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dgvPopupChiTiet.GridColor = Color.FromArgb(255, 255, 255);
+            dgvPopupChiTiet.Location = new Point(18, 189);
+            dgvPopupChiTiet.Name = "dgvPopupChiTiet";
+            dgvPopupChiTiet.ReadOnly = true;
+            dgvPopupChiTiet.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(0, 174, 219);
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            dataGridViewCellStyle6.ForeColor = Color.FromArgb(255, 255, 255);
+            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(0, 198, 247);
+            dataGridViewCellStyle6.SelectionForeColor = Color.FromArgb(17, 17, 17);
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dgvPopupChiTiet.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dgvPopupChiTiet.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dgvPopupChiTiet.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvPopupChiTiet.Size = new Size(1006, 175);
+            dgvPopupChiTiet.TabIndex = 77;
             // 
             // lblNCC
             // 
@@ -417,7 +417,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1050, 561);
-            Controls.Add(dgvChiTietPopup);
+            Controls.Add(dgvPopupChiTiet);
             Controls.Add(NgNhap);
             Controls.Add(lblNgayNhap);
             Controls.Add(bigLabel6);
@@ -447,7 +447,7 @@
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).EndInit();
             panel5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvChiTietPopup).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPopupChiTiet).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -463,7 +463,7 @@
         private ReaLTaiizor.Controls.BigLabel txtNgTao;
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
         private ReaLTaiizor.Controls.BigLabel bigLabel3;
-        private ReaLTaiizor.Controls.PoisonDataGridView dgvChiTietPopup;
+        private ReaLTaiizor.Controls.PoisonDataGridView dgvPopupChiTiet;
         private ReaLTaiizor.Controls.BigLabel lblNCC;
         private ReaLTaiizor.Controls.BigLabel bigLabel4;
         private Panel panel1;
