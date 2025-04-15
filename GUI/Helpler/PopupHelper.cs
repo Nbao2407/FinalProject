@@ -27,11 +27,12 @@ namespace QLVT.Helper
             {
                 if (control is TextBox textBox)
                 {
-                    textBox.BackColor = container.BackColor; // Set to parent's background color instead of transparent
+                    textBox.BackColor = container.BackColor;
                     textBox.BorderStyle = BorderStyle.None;
                     textBox.Parent = container;
                 }
             }
         }
+        public static void changecolor(Form form) => form.BackColor = Color.FromArgb(245, 247, 250);
     }
 }

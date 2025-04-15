@@ -24,6 +24,8 @@ namespace QLVT.TaiKhoan
             InitializeComponent();
             _parentForm = frmNV;
             CbChucVuLoad();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
 
         private void label7_Click(object sender, EventArgs e)

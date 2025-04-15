@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO;
 using System.Globalization;
+using QLVT.Helper;
 namespace QLVT.Order
 {
     public partial class PopupOrder : Form
@@ -24,6 +25,8 @@ namespace QLVT.Order
             InitializeComponent();
             _orderId = orderid;
             LoadOrderDetails();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             Quyen();
         }
 

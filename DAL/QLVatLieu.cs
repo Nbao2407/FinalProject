@@ -188,7 +188,7 @@ namespace DAL
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
-                SqlCommand cmd = new SqlCommand("SELECT TenLoai FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoaiVatLieu And TrangThai='Hoạt động'", conn);
+                SqlCommand cmd = new SqlCommand("SELECT TenLoai FROM QLLoaiVatLieu WHERE MaLoaiVatLieu = @MaLoaiVatLieu And TrangThai=N'Hoạt động'", conn);
                 cmd.Parameters.AddWithValue("@MaLoaiVatLieu", maLoai);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();

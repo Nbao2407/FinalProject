@@ -1,5 +1,6 @@
 ﻿using BUS;
 using DTO;
+using QLVT.Helper;
 using System;
 using System.Data;
 using System.Globalization;
@@ -13,6 +14,7 @@ namespace QLVT.VatLieu
         private byte[] hinhAnh;
         private int? maVatLieu;
         private BUS_VatLieu bus = new BUS_VatLieu();
+        private FrmMaterial FrmMaterial;
 
         public PopupMaterial(FrmMaterial parent, int maVatLieu)
         {
@@ -20,6 +22,8 @@ namespace QLVT.VatLieu
             frmMaterial = parent;
             this.maVatLieu = maVatLieu;
             LoadDataFromDatabase();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
         public void LoadDataFromDatabase()
         {
@@ -44,7 +48,6 @@ namespace QLVT.VatLieu
 
                     int maKho = Convert.ToInt32(row["MaKho"]);
                     lblKho.Text = bus.LayTenKhoTheoMa(maKho);
-
                     TbNote.Text = row["GhiChu"]?.ToString();
                     int maTk = Convert.ToInt32(row["NguoiTao"]);
                     txtNgTao.Text = bus.LayTenNgTaoTheoMa(maTk);
@@ -74,6 +77,7 @@ namespace QLVT.VatLieu
         {
             using (var edit = new EditMaterial(this, maVatLieu.Value))
             {
+                
                 edit.Deactivate += (s, e) => edit.TopMost = true;
                 edit.StartPosition = FormStartPosition.CenterParent;
                 edit.ShowDialog();
@@ -82,7 +86,9 @@ namespace QLVT.VatLieu
 
         private void roundedPictureBox2_Click(object sender, EventArgs e)
         {
+            frmMaterial.LoadData();
             this.Close();
+
         }
 
         private void txtNgTao_Click(object sender, EventArgs e)

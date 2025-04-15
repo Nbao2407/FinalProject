@@ -36,33 +36,32 @@ namespace QLVT
         }
         private void ConfigureDataGridViewColumns()
         {
-            dataGridView1.AutoGenerateColumns = false; // IMPORTANT
-            dataGridView1.Columns.Clear(); // Clear any design-time columns first
+            dataGridView1.AutoGenerateColumns = false; 
+            dataGridView1.Columns.Clear(); 
 
-            // Define columns, mapping DataPropertyName to DTO_TK properties
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "ColMaTK", // Control column name
+                Name = "ColMaTK",
                 HeaderText = "Mã Tài Khoản",
-                DataPropertyName = "maTK" // Matches DTO_TK.maTK
+                DataPropertyName = "maTK" 
             });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ColTenDangNhap",
                 HeaderText = "Tên Đăng Nhập",
-                DataPropertyName = "tenDangNhap" // Matches DTO_TK.tenDangNhap
+                DataPropertyName = "tenDangNhap" 
             });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ColSDT",
                 HeaderText = "Số Điện Thoại",
-                DataPropertyName = "sdt" // Matches DTO_TK.sdt
+                DataPropertyName = "sdt"
             });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ColEmail",
                 HeaderText = "Email",
-                DataPropertyName = "email" // Matches DTO_TK.email
+                DataPropertyName = "email"
             });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -183,8 +182,7 @@ namespace QLVT
         {
             if (dataGridView1.CurrentRow != null)
             {
-                int tk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
-                int maTk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaTK"].Value);
+                int maTk = Convert.ToInt32(dataGridView1.CurrentRow.Cells["ColMaTK"].Value);
                 PopupTk popup = new PopupTk(this, maTk);
                 popup.StartPosition = FormStartPosition.CenterParent;
                 popup.ShowDialog();

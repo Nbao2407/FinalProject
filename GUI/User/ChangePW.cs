@@ -26,7 +26,6 @@ namespace QLVT
         private int labelTargetX;
         private bool isOverlayVisible = false;
         private BUS_Login bus_Login = new BUS_Login();
-
         public ChangePW()
         {
             InitializeComponent();
@@ -39,16 +38,11 @@ namespace QLVT
             tableLayoutPanel2.Visible = false;
             paneloverlay.Size = new Size(380, 450);
             paneloverlay.BringToFront();
-            Title.Location = new Point(85, 196);
-            Title.Visible = true;
         }
-
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
-
         private void SlideTimer_Tick(object sender, EventArgs e)
         {
             int currentX = paneloverlay.Location.X;
@@ -61,13 +55,10 @@ namespace QLVT
                 if (currentX > targetX)
                 {
                     currentX -= speed;
-                    labelX -= speed;
                     tableX += speed;
                     if (currentX < targetX) currentX = targetX;
-                    if (labelX < labelTargetX) labelX = labelTargetX;
                     if (tableX > 386) tableX = 386;
                     paneloverlay.Location = new Point(currentX, 0);
-                    //Title.Location = new Point(labelX, 196);
                     tableLayoutPanel2.Location = new Point(tableX, 106);
                     tableLayoutPanel1.Visible = false;
                 }
@@ -81,13 +72,9 @@ namespace QLVT
                 if (currentX < targetX)
                 {
                     currentX += speed;
-                    labelX += speed;
-                    tableX -= speed;
                     if (currentX > targetX) currentX = targetX;
-                    if (labelX > labelTargetX) labelX = labelTargetX;
                     if (tableX < 12) tableX = 12;
                     paneloverlay.Location = new Point(currentX, 0);
-                    //Title.Location = new Point(labelX, 196);
                     tableLayoutPanel2.Location = new Point(tableX, 106);
                     tableLayoutPanel1.Visible = true;
                 }
@@ -130,6 +117,8 @@ namespace QLVT
         private void BtnBack_Click(object sender, EventArgs e)
         {
             SetupSlideAnimation(false);
+            tableLayoutPanel2.Visible = false;
+            bigLabel3.Text = "Nhập email của bạn\r\n để đổi mật khẩu";
         }
 
         private void hopeRoundButton1_Click(object sender, EventArgs e)
@@ -143,16 +132,13 @@ namespace QLVT
                     SqlCommand cmd = new SqlCommand("sp_TaoTokenResetMatKhau", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Email", email);
-
                     SqlParameter tokenParam = new SqlParameter("@Token", SqlDbType.NVarChar, 255)
                     {
                         Direction = ParameterDirection.Output
                     };
                     cmd.Parameters.Add(tokenParam);
-
                     cmd.ExecuteNonQuery();
                     string token = tokenParam.Value == DBNull.Value ? string.Empty : tokenParam.Value.ToString();
-
                     if (!string.IsNullOrEmpty(token))
                     {
                         try
@@ -165,8 +151,10 @@ namespace QLVT
                         }
                         Task.Delay(500).Wait();
                         SetupSlideAnimation(true);
-                        Title.Text = "Đã gửi mã";
-
+                        tableLayoutPanel2.Enabled = true;
+                        tableLayoutPanel2.Visible = true;
+                        bigLabel3.Text = "Đã gửi mã";
+                        bigLabel3.Location = new Point(bigLabel3.Location.X+30, bigLabel3.Location.Y);
                     }
                     else
                     {
@@ -194,11 +182,9 @@ namespace QLVT
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Token", token);
                     cmd.Parameters.AddWithValue("@MatKhauMoi", newPassword);
-
                     cmd.ExecuteNonQuery();
-
                     MessageBox.Show("Mật khẩu đã được đặt lại", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(1200);
                     SetupSlideAnimation(false);
                 }
                 catch (Exception ex)
@@ -266,7 +252,6 @@ namespace QLVT
         {
             PlaceholderHelper.SetPlaceholder(TbEmail, "Nhập email của bạn");
             PlaceholderHelper.SetPlaceholder(TbToken, "Nhập mã token");
-            PlaceholderHelper.SetPlaceholder(TbNewPass, "Nhập mật khẩu mới");
             TbNewPass.UseSystemPasswordChar = true;
         }
     }

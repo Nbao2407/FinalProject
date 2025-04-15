@@ -43,9 +43,6 @@
     <Compile Update="_Type\AddType.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="_Type\Edit.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="_Type\PopupType.cs">
       <SubType>Form</SubType>
     </Compile>

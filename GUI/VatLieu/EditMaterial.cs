@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using ReaLTaiizor.Controls;
 using static IronPython.Modules._ast;
+using QLVT.Helper;
 
 namespace QLVT.VatLieu
 {
@@ -29,7 +30,8 @@ namespace QLVT.VatLieu
             popupMaterial = parent;
             this.maVatLieu = maVatLieu;
             LoadDataFromDatabase();
-          
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
 
         private void EditMaterial_Load(object sender, EventArgs e)
@@ -155,6 +157,7 @@ namespace QLVT.VatLieu
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            popupMaterial.LoadDataFromDatabase();
             this.Close();
         }
     }

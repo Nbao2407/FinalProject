@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using QLVT.Helper;
 using QLVT.TaiKhoan;
 using ReaLTaiizor.Controls;
 using System;
@@ -29,7 +30,8 @@ namespace QLVT.Type
             frmType = parent;
             _lvatLieu = lvatLieu;
             LoadData(lvatLieu);
-
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             TbName.KeyPress += TbName_KeyPress;
         }
 
@@ -143,6 +145,7 @@ namespace QLVT.Type
                     string successMessage = isActive ? "Kích hoạt lại loại vật liệu thành công!" : "Disable loại vật liệu thành công!";
                     MessageBox.Show(successMessage, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     changeColor();
+                    this.Close();
                     frmType.LoadData();
                 }
                 else

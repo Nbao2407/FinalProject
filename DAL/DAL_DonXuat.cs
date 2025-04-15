@@ -195,7 +195,6 @@ namespace DAL
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
-
                     try
                     {
                         conn.Open();
@@ -231,51 +230,6 @@ namespace DAL
             return donXuat;
         }
 
-        public List<DTO_ChiTietDonXuat> GetChiTietDonXuat(int maDonXuat)
-        {
-            List<DTO_ChiTietDonXuat> danhSachChiTiet = new List<DTO_ChiTietDonXuat>();
-            string query = @"
-                SELECT
-                    ct.MaCTDX, ct.MaDonXuat, ct.MaVatLieu, vl.Ten AS TenVatLieu,
-                    vl.DonViTinh, ct.SoLuong, ct.DonGia
-                FROM ChiTietDonXuat ct
-                INNER JOIN QLVatLieu vl ON ct.MaVatLieu = vl.MaVatLieu
-                WHERE ct.MaDonXuat = @MaDonXuat;";
-
-            using (SqlConnection conn = GetConnection())
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
-                    try
-                    {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                DTO_ChiTietDonXuat ct = new DTO_ChiTietDonXuat
-                                {
-                                    MaCTDX = reader.GetInt32(reader.GetOrdinal("MaCTDX")),
-                                    MaDonXuat = reader.GetInt32(reader.GetOrdinal("MaDonXuat")),
-                                    MaVatLieu = reader.GetInt32(reader.GetOrdinal("MaVatLieu")),
-                                    TenVatLieu = reader.GetString(reader.GetOrdinal("TenVatLieu")),
-                                    DonViTinh = reader.GetString(reader.GetOrdinal("DonViTinh")),
-                                    SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")),
-                                    DonGia = reader.GetDecimal(reader.GetOrdinal("DonGia"))
-                                };
-                                danhSachChiTiet.Add(ct);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Lỗi DAL GetChiTietDonXuat: {ex.Message}");
-                    }
-                }
-            }
-            return danhSachChiTiet;
-        }
 
         public List<DTO_DonXuat> TimKiemDonXuat(string keyword, string trangThai)
         {
@@ -327,11 +281,11 @@ namespace DAL
             string query = @"
         SELECT
             ct.MaCTDX, ct.MaDonXuat, ct.MaVatLieu, vl.Ten AS TenVatLieu,
-            vl.DonViTinh, ct.SoLuong, ct.DonGia, ct.MaKhoNguon, k.TenKho -- Thêm MaKhoNguon và TenKho
+            vl.DonViTinh, ct.SoLuong, ct.DonGia, ct.MaKhoNguon, k.TenKho
         FROM ChiTietDonXuat ct
         INNER JOIN QLVatLieu vl ON ct.MaVatLieu = vl.MaVatLieu
-        INNER JOIN Kho k ON ct.MaKhoNguon = k.MaKho -- Join để lấy tên kho nguồn
-        WHERE ct.MaDonXuat = @MaDonXuat;"; // Lọc theo Mã Đơn Xuất
+        INNER JOIN Kho k ON ct.MaKhoNguon = k.MaKho 
+        WHERE ct.MaDonXuat = @MaDonXuat;"; 
 
             using (SqlConnection conn = DBConnect.GetConnection())
             {

@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DAL;
+using QLVT.Helper;
+using System.Text.RegularExpressions;
 
 namespace QLVT.Type
 {
@@ -22,7 +24,8 @@ namespace QLVT.Type
             InitializeComponent();
             frmType = parent;
             TbName.Focus();
-
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -34,7 +37,22 @@ namespace QLVT.Type
         {
             try
             {
-                 dal.IsTenLoaiExists(TbName.Text);
+                string name = TbName.Text.Trim(); 
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    MessageBox.Show("Vui lòng nhập tên loại", "Cảnh báo",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TbName.Focus();
+                    return;
+                }
+                if (Regex.IsMatch(name, @"^\d+$"))
+                {
+                    MessageBox.Show("Tên không hợp lệ (không thể chỉ chứa số).", "Cảnh báo",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TbName.Focus();
+                    return;
+                }
+                dal.IsTenLoaiExists(TbName.Text);
                 loaiVatLieuBLL.Addd(TbName.Text);
                 MessageBox.Show("Thêm loại vật liệu thành công!");
                 frmType.LoadData();

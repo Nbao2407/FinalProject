@@ -28,7 +28,8 @@ namespace QLVT.NCC
             TbAddress.Validating += TbAddress_Validating;
             errorProvider = new ErrorProvider();
             TbID.ReadOnly = true;
-
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
 
         private void AddNcc_Load(object sender, EventArgs e)

@@ -3,59 +3,27 @@
   "WorkspaceRootPath": "I:\\Pro213\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|i:\\pro213\\bus\\bus_xuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\customer\\popupcmer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:customer\\popupcmer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\xuathang\\popupxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:xuathang\\popupxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\_type\\popuptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:_type\\popuptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_donxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\_type\\popuptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:_type\\popuptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\xuathang\\popupxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:xuathang\\popupxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{255C1E66-75D3-4142-8B77-AB794A827F14}|..\\BUS\\BUS.csproj|i:\\pro213\\bus\\bus_vatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\xuathang\\frmxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:xuathang\\frmxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AA6275DC-1383-40E3-920F-4DEB04EA92B1}|..\\DTO\\DTO.csproj|i:\\pro213\\dto\\dto_donxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\popuporder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\popuporder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\popuporder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\popuporder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:order\\frmorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\xuathang\\addxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:xuathang\\addxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|I:\\Pro213\\GUI\\xuathang\\frmxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:xuathang\\frmxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\xuathang\\addxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:xuathang\\addxuat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\dal_hoadon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|i:\\pro213\\gui\\vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{55F13F4D-40FB-4C2F-A134-15322E6E84B3}|GUI.csproj|solutionrelative:vatlieu\\popupmaterial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{946935F9-3466-4519-8CA8-27EE9E67BB54}|..\\DAL\\DAL.csproj|i:\\pro213\\dal\\qlvatlieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -68,21 +36,8 @@
       "DocumentGroups": [
         {
           "DockedHeight": 447,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DTO_DonXuat.cs",
-              "DocumentMoniker": "I:\\Pro213\\DTO\\DTO_DonXuat.cs",
-              "RelativeDocumentMoniker": "..\\DTO\\DTO_DonXuat.cs",
-              "ToolTip": "I:\\Pro213\\DTO\\DTO_DonXuat.cs",
-              "RelativeToolTip": "..\\DTO\\DTO_DonXuat.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAmwCkAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-14T04:26:03.022Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -93,94 +48,91 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "DAL_DonXuat.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_DonXuat.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\DAL_DonXuat.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\DAL_DonXuat.cs",
-              "RelativeToolTip": "..\\DAL\\DAL_DonXuat.cs",
-              "ViewState": "AgIAAEABAAAAAAAAAAAowGkBAABPAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "PopupCmer.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\Customer\\PopupCmer.cs",
+              "RelativeDocumentMoniker": "Customer\\PopupCmer.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\Customer\\PopupCmer.cs [Design]",
+              "RelativeToolTip": "Customer\\PopupCmer.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-14T04:11:25.241Z",
+              "WhenOpened": "2025-04-15T05:27:25.207Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PopupType.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\_Type\\PopupType.cs",
+              "RelativeDocumentMoniker": "_Type\\PopupType.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\_Type\\PopupType.cs",
+              "RelativeToolTip": "_Type\\PopupType.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAmwFYAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T05:26:53.608Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PopupType.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\_Type\\PopupType.cs",
+              "RelativeDocumentMoniker": "_Type\\PopupType.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\_Type\\PopupType.cs [Design]",
+              "RelativeToolTip": "_Type\\PopupType.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T05:26:24.831Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "PopupXuat.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Xuathang\\PopupXuat.cs",
-              "RelativeDocumentMoniker": "Xuathang\\PopupXuat.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Xuathang\\PopupXuat.cs",
-              "RelativeToolTip": "Xuathang\\PopupXuat.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAAACcAAAAPAAAAAAAAAA==",
+              "Title": "BUS_VatLieu.cs",
+              "DocumentMoniker": "I:\\Pro213\\BUS\\BUS_VatLieu.cs",
+              "RelativeDocumentMoniker": "..\\BUS\\BUS_VatLieu.cs",
+              "ToolTip": "I:\\Pro213\\BUS\\BUS_VatLieu.cs",
+              "RelativeToolTip": "..\\BUS\\BUS_VatLieu.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAADgv2sAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T11:26:53.803Z",
+              "WhenOpened": "2025-04-14T14:21:40.013Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "BUS_Xuat.cs",
-              "DocumentMoniker": "I:\\Pro213\\BUS\\BUS_Xuat.cs",
-              "RelativeDocumentMoniker": "..\\BUS\\BUS_Xuat.cs",
-              "ToolTip": "I:\\Pro213\\BUS\\BUS_Xuat.cs",
-              "RelativeToolTip": "..\\BUS\\BUS_Xuat.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAqwEcAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T07:05:19.55Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "FrmXuat.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Xuathang\\FrmXuat.cs",
-              "RelativeDocumentMoniker": "Xuathang\\FrmXuat.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Xuathang\\FrmXuat.cs",
-              "RelativeToolTip": "Xuathang\\FrmXuat.cs",
-              "ViewState": "AgIAAIMAAAAAAAAAAAAhwJwAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T12:31:34.8Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "AddXuat.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Xuathang\\AddXuat.cs",
-              "RelativeDocumentMoniker": "Xuathang\\AddXuat.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Xuathang\\AddXuat.cs",
-              "RelativeToolTip": "Xuathang\\AddXuat.cs",
-              "ViewState": "AgIAAKYDAAAAAAAAAAAlwLEDAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T13:26:40.891Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "DAL_HoaDon.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_HoaDon.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\DAL_HoaDon.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\DAL_HoaDon.cs",
-              "RelativeToolTip": "..\\DAL\\DAL_HoaDon.cs",
-              "ViewState": "AgIAAKAAAAAAAAAAAAAcwK4AAABWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T05:16:49.996Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 6,
               "Title": "QLVatLieu.cs",
               "DocumentMoniker": "I:\\Pro213\\DAL\\QLVatLieu.cs",
               "RelativeDocumentMoniker": "..\\DAL\\QLVatLieu.cs",
               "ToolTip": "I:\\Pro213\\DAL\\QLVatLieu.cs",
               "RelativeToolTip": "..\\DAL\\QLVatLieu.cs",
-              "ViewState": "AgIAAK4BAAAAAAAAAAAAAMIBAABpAAAAAAAAAA==",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAhwL4AAACHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T05:23:01.747Z",
+              "WhenOpened": "2025-04-14T14:21:40.019Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PopupMaterial.cs",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\PopupMaterial.cs",
+              "RelativeDocumentMoniker": "VatLieu\\PopupMaterial.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\PopupMaterial.cs",
+              "RelativeToolTip": "VatLieu\\PopupMaterial.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAowDQAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-14T20:24:46.411Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PopupMaterial.cs [Design]",
+              "DocumentMoniker": "I:\\Pro213\\GUI\\VatLieu\\PopupMaterial.cs",
+              "RelativeDocumentMoniker": "VatLieu\\PopupMaterial.cs",
+              "ToolTip": "I:\\Pro213\\GUI\\VatLieu\\PopupMaterial.cs [Design]",
+              "RelativeToolTip": "VatLieu\\PopupMaterial.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-14T20:24:36.121Z",
+              "EditorCaption": " [Design]"
             }
           ]
         },
@@ -217,126 +169,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "4e7cfdaf-f5bb-4837-875c-13e77c42249b",
-        "Display": 0,
-        "X": -5,
-        "Y": 0,
-        "Width": 955,
-        "Height": 1037,
-        "WindowState": 0
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 7,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PopupOrder.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\PopupOrder.cs",
-              "RelativeDocumentMoniker": "Order\\PopupOrder.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\PopupOrder.cs",
-              "RelativeToolTip": "Order\\PopupOrder.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkAAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T14:22:46.484Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "AddXuat.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Xuathang\\AddXuat.cs",
-              "RelativeDocumentMoniker": "Xuathang\\AddXuat.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Xuathang\\AddXuat.cs [Design]",
-              "RelativeToolTip": "Xuathang\\AddXuat.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T23:48:47.056Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "FrmOrder.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
-              "RelativeDocumentMoniker": "Order\\FrmOrder.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs [Design]",
-              "RelativeToolTip": "Order\\FrmOrder.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T11:23:54.286Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "FrmXuat.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Xuathang\\FrmXuat.cs",
-              "RelativeDocumentMoniker": "Xuathang\\FrmXuat.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Xuathang\\FrmXuat.cs [Design]",
-              "RelativeToolTip": "Xuathang\\FrmXuat.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T14:02:40.222Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "FrmOrder.cs",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
-              "RelativeDocumentMoniker": "Order\\FrmOrder.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\FrmOrder.cs",
-              "RelativeToolTip": "Order\\FrmOrder.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMoAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-11T21:12:57.302Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "DAL_Order.cs",
-              "DocumentMoniker": "I:\\Pro213\\DAL\\DAL_Order.cs",
-              "RelativeDocumentMoniker": "..\\DAL\\DAL_Order.cs",
-              "ToolTip": "I:\\Pro213\\DAL\\DAL_Order.cs",
-              "RelativeToolTip": "..\\DAL\\DAL_Order.cs",
-              "ViewState": "AgIAAMMAAAAAAAAAAAAAAOwAAABCAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T15:11:00.711Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "PopupOrder.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Order\\PopupOrder.cs",
-              "RelativeDocumentMoniker": "Order\\PopupOrder.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Order\\PopupOrder.cs [Design]",
-              "RelativeToolTip": "Order\\PopupOrder.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T14:22:39.58Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PopupXuat.cs [Design]",
-              "DocumentMoniker": "I:\\Pro213\\GUI\\Xuathang\\PopupXuat.cs",
-              "RelativeDocumentMoniker": "Xuathang\\PopupXuat.cs",
-              "ToolTip": "I:\\Pro213\\GUI\\Xuathang\\PopupXuat.cs [Design]",
-              "RelativeToolTip": "Xuathang\\PopupXuat.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T14:22:28.118Z",
-              "EditorCaption": " [Design]"
             }
           ]
         }

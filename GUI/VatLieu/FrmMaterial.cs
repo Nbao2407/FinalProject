@@ -6,7 +6,7 @@ using QLVT.Helper;
 using QLVT.TaiKhoan;
 using QLVT.VatLieu;
 using System.Data;
-
+using System.Runtime.InteropServices;
 namespace QLVT
 {
     public partial class FrmMaterial : Form
@@ -26,7 +26,7 @@ namespace QLVT
             SetupDebounceTimer();
             LoadComboBoxes();
         }
-
+     
         private void FrmMaterial_Load(object sender, EventArgs e)
         {
 
@@ -78,12 +78,13 @@ namespace QLVT
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi nghiêm trọng khi tải hoặc xử lý dữ liệu vật liệu: {ex.Message}", "Lỗi Tải Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                danhSach = new List<DTO_VatLieu>(); // ENSURE danhSach is assigned an empty list on error
+                danhSach = new List<DTO_VatLieu>(); 
             }
             finally
             {
                 dataGridView1.DataSource = danhSach;
             }
+            ResizeColumns();
         }
 
         private void FrmMaterial_Resize(object sender, EventArgs e)
@@ -276,7 +277,7 @@ namespace QLVT
         }
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.CurrentRow != null)
+            if (dataGridView1.CurrentRow != null )
             {
                 int maVatLieu = Convert.ToInt32(dataGridView1.CurrentRow.Cells["MaVatLieu"].Value);
                 PopupMaterial popup = new PopupMaterial(this, maVatLieu);
@@ -293,7 +294,5 @@ namespace QLVT
                 add.ShowDialog();
             }
         }
-
-       
     }
 }

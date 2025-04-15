@@ -219,6 +219,7 @@ namespace QLVT
             dtpNgaySinh.RightToLeft = RightToLeft.No;
             dtpNgaySinh.Size = new Size(344, 29);
             dtpNgaySinh.TabIndex = 42;
+            dtpNgaySinh.ValueChanged += this.dtpNgaySinh_ValueChanged;
             // 
             // CbGender
             // 
@@ -233,6 +234,7 @@ namespace QLVT
             CbGender.Name = "CbGender";
             CbGender.Size = new Size(344, 26);
             CbGender.TabIndex = 44;
+            CbGender.SelectedIndexChanged += this.CbGender_SelectedIndexChanged;
             // 
             // lblID
             // 
@@ -317,6 +319,7 @@ namespace QLVT
             address.TabIndex = 49;
             address.TextAlignment = HorizontalAlignment.Left;
             address.UseSystemPasswordChar = false;
+            address.TextChanged += this.address_TextChanged;
             // 
             // email
             // 
@@ -329,12 +332,13 @@ namespace QLVT
             email.MaxLength = 32767;
             email.Multiline = false;
             email.Name = "email";
-            email.ReadOnly = false;
+            email.ReadOnly = true;
             email.Size = new Size(387, 28);
             email.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             email.TabIndex = 50;
             email.TextAlignment = HorizontalAlignment.Left;
             email.UseSystemPasswordChar = false;
+            email.TextChanged += this.email_TextChanged;
             // 
             // phone
             // 
@@ -347,12 +351,13 @@ namespace QLVT
             phone.MaxLength = 32767;
             phone.Multiline = false;
             phone.Name = "phone";
-            phone.ReadOnly = false;
+            phone.ReadOnly = true;
             phone.Size = new Size(387, 28);
             phone.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             phone.TabIndex = 51;
             phone.TextAlignment = HorizontalAlignment.Left;
             phone.UseSystemPasswordChar = false;
+            phone.TextChanged += this.phone_TextChanged;
             // 
             // Ngay
             // 
@@ -371,6 +376,7 @@ namespace QLVT
             Ngay.TabIndex = 52;
             Ngay.TextAlignment = HorizontalAlignment.Left;
             Ngay.UseSystemPasswordChar = false;
+            Ngay.TextChanged += Ngay_TextChanged;
             // 
             // toggleEdit1
             // 

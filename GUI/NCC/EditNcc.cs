@@ -23,7 +23,9 @@ namespace QLVT.NCC
             _parentForm = parentForm;
             _ncc = ncc;
             _popupNcc = popNcc;
-            errorProvider = new ErrorProvider(); 
+            errorProvider = new ErrorProvider();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             LoadData();
             TbName.Validating += TbName_Validating;
             TbSdt.Validating += TbSdt_Validating;

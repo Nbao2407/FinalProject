@@ -54,6 +54,7 @@
             Tieude = new ReaLTaiizor.Controls.BigLabel();
             Title = new ReaLTaiizor.Controls.BigLabel();
             panel4 = new Panel();
+            bigLabel3 = new ReaLTaiizor.Controls.BigLabel();
             tableLayoutPanel1.SuspendLayout();
             panel5.SuspendLayout();
             panel1.SuspendLayout();
@@ -189,6 +190,7 @@
             tableLayoutPanel2.Controls.Add(bigLabel2, 0, 0);
             tableLayoutPanel2.Controls.Add(TbToken, 0, 1);
             tableLayoutPanel2.Controls.Add(panel2, 0, 4);
+            tableLayoutPanel2.Enabled = false;
             tableLayoutPanel2.Location = new Point(386, 106);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 5;
@@ -310,9 +312,10 @@
             // 
             paneloverlay.BackColor = Color.FromArgb(30, 58, 138);
             paneloverlay.BorderRadius = 20;
+            paneloverlay.Controls.Add(bigLabel3);
             paneloverlay.Controls.Add(Tieude);
             paneloverlay.Controls.Add(Title);
-            paneloverlay.Location = new Point(381, -1);
+            paneloverlay.Location = new Point(381, 0);
             paneloverlay.Name = "paneloverlay";
             paneloverlay.Size = new Size(369, 450);
             paneloverlay.TabIndex = 4;
@@ -347,6 +350,18 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(710, 34);
             panel4.TabIndex = 6;
+            // 
+            // bigLabel3
+            // 
+            bigLabel3.AutoSize = true;
+            bigLabel3.BackColor = Color.Transparent;
+            bigLabel3.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            bigLabel3.ForeColor = Color.White;
+            bigLabel3.Location = new Point(81, 188);
+            bigLabel3.Name = "bigLabel3";
+            bigLabel3.Size = new Size(232, 64);
+            bigLabel3.TabIndex = 2;
+            bigLabel3.Text = "Nhập email của bạn\r\n để đổi mật khẩu";
             // 
             // ChangePW
             // 
@@ -399,5 +414,6 @@
         private Panel panel5;
         private ReaLTaiizor.Controls.BigLabel Title;
         private ReaLTaiizor.Controls.BigLabel Tieude;
+        private ReaLTaiizor.Controls.BigLabel bigLabel3;
     }
 }

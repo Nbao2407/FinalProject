@@ -24,6 +24,7 @@ namespace QLVT
         private List<DTO_DonXuat> currentDataSource = new List<DTO_DonXuat>();
         private System.Windows.Forms.Timer debounceTimer;
         private BUS_DonXuat busDonXuat = new BUS_DonXuat();
+
         public FrmXuat()
         {
             InitializeComponent();
@@ -156,12 +157,12 @@ namespace QLVT
             {
                 using (var popup = new PopupXuat(orderId))
                 {
-
                     popup.StartPosition = FormStartPosition.CenterParent;
 
                     DialogResult result = popup.ShowDialog();
 
-                    bool dataMayHaveChanged = popup.DataContextChanged;
+                    bool dataMayHaveChanged = popup.DataChanged; 
+
                     if (dataMayHaveChanged)
                     {
                         Console.WriteLine("Data may have changed, reloading initial data...");

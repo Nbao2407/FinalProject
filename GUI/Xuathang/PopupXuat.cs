@@ -19,84 +19,22 @@ namespace QLVT.Order
     public partial class PopupXuat : Form
     {
         private readonly int _maDonXuat;
-        private readonly BUS_DonXuat busDonXuat;
+        private readonly BUS_DonXuat busDonXuat = new BUS_DonXuat();
         private DTO_DonXuat _loadedHeader = null;
         private List<DTO_ChiTietDonXuat> _loadedDetails = null;
+        public bool DataChanged { get; private set; } = false;
 
         public PopupXuat(int maDonXuat)
         {
             InitializeComponent();
             _maDonXuat = maDonXuat;
-            LoadOrderDetails();
+            LoadOrderData();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             Quyen();
             ConfigureDetailsGrid();
         }
 
-        private void LoadOrderData()
-        {
-            if (busDonXuat == null) return;
-
-            this.Cursor = Cursors.WaitCursor;
-            try
-            {
-                _loadedHeader = busDonXuat.GetDonXuatById(_maDonXuat);
-
-                _loadedDetails = busDonXuat.GetChiTietDonXuat(_maDonXuat);
-
-                if (_loadedHeader != null)
-                {
-                    lbld.Text = _loadedHeader.MaDonXuat.ToString();
-                    lblNgayXuat.Text = _loadedHeader.NgayXuat.ToString("dd/MM/yyyy");
-                    lblLoaiXuat.Text = _loadedHeader.LoaiXuat;
-                    txtNgTao.Text = _loadedHeader.TenNguoiLap ?? "N/A";
-                    tranthai.Text = _loadedHeader.TrangThai;
-                    txtGhiChuPopup.Text = _loadedHeader.GhiChu ?? "";
-                    if (_loadedHeader.LoaiXuat == "Xuất hàng")
-                    {
-                        lblKh.Text = !string.IsNullOrEmpty(_loadedHeader.TenKhachHang)
-                                                ? $"{_loadedHeader.MaKhachHang?.ToString() ?? "N/A"} (ID: {_loadedHeader.TenKhachHang})"
-                                                : "[Không có]";
-                        lblHoaDonValue.Text = _loadedHeader.MaHoaDon?.ToString() ?? "[Không có]";
-                    }
-                    else
-                    {
-                        string khoDichInfo = "";
-                        if (!string.IsNullOrEmpty(_loadedHeader.GhiChu) && _loadedHeader.GhiChu.Contains("đến kho:"))
-                        {
-                            khoDichInfo = _loadedHeader.GhiChu.Substring(_loadedHeader.GhiChu.IndexOf("đến kho:") + 8).Split('.')[0].Trim();
-                        }
-                        lblKh.Text = $"Kho Đích: {khoDichInfo}";
-                        lblHoaDonValue.Text = "[Không áp dụng]";
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Không tìm thấy thông tin đơn xuất.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    this.Close();
-                    return;
-                }
-
-                dgvPopupChiTiet.DataSource = null;
-                if (_loadedDetails != null && _loadedDetails.Any())
-                {
-                    var bindingSource = new BindingSource { DataSource = _loadedDetails };
-                    dgvPopupChiTiet.DataSource = bindingSource;
-                }
-                else
-                {
-                    dgvPopupChiTiet.DataSource = null;
-                }
-                TinhTongCongPopup();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tải dữ liệu đơn xuất: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                this.Cursor = Cursors.Default;
-            }
-        }
 
         private void TinhTongCongPopup()
         {
@@ -220,53 +158,72 @@ namespace QLVT.Order
             dgvPopupChiTiet.RowTemplate.Height = 35;
         }
 
-        private void LoadOrderDetails()
+        private void LoadOrderData()
         {
-            if (maDonXuat <= 0)
-            {
-                MessageBox.Show("Mã đơn hàng không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-                return;
-            }
+            if (busDonXuat == null) return; 
 
+            this.Cursor = Cursors.WaitCursor;
             try
             {
-                var orderDetails = _busXuat.GetDTO_DonXuatsbyID(maDonXuat);
+                _loadedHeader = busDonXuat.GetDonXuatById(_maDonXuat);
 
-                if (orderDetails != null)
+                _loadedDetails = busDonXuat.GetChiTietDonXuat(_maDonXuat);
+
+                if (_loadedHeader != null)
                 {
-                    lbld.Text = orderDetails.m.ToString();
-                    NgayTao.Text = orderDetails.NgayTao.ToString("dd/MM/yyyy");
-                    NgXuat.Text = orderDetails.NguoiCapNhatTen;
-                    lblNCC.Text = orderDetails.ToArray;
-                    lblNgayXuat.Text = orderDetails.NgayCapNhat.ToString("dd/MM/yyyy");
-                    tranthai.Text = orderDetails.TrangThai;
-                    txtGhiChuPopup.Text = orderDetails.GhiChu;
-                    txtNgTao.Text = orderDetails.NguoiTao;
-                    dgvPopupChiTiet.AutoGenerateColumns = false;
-                    dgvPopupChiTiet.DataSource = null;
-                    dgvPopupChiTiet.DataSource = orderDetails.ChiTietDonNhap;
-                    if (orderDetails.ChiTietDonNhap != null)
+                    lbld.Text = _loadedHeader.MaDonXuat.ToString();
+                    lblNgayXuat.Text = _loadedHeader.NgayXuat.ToString("dd/MM/yyyy");
+                    lblLoaiXuat.Text = _loadedHeader.LoaiXuat;
+                    txtNgTao.Text = _loadedHeader.TenNguoiLap ?? "N/A"; 
+                    tranthai.Text = _loadedHeader.TrangThai;
+                    txtGhiChuPopup.Text = _loadedHeader.GhiChu ?? ""; 
+
+                    if (_loadedHeader.LoaiXuat == "Xuất hàng")
                     {
-                        foreach (var itemChiTiet in orderDetails.ChiTietDonNhap)
-                        {
-                            tongSoLuong += itemChiTiet.SoLuong;
-                            tongGiaTri += itemChiTiet.ThanhTien;
-                        }
+                        lblKh.Text = !string.IsNullOrEmpty(_loadedHeader.TenKhachHang)
+                                                ? $"{_loadedHeader.TenKhachHang} (ID: {_loadedHeader.MaKhachHang?.ToString() ?? "N/A"})"
+                                                : "[Không có]";
+                        lblHoaDonValue.Text = _loadedHeader.MaHoaDon?.ToString() ?? "[Không có]";
                     }
-                    lblSoLuong.Text = tongSoLuong.ToString("N0");
-                    lblTongCong.Text = tongGiaTri.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) + " VNĐ";
+                    else 
+                    {
+                        string khoDichInfo = "";
+                        if (!string.IsNullOrEmpty(_loadedHeader.GhiChu) && _loadedHeader.GhiChu.Contains("đến kho:"))
+                        {
+                            khoDichInfo = _loadedHeader.GhiChu.Substring(_loadedHeader.GhiChu.IndexOf("đến kho:") + 8).Split('.')[0].Trim();
+                        }
+                        lblKh.Text = $"Kho Đích: {khoDichInfo}"; 
+                        lblHoaDonValue.Text = "[Không áp dụng]";
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Không tìm thấy chi tiết đơn hàng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Không tìm thấy thông tin đơn xuất.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Close();
+                    return;
                 }
+
+                dgvPopupChiTiet.DataSource = null;
+                if (_loadedDetails != null && _loadedDetails.Any())
+                {
+                    var bindingSource = new BindingSource { DataSource = _loadedDetails };
+                    dgvPopupChiTiet.DataSource = bindingSource;
+                }
+                else
+                {
+                    dgvPopupChiTiet.DataSource = null;
+                }
+
+                TinhTongCongPopup();
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải chi tiết đơn hàng: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
+                MessageBox.Show($"Lỗi khi tải dữ liệu đơn xuất: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
             }
         }
 

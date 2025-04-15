@@ -318,7 +318,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(800, 400);
             Controls.Add(toggleEdit1);
             Controls.Add(lblStatus);

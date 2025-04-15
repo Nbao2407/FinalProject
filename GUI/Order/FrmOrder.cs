@@ -257,7 +257,7 @@ namespace QLVT
                 {
                     MessageBox.Show("Danh sách đơn nhập chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     if (result != null) result.Visible = false;
-                    dataGridView1.DataSource = null; // Clear grid nếu danh sách null
+                    dataGridView1.DataSource = null; 
                     return;
                 }
 
@@ -266,18 +266,18 @@ namespace QLVT
                 if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
                     suggestionSource = suggestionSource.Where(order =>
-                        order != null && // Thêm kiểm tra order không null cho an toàn
-                        order.TrangThai != null && // Kiểm tra trạng thái không null
-                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase) // So sánh trạng thái
+                        order != null && 
+                        order.TrangThai != null && 
+                        order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
                     );
                 }
 
-                List<DTO_Order> suggestionResults; // Khai báo ở đây
+                List<DTO_Order> suggestionResults;
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
                     suggestionResults = suggestionSource.Where(order =>
                     {
-                        if (order == null) return false; // Bỏ qua nếu order bị null
+                        if (order == null) return false;
 
                         bool match = false;
                         if (order.MaDonNhap.ToString().ToLowerInvariant().Contains(searchQuery))
@@ -314,7 +314,7 @@ namespace QLVT
                     var itemToShow = new List<DTO_Order> { selectedItem };
                     dataGridView1.DataSource = itemToShow; 
                     ResizeColumns();
-                    if (result != null) result.Visible = false; // Ẩn panel gợi ý
+                    if (result != null) result.Visible = false; 
                 };
 
                 SearchHelper.UpdateSearchSuggestions(

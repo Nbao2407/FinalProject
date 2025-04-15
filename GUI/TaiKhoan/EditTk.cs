@@ -25,6 +25,8 @@ namespace QLVT.TaiKhoan
         public EditTk(FrmNV frmNV, int? maTk)
         {
             InitializeComponent();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             _parentFrm = frmNV;
             this.maTK = maTk;
             LoadDataFromDatabase();

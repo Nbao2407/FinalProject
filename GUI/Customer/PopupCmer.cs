@@ -16,8 +16,9 @@ namespace QLVT
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = Color.White;
             this.Load += PopupForm_Load;
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             this.Resize += PopupForm_Resize;
             LoadDataToControls(_khachHang);
             _parentForm = parentForm;
@@ -267,6 +268,11 @@ namespace QLVT
             isManualToggle = false;
             toggleEdit1.Toggled = state;
             isManualToggle = true;
+        }
+
+        private void Ngay_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

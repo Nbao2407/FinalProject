@@ -16,15 +16,6 @@ namespace BUS
             return dalDonXuat.GetAllDonXuat();
         }
 
-        public List<DTO_ChiTietDonXuat> GetChiTietDonXuat(int maDonXuat)
-        {
-            if (maDonXuat <= 0)
-            {
-                Console.WriteLine("BUS GetChiTietDonXuat: MaDonXuat không hợp lệ.");
-                return new List<DTO_ChiTietDonXuat>();
-            }
-            return dalDonXuat.GetChiTietDonXuat(maDonXuat);
-        }
 
         public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int? maKhoNguon, int nguoiThucHien)
         {
@@ -67,25 +58,25 @@ namespace BUS
             }
         }
 
-        public List<DTO_DonXuat> GetDTO_DonXuatsbyID(int maDonXuat)
+        public List<DTO_ChiTietDonXuat> GetChiTietDonXuat(int dispatchOrderId)
         {
-            if (maDonXuat <= 0)
-                throw new ArgumentException("Mã đơn xuất không hợp lệ.", nameof(maDonXuat));
+            if (dispatchOrderId <= 0)
+            {
+                Console.WriteLine("BUS GetChiTietDonXuat: Invalid DispatchOrderID.");
+                return new List<DTO_ChiTietDonXuat>();
+            }
+
             try
             {
-                return dalDonXuat.GetDonXuatById(maDonXuat);
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine($"BUS GetDTO_DonXuatsbyID SQL Error: {ex.Message}");
-                throw new Exception($"Lỗi cơ sở dữ liệu khi lấy thông tin đơn xuất {maDonXuat}.", ex);
+                return dalDonXuat.GetChiTietDonXuat(dispatchOrderId);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"BUS GetDTO_DonXuatsbyID Error: {ex.Message}");
-                throw;
+                Console.WriteLine($"Error in BUS calling DAL GetChiTietDonXuat: {ex.Message}");
+                return new List<DTO_ChiTietDonXuat>();
             }
         }
+
         public DTO_DonXuat GetDonXuatById(int maDonXuat)
         {
             if (maDonXuat <= 0)

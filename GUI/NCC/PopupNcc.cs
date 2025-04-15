@@ -33,7 +33,8 @@ namespace QLVT
             _parentForm = parentForm;
             ncc = Ncc;
             this.FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = Color.White;
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
             this.Load += PopupForm_Load;
             this.Resize += PopupForm_Resize;
             LoadDataToControls(ncc);

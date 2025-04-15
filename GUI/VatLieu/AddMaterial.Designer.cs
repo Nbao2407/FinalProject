@@ -38,9 +38,8 @@
             TbGiaNhap = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label2 = new Label();
             groupBox2 = new GroupBox();
-            aloneComboBox1 = new ReaLTaiizor.Controls.AloneComboBox();
+            comboBoxDonViTinh = new ReaLTaiizor.Controls.AloneComboBox();
             label10 = new Label();
-            TbDonvi = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label9 = new Label();
             TbGiaBan = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label8 = new Label();
@@ -195,9 +194,8 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(aloneComboBox1);
+            groupBox2.Controls.Add(comboBoxDonViTinh);
             groupBox2.Controls.Add(label10);
-            groupBox2.Controls.Add(TbDonvi);
             groupBox2.Controls.Add(label9);
             groupBox2.Controls.Add(TbGiaBan);
             groupBox2.Controls.Add(label8);
@@ -210,18 +208,17 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Giá nhập, giá bán";
             // 
-            // aloneComboBox1
+            // comboBoxDonViTinh
             // 
-            aloneComboBox1.DrawMode = DrawMode.OwnerDrawFixed;
-            aloneComboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            aloneComboBox1.EnabledCalc = true;
-            aloneComboBox1.FormattingEnabled = true;
-            aloneComboBox1.ItemHeight = 20;
-            aloneComboBox1.Location = new Point(595, 43);
-            aloneComboBox1.Name = "aloneComboBox1";
-            aloneComboBox1.Size = new Size(179, 26);
-            aloneComboBox1.TabIndex = 41;
-            aloneComboBox1.SelectedIndexChanged += aloneComboBox1_SelectedIndexChanged;
+            comboBoxDonViTinh.DrawMode = DrawMode.OwnerDrawFixed;
+            comboBoxDonViTinh.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxDonViTinh.EnabledCalc = true;
+            comboBoxDonViTinh.FormattingEnabled = true;
+            comboBoxDonViTinh.ItemHeight = 20;
+            comboBoxDonViTinh.Location = new Point(419, 49);
+            comboBoxDonViTinh.Name = "comboBoxDonViTinh";
+            comboBoxDonViTinh.Size = new Size(222, 26);
+            comboBoxDonViTinh.TabIndex = 41;
             // 
             // label10
             // 
@@ -232,22 +229,6 @@
             label10.Size = new Size(75, 17);
             label10.TabIndex = 41;
             label10.Text = "Đơn vị tính";
-            // 
-            // TbDonvi
-            // 
-            TbDonvi.AutoWordSelection = false;
-            TbDonvi.BackColor = Color.Transparent;
-            TbDonvi.BorderColor = Color.FromArgb(180, 180, 180);
-            TbDonvi.EdgeColor = Color.White;
-            TbDonvi.Font = new Font("Tahoma", 10F);
-            TbDonvi.ForeColor = Color.Black;
-            TbDonvi.Location = new Point(419, 43);
-            TbDonvi.Name = "TbDonvi";
-            TbDonvi.ReadOnly = false;
-            TbDonvi.Size = new Size(161, 32);
-            TbDonvi.TabIndex = 40;
-            TbDonvi.TextBackColor = Color.White;
-            TbDonvi.WordWrap = true;
             // 
             // label9
             // 
@@ -315,7 +296,6 @@
             CbType.Name = "CbType";
             CbType.Size = new Size(300, 26);
             CbType.TabIndex = 38;
-            CbType.SelectedIndexChanged += CbType_SelectedIndexChanged;
             // 
             // btnTaiHinhAnh
             // 
@@ -384,6 +364,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(840, 431);
             Controls.Add(CbKho);
             Controls.Add(groupBox1);
@@ -438,8 +419,7 @@
         private GroupBox groupBox1;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbAddress;
         private Label label10;
-        private ReaLTaiizor.Controls.DungeonRichTextBox TbDonvi;
-        private ReaLTaiizor.Controls.AloneComboBox aloneComboBox1;
+        private ReaLTaiizor.Controls.AloneComboBox comboBoxDonViTinh;
         private ReaLTaiizor.Controls.AloneComboBox CbKho;
     }
 }

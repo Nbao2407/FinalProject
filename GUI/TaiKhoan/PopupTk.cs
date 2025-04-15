@@ -1,6 +1,7 @@
 ﻿using BUS;
 using DAL;
 using DTO;
+using QLVT.Helper;
 using ReaLTaiizor.Controls;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace QLVT.TaiKhoan
             this.maTK = maTK;
             _parentFrm = frmNV;
             LoadDataFromDatabase();
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
 
         public void LoadDataFromDatabase()

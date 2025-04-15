@@ -27,6 +27,8 @@ namespace QLVT.HoaDon
             this.FormBorderStyle = FormBorderStyle.None;
             this.maHoaDon = maHoaDon;
             DataGridViewHelper.CustomizeDataGridView(dataGridView);
+            PopupHelper.RoundCorners(this, 10);
+            PopupHelper.changecolor(this);
         }
 
 

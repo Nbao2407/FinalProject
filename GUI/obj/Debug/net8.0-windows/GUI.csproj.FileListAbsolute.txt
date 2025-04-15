@@ -447,7 +447,6 @@ I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.VatLieu.EditMaterial.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.FrmMaterial.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.VatLieu.PopupMaterial.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.Type.AddType.resources
-I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.Type.Edit.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.FrmType.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.Type.PopupType.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\GUI.csproj.GenerateResource.cache
