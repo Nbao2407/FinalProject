@@ -42,7 +42,7 @@ namespace QLVT
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenNCC", DataPropertyName = "TenNCC", HeaderText = "Tên NCC" });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "SDT", DataPropertyName = "SDT", HeaderText = "Số Điện Thoại" });
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "Email", DataPropertyName = "Email", HeaderText = "Email" });
-
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { Name = "TrangThai", DataPropertyName = "TrangThai", HeaderText = "Trạng Thái" });
             DataGridViewHelper.CustomizeDataGridView(dataGridView1);
             ResizeColumns();
         }
@@ -56,6 +56,10 @@ namespace QLVT
         private void FrmNCc_Load(object sender, EventArgs e)
         {
             Loaddata();
+            if(CurrentUser.ChucVu == "Nhân viên")
+            {
+                button3.Visible = false;
+            }
         }
 
 
@@ -97,7 +101,7 @@ namespace QLVT
 
         private void PopupFrm_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex >= 0 )
             {
                 DTO_Ncap ncc = dataGridView1.Rows[e.RowIndex].DataBoundItem as DTO_Ncap;
                 if (ncc != null)
@@ -154,8 +158,6 @@ namespace QLVT
                 }
 
                 IEnumerable<DTO_Ncap> filteredSource = danhSach;
-
-
                 List<DTO_Ncap> finalResults;
                 if (!string.IsNullOrEmpty(searchQuery))
                 {

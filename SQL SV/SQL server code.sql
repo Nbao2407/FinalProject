@@ -17,7 +17,8 @@ CREATE TABLE QLTK (
     DiaChi NVARCHAR(255), -- Địa chỉ
     NgayTao DATETIME DEFAULT GETDATE() -- Ngày tạo tài khoản
 );
-
+Alter table QLTK
+add constraint  TrangThai CHECK (TrangThai IN (N'Hoạt động', N'Khóa'))
 -- 2. Bảng Kho (Quản lý thông tin kho hàng)
 CREATE TABLE Kho (
     MaKho INT PRIMARY KEY IDENTITY,
@@ -33,9 +34,10 @@ CREATE TABLE NCC (
     Email NVARCHAR(100) UNIQUE,
     NguoiTao Nvarchar(256),
     NgayTao DATETIME DEFAULT GETDATE(),
-    TrangThai NVARCHAR(20) CHECK (TrangThai IN (N'Hoạt động', N'Bị khóa')) DEFAULT N'Hoạt động'
+    TrangThai NVARCHAR(20) CHECK (TrangThai IN (N'Hoạt động', N'Bị khóa', N'Chờ duyệt')) DEFAULT N'Hoạt động'
 );
-Select * from NCC
+ALter table NCC
+add constraint  TrangThai_NCCt check (TrangThai IN (N'Hoạt động', N'Bị khóa', N'Chờ duyệt')) 
 
 -- 4. Bảng Quản lý khách hàng (Lưu trữ thông tin khách hàng)
 CREATE TABLE QLKH (
@@ -76,7 +78,12 @@ CREATE TABLE QLVatLieu (
     NgayCapNhat DATETIME DEFAULT GETDATE(),
     NguoiCapNhat INT REFERENCES QLTK(MaTK)
 );
+Alter Table NCC
+ADD 
+    NgayCapNhat DATETIME DEFAULT GETDATE(),
+    NguoiCapNhat INT REFERENCES QLTK(MaTK)
 
+	
 -- 7. Bảng Nhật ký hoạt động (Ghi lại các thay đổi trong hệ thống)
 CREATE TABLE AuditLog (
     MaLog INT PRIMARY KEY IDENTITY,
@@ -193,7 +200,7 @@ WHERE MaHoaDon IN (
     WHERE TrangThai=N'Đã thanh toán'
 );
 
-DELETE FROM QLHoaDonx
+DELETE FROM QLHoaDon
   WHERE TrangThai=N'Đã thanh toán'
 
 DELETE FROM ChiTietDonNhap
@@ -397,16 +404,72 @@ SELECT
                 LEFT JOIN QLKH kh ON dx.MaKhachHang = kh.MaKhachHang
 
 				ALTER TABLE ChiTietDonXuat
-ADD MaKhoNguon INT NULL; -- Cho phép NULL tạm thời
+ADD MaKhoDich INT NULL; -- Cho phép NULL tạm thời
 
 
-UPDATE ChiTietDonXuat SET MaKhoNguon = (SELECT TOP 1 MaKho FROM QLVatLieu WHERE MaVatLieu = ChiTietDonXuat.MaVatLieu) -- Ví dụ
+UPDATE ChiTietDonXuat SET MaKhoDich = (SELECT TOP 1 MaKho FROM QLVatLieu WHERE MaVatLieu = ChiTietDonXuat.MaVatLieu) -- Ví dụ
 
 ALTER TABLE ChiTietDonXuat
-ALTER COLUMN MaKhoNguon INT NOT NULL; -- Đặt là NOT NULL
+ALTER COLUMN MaKhoDich INT  NULL; -- Đặt là NOT NULL
 
 -- Thêm Foreign Key
 ALTER TABLE ChiTietDonXuat
 ADD CONSTRAINT FK_ChiTietDonXuat_KhoNguon FOREIGN KEY (MaKhoNguon) REFERENCES Kho(MaKho);
 GO
 SELECT SoLuong FROM QLVatLieu WHERE MaVatLieu = 1 AND MaKho = 1
+Alter Table QLHoaDon
+Add Constraint CK_QLHoaDon_Ttt
+CHECK (TrangThai IN (N'Nháp', N'Chờ duyệt', N'Đã thanh toán', N'Đã hủy')) 
+SELECT hd.MaHoaDon, 
+       hd.NgayLap, 
+       tk.TenDangNhap AS NguoiLap, 
+       kh.MaKhachHang,
+       COALESCE(kh.Ten, N'Khách lẻ') AS TenKhachHang,
+       hd.TongTien, 
+       hd.TrangThai, 
+       hd.HinhThucThanhToan
+FROM QLHoaDon hd
+JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
+LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang
+ WHERE hd.TrangThai != N'Nháp' OR (hd.TrangThai = N'Nháp' AND hd.MaTKLap = 2)
+          ORDER BY hd.MaHoaDon DESC
+CREATE TABLE TonKhoVatLieu (
+            -- MaTonKho INT PRIMARY KEY IDENTITY, -- Có thể thêm PK nếu muốn
+            MaVatLieu INT NOT NULL,
+            MaKho INT NOT NULL,
+            SoLuongTon DECIMAL(18, 2) NOT NULL CHECK (SoLuongTon >= 0) DEFAULT 0, -- Hoặc dùng INT
+
+            -- Khóa chính gồm MaVatLieu và MaKho
+            CONSTRAINT PK_TonKhoVatLieu PRIMARY KEY (MaVatLieu, MaKho),
+
+            -- Khóa ngoại tham chiếu đến bảng Vật liệu
+            CONSTRAINT FK_TonKhoVatLieu_QLVatLieu FOREIGN KEY (MaVatLieu) REFERENCES dbo.QLVatLieu(MaVatLieu) ON DELETE CASCADE, -- Xem xét ON DELETE
+
+            -- Khóa ngoại tham chiếu đến bảng Kho
+            CONSTRAINT FK_TonKhoVatLieu_Kho FOREIGN KEY (MaKho) REFERENCES dbo.Kho(MaKho) ON DELETE CASCADE -- Xem xét ON DELETE
+        );
+		     	         	              
+                    SELECT TOP 1
+         dx.MaDonXuat, dx.NgayXuat, dx.MaTK, tkLap.TenDangNhap AS TenNguoiLap,
+         dx.LoaiXuat, dx.MaHoaDon, dx.MaKhachHang AS MaKhachHang, kh.Ten AS TenKhachHang, -- Sửa lại tên cột MaKH nếu cần
+         dx.TrangThai, dx.GhiChu, dx.NgayCapNhat, dx.NguoiCapNhat,
+         tkCapNhat.TenDangNhap AS TenNguoiCapNhat
+     FROM dbo.QLDonXuat dx -- Thêm dbo.
+     INNER JOIN dbo.QLTK tkLap ON dx.MaTK = tkLap.MaTK
+     LEFT JOIN dbo.QLKH kh ON dx.MaKhachHang = kh.MaKhachHang -- Sửa lại tên cột MaKH nếu cần
+     LEFT JOIN dbo.QLTK tkCapNhat ON dx.NguoiCapNhat = tkCapNhat.MaTK
+     WHERE dx.MaDonXuat =15;
+
+   SELECT
+    ct.MaCTDX, ct.MaDonXuat, ct.MaVatLieu, vl.Ten AS TenVatLieu, vl.DonViTinh,
+    ct.MaKhoNguon, kn.TenKho AS TenKhoNguon, -- Lấy tên kho nguồn
+    ct.MaKhoDich, kd.TenKho AS TenKhoDich,   -- Lấy tên kho đích
+    ct.SoLuong, ct.DonGia
+FROM dbo.ChiTietDonXuat ct -- Thêm dbo.
+INNER JOIN dbo.QLVatLieu vl ON ct.MaVatLieu = vl.MaVatLieu
+LEFT JOIN dbo.Kho kn ON ct.MaKhoNguon = kn.MaKho -- Join để lấy tên Kho Nguồn
+LEFT JOIN dbo.Kho kd ON ct.MaKhoDich = kd.MaKho   -- Join để lấy tên Kho Đích (có thể NULL)
+WHERE ct.MaDonXuat = 7;
+sp_help 'dbo.ChiTietDonXuat'
+-- Row 1
+025-04-19 13:20:00', N'1', '2025-04-19 13:20:00', NULL);

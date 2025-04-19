@@ -43,7 +43,6 @@ namespace QLVT
             panel5 = new Panel();
             roundedPictureBox1 = new RoundedPictureBox();
             dtpNgaySinh = new ReaLTaiizor.Controls.PoisonDateTime();
-            CbGender = new ReaLTaiizor.Controls.AloneComboBox();
             lblID = new Label();
             label1 = new Label();
             dtpNgayTao = new ReaLTaiizor.Controls.PoisonDateTime();
@@ -55,6 +54,7 @@ namespace QLVT
             Ngay = new ReaLTaiizor.Controls.SmallTextBox();
             toggleEdit1 = new ReaLTaiizor.Controls.ToggleEdit();
             bigLabel1 = new ReaLTaiizor.Controls.BigLabel();
+            smallTextBox1 = new ReaLTaiizor.Controls.SmallTextBox();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
@@ -211,6 +211,7 @@ namespace QLVT
             // dtpNgaySinh
             // 
             dtpNgaySinh.CalendarTrailingForeColor = Color.Black;
+            dtpNgaySinh.Enabled = false;
             dtpNgaySinh.FontWeight = ReaLTaiizor.Extension.Poison.PoisonDateTimeWeight.Bold;
             dtpNgaySinh.Format = DateTimePickerFormat.Short;
             dtpNgaySinh.Location = new Point(496, 284);
@@ -219,22 +220,6 @@ namespace QLVT
             dtpNgaySinh.RightToLeft = RightToLeft.No;
             dtpNgaySinh.Size = new Size(344, 29);
             dtpNgaySinh.TabIndex = 42;
-            dtpNgaySinh.ValueChanged += this.dtpNgaySinh_ValueChanged;
-            // 
-            // CbGender
-            // 
-            CbGender.DrawMode = DrawMode.OwnerDrawFixed;
-            CbGender.DropDownStyle = ComboBoxStyle.DropDownList;
-            CbGender.EnabledCalc = true;
-            CbGender.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            CbGender.ForeColor = Color.Black;
-            CbGender.FormattingEnabled = true;
-            CbGender.ItemHeight = 20;
-            CbGender.Location = new Point(496, 197);
-            CbGender.Name = "CbGender";
-            CbGender.Size = new Size(344, 26);
-            CbGender.TabIndex = 44;
-            CbGender.SelectedIndexChanged += this.CbGender_SelectedIndexChanged;
             // 
             // lblID
             // 
@@ -313,13 +298,12 @@ namespace QLVT
             address.MaxLength = 32767;
             address.Multiline = false;
             address.Name = "address";
-            address.ReadOnly = false;
+            address.ReadOnly = true;
             address.Size = new Size(809, 28);
             address.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             address.TabIndex = 49;
             address.TextAlignment = HorizontalAlignment.Left;
             address.UseSystemPasswordChar = false;
-            address.TextChanged += this.address_TextChanged;
             // 
             // email
             // 
@@ -338,7 +322,6 @@ namespace QLVT
             email.TabIndex = 50;
             email.TextAlignment = HorizontalAlignment.Left;
             email.UseSystemPasswordChar = false;
-            email.TextChanged += this.email_TextChanged;
             // 
             // phone
             // 
@@ -357,7 +340,6 @@ namespace QLVT
             phone.TabIndex = 51;
             phone.TextAlignment = HorizontalAlignment.Left;
             phone.UseSystemPasswordChar = false;
-            phone.TextChanged += this.phone_TextChanged;
             // 
             // Ngay
             // 
@@ -402,12 +384,32 @@ namespace QLVT
             bigLabel1.TabIndex = 54;
             bigLabel1.Text = "Trạng thái  :";
             // 
+            // smallTextBox1
+            // 
+            smallTextBox1.BackColor = Color.Transparent;
+            smallTextBox1.BorderColor = Color.FromArgb(180, 180, 180);
+            smallTextBox1.CustomBGColor = Color.Transparent;
+            smallTextBox1.Font = new Font("Tahoma", 11F);
+            smallTextBox1.ForeColor = Color.Black;
+            smallTextBox1.Location = new Point(496, 195);
+            smallTextBox1.MaxLength = 32767;
+            smallTextBox1.Multiline = false;
+            smallTextBox1.Name = "smallTextBox1";
+            smallTextBox1.ReadOnly = true;
+            smallTextBox1.Size = new Size(344, 28);
+            smallTextBox1.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            smallTextBox1.TabIndex = 55;
+            smallTextBox1.TextAlignment = HorizontalAlignment.Left;
+            smallTextBox1.UseSystemPasswordChar = false;
+            smallTextBox1.TextChanged += smallTextBox1_TextChanged;
+            // 
             // PopupCmer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(236, 240, 241);
             ClientSize = new Size(869, 515);
+            Controls.Add(smallTextBox1);
             Controls.Add(bigLabel1);
             Controls.Add(toggleEdit1);
             Controls.Add(Ngay);
@@ -416,7 +418,6 @@ namespace QLVT
             Controls.Add(address);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(label1);
-            Controls.Add(CbGender);
             Controls.Add(dtpNgaySinh);
             Controls.Add(panel5);
             Controls.Add(BtnEdit);
@@ -458,7 +459,6 @@ namespace QLVT
         private RoundedPictureBox roundedPictureBox1;
         private ReaLTaiizor.Controls.PoisonDateTime dtpNgaySinh;
         private ReaLTaiizor.Controls.AloneTextBox txtNgayTao;
-        private ReaLTaiizor.Controls.AloneComboBox CbGender;
         private Label lblID;
         private Label label1;
         private ReaLTaiizor.Controls.PoisonDateTime dtpNgayTao;
@@ -473,5 +473,6 @@ namespace QLVT
         private ReaLTaiizor.Controls.SmallTextBox Ngay;
         private ReaLTaiizor.Controls.ToggleEdit toggleEdit1;
         private ReaLTaiizor.Controls.BigLabel bigLabel1;
+        private ReaLTaiizor.Controls.SmallTextBox smallTextBox1;
     }
 }

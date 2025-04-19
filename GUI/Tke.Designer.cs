@@ -76,7 +76,7 @@ namespace QLVT
             label17 = new Label();
             lblNumCustomers = new Label();
             lblNumSuppliers = new Label();
-            label6 = new Label();
+            lblNumOrdersPen = new Label();
             label19 = new Label();
             tableLayoutPanel4 = new TableLayoutPanel();
             tableLayoutPanel3 = new TableLayoutPanel();
@@ -623,7 +623,7 @@ namespace QLVT
             tableLayoutPanel6.Controls.Add(label17, 0, 2);
             tableLayoutPanel6.Controls.Add(lblNumCustomers, 0, 1);
             tableLayoutPanel6.Controls.Add(lblNumSuppliers, 0, 3);
-            tableLayoutPanel6.Controls.Add(label6, 0, 5);
+            tableLayoutPanel6.Controls.Add(lblNumOrdersPen, 0, 5);
             tableLayoutPanel6.Location = new Point(30, 40);
             tableLayoutPanel6.Margin = new Padding(3, 15, 3, 3);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -700,17 +700,17 @@ namespace QLVT
             lblNumSuppliers.TabIndex = 5;
             lblNumSuppliers.Text = "100000";
             // 
-            // label6
+            // lblNumOrdersPen
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.ForeColor = Color.WhiteSmoke;
-            label6.Location = new Point(3, 110);
-            label6.Name = "label6";
-            label6.RightToLeft = RightToLeft.No;
-            label6.Size = new Size(90, 25);
-            label6.TabIndex = 7;
-            label6.Text = "100000";
+            lblNumOrdersPen.AutoSize = true;
+            lblNumOrdersPen.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblNumOrdersPen.ForeColor = Color.WhiteSmoke;
+            lblNumOrdersPen.Location = new Point(3, 110);
+            lblNumOrdersPen.Name = "lblNumOrdersPen";
+            lblNumOrdersPen.RightToLeft = RightToLeft.No;
+            lblNumOrdersPen.Size = new Size(90, 25);
+            lblNumOrdersPen.TabIndex = 7;
+            lblNumOrdersPen.Text = "100000";
             // 
             // label19
             // 
@@ -854,6 +854,6 @@ namespace QLVT
         private TableLayoutPanel tableLayoutPanel6;
         private Label lblNumSuppliers;
         private Label label3;
-        private Label label6;
+        private Label lblNumOrdersPen;
     }
 }

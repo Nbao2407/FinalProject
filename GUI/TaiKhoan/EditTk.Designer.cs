@@ -46,6 +46,8 @@
             label7 = new Label();
             pictureBox1 = new PictureBox();
             TbPass = new ReaLTaiizor.Controls.SmallTextBox();
+            label8 = new Label();
+            TgTrangthai = new ReaLTaiizor.Controls.AloneComboBox();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -85,7 +87,7 @@
             CbChucVu.ItemHeight = 20;
             CbChucVu.Location = new Point(14, 224);
             CbChucVu.Name = "CbChucVu";
-            CbChucVu.Size = new Size(344, 26);
+            CbChucVu.Size = new Size(150, 26);
             CbChucVu.TabIndex = 55;
             // 
             // label4
@@ -303,12 +305,37 @@
             TbPass.UseSystemPasswordChar = true;
             TbPass.TextChanged += TbPass_TextChanged;
             // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label8.Location = new Point(201, 195);
+            label8.Name = "label8";
+            label8.Size = new Size(69, 17);
+            label8.TabIndex = 80;
+            label8.Text = "Trạng thái";
+            // 
+            // TgTrangthai
+            // 
+            TgTrangthai.DrawMode = DrawMode.OwnerDrawFixed;
+            TgTrangthai.DropDownStyle = ComboBoxStyle.DropDownList;
+            TgTrangthai.EnabledCalc = true;
+            TgTrangthai.FormattingEnabled = true;
+            TgTrangthai.ItemHeight = 20;
+            TgTrangthai.Location = new Point(201, 226);
+            TgTrangthai.Name = "TgTrangthai";
+            TgTrangthai.Size = new Size(157, 26);
+            TgTrangthai.TabIndex = 81;
+            TgTrangthai.SelectedIndexChanged += TgTrangthai_SelectedIndexChanged;
+            // 
             // EditTk
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(843, 403);
+            Controls.Add(TgTrangthai);
+            Controls.Add(label8);
             Controls.Add(pictureBox1);
             Controls.Add(label7);
             Controls.Add(label6);
@@ -356,5 +383,7 @@
         private Label label7;
         private PictureBox pictureBox1;
         private ReaLTaiizor.Controls.SmallTextBox TbPass;
+        private Label label8;
+        private ReaLTaiizor.Controls.AloneComboBox TgTrangthai;
     }
 }

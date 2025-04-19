@@ -287,9 +287,7 @@ namespace QLVT
                 {
                     busHoaDon.AddChiTietHoaDon(_maHoaDon.Value, chiTiet.MaVatLieu, chiTiet.SoLuong);
                 }
-                busHoaDon.UpdateTHoaDon(_maHoaDon.Value, "Đã thanh toán");
-
-                MessageBox.Show("Thanh toán thành công!");
+                MessageBox.Show("Sửa đơn thành công!");
                 Form1 frm1 = Application.OpenForms.OfType<Form1>().FirstOrDefault();
                 if (frm1 != null)
                 {
@@ -320,7 +318,6 @@ namespace QLVT
                 MessageBox.Show("Lỗi khi thanh toán: " + ex.Message);
             }
         }
-
         private int CreateNewHoaDon()
         {
             try

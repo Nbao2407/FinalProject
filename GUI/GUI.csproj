@@ -39,6 +39,9 @@
     <Compile Update="Order\EditNhap.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Order\Lydo.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -61,9 +64,7 @@
     <Compile Update="Xuathang\FrmXuat.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Xuathang\AddXuat.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Xuathang\AddXuat.cs" />
     <Compile Update="Xuathang\PopupXuat.cs">
       <SubType>Form</SubType>
     </Compile>

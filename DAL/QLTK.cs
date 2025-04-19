@@ -184,7 +184,7 @@ namespace DAL
                 cmd.ExecuteNonQuery();
             }
         }
-        public bool SuaTaiKhoan(DTO_TK tk, string matKhauMoi, int nguoiCapNhat)
+        public bool SuaTaiKhoan(DTO_TK tk, string? matKhauMoi, int nguoiCapNhat)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -299,6 +299,78 @@ namespace DAL
                 da.Fill(dt);
                 return dt;
             }
+        }
+        public DataTable LayDSNgNhapNv()
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("SELECT MaTK, TenDangNhap FROM QLTK WHERE TrangThai = N'Hoạt động' and ChucVu= N'Nhân viên'", conn);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+        public List<DTO_TK> LayDSNgNhapList()
+        {
+            List<DTO_TK> danhSach = new List<DTO_TK>();
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                string query = "SELECT MaTK, TenDangNhap,ChucVu, TrangThai FROM dbo.QLTK WHERE TrangThai = N'Hoạt động' AND ChucVu IN (N'Admin', N'Quản lý', N'Nhân viên')"; 
+                using (SqlCommand command = new SqlCommand(query, conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                danhSach.Add(new DTO_TK {
+                                    maTK = Convert.ToInt32(reader["MaTK"]),
+                                    tenDangNhap = reader["TenDangNhap"].ToString(),
+                                    quyen = reader["ChucVu"].ToString(),
+                                    trangThai = reader["TrangThai"].ToString()
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex) { Console.WriteLine($"[DAL_TK] Lỗi LayDSNgNhap: {ex.Message}"); throw; }
+                }
+            }
+            return danhSach;
+        }
+
+        public List<DTO_TK> LayDSNgNhapNvlist()
+        {
+             List<DTO_TK> danhSach = new List<DTO_TK>();
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                string query = "SELECT MaTK, TenDangNhap,ChucVu, TrangThai FROM dbo.QLTK WHERE TrangThai = N'Hoạt động' AND ChucVu IN (N'Quản lý', N'Nhân viên')"; 
+                using (SqlCommand command = new SqlCommand(query, conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                danhSach.Add(new DTO_TK
+                                {
+                                    maTK = Convert.ToInt32(reader["MaTK"]),
+                                    tenDangNhap = reader["TenDangNhap"].ToString(),
+                                    quyen = reader["ChucVu"].ToString(),
+                                    trangThai = reader["TrangThai"].ToString()
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex) { Console.WriteLine($"[DAL_TK] Lỗi LayDSNgNhapNv: {ex.Message}"); throw; }
+                }
+            }
+            return danhSach;
         }
     }
 }

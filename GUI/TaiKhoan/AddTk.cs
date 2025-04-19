@@ -67,7 +67,11 @@ namespace QLVT.TaiKhoan
                     MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
+                if (CbChucVu.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Vui lòng chọn chức vụ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 if (!ValidationHelper.IsValidChucVu(CbChucVu.SelectedItem.ToString(), out errorMessage))
                 {
                     MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -108,6 +112,12 @@ namespace QLVT.TaiKhoan
             {
                 CbChucVu.Items.Add("Nhân viên");
             }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            Tbpass.UseSystemPasswordChar = !Tbpass.UseSystemPasswordChar;
+
         }
     }
 }

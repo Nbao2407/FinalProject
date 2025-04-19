@@ -35,7 +35,7 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             lblID = new Label();
             lblName = new ReaLTaiizor.Controls.BigLabel();
-            roundedPictureBox1 = new Helper.RoundedPictureBox();
+            roundedPictureBox1 = new QLVT.Helper.RoundedPictureBox();
             panel5 = new Panel();
             BtnDelete = new ReaLTaiizor.Controls.AloneButton();
             txtEmail = new Label();
@@ -84,7 +84,7 @@
             TbEmail.MaxLength = 32767;
             TbEmail.Multiline = false;
             TbEmail.Name = "TbEmail";
-            TbEmail.ReadOnly = false;
+            TbEmail.ReadOnly = true;
             TbEmail.Size = new Size(386, 28);
             TbEmail.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbEmail.TabIndex = 71;
@@ -102,7 +102,7 @@
             TbSdt.MaxLength = 32767;
             TbSdt.Multiline = false;
             TbSdt.Name = "TbSdt";
-            TbSdt.ReadOnly = false;
+            TbSdt.ReadOnly = true;
             TbSdt.Size = new Size(369, 28);
             TbSdt.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             TbSdt.TabIndex = 74;
@@ -307,7 +307,7 @@
             TbNote.ForeColor = Color.Black;
             TbNote.Location = new Point(6, 30);
             TbNote.Name = "TbNote";
-            TbNote.ReadOnly = false;
+            TbNote.ReadOnly = true;
             TbNote.Size = new Size(800, 24);
             TbNote.TabIndex = 42;
             TbNote.TextBackColor = Color.White;

@@ -156,7 +156,7 @@ namespace QLVT
             BtnThanhToan.PressedColor = Color.FromArgb(165, 37, 37);
             BtnThanhToan.Size = new Size(549, 40);
             BtnThanhToan.TabIndex = 12;
-            BtnThanhToan.Text = "Thanh Toán";
+            BtnThanhToan.Text = "sửa phiếu";
             BtnThanhToan.TextAlignment = StringAlignment.Center;
             BtnThanhToan.Click += BtnThanhToan_Click;
             // 

@@ -24,6 +24,7 @@ namespace QLVT.VatLieu
             LoadDataFromDatabase();
             PopupHelper.RoundCorners(this, 10);
             PopupHelper.changecolor(this);
+            Quyen();
         }
         public void LoadDataFromDatabase()
         {
@@ -77,7 +78,7 @@ namespace QLVT.VatLieu
         {
             using (var edit = new EditMaterial(this, maVatLieu.Value))
             {
-                
+
                 edit.Deactivate += (s, e) => edit.TopMost = true;
                 edit.StartPosition = FormStartPosition.CenterParent;
                 edit.ShowDialog();
@@ -94,6 +95,45 @@ namespace QLVT.VatLieu
         private void txtNgTao_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show("Bạn có chắc chắn muốn xóa vật liệu này không?", "Xóa vật liệu", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                try
+                {
+                    bus.XoaVatLieu(maVatLieu.Value,CurrentUser.MaTK);
+                    MessageBox.Show("Xóa vật liệu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    frmMaterial.LoadData();
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi xóa vật liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+        private void Quyen()
+        {
+            bool isOwner = CurrentUser.TenDangNhap == txtNgTao.Text;
+            bool isStaff = CurrentUser.ChucVu == "Nhân viên";
+            bool isManagerOrAdmin = CurrentUser.ChucVu != "Nhân viên";
+            bool canEdit = false;
+            bool canDelete = false;
+            if (isStaff)
+            {
+                canDelete = false;
+                canEdit = false;
+            }
+            else 
+            {
+                canDelete = true;
+                canEdit = true;
+            }
+            BtnEdit.Enabled = BtnEdit.Visible = canEdit;
+            BtnDelete.Visible = canDelete;
+            BtnDelete.Enabled = canDelete;
         }
     }
 }

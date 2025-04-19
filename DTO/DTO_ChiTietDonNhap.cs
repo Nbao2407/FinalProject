@@ -15,7 +15,8 @@ namespace DTO
         public string DonViTinh { get; set; }      
         public int SoLuong { get; set; }
         public decimal GiaNhap { get; set; }      
-
+        public int MaKho {  get; set; }
+        public string TenKho {  get ; set;}
         public decimal ThanhTien => SoLuong * GiaNhap; 
 
         public DTO_ChiTietDonNhap() { }

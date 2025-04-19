@@ -2349,3 +2349,1199 @@ BEGIN
 END;
 GO
 EXEC sp_LayDonXuatTheoID @MaDonXuat = 1;
+Proposed Solution (Skeleton):
+
+sql
+
+Sao chép
+ALTER PROCEDURE sp_DuyetHoaDon
+    @MaHoaDon INT,
+    @NguoiDuyet INT, 
+    @GhiChu NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(4000);
+    DECLARE @CurrentTrangThai NVARCHAR(50);
+    DECLARE @ChucVu NVARCHAR(50);
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Check if invoice exists
+        SELECT @CurrentTrangThai = TrangThai
+        FROM QLHoaDon
+        WHERE MaHoaDon = @MaHoaDon;
+
+        IF @CurrentTrangThai IS NULL
+            THROW 50001, N'Hóa đơn không tồn tại!', 1;
+
+        -- Check invoice status
+        IF @CurrentTrangThai != N'Chờ thanh toán'
+            THROW 50002, N'Chỉ có thể duyệt hóa đơn ở trạng thái "Chờ thanh toán"!', 1;
+
+        -- Check user permission
+        SELECT @ChucVu = ChucVu
+        FROM QLTK
+        WHERE MaTK = @NguoiDuyet AND TrangThai = N'Hoạt động';
+
+        IF @ChucVu NOT IN (N'Admin', N'Quản lý')
+            THROW 50003, N'Bạn không có quyền duyệt hóa đơn!', 1;
+
+        -- Update invoice status
+        UPDATE QLHoaDon
+        SET TrangThai = N'Đã thanh toán',
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet,
+            GhiChu = ISNULL(GhiChu + N'; ', N'') + ISNULL(@GhiChu, N'Đã duyệt')
+        WHERE MaHoaDon = @MaHoaDon;
+
+        -- Log action
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiDuyet, N'QLHoaDon', @MaHoaDon, N'Duyệt', @CurrentTrangThai, N'Đã thanh toán', @GhiChu);
+
+        COMMIT TRANSACTION;
+        SELECT N'Duyệt hóa đơn thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH;
+END;
+GO
+ALTER PROCEDURE sp_DuyetDonXuat
+    @MaDonXuat INT,
+    @NguoiDuyet INT,
+    @GhiChu NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(4000);
+    DECLARE @CurrentTrangThai NVARCHAR(50);
+    DECLARE @ChucVu NVARCHAR(50);
+    DECLARE @MaHoaDon INT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Check if export order exists
+        SELECT @CurrentTrangThai = TrangThai, @MaHoaDon = MaHoaDon
+        FROM QLDonXuat
+        WHERE MaDonXuat = @MaDonXuat;
+
+        IF @CurrentTrangThai IS NULL
+            THROW 50001, N'Đơn xuất không tồn tại!', 1;
+
+        -- Check status
+        IF @CurrentTrangThai NOT IN (N'Chờ duyệt')
+            THROW 50002, N'Không thể duyệt đơn xuất ở trạng thái này', 1;
+
+        -- Check user permission
+        SELECT @ChucVu = ChucVu
+        FROM QLTK
+        WHERE MaTK = @NguoiDuyet AND TrangThai = N'Hoạt động';
+
+        IF @ChucVu NOT IN (N'Admin', N'Quản lý')
+            THROW 50003, N'Bạn không có quyền duyệt đơn xuất!', 1;
+
+        IF @MaHoaDon IS NOT NULL
+            AND NOT EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon AND TrangThai = N'Đã thanh toán')
+            THROW 50004, N'Hóa đơn liên kết chưa được thanh toán!', 1;
+
+        UPDATE QLDonXuat
+        SET TrangThai = N'Hoàn thành',
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet,
+            GhiChu = ISNULL(GhiChu + N'; ', N'') + ISNULL(@GhiChu, N'Đã duyệt')
+        WHERE MaDonXuat = @MaDonXuat;
+
+        -- Log action
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiDuyet, N'QLDonXuat', @MaDonXuat, N'Duyệt', @CurrentTrangThai, N'Hoàn thành', @GhiChu);
+
+        COMMIT TRANSACTION;
+        SELECT N'Duyệt đơn xuất thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH;
+END;
+GO
+Create PROCEDURE [dbo].[sp_DuyetDonXuat]
+    @MaDonXuat INT,
+    @NguoiDuyet INT,
+    @GhiChu NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(4000);
+    DECLARE @CurrentTrangThai NVARCHAR(50);
+    DECLARE @MaHoaDon INT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Check if export order exists
+        SELECT @CurrentTrangThai = TrangThai, @MaHoaDon = MaHoaDon
+        FROM QLDonXuat
+        WHERE MaDonXuat = @MaDonXuat;
+
+        IF @CurrentTrangThai IS NULL
+            THROW 50001, N'Đơn xuất không tồn tại!', 1;
+
+        -- Check status
+        IF @CurrentTrangThai != N'Chờ duyệt'
+            THROW 50002, N'Chỉ có thể duyệt đơn xuất ở trạng thái "Chờ duyệt"!', 1;
+
+        -- Check user permission
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @NguoiDuyet AND TrangThai = N'Hoạt động' AND ChucVu IN (N'Admin', N'Quản lý'))
+            THROW 50003, N'Bạn không có quyền duyệt đơn xuất!', 1;
+
+        -- Check linked invoice (if applicable)
+        IF @MaHoaDon IS NOT NULL
+            AND NOT EXISTS (SELECT 1 FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon AND TrangThai = N'Đã thanh toán')
+            THROW 50004, N'Hóa đơn liên kết chưa được thanh toán!', 1;
+
+        -- Check inventory availability
+        IF EXISTS (
+            SELECT 1
+            FROM ChiTietDonXuat ctdx
+            INNER JOIN QLVatLieu v ON ctdx.MaVatLieu = v.MaVatLieu AND ctdx.MaKhoNguon = v.MaKho
+            WHERE ctdx.MaDonXuat = @MaDonXuat AND v.SoLuong < ctdx.SoLuong
+        )
+            THROW 50005, N'Không đủ số lượng vật liệu trong kho để duyệt đơn xuất!', 1;
+
+        -- Update inventory
+        UPDATE QLVatLieu
+        SET SoLuong = v.SoLuong - ctdx.SoLuong,
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet
+        FROM QLVatLieu v
+        INNER JOIN ChiTietDonXuat ctdx ON v.MaVatLieu = ctdx.MaVatLieu AND v.MaKho = ctdx.MaKhoNguon
+        WHERE ctdx.MaDonXuat = @MaDonXuat;
+
+        -- Update export order status
+        UPDATE QLDonXuat
+        SET TrangThai = N'Hoàn thành',
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet,
+            GhiChu = ISNULL(GhiChu + N'; ', N'') + ISNULL(@GhiChu, N'Đã duyệt')
+        WHERE MaDonXuat = @MaDonXuat;
+
+        -- Log action
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiDuyet, N'QLDonXuat', @MaDonXuat, N'Duyệt', @CurrentTrangThai, N'Hoàn thành', ISNULL(@GhiChu, N'Đã duyệt'));
+
+        COMMIT TRANSACTION;
+        SELECT N'Duyệt đơn xuất thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        SET @ErrorMsg = ERROR_MESSAGE();
+        THROW 50000, @ErrorMsg, 1;
+    END CATCH;
+END;
+GO
+Create PROCEDURE [dbo].[sp_DuyetDonNhap]
+    @MaDonNhap INT,
+    @NguoiDuyet INT,
+    @GhiChu NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(4000);
+    DECLARE @CurrentTrangThai NVARCHAR(50);
+    DECLARE @MaNCC INT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Check if import order exists
+        SELECT @CurrentTrangThai = TrangThai, @MaNCC = MaNCC
+        FROM QLDonNhap
+        WHERE MaDonNhap = @MaDonNhap;
+
+        IF @CurrentTrangThai IS NULL
+            THROW 50001, N'Đơn nhập không tồn tại!', 1;
+
+        -- Check status
+        IF @CurrentTrangThai != N'Chờ duyệt'
+            THROW 50002, N'Chỉ có thể duyệt đơn nhập ở trạng thái "Chờ duyệt"!', 1;
+
+        -- Check user permission
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @NguoiDuyet AND TrangThai = N'Hoạt động' AND ChucVu IN (N'Admin', N'Quản lý'))
+            THROW 50003, N'Bạn không có quyền duyệt đơn nhập!', 1;
+
+        -- Check supplier status
+        IF NOT EXISTS (SELECT 1 FROM NCC WHERE MaNCC = @MaNCC AND TrangThai != N'Bị khoá')
+            THROW 50004, N'Nhà cung cấp không hoạt động!', 1;
+
+        -- Check material status
+        IF EXISTS (
+            SELECT 1
+            FROM ChiTietDonNhap ctdn
+            LEFT JOIN QLVatLieu v ON ctdn.MaVatLieu = v.MaVatLieu
+            WHERE ctdn.MaDonNhap = @MaDonNhap AND (v.MaVatLieu IS NULL OR v.TrangThai != N'Hoạt động')
+        )
+            THROW 50005, N'Có vật liệu không tồn tại hoặc không hoạt động!', 1;
+
+        -- Update inventory
+        UPDATE QLVatLieu
+        SET SoLuong = ISNULL(v.SoLuong, 0) + ctdn.SoLuong,
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet
+        FROM QLVatLieu v
+        INNER JOIN ChiTietDonNhap ctdn ON v.MaVatLieu = ctdn.MaVatLieu
+        WHERE ctdn.MaDonNhap = @MaDonNhap;
+
+        -- Update import order status
+        UPDATE QLDonNhap
+        SET TrangThai = N'Hoàn thành',
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet,
+            GhiChu = ISNULL(GhiChu + N'; ', N'') + ISNULL(@GhiChu, N'Đã duyệt')
+        WHERE MaDonNhap = @MaDonNhap;
+
+        -- Log action
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiDuyet, N'QLDonNhap', @MaDonNhap, N'Duyệt', @CurrentTrangThai, N'Hoàn thành', ISNULL(@GhiChu, N'Đã duyệt'));
+
+        COMMIT TRANSACTION;
+        SELECT N'Duyệt đơn nhập thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        SET @ErrorMsg = ERROR_MESSAGE();
+        THROW 50000, @ErrorMsg, 1;
+    END CATCH;
+END;
+GO
+Create PROCEDURE [dbo].[sp_XoaHoaDon]
+    @MaHoaDon INT,
+    @NguoiXoa INT,
+    @LyDoXoa NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(4000);
+    DECLARE @CurrentTrangThai NVARCHAR(50);
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Check if invoice exists
+        SELECT @CurrentTrangThai = TrangThai
+        FROM QLHoaDon
+        WHERE MaHoaDon = @MaHoaDon;
+
+        IF @CurrentTrangThai IS NULL
+            THROW 50001, N'Hóa đơn không tồn tại!', 1;
+
+        -- Check status
+        IF @CurrentTrangThai != N'Chờ duyệt'
+            THROW 50002, N'Chỉ có thể xóa hóa đơn ở trạng thái "Chờ duyệt"!', 1;
+
+        -- Check user permission
+        IF NOT EXISTS (SELECT 1 FROM QLTK WHERE MaTK = @NguoiXoa AND TrangThai = N'Hoạt động' AND ChucVu IN (N'Admin', N'Quản lý'))
+            THROW 50003, N'Bạn không có quyền xóa hóa đơn!', 1;
+
+   
+        UPDATE QLHoaDon
+        SET TrangThai = N'Đã hủy',
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiXoa
+        WHERE MaHoaDon = @MaHoaDon;
+
+        -- Log action
+        INSERT INTO AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiXoa, N'QLHoaDon', @MaHoaDon, N'Xóa', @CurrentTrangThai, N'Đã hủy', ISNULL(@LyDoXoa, N'Xóa hóa đơn'));
+
+        COMMIT TRANSACTION;
+        SELECT N'Xóa hóa đơn thành công!' AS Message;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        SET @ErrorMsg = ERROR_MESSAGE();
+        THROW 50000, @ErrorMsg, 1;
+    END CATCH;
+END;
+GO
+INSERT INTO dbo.TonKhoVatLieu (MaVatLieu, MaKho, SoLuongTon)
+SELECT
+    vl.MaVatLieu,
+    vl.MaKho, -- Lấy kho mặc định từ QLVatLieu
+    ISNULL(vl.SoLuong, 0) -- Lấy số lượng từ QLVatLieu (nếu null thì coi là 0)
+FROM
+    dbo.QLVatLieu vl
+WHERE
+    -- Chỉ insert nếu cặp (MaVatLieu, MaKho) chưa tồn tại trong TonKhoVatLieu
+    NOT EXISTS (
+        SELECT 1
+        FROM dbo.TonKhoVatLieu tkv
+        WHERE tkv.MaVatLieu = vl.MaVatLieu AND tkv.MaKho = vl.MaKho
+    )
+    AND vl.MaKho IS NOT NULL -- Đảm bảo vật liệu có gán kho mặc định
+    AND vl.SoLuong IS NOT NULL AND vl.SoLuong > 0; -- Chỉ insert nếu có số lượng > 0
+	ALTER PROCEDURE [dbo].[sp_DuyetDonXuat]
+    @MaDonXuat INT,
+    @NguoiDuyet INT,
+    @GhiChu NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ErrorMsg NVARCHAR(4000);
+    DECLARE @CurrentTrangThai NVARCHAR(50);
+    DECLARE @LoaiXuat NVARCHAR(50); -- Thêm biến để lưu loại xuất
+    DECLARE @MaHoaDon INT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- === 1. KIỂM TRA ĐƠN XUẤT VÀ QUYỀN ===
+
+        -- Lấy thông tin trạng thái, loại xuất, mã hóa đơn (nếu có)
+        SELECT @CurrentTrangThai = TrangThai, @LoaiXuat = LoaiXuat, @MaHoaDon = MaHoaDon
+        FROM dbo.QLDonXuat -- Sử dụng dbo. schema
+        WHERE MaDonXuat = @MaDonXuat;
+
+        IF @CurrentTrangThai IS NULL
+            THROW 50001, N'Đơn xuất không tồn tại!', 1;
+
+        -- Chỉ duyệt đơn ở trạng thái 'Chờ duyệt' (hoặc trạng thái chờ khác nếu có)
+        IF @CurrentTrangThai != N'Chờ duyệt' -- Đảm bảo trạng thái chờ là 'Chờ duyệt'
+            THROW 50002, N'Chỉ có thể duyệt đơn xuất ở trạng thái "Chờ duyệt"!', 1;
+
+        -- Kiểm tra quyền người duyệt
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @NguoiDuyet AND TrangThai = N'Hoạt động' AND ChucVu IN (N'Admin', N'Quản lý'))
+            THROW 50003, N'Bạn không có quyền duyệt đơn xuất!', 1;
+
+        -- Kiểm tra hóa đơn liên kết (nếu là 'Xuất hàng' và có mã hóa đơn)
+        IF @LoaiXuat = N'Xuất hàng' AND @MaHoaDon IS NOT NULL
+            AND NOT EXISTS (SELECT 1 FROM dbo.QLHoaDon WHERE MaHoaDon = @MaHoaDon AND TrangThai = N'Đã thanh toán') -- Hoặc trạng thái khác tùy quy trình
+            THROW 50004, N'Hóa đơn liên kết chưa được thanh toán (hoặc không hợp lệ)!', 1;
+
+        -- === 2. KIỂM TRA TỒN KHO TRONG TonKhoVatLieu ===
+
+        -- Kiểm tra xem có chi tiết nào không đủ số lượng tồn tại KHO NGUỒN không
+        IF EXISTS (
+            SELECT 1
+            FROM dbo.ChiTietDonXuat ctdx
+            LEFT JOIN dbo.TonKhoVatLieu tkv ON ctdx.MaVatLieu = tkv.MaVatLieu AND ctdx.MaKhoNguon = tkv.MaKho
+            WHERE ctdx.MaDonXuat = @MaDonXuat
+              AND ISNULL(tkv.SoLuongTon, 0) < ctdx.SoLuong -- Nếu tồn kho < số lượng cần xuất
+        )
+        BEGIN
+            -- Lấy thông tin chi tiết để báo lỗi rõ hơn (tùy chọn)
+            DECLARE @ErrorDetail NVARCHAR(500);
+            SELECT TOP 1 @ErrorDetail = N'Vật liệu ID ' + CAST(ctdx.MaVatLieu AS NVARCHAR(10))
+                                     + N' tại Kho ID ' + CAST(ctdx.MaKhoNguon AS NVARCHAR(10))
+                                     + N' không đủ số lượng (Cần: ' + CAST(ctdx.SoLuong AS NVARCHAR(20))
+                                     + N', Tồn: ' + CAST(ISNULL(tkv.SoLuongTon, 0) AS NVARCHAR(20)) + N')'
+            FROM dbo.ChiTietDonXuat ctdx
+            LEFT JOIN dbo.TonKhoVatLieu tkv ON ctdx.MaVatLieu = tkv.MaVatLieu AND ctdx.MaKhoNguon = tkv.MaKho
+            WHERE ctdx.MaDonXuat = @MaDonXuat AND ISNULL(tkv.SoLuongTon, 0) < ctdx.SoLuong;
+
+            SET @ErrorMsg = N'Không đủ số lượng vật liệu trong kho để duyệt đơn xuất! Chi tiết: ' + ISNULL(@ErrorDetail, N'Không xác định');
+            THROW 50005, @ErrorMsg, 1;
+        END;
+
+        -- === 3. CẬP NHẬT TỒN KHO TRONG TonKhoVatLieu ===
+
+        -- 3.1. Trừ tồn kho tại Kho Nguồn (Áp dụng cho cả Xuất hàng và Chuyển kho)
+        UPDATE tkv
+        SET tkv.SoLuongTon = tkv.SoLuongTon - ctdx.SoLuong
+        -- SELECT tkv.MaVatLieu, tkv.MaKho, tkv.SoLuongTon AS TonCu, ctdx.SoLuong AS SLXuat, tkv.SoLuongTon - ctdx.SoLuong AS TonMoi -- Dùng để debug
+        FROM dbo.TonKhoVatLieu tkv
+        INNER JOIN dbo.ChiTietDonXuat ctdx ON tkv.MaVatLieu = ctdx.MaVatLieu AND tkv.MaKho = ctdx.MaKhoNguon
+        WHERE ctdx.MaDonXuat = @MaDonXuat;
+
+        -- 3.2. Cộng tồn kho tại Kho Đích (Chỉ áp dụng cho Chuyển kho)
+        IF @LoaiXuat = N'Chuyển kho'
+        BEGIN
+            MERGE dbo.TonKhoVatLieu AS Target
+            USING (SELECT MaVatLieu, MaKhoDich, SoLuong FROM dbo.ChiTietDonXuat WHERE MaDonXuat = @MaDonXuat AND MaKhoDich IS NOT NULL) AS Source -- Lấy chi tiết của đơn này
+            ON (Target.MaVatLieu = Source.MaVatLieu AND Target.MaKho = Source.MaKhoDich) -- Join theo vật liệu và kho đích
+            WHEN MATCHED THEN
+                -- Nếu vật liệu đã có ở kho đích -> Cộng thêm số lượng
+                UPDATE SET Target.SoLuongTon = Target.SoLuongTon + Source.SoLuong
+            WHEN NOT MATCHED BY TARGET THEN
+                -- Nếu vật liệu chưa có ở kho đích -> Thêm mới bản ghi tồn kho
+                INSERT (MaVatLieu, MaKho, SoLuongTon)
+                VALUES (Source.MaVatLieu, Source.MaKhoDich, Source.SoLuong);
+        END;
+
+        -- === 4. CẬP NHẬT TRẠNG THÁI ĐƠN XUẤT ===
+        UPDATE dbo.QLDonXuat
+        SET TrangThai = N'Hoàn thành', -- Trạng thái mới sau khi duyệt
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiDuyet,
+            GhiChu = ISNULL(GhiChu + N'; ', N'') + ISNULL(@GhiChu, N'Đã duyệt') -- Nối ghi chú duyệt vào ghi chú cũ
+        WHERE MaDonXuat = @MaDonXuat;
+
+        -- === 5. GHI AUDIT LOG ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GiaTriCu, GiaTriMoi, GhiChu)
+        VALUES (GETDATE(), @NguoiDuyet, N'QLDonXuat', @MaDonXuat, N'Duyệt', @CurrentTrangThai, N'Hoàn thành', ISNULL(@GhiChu, N'Đã duyệt'));
+
+        COMMIT TRANSACTION;
+        SELECT N'Duyệt đơn xuất thành công!' AS Message; -- Thông báo thành công
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION; -- Hoàn tác nếu có lỗi
+
+        -- Ném lại lỗi để lớp gọi xử lý
+        -- SET @ErrorMsg = ERROR_MESSAGE(); -- Lấy thông báo lỗi gốc
+        -- THROW 50000, @ErrorMsg, 1; -- Ném lỗi với mã tùy chỉnh nếu muốn
+        THROW; -- Ném lại lỗi gốc để giữ nguyên thông tin lỗi
+
+    END CATCH;
+END;
+GO
+ALTER PROCEDURE dbo.sp_NhapHang -- Đảm bảo tên schema dbo.
+    @NgayNhap DATE,
+    @MaNCC INT,
+    @MaTK INT,                 -- Mã tài khoản người tạo đơn
+    @MaKhoNhap INT,            -- *** THÊM MỚI: Mã kho nhập hàng vào ***
+    @GhiChu NVARCHAR(255) = NULL,
+    @ChiTietNhap NVARCHAR(MAX), -- JSON chi tiết
+    @NguoiCapNhat INT,         -- Mã tài khoản người cập nhật (có thể trùng MaTK)
+    @NguoiNhap INT             -- Mã tài khoản người nhập hàng (có thể trùng MaTK)
+AS
+BEGIN
+    SET NOCOUNT ON; -- Thêm dòng này để tránh thông báo số dòng ảnh hưởng
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- === VALIDATION ===
+        IF NOT EXISTS (SELECT 1 FROM dbo.NCC WHERE MaNCC = @MaNCC AND TrangThai = N'Hoạt động')
+            THROW 50001, N'Nhà cung cấp không tồn tại hoặc không hoạt động!', 1;
+
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK AND TrangThai = N'Hoạt động')
+            THROW 50002, N'Tài khoản người tạo không tồn tại hoặc bị khóa!', 1;
+
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @NguoiNhap AND TrangThai = N'Hoạt động')
+            THROW 50006, N'Tài khoản người nhập không tồn tại hoặc bị khóa!', 1;
+
+        -- *** THÊM MỚI: Kiểm tra kho nhập có tồn tại không ***
+        IF NOT EXISTS (SELECT 1 FROM dbo.Kho WHERE MaKho = @MaKhoNhap)
+             THROW 50007, N'Kho nhập hàng không tồn tại!', 1;
+
+        -- === INSERT ĐƠN NHẬP ===
+        INSERT INTO dbo.QLDonNhap (NgayNhap, MaNCC, MaTK, TrangThai, GhiChu, NgayCapNhat, NguoiCapNhat, NguoiNhap)
+        VALUES (@NgayNhap, @MaNCC, @MaTK, N'Hoàn thành', @GhiChu, GETDATE(), @NguoiCapNhat, @NguoiNhap);
+
+        DECLARE @MaDonNhap INT = SCOPE_IDENTITY();
+
+        -- === PARSE JSON CHI TIẾT ===
+        DECLARE @TempChiTiet TABLE (
+            MaVatLieu INT,
+            SoLuong DECIMAL(18, 2), -- Nên dùng DECIMAL cho số lượng
+            GiaNhap DECIMAL(18,2)
+        );
+        INSERT INTO @TempChiTiet (MaVatLieu, SoLuong, GiaNhap)
+        SELECT
+            JSON_VALUE(value, '$.MaVatLieu'),
+            TRY_CONVERT(DECIMAL(18, 2), JSON_VALUE(value, '$.SoLuong')), -- Dùng TRY_CONVERT
+            TRY_CONVERT(DECIMAL(18, 2), JSON_VALUE(value, '$.GiaNhap'))  -- Dùng TRY_CONVERT
+        FROM OPENJSON(@ChiTietNhap);
+
+        -- === VALIDATE CHI TIẾT ===
+        IF NOT EXISTS (SELECT 1 FROM @TempChiTiet)
+            THROW 50003, N'Danh sách chi tiết nhập hàng trống!', 1;
+
+        IF EXISTS (
+            SELECT 1
+            FROM @TempChiTiet t
+            LEFT JOIN dbo.QLVatLieu v ON t.MaVatLieu = v.MaVatLieu
+            WHERE v.MaVatLieu IS NULL OR v.TrangThai != N'Hoạt động'
+        )
+            THROW 50004, N'Có vật liệu không tồn tại hoặc không hoạt động!', 1;
+
+        IF EXISTS (SELECT 1 FROM @TempChiTiet WHERE SoLuong IS NULL OR SoLuong <= 0 OR GiaNhap IS NULL OR GiaNhap < 0)
+            THROW 50005, N'Số lượng hoặc giá nhập không hợp lệ!', 1;
+
+        -- === INSERT CHI TIẾT ĐƠN NHẬP ===
+        INSERT INTO dbo.ChiTietDonNhap (MaDonNhap, MaVatLieu, SoLuong, GiaNhap)
+        SELECT @MaDonNhap, MaVatLieu, SoLuong, GiaNhap
+        FROM @TempChiTiet;
+
+        -- === CẬP NHẬT TỒN KHO (Bảng TonKhoVatLieu) ===
+        -- Sử dụng MERGE để vừa INSERT (nếu vật liệu chưa có ở kho này) vừa UPDATE (nếu đã có)
+        MERGE dbo.TonKhoVatLieu AS Target
+        USING @TempChiTiet AS Source
+        ON (Target.MaVatLieu = Source.MaVatLieu AND Target.MaKho = @MaKhoNhap) -- Điều kiện join với kho nhập
+        WHEN MATCHED THEN
+            -- Nếu vật liệu đã có trong kho nhập -> Cộng thêm số lượng
+            UPDATE SET Target.SoLuongTon = Target.SoLuongTon + Source.SoLuong
+        WHEN NOT MATCHED BY TARGET THEN
+            -- Nếu vật liệu chưa có trong kho nhập -> Thêm mới bản ghi tồn kho
+            INSERT (MaVatLieu, MaKho, SoLuongTon)
+            VALUES (Source.MaVatLieu, @MaKhoNhap, Source.SoLuong);
+
+        -- === CẬP NHẬT GIÁ NHẬP MỚI NHẤT VÀO QLVatLieu (Tùy chọn) ===
+        -- Vẫn có thể cập nhật giá nhập mới nhất vào bảng QLVatLieu nếu muốn
+        UPDATE dbo.QLVatLieu
+        SET DonGiaNhap = t.GiaNhap, -- Cập nhật giá nhập mới nhất
+            NgayCapNhat = GETDATE(),
+            NguoiCapNhat = @NguoiCapNhat
+        FROM dbo.QLVatLieu v
+        INNER JOIN @TempChiTiet t ON v.MaVatLieu = t.MaVatLieu;
+        -- *** LƯU Ý: Đã bỏ việc cập nhật QLVatLieu.SoLuong ở đây ***
+
+        -- === GHI AUDIT LOG ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu) -- Bỏ GiaTriCu/Moi nếu không cần
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLDonNhap', @MaDonNhap, N'Thêm', N'Thêm đơn nhập hàng mới vào kho ' + CAST(@MaKhoNhap AS NVARCHAR(10)) + N' bởi người nhập: ' + CAST(@NguoiNhap AS NVARCHAR(10)));
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Nhập hàng thành công!' AS Message, @MaDonNhap AS MaDonNhap;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN; -- Thêm return để chắc chắn dừng
+    END CATCH
+END;
+GO
+Alter PROCEDURE [dbo].[sp_DuyetDonNhap]
+    @MaDonNhap INT,         -- Mã đơn nhập cần duyệt
+    @MaTK_NguoiDuyet INT    -- Mã tài khoản người thực hiện duyệt
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @ApprovedStatus NVARCHAR(50) = N'Hoàn thành'; -- Hoặc N'Đã duyệt' tùy bạn chọn
+
+    BEGIN TRY
+        -- === VALIDATION ===
+        -- Kiểm tra người duyệt có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK_NguoiDuyet AND TrangThai = N'Hoạt động')
+            THROW 50101, N'Tài khoản người duyệt không tồn tại hoặc bị khóa!', 1;
+
+        -- Lấy trạng thái hiện tại của đơn nhập và kiểm tra đơn có tồn tại không
+        SELECT @TrangThaiHienTai = TrangThai
+        FROM dbo.QLDonNhap
+        WHERE MaDonNhap = @MaDonNhap;
+
+        IF @TrangThaiHienTai IS NULL
+            THROW 50102, N'Đơn nhập hàng không tồn tại!', 1;
+
+        -- Kiểm tra xem đơn có đang ở trạng thái chờ duyệt không
+        IF @TrangThaiHienTai != N'Chờ duyệt' -- *** Đảm bảo trạng thái chờ duyệt là 'Chờ duyệt' ***
+            THROW 50103, N'Chỉ có thể duyệt đơn hàng đang ở trạng thái "Chờ duyệt"!', 1;
+
+        BEGIN TRANSACTION;
+
+        -- === CẬP NHẬT TRẠNG THÁI ĐƠN NHẬP ===
+        UPDATE dbo.QLDonNhap
+        SET TrangThai = @ApprovedStatus,         -- Cập nhật trạng thái mới
+            NguoiCapNhat = @MaTK_NguoiDuyet,   -- Ghi nhận người duyệt là người cập nhật cuối
+            NgayCapNhat = GETDATE()             -- Ghi nhận thời gian duyệt
+        WHERE MaDonNhap = @MaDonNhap;
+
+        -- === LẤY CHI TIẾT ĐƠN ĐỂ CẬP NHẬT TỒN KHO ===
+        -- *** Yêu cầu: Bảng ChiTietDonNhap phải có cột MaKho ***
+        DECLARE @TempChiTietDuyet TABLE (
+            MaVatLieu INT,
+            MaKho INT,
+            SoLuong DECIMAL(18, 2)
+        );
+
+        INSERT INTO @TempChiTietDuyet (MaVatLieu, MaKho, SoLuong)
+        SELECT MaVatLieu, MaKho, SoLuong -- Lấy MaKho từ ChiTietDonNhap
+        FROM dbo.ChiTietDonNhap
+        WHERE MaDonNhap = @MaDonNhap;
+
+        -- Kiểm tra lại nếu không lấy được chi tiết (dù hiếm khi xảy ra nếu đơn đã tồn tại)
+        IF NOT EXISTS (SELECT 1 FROM @TempChiTietDuyet)
+             THROW 50104, N'Không tìm thấy chi tiết cho đơn nhập hàng này!', 1;
+         -- Kiểm tra MaKho có null không trong chi tiết (nếu cột MaKho trong ChiTietDonNhap cho phép NULL)
+         IF EXISTS (SELECT 1 FROM @TempChiTietDuyet WHERE MaKho IS NULL)
+             THROW 50105, N'Có chi tiết đơn nhập bị thiếu thông tin Kho!', 1;
+
+
+        -- === CẬP NHẬT TỒN KHO (Bảng TonKhoVatLieu) ===
+        MERGE dbo.TonKhoVatLieu AS Target
+        USING @TempChiTietDuyet AS Source
+        ON (Target.MaVatLieu = Source.MaVatLieu AND Target.MaKho = Source.MaKho) -- Join bằng MaKho từ chi tiết
+        WHEN MATCHED THEN
+            -- Nếu vật liệu đã có trong kho cụ thể -> Cộng thêm số lượng
+            UPDATE SET Target.SoLuongTon = Target.SoLuongTon + Source.SoLuong
+        WHEN NOT MATCHED BY TARGET THEN
+            -- Nếu vật liệu chưa có trong kho cụ thể -> Thêm mới bản ghi tồn kho
+            INSERT (MaVatLieu, MaKho, SoLuongTon)
+            VALUES (Source.MaVatLieu, Source.MaKho, Source.SoLuong);
+
+        -- === GHI AUDIT LOG CHO VIỆC DUYỆT ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @MaTK_NguoiDuyet, N'QLDonNhap', @MaDonNhap, N'Duyệt', N'Đơn nhập hàng (ID: ' + CAST(@MaDonNhap AS NVARCHAR(10)) + N') đã được duyệt.');
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Duyệt đơn nhập hàng thành công!' AS Message, @MaDonNhap AS MaDonNhap;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        -- Ghi lại lỗi chi tiết hơn nếu cần
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        -- Có thể ghi log lỗi vào bảng khác ở đây
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;
+SQL
+
+UPDATE dbo.ChiTietDonNhap
+SET MaKho = 1 -- Thay 1 bằng MaKho đúng
+WHERE MaDonNhap = 57 AND MaKho IS NULL;
+CREATE PROCEDURE [dbo].[sp_DuyetNhaCungCap]
+    @MaNCC INT,             -- Mã Nhà Cung Cấp cần duyệt
+    @MaTK_NguoiDuyet INT    -- Mã tài khoản người thực hiện duyệt
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @ActiveStatus NVARCHAR(50) = N'Hoạt động'; -- Trạng thái mới sau khi duyệt
+    DECLARE @PendingStatus NVARCHAR(50) = N'Chờ duyệt'; -- Trạng thái cần duyệt
+
+    BEGIN TRY
+        -- === VALIDATION ===
+        -- Kiểm tra người duyệt có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK_NguoiDuyet AND TrangThai = N'Hoạt động')
+            THROW 50201, N'Tài khoản người duyệt không tồn tại hoặc bị khóa!', 1;
+
+        -- Lấy trạng thái hiện tại của NCC và kiểm tra NCC có tồn tại không
+        SELECT @TrangThaiHienTai = TrangThai
+        FROM dbo.NCC -- Giả sử bảng NCC của bạn tên là NCC
+        WHERE MaNCC = @MaNCC;
+
+        IF @TrangThaiHienTai IS NULL
+            THROW 50202, N'Nhà cung cấp không tồn tại!', 1;
+
+        -- Kiểm tra xem NCC có đang ở trạng thái chờ duyệt không
+        IF @TrangThaiHienTai != @PendingStatus
+            THROW 50203, N'Chỉ có thể duyệt Nhà Cung Cấp đang ở trạng thái "Chờ duyệt"!', 1;
+
+        -- TODO: Thêm kiểm tra quyền hạn của người duyệt nếu cần
+        -- Ví dụ: Kiểm tra xem @MaTK_NguoiDuyet có thuộc nhóm Admin/Quản lý không
+
+        BEGIN TRANSACTION;
+
+        -- === CẬP NHẬT TRẠNG THÁI NHÀ CUNG CẤP ===
+        -- Giả sử bảng NCC có cột NguoiCapNhat và NgayCapNhat
+        UPDATE dbo.NCC
+        SET
+            TrangThai = @ActiveStatus,       
+            NguoiCapNhat = @MaTK_NguoiDuyet,  
+            NgayCapNhat = GETDATE()           
+        WHERE MaNCC = @MaNCC;
+
+        -- Kiểm tra xem việc UPDATE có thành công không (tùy chọn)
+        IF @@ROWCOUNT = 0
+        BEGIN
+             -- Trường hợp hiếm gặp: NCC tồn tại nhưng không update được
+             THROW 50204, N'Không thể cập nhật trạng thái Nhà Cung Cấp.', 1;
+        END
+
+        -- === GHI AUDIT LOG CHO VIỆC DUYỆT NCC ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @MaTK_NguoiDuyet, N'NCC', @MaNCC, N'Duyệt', N'Nhà cung cấp (ID: ' + CAST(@MaNCC AS NVARCHAR(10)) + N') đã được duyệt.');
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Duyệt Nhà Cung Cấp thành công!' AS Message, @MaNCC AS MaNCC_DaDuyet;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        -- Ghi lại lỗi chi tiết hơn nếu cần
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        -- Có thể ghi log lỗi vào bảng khác ở đây
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;
+CREATE PROCEDURE [dbo].[sp_TuChoiNhaCungCap]
+    @MaNCC INT,             -- Mã Nhà Cung Cấp cần từ chối
+    @MaTK_NguoiTuChoi INT  -- Mã tài khoản người thực hiện từ chối
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @RejectedStatus NVARCHAR(50) = N'Từ chối'; -- Trạng thái mới sau khi từ chối
+    DECLARE @PendingStatus NVARCHAR(50) = N'Chờ duyệt'; -- Trạng thái cần xử lý
+
+    BEGIN TRY
+        -- === VALIDATION ===
+        -- Kiểm tra người từ chối có tồn tại và hoạt động không
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK_NguoiTuChoi AND TrangThai = N'Hoạt động')
+            THROW 50301, N'Tài khoản người từ chối không tồn tại hoặc bị khóa!', 1;
+
+        -- Lấy trạng thái hiện tại của NCC và kiểm tra NCC có tồn tại không
+        SELECT @TrangThaiHienTai = TrangThai
+        FROM dbo.NCC -- Giả sử bảng NCC của bạn tên là NCC
+        WHERE MaNCC = @MaNCC;
+
+        IF @TrangThaiHienTai IS NULL
+            THROW 50302, N'Nhà cung cấp không tồn tại!', 1;
+
+        -- Kiểm tra xem NCC có đang ở trạng thái chờ duyệt không
+        IF @TrangThaiHienTai != @PendingStatus
+            THROW 50303, N'Chỉ có thể từ chối Nhà Cung Cấp đang ở trạng thái "Chờ duyệt"!', 1;
+
+        -- TODO: Thêm kiểm tra quyền hạn của người từ chối nếu cần
+
+        BEGIN TRANSACTION;
+
+        -- === CẬP NHẬT TRẠNG THÁI NHÀ CUNG CẤP ===
+        -- Giả sử bảng NCC có cột NguoiCapNhat, NgayCapNhat và GhiChu (để lưu lý do)
+        UPDATE dbo.NCC
+        SET
+            TrangThai = @RejectedStatus,        -- Cập nhật trạng thái mới
+            NguoiCapNhat = @MaTK_NguoiTuChoi,  -- Ghi nhận người từ chối
+            NgayCapNhat = GETDATE()       -- Ghi nhận thời gian
+        WHERE MaNCC = @MaNCC;
+
+        IF @@ROWCOUNT = 0
+        BEGIN
+             THROW 50304, N'Không thể cập nhật trạng thái Nhà Cung Cấp.', 1;
+        END
+
+        -- === GHI AUDIT LOG CHO VIỆC TỪ CHỐI NCC ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @MaTK_NguoiTuChoi, N'NCC', @MaNCC, N'Từ chối', N'Nhà cung cấp (ID: ' + CAST(@MaNCC AS NVARCHAR(10)) + N') đã bị từ chối.' );
+        COMMIT TRANSACTION;
+
+        SELECT N'Từ chối Nhà Cung Cấp thành công!' AS Message, @MaNCC AS MaNCC_DaTuChoi;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;
+Go
+CREATE PROCEDURE [dbo].[sp_ToggleKhoaNhaCungCap]
+    @MaNCC INT,                 -- Mã Nhà Cung Cấp cần thay đổi trạng thái
+    @MaTK_NguoiThucHien INT     -- Mã tài khoản người thực hiện hành động
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @TrangThaiMoi NVARCHAR(50);
+    DECLARE @HanhDong NVARCHAR(50); -- Để ghi log: 'Khóa' hoặc 'Mở khóa'
+
+    -- Định nghĩa các trạng thái
+    DECLARE @ActiveStatus NVARCHAR(50) = N'Hoạt động';
+    DECLARE @LockedStatus NVARCHAR(50) = N'Bị khóa';
+
+    BEGIN TRY
+        -- === VALIDATION ===
+        -- Kiểm tra người thực hiện
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK_NguoiThucHien AND TrangThai = N'Hoạt động')
+            THROW 50501, N'Tài khoản người thực hiện không tồn tại hoặc bị khóa!', 1;
+
+        -- Lấy trạng thái hiện tại và kiểm tra NCC tồn tại
+        SELECT @TrangThaiHienTai = TrangThai
+        FROM dbo.NCC -- Giả sử bảng NCC của bạn tên là NCC
+        WHERE MaNCC = @MaNCC;
+
+        IF @TrangThaiHienTai IS NULL
+            THROW 50502, N'Nhà cung cấp không tồn tại!', 1;
+
+        -- Kiểm tra xem trạng thái hiện tại có phải là 'Hoạt động' hoặc 'Khóa' không
+        IF @TrangThaiHienTai NOT IN (@ActiveStatus, @LockedStatus)
+            THROW 50503, N'Chỉ có thể Khóa/Mở khóa Nhà Cung Cấp đang ở trạng thái "Hoạt động" hoặc "Khóa"!', 1;
+
+        -- TODO: Thêm kiểm tra quyền hạn nếu cần
+
+        -- === XÁC ĐỊNH HÀNH ĐỘNG VÀ KIỂM TRA NGHIỆP VỤ (NẾU LÀ KHÓA) ===
+        IF @TrangThaiHienTai = @ActiveStatus
+        BEGIN
+            -- Hành động là KHÓA
+            SET @TrangThaiMoi = @LockedStatus;
+            SET @HanhDong = N'Bị khóa';
+
+            -- *** KIỂM TRA NGHIỆP VỤ: Chỉ kiểm tra đơn hàng mở KHI KHÓA ***
+            DECLARE @CoDonHangMo BIT = 0;
+            -- Giả sử bạn có SP hoặc Function kiểm tra, hoặc thực hiện query trực tiếp
+            -- Ví dụ query trực tiếp:
+            IF EXISTS (
+                SELECT TOP 1 1
+                FROM dbo.QLDonNhap
+                WHERE MaNCC = @MaNCC
+                  AND TrangThai NOT IN (N'Hoàn thành', N'Đã hủy', N'Từ chối') -- Các trạng thái đã kết thúc
+            )
+            BEGIN
+                SET @CoDonHangMo = 1;
+            END
+
+            IF @CoDonHangMo = 1
+            BEGIN
+                 THROW 50505, N'Không thể khóa Nhà Cung Cấp này vì vẫn còn đơn nhập hàng đang xử lý.', 1;
+            END
+        END
+        ELSE -- Nếu trạng thái hiện tại là @LockedStatus
+        BEGIN
+            -- Hành động là MỞ KHÓA
+            SET @TrangThaiMoi = @ActiveStatus;
+            SET @HanhDong = N'Mở khóa';
+            -- Không cần kiểm tra đơn hàng mở khi mở khóa
+        END
+
+        BEGIN TRANSACTION;
+
+        -- === CẬP NHẬT TRẠNG THÁI NHÀ CUNG CẤP ===
+        UPDATE dbo.NCC
+        SET
+            TrangThai = @TrangThaiMoi,          -- Cập nhật trạng thái mới
+            NguoiCapNhat = @MaTK_NguoiThucHien, -- Ghi nhận người thực hiện
+            NgayCapNhat = GETDATE()             -- Ghi nhận thời gian
+        WHERE MaNCC = @MaNCC;
+
+        IF @@ROWCOUNT = 0
+        BEGIN
+             THROW 50504, N'Không thể cập nhật trạng thái Nhà Cung Cấp.', 1;
+        END
+
+        -- === GHI AUDIT LOG ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @MaTK_NguoiThucHien, N'NCC', @MaNCC, @HanhDong, N'Nhà cung cấp (ID: ' + CAST(@MaNCC AS NVARCHAR(10)) + N') đã được ' + LOWER(@HanhDong) + N'.');
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Thực hiện ' + LOWER(@HanhDong) + N' Nhà Cung Cấp thành công!' AS Message, @MaNCC AS MaNCC_ThucHien;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;
+CREATE PROCEDURE [dbo].[sp_UpdateDonXuat]
+    @MaDonXuat INT,           
+    @NgayXuat DATE,            
+    @GhiChu NVARCHAR(255) = NULL,
+    @MaKhachhang INT = NULL,        
+    @MaKhoNguon INT,            
+    @MaKhoDich INT = NULL,       
+    @LoaiPhieu VARCHAR(55),  
+    @NguoiCapNhat INT,      
+    @ChiTietMoi NVARCHAR(MAX)  
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @ErrMsg NVARCHAR(MAX);
+
+    DECLARE @ClosedStatus1 NVARCHAR(50) = N'Hoàn thành';
+    DECLARE @ClosedStatus2 NVARCHAR(50) = N'Đã hủy';
+
+    BEGIN TRY
+      IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @NguoiCapNhat AND TrangThai = N'Hoạt động')
+            THROW 50601, N'Tài khoản người cập nhật không tồn tại hoặc bị khóa!', 1;
+        SELECT @TrangThaiHienTai = TrangThai FROM dbo.QLDonXuat WHERE MaDonXuat = @MaDonXuat;
+        IF @TrangThaiHienTai IS NULL THROW 50602, N'Đơn xuất hàng không tồn tại!', 1;
+        IF @TrangThaiHienTai IN (@ClosedStatus1, @ClosedStatus2) THROW 50603, N'Không thể chỉnh sửa đơn xuất hàng đã hoàn thành hoặc đã hủy!', 1;
+        IF @LoaiPhieu = 'PX' AND (@MaKhachhang IS NULL OR NOT EXISTS (SELECT 1 FROM QLKH WHERE MaKhachHang = @MaKhachhang)) THROW 50606, N'Khách hàng không hợp lệ cho phiếu xuất bán!', 1;
+
+
+        IF @ChiTietMoi IS NULL OR LTRIM(RTRIM(@ChiTietMoi)) = '' OR @ChiTietMoi = '[]'
+             THROW 50607, N'Chi tiết đơn xuất không được để trống!', 1;
+
+
+   DECLARE @TempChiTietMoi TABLE (
+            MaVatLieu INT,
+            MaKhoNguon INT,         
+            MaKhoDich INT NULL,     
+            SoLuong DECIMAL(18, 2),
+            DonGia DECIMAL(18, 2)
+        );
+
+     INSERT INTO @TempChiTietMoi (MaVatLieu, MaKhoNguon, MaKhoDich, SoLuong, DonGia)
+        SELECT
+            TRY_CONVERT(INT, JSON_VALUE(value, '$.MaVatLieu')),
+            TRY_CONVERT(INT, JSON_VALUE(value, '$.MaKhoNguon')),
+            TRY_CONVERT(INT, JSON_VALUE(value, '$.MaKhoDich')), 
+            TRY_CONVERT(DECIMAL(18, 2), JSON_VALUE(value, '$.SoLuong')),
+            TRY_CONVERT(DECIMAL(18, 2), JSON_VALUE(value, '$.DonGia'))
+        FROM OPENJSON(@ChiTietMoi);
+
+
+        IF EXISTS (SELECT 1 FROM @TempChiTietMoi WHERE MaVatLieu IS NULL OR MaKhoNguon IS NULL OR SoLuong IS NULL OR DonGia IS NULL)
+            THROW 50608, N'Dữ liệu chi tiết trong JSON không hợp lệ hoặc bị thiếu (MaVatLieu, MaKhoNguon, SoLuong, DonGia)!', 1;
+
+        IF EXISTS (SELECT 1 FROM @TempChiTietMoi WHERE SoLuong <= 0 OR DonGia < 0)
+            THROW 50609, N'Số lượng phải lớn hơn 0 và Đơn giá không được âm!', 1;
+
+        IF EXISTS ( SELECT 1 FROM @TempChiTietMoi t LEFT JOIN dbo.QLVatLieu vl ON t.MaVatLieu = vl.MaVatLieu WHERE vl.MaVatLieu IS NULL )
+            THROW 50610, N'Có vật liệu trong chi tiết không tồn tại trong hệ thống!', 1;
+
+        -- *** THÊM: Kiểm tra Kho Nguồn và Kho Đích trong chi tiết có tồn tại không ***
+        IF EXISTS ( SELECT 1 FROM @TempChiTietMoi t LEFT JOIN dbo.Kho k ON t.MaKhoNguon = k.MaKho WHERE k.MaKho IS NULL )
+            THROW 50612, N'Có chi tiết chứa Mã Kho Nguồn không tồn tại!', 1;
+        IF EXISTS ( SELECT 1 FROM @TempChiTietMoi t LEFT JOIN dbo.Kho k ON t.MaKhoDich = k.MaKho WHERE t.MaKhoDich IS NOT NULL AND k.MaKho IS NULL )
+            THROW 50613, N'Có chi tiết chứa Mã Kho Đích không tồn tại!', 1;
+        IF @LoaiPhieu = N'Chuyển kho' AND EXISTS (SELECT 1 FROM @TempChiTietMoi WHERE MaKhoDich IS NULL OR MaKhoNguon = MaKhoDich)
+             THROW 50614, N'Phiếu chuyển kho yêu cầu Kho Đích khác Kho Nguồn cho mọi chi tiết!', 1;
+        IF @LoaiPhieu = N'Xuất hàng' AND EXISTS (SELECT 1 FROM @TempChiTietMoi WHERE MaKhoDich IS NOT NULL)
+             THROW 50615, N'Phiếu xuất bán không được có Kho Đích trong chi tiết!', 1;
+
+        -- 4. *** KIỂM TRA TỒN KHO (Dựa trên MaKhoNguon của từng chi tiết) ***
+        DECLARE @ChiTietGoc TABLE (MaVatLieu INT, MaKhoNguon INT, SoLuongGoc DECIMAL(18,2));
+        -- Lấy chi tiết gốc, bao gồm cả MaKhoNguon gốc
+        INSERT INTO @ChiTietGoc (MaVatLieu, MaKhoNguon, SoLuongGoc)
+        SELECT MaVatLieu, MaKhoNguon, SoLuong FROM dbo.ChiTietDonXuat WHERE MaDonXuat = @MaDonXuat;
+
+        DECLARE @TonKhoCheck TABLE (MaVatLieu INT, MaKhoNguon INT, SoLuongCan DECIMAL(18,2), TonKhoKhaDung DECIMAL(18,2));
+        INSERT INTO @TonKhoCheck (MaVatLieu, MaKhoNguon, SoLuongCan, TonKhoKhaDung)
+        SELECT
+            tm.MaVatLieu,
+            tm.MaKhoNguon, -- Kho nguồn từ chi tiết mới
+            tm.SoLuong,    -- Số lượng cần mới
+            -- Tồn khả dụng = Tồn hiện tại ở kho nguồn MỚI + Lượng đã xuất trong đơn gốc TẠI KHO NGUỒN GỐC CỦA DÒNG ĐÓ
+            ISNULL(tk.SoLuongTon, 0) + ISNULL(ctg.SoLuongGoc, 0)
+        FROM @TempChiTietMoi tm
+        LEFT JOIN @ChiTietGoc ctg ON tm.MaVatLieu = ctg.MaVatLieu -- Join chi tiết gốc để lấy số lượng cũ
+        LEFT JOIN dbo.TonKhoVatLieu tk ON tm.MaVatLieu = tk.MaVatLieu AND tk.MaKho = tm.MaKhoNguon; -- Join tồn kho tại kho nguồn MỚI
+
+        -- Kiểm tra xem có dòng nào số lượng cần > tồn kho khả dụng không
+        IF EXISTS (SELECT 1 FROM @TonKhoCheck WHERE SoLuongCan > TonKhoKhaDung)
+        BEGIN
+            SET @ErrMsg = N'Không đủ tồn kho tại kho nguồn:';
+            SELECT @ErrMsg = @ErrMsg + CHAR(13) + CHAR(10) +
+                             N'- VL ID ' + CAST(MaVatLieu AS VARCHAR(10)) +
+                             N' tại Kho ID ' + CAST(MaKhoNguon AS VARCHAR(10)) +
+                             N': Cần ' + CAST(SoLuongCan AS VARCHAR(20)) +
+                             N', Khả dụng ' + CAST(TonKhoKhaDung AS VARCHAR(20))
+            FROM @TonKhoCheck WHERE SoLuongCan > TonKhoKhaDung;
+            THROW 50611, @ErrMsg, 1;
+        END;
+
+
+        -- === THỰC THI CẬP NHẬT ===
+        BEGIN TRANSACTION;
+
+        -- 1. Cập nhật Header Đơn Xuất (Dùng MaKhoNguon/Dich từ tham số header)
+        UPDATE dbo.QLDonXuat
+        SET NgayXuat = @NgayXuat,
+            GhiChu = @GhiChu,
+            MaKhachHang = @MaKhachhang,
+            LoaiXuat = @LoaiPhieu,
+            NguoiCapNhat = @NguoiCapNhat,
+            NgayCapNhat = GETDATE()
+        WHERE MaDonXuat = @MaDonXuat;
+
+        DELETE FROM dbo.ChiTietDonXuat WHERE MaDonXuat = @MaDonXuat;
+
+        INSERT INTO dbo.ChiTietDonXuat (MaDonXuat, MaVatLieu, MaKhoNguon, MaKhoDich, SoLuong, DonGia)
+        SELECT @MaDonXuat, MaVatLieu, MaKhoNguon, MaKhoDich, SoLuong, DonGia
+        FROM @TempChiTietMoi;
+
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @NguoiCapNhat, N'QLDonXuat', @MaDonXuat, N'Sửa', N'Cập nhật đơn xuất hàng (ID: ' + CAST(@MaDonXuat AS NVARCHAR(10)) + N').');
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Cập nhật đơn xuất hàng thành công!' AS Message, @MaDonXuat AS MaDonXuat_Updated;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+       SET @ErrMsg = ERROR_MESSAGE(); -- Đúng tên biến
+
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+
+        RAISERROR (@ErrMsg, @ErrorSeverity, @ErrorState); 
+        RETURN;
+    END CATCH
+END;
+CREATE PROCEDURE [dbo].[sp_TuChoiDonXuat]
+    @MaDonXuat INT,             -- Mã Đơn Xuất cần từ chối
+    @MaTK_NguoiTuChoi INT     -- Mã tài khoản người thực hiện từ chối
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @MaHoaDon INT = NULL;
+    DECLARE @RejectedStatus NVARCHAR(50) = N'Từ chối';   -- Trạng thái mới
+    DECLARE @PendingStatus NVARCHAR(50) = N'Chờ duyệt'; -- Trạng thái yêu cầu
+
+    BEGIN TRY
+        -- === VALIDATION ===
+        -- 1. Kiểm tra người từ chối
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK_NguoiTuChoi AND TrangThai = N'Hoạt động')
+            THROW 50701, N'Tài khoản người từ chối không tồn tại hoặc bị khóa!', 1;
+
+        -- 2. Lấy trạng thái hiện tại và Mã Hóa Đơn (nếu có) của Đơn Xuất
+        SELECT
+            @TrangThaiHienTai = TrangThai,
+            @MaHoaDon = MaHoaDon -- Giả sử QLDonXuat có cột MaHoaDon liên kết đến QLHoaDon
+        FROM dbo.QLDonXuat
+        WHERE MaDonXuat = @MaDonXuat;
+
+        IF @TrangThaiHienTai IS NULL
+            THROW 50702, N'Đơn xuất hàng không tồn tại!', 1;
+
+        -- 3. Kiểm tra trạng thái hiện tại có phải là "Chờ duyệt" không
+        IF @TrangThaiHienTai != @PendingStatus
+            THROW 50703, N'Chỉ có thể từ chối Đơn Xuất Hàng đang ở trạng thái "Chờ duyệt"!', 1;
+
+        -- 4. *** KIỂM TRA HÓA ĐƠN ***
+        -- Kiểm tra xem đơn xuất này đã được liên kết với hóa đơn nào chưa
+        -- (Giả sử cột MaHoaDon trong QLDonXuat sẽ có giá trị nếu đã tạo hóa đơn)
+        IF @MaHoaDon IS NOT NULL
+            THROW 50704, N'Không thể từ chối Đơn Xuất Hàng này vì đã có Hóa Đơn liên kết. Vui lòng hủy Hóa Đơn trước.', 1;
+
+
+        BEGIN TRANSACTION;
+
+        UPDATE dbo.QLDonXuat
+        SET
+            TrangThai = @RejectedStatus,        -- Cập nhật trạng thái mới
+            NguoiCapNhat = @MaTK_NguoiTuChoi,  -- Ghi nhận người từ chối
+            NgayCapNhat = GETDATE(),           -- Ghi nhận thời gian
+            GhiChu = ISNULL(GhiChu + N'; ', N'') + N'Bị từ chối bởi TK '
+                     + CAST(@MaTK_NguoiTuChoi AS NVARCHAR(10)) 
+        WHERE MaDonXuat = @MaDonXuat;
+        IF @@ROWCOUNT = 0
+        BEGIN
+             THROW 50705, N'Không thể cập nhật trạng thái Đơn Xuất Hàng.', 1;
+        END
+
+
+        -- === GHI AUDIT LOG ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @MaTK_NguoiTuChoi, N'QLDonXuat', @MaDonXuat, N'Từ chối', N'Đơn xuất hàng (ID: ' + CAST(@MaDonXuat AS NVARCHAR(10)) + N') đã bị từ chối.');
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Từ chối Đơn Xuất Hàng thành công!' AS Message, @MaDonXuat AS MaDonXuat_DaTuChoi;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;
+CREATE PROCEDURE [dbo].[sp_TuChoiHoaDon]
+    @MaHoaDon INT,             -- Mã Hóa Đơn cần từ chối/hủy
+    @MaTK_NguoiThucHien INT  -- Mã tài khoản người thực hiện
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TrangThaiHienTai NVARCHAR(50);
+    DECLARE @RejectedStatus NVARCHAR(50) = N'Đã hủy'; -- Hoặc N'Bị từ chối'
+    DECLARE @FinalStatus1 NVARCHAR(50) = N'Đã thanh toán';
+    DECLARE @FinalStatus2 NVARCHAR(50) = N'Đã hủy'; -- Chính nó
+    DECLARE @FinalStatus3 NVARCHAR(50) = N'Bị từ chối'; -- Chính nó
+
+    BEGIN TRY
+        -- === VALIDATION ===
+        -- 1. Kiểm tra người thực hiện
+        IF NOT EXISTS (SELECT 1 FROM dbo.QLTK WHERE MaTK = @MaTK_NguoiThucHien AND TrangThai = N'Hoạt động')
+            THROW 50801, N'Tài khoản người thực hiện không tồn tại hoặc bị khóa!', 1;
+
+        -- 2. Lấy trạng thái hiện tại và kiểm tra Hóa Đơn tồn tại
+        SELECT @TrangThaiHienTai = TrangThai -- Giả sử có cột TrangThai
+        FROM dbo.QLHoaDon -- Giả sử bảng Hóa Đơn là QLHoaDon
+        WHERE MaHoaDon = @MaHoaDon;
+
+        IF @TrangThaiHienTai IS NULL
+            THROW 50802, N'Hóa đơn không tồn tại!', 1;
+
+        -- 3. Kiểm tra xem trạng thái hiện tại có cho phép từ chối/hủy không
+        IF @TrangThaiHienTai IN (@FinalStatus1, @FinalStatus2, @FinalStatus3)
+            THROW 50803, N'Không thể Từ chối/Hủy Hóa Đơn ở trạng thái này!', 1;
+
+        -- TODO: Thêm kiểm tra quyền hạn nếu cần
+
+        BEGIN TRANSACTION;
+
+        -- === CẬP NHẬT TRẠNG THÁI HÓA ĐƠN ===
+        -- Giả sử bảng QLHoaDon có cột NguoiCapNhat, NgayCapNhat, GhiChu
+        UPDATE dbo.QLHoaDon
+        SET
+            TrangThai = @RejectedStatus,        -- Cập nhật trạng thái mới
+            NguoiCapNhat = @MaTK_NguoiThucHien,  -- Ghi nhận người thực hiện
+            NgayCapNhat = GETDATE()        -- Ghi nhận thời gian
+        WHERE MaHoaDon = @MaHoaDon;
+
+        IF @@ROWCOUNT = 0
+        BEGIN
+             THROW 50804, N'Không thể cập nhật trạng thái Hóa Đơn.', 1;
+        END
+
+
+
+        -- === GHI AUDIT LOG ===
+        INSERT INTO dbo.AuditLog (ThoiGian, MaTK, TenBang, MaBanGhi, HanhDong, GhiChu)
+        VALUES (GETDATE(), @MaTK_NguoiThucHien, N'QLHoaDon', @MaHoaDon, N'Từ chối/Hủy', N'Hóa đơn (ID: ' + CAST(@MaHoaDon AS NVARCHAR(10)) + N') đã bị từ chối/hủy.');
+
+        COMMIT TRANSACTION;
+
+        SELECT N'Từ chối/Hủy Hóa Đơn thành công!' AS Message, @MaHoaDon AS MaHoaDon_DaXuLy;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+        RETURN;
+    END CATCH
+END;

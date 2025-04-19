@@ -519,3 +519,4 @@ I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.AddXuat.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.EditXuat.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.FrmXuat.resources
 I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.Order.PopupXuat.resources
+I:\Pro213\GUI\obj\Debug\net8.0-windows\QLVT.Order.LydoHuy.resources

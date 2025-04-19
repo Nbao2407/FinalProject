@@ -213,11 +213,16 @@ namespace QLVT
             if (CurrentUser.ChucVu == "Nhân viên") 
             {
                 button1.Enabled = false;
+                BtnTke.Enabled = false;
                 panel14.Location = new Point(4, 260);
+                panel13.Location = new Point(6, 209);
             }
             else 
             {
                 panel14.Location = new Point(4, 465);
+                panel13.Location = new Point(4, 414);
+
+
             }
         }
         private void ShowPopup(DTO_TK tk)

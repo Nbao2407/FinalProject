@@ -1,4 +1,5 @@
 ﻿using BUS;
+using DAL;
 using DTO;
 using QLVT.Helper;
 using System;
@@ -21,14 +22,18 @@ namespace QLVT.TaiKhoan
         private BUS_TK busTk = new BUS_TK();
         private FrmNV _parentFrm;
         private int? maTK;
+        private bool isManualToggle = true;
 
         public EditTk(FrmNV frmNV, int? maTk)
         {
             InitializeComponent();
             PopupHelper.RoundCorners(this, 10);
             PopupHelper.changecolor(this);
+            TgTrangthai.Items.Add("Hoạt động");
+            TgTrangthai.Items.Add("khoá");
             _parentFrm = frmNV;
             this.maTK = maTk;
+            loadComboBoxChucVu();
             LoadDataFromDatabase();
         }
 
@@ -62,11 +67,42 @@ namespace QLVT.TaiKhoan
             if (dt.Rows.Count > 0)
             {
                 DataRow row = dt.Rows[0];
-                PlaceholderHelper.SetDataAsPlaceholder(TbId,maTK.ToString());
+                PlaceholderHelper.SetDataAsPlaceholder(TbId, maTK.ToString());
                 PlaceholderHelper.SetDataAsPlaceholder(TbName, row["TenDangNhap"].ToString());
                 PlaceholderHelper.SetDataAsPlaceholder(TbEmail, row["Email"].ToString());
-                CbChucVu.SelectedItem = row["ChucVu"].ToString();
-                loadComboBoxChucVu();
+                string chucVuCanChon = row["ChucVu"]?.ToString().Trim(); 
+                string trangThaiCanChon = row["TrangThai"]?.ToString().Trim(); 
+
+                if (chucVuCanChon != null)
+                {
+                    CbChucVu.SelectedIndex = -1; 
+                    foreach (var item in CbChucVu.Items)
+                    {
+                        if (item?.ToString().Trim().Equals(chucVuCanChon, StringComparison.OrdinalIgnoreCase) ?? false)
+                        {
+                            CbChucVu.SelectedItem = item;
+                            Console.WriteLine($"DEBUG: Found and selected ChucVu: {item}"); // Thêm debug
+                            break;
+                        }
+                        // else { Console.WriteLine($"DEBUG: Comparing '{item?.ToString().Trim()}' with '{chucVuCanChon}' -> NO MATCH"); }
+                    }
+                    if (CbChucVu.SelectedItem == null) { Console.WriteLine($"DEBUG: Could not find item for ChucVu: '{chucVuCanChon}'"); }
+                }
+
+                if (trangThaiCanChon != null)
+                {
+                    TgTrangthai.SelectedIndex = -1; // Reset
+                    foreach (var item in TgTrangthai.Items)
+                    {
+                        if (item?.ToString().Trim().Equals(trangThaiCanChon, StringComparison.OrdinalIgnoreCase) ?? false)
+                        {
+                            TgTrangthai.SelectedItem = item;
+                            Console.WriteLine($"DEBUG: Found and selected TrangThai: {item}");
+                            break;
+                        }
+                    }
+                    if (TgTrangthai.SelectedItem == null) { Console.WriteLine($"DEBUG: Could not find item for TrangThai: '{trangThaiCanChon}'"); }
+                }
                 PlaceholderHelper.SetDataAsPlaceholder(TbSdt, row["SDT"].ToString());
                 PlaceholderHelper.SetDataAsPlaceholder(TbNote, row["Ghichu"].ToString());
                 TbPass.UseSystemPasswordChar = true;
@@ -88,8 +124,14 @@ namespace QLVT.TaiKhoan
                 string sdt = TbSdt.Text == TbSdt.Tag?.ToString() ? "" : TbSdt.Text;
                 string ghichu = TbNote.Text == TbNote.Tag?.ToString() ? null : TbNote.Text;
                 string chucVu = CbChucVu.SelectedItem?.ToString();
-                string matKhauMoi = TbPass.Text;
+                string hashedMatKhauMoi = TbPass.Text;
+                string trangThai = TgTrangthai.SelectedItem?.ToString();
                 string errorMessage;
+                if(!ValidationHelper.IsValidMatKhau(hashedMatKhauMoi, out errorMessage))
+                {
+                    MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                }    
                 if (!ValidationHelper.IsValidTenDangNhap(tenDangNhap, out errorMessage))
                 {
                     MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -107,6 +149,12 @@ namespace QLVT.TaiKhoan
                     MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+                if (string.IsNullOrEmpty(trangThai)) 
+                {
+                    MessageBox.Show("Vui lòng chọn trạng thái!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    TgTrangthai.Focus(); 
+                    return;
+                }
 
                 if (!string.IsNullOrEmpty(ghichu) && ghichu.Length > 255)
                 {
@@ -120,23 +168,18 @@ namespace QLVT.TaiKhoan
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(matKhauMoi) && !ValidationHelper.IsValidMatKhau(matKhauMoi, out errorMessage))
-                {
-                    MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
                 DTO_TK tk = new DTO_TK
                 {
-                    maTK = int.Parse(TbPass.Text),
+                    maTK = int.Parse(TbId.Text),
                     tenDangNhap = tenDangNhap,
                     email = email,
                     sdt = string.IsNullOrEmpty(sdt) ? null : sdt,
                     quyen = chucVu,
-                    ghichu = ghichu
+                    ghichu = ghichu,
+                    trangThai = trangThai
                 };
 
-                bool result = busTk.SuaTaiKhoan(tk, matKhauMoi, CurrentUser.MaTK);
+                bool result = busTk.SuaTaiKhoan(tk, hashedMatKhauMoi, CurrentUser.MaTK);
                 if (result)
                 {
                     MessageBox.Show("Cập nhật thông tin thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -175,12 +218,23 @@ namespace QLVT.TaiKhoan
             if (CurrentUser.ChucVu == "Admin")
             {
                 List<string> chucVuList = new List<string> { "Admin", "Quản lý", "Nhân viên" };
-                CbChucVu.DataSource = chucVuList;
-            } else if (CurrentUser.ChucVu == "Quản lý")
-            {
-                List<string> chucVuList = new List<string> { "Quản lý", "Nhân viên" };
+                TbPass.Enabled = true;
+                pictureBox1.Visible = true;
                 CbChucVu.DataSource = chucVuList;
             }
+            else if (CurrentUser.ChucVu == "Quản lý")
+            {
+                List<string> chucVuList = new List<string> {"Nhân viên"};
+                TbPass.Enabled = false;
+                CbChucVu.Enabled = false;
+                pictureBox1.Visible = false;
+                CbChucVu.DataSource = chucVuList;
+            }
+        }
+
+        private void TgTrangthai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

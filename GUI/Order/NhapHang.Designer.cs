@@ -34,6 +34,8 @@
             panel1 = new Panel();
             ketqua = new FlowLayoutPanel();
             panel4 = new Panel();
+            CbKho = new ReaLTaiizor.Controls.AloneComboBox();
+            labelKho = new Label();
             lblNgTao = new Label();
             CbNgNhap = new ReaLTaiizor.Controls.AloneComboBox();
             label2 = new Label();
@@ -41,7 +43,7 @@
             label7 = new Label();
             label6 = new Label();
             CbNcc = new ReaLTaiizor.Controls.AloneComboBox();
-            label3 = new Label();
+            labelNcc = new Label();
             lblSl = new Label();
             btnNhapHang = new ReaLTaiizor.Controls.HopeRoundButton();
             dtpNgayNhap = new ReaLTaiizor.Controls.PoisonDateTime();
@@ -95,10 +97,13 @@
             ketqua.Size = new Size(340, 100);
             ketqua.TabIndex = 31;
             ketqua.Visible = false;
+            ketqua.Paint += ketqua_Paint;
             // 
             // panel4
             // 
             panel4.BackColor = Color.White;
+            panel4.Controls.Add(CbKho);
+            panel4.Controls.Add(labelKho);
             panel4.Controls.Add(lblNgTao);
             panel4.Controls.Add(CbNgNhap);
             panel4.Controls.Add(label2);
@@ -106,7 +111,7 @@
             panel4.Controls.Add(label7);
             panel4.Controls.Add(label6);
             panel4.Controls.Add(CbNcc);
-            panel4.Controls.Add(label3);
+            panel4.Controls.Add(labelNcc);
             panel4.Controls.Add(lblSl);
             panel4.Controls.Add(btnNhapHang);
             panel4.Controls.Add(dtpNgayNhap);
@@ -120,6 +125,28 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(301, 528);
             panel4.TabIndex = 2;
+            // 
+            // CbKho
+            // 
+            CbKho.DrawMode = DrawMode.OwnerDrawFixed;
+            CbKho.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbKho.EnabledCalc = true;
+            CbKho.FormattingEnabled = true;
+            CbKho.ItemHeight = 20;
+            CbKho.Location = new Point(125, 61);
+            CbKho.Name = "CbKho";
+            CbKho.Size = new Size(166, 26);
+            CbKho.TabIndex = 39;
+            // 
+            // labelKho
+            // 
+            labelKho.AutoSize = true;
+            labelKho.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelKho.Location = new Point(79, 62);
+            labelKho.Name = "labelKho";
+            labelKho.Size = new Size(32, 17);
+            labelKho.TabIndex = 38;
+            labelKho.Text = "Kho";
             // 
             // lblNgTao
             // 
@@ -138,16 +165,17 @@
             CbNgNhap.EnabledCalc = true;
             CbNgNhap.FormattingEnabled = true;
             CbNgNhap.ItemHeight = 20;
-            CbNgNhap.Location = new Point(122, 144);
+            CbNgNhap.Location = new Point(125, 158);
             CbNgNhap.Name = "CbNgNhap";
             CbNgNhap.Size = new Size(166, 26);
             CbNgNhap.TabIndex = 36;
+            CbNgNhap.SelectedIndexChanged += CbNgNhap_SelectedIndexChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(28, 144);
+            label2.Location = new Point(31, 158);
             label2.Name = "label2";
             label2.Size = new Size(80, 17);
             label2.TabIndex = 35;
@@ -168,9 +196,9 @@
             Tbnote.Size = new Size(268, 75);
             Tbnote.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             Tbnote.TabIndex = 32;
-            Tbnote.Text = "Ghi chú";
             Tbnote.TextAlignment = HorizontalAlignment.Left;
             Tbnote.UseSystemPasswordChar = false;
+            Tbnote.TextChanged += Tbnote_TextChanged;
             // 
             // label7
             // 
@@ -186,7 +214,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.Location = new Point(33, 195);
+            label6.Location = new Point(36, 209);
             label6.Name = "label6";
             label6.Size = new Size(75, 17);
             label6.TabIndex = 26;
@@ -199,20 +227,20 @@
             CbNcc.EnabledCalc = true;
             CbNcc.FormattingEnabled = true;
             CbNcc.ItemHeight = 20;
-            CbNcc.Location = new Point(122, 93);
+            CbNcc.Location = new Point(125, 107);
             CbNcc.Name = "CbNcc";
             CbNcc.Size = new Size(166, 26);
             CbNcc.TabIndex = 22;
             // 
-            // label3
+            // labelNcc
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(20, 93);
-            label3.Name = "label3";
-            label3.Size = new Size(92, 17);
-            label3.TabIndex = 21;
-            label3.Text = "Nhà cung cấp";
+            labelNcc.AutoSize = true;
+            labelNcc.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelNcc.Location = new Point(23, 107);
+            labelNcc.Name = "labelNcc";
+            labelNcc.Size = new Size(92, 17);
+            labelNcc.TabIndex = 21;
+            labelNcc.Text = "Nhà cung cấp";
             // 
             // lblSl
             // 
@@ -251,7 +279,8 @@
             dtpNgayNhap.CalendarTitleForeColor = Color.White;
             dtpNgayNhap.CustomFormat = "dd/MM/yyyy";
             dtpNgayNhap.Format = DateTimePickerFormat.Custom;
-            dtpNgayNhap.Location = new Point(122, 195);
+            dtpNgayNhap.Location = new Point(125, 209);
+            dtpNgayNhap.MaxDate = new DateTime(9998, 7, 29, 0, 0, 0, 0);
             dtpNgayNhap.MinimumSize = new Size(0, 29);
             dtpNgayNhap.Name = "dtpNgayNhap";
             dtpNgayNhap.Size = new Size(166, 29);
@@ -638,7 +667,7 @@
         private ReaLTaiizor.Controls.SmallLabel smallLabel1;
         private Label lblSl;
         private ReaLTaiizor.Controls.AloneComboBox CbNcc;
-        private Label label3;
+        private Label labelNcc;
         private ReaLTaiizor.Controls.SmallTextBox smallTextBox1;
         private Label label6;
         private Panel panel2;
@@ -651,5 +680,7 @@
         private Label lblNgTao;
         private ReaLTaiizor.Controls.AloneComboBox CbLocNCC;
         private ReaLTaiizor.Controls.HopeRoundButton btnCancelImport;
+        private ReaLTaiizor.Controls.AloneComboBox CbKho;
+        private Label labelKho;
     }
 }

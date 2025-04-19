@@ -26,6 +26,8 @@ namespace QLVT
             splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             UpdateFlowLayoutPanel1Size();
             this.Resize += AddHoaDon_Resize;
+            danhSachKhach = kh.LayDanhSachKhach();
+
             debounceTimer = new System.Windows.Forms.Timer
             {
                 Interval = 300
@@ -181,7 +183,7 @@ namespace QLVT
 
                 if (maKhachHang.HasValue)
                 {
-                    busHoaDon.UpdateHoaDon(_maHoaDon.Value, maKhachHang, "Tiền mặt", "Chờ thanh toán", CurrentUser.MaTK);
+                    busHoaDon.UpdateHoaDon(_maHoaDon.Value, maKhachHang, "Tiền mặt", "Chờ duyệt", CurrentUser.MaTK);
                 }
 
                 foreach (var widget in flowLayoutPanel1.Controls.OfType<Wiget2>())
@@ -189,10 +191,7 @@ namespace QLVT
                     int soLuong = int.Parse(widget.TbSL.Text);
                     busHoaDon.AddChiTietHoaDon(_maHoaDon.Value, widget.MaVatLieu, soLuong);
                 }
-
-                busHoaDon.UpdateTHoaDon(_maHoaDon.Value, "Đã thanh toán");
-
-                MessageBox.Show($"Thanh toán thành công! Mã khách hàng: {maKhachHang ?? -1}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Tạo phiếu thành công! Mã khách hàng: {maKhachHang ?? -1}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 FrmHoaDon frmHoaDon = Application.OpenForms.OfType<FrmHoaDon>().FirstOrDefault();
                 if (frmHoaDon != null)
@@ -211,8 +210,8 @@ namespace QLVT
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thanh toán: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine($"Lỗi thanh toán: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show($"Lỗi khi tạo: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Lỗi tạo: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
         private void Widget_Click(Wiget widget)
@@ -250,8 +249,6 @@ namespace QLVT
                 throw;
             }
         }
-
-
 
         public class BufferedSplitContainer : SplitContainer
         {
@@ -312,7 +309,7 @@ namespace QLVT
                 }
             }
         }
-     
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             string searchText = txtSearch.Text?.ToLower() ?? "";
@@ -331,73 +328,91 @@ namespace QLVT
         }
         private void PerformSearch()
         {
-            string searchQuery = SeacrhKh.Text.Trim();
+            string searchQuery = SeacrhKh.Text.Trim().ToLowerInvariant();
+
+            string selectedTrangThai = "Hoạt động";
+
             try
             {
-                List<DTO_Khach> results = kh.TimKiemKh(searchQuery);
-                Console.WriteLine($"Search Query: {searchQuery}, Results: {results.Count}");
-                UpdateSearchSuggestions(results);
+                if (danhSachKhach == null)
+                {
+                    MessageBox.Show("Danh sách gốc chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    return;
+                }
+
+                IEnumerable<DTO_Khach> filteredSource = danhSachKhach;
+
+                if (!string.IsNullOrEmpty(selectedTrangThai))
+                {
+                    filteredSource = filteredSource.Where(tk =>
+                        tk != null &&
+                        tk.TrangThai != null &&
+                        tk.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
+                    );
+                }
+                List<DTO_Khach> finalResults;
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    finalResults = filteredSource.Where(tk =>
+                    {
+                        if (tk == null) return false;
+                        bool match = false;
+                        if (tk.MaKhachHang.ToString().ToLowerInvariant().Contains(searchQuery))
+                            match = true;
+                        if (!match && tk.Ten != null && tk.Ten.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                            match = true;
+                        return match;
+                    }).ToList();
+                }
+                else
+                {
+                    finalResults = filteredSource.Where(tk => tk != null).ToList();
+                }
+
+                if (finalResults.Any())
+                {
+                    var bindingSource = new BindingSource { DataSource = finalResults };
+                }
+
+                Func<DTO_Khach, string> displayFunc = item => $"{item.MaKhachHang} - {item.Ten}";
+                Action<DTO_Khach> clickAction = selectedItem =>
+                {
+                    SeacrhKh.TextChanged -= SeacrhKh_TextChanged;
+                    SeacrhKh.Text = selectedItem.Ten;
+                    SeacrhKh.TextChanged += SeacrhKh_TextChanged;
+                    var itemToShow = new List<DTO_Khach> { selectedItem };
+                    var singleBindingSource = new BindingSource { DataSource = itemToShow };
+                    if (result != null) result.Visible = false;
+                };
+
+                SearchHelper.UpdateSearchSuggestions(
+                    result,
+                    finalResults,
+                    SeacrhKh,
+                    38, 190,
+                    displayFunc,
+                    clickAction);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ketqua.Visible = false;
+                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
             }
         }
-        private void UpdateSearchSuggestions(List<DTO_Khach> results)
-        {
-            ketqua.Controls.Clear();
-            if (results.Any() && !string.IsNullOrWhiteSpace(SeacrhKh.Text.Trim()))
-            {
-                ketqua.Height = Math.Min(results.Count * 40, 200);
-                ketqua.BackColor = Color.Transparent;
 
-                foreach (var item in results)
-                {
-                    Label lbl = new Label
-                    {
-                        Text = $"👤 {item.Ten} - {item.MaKhachHang}",
-                        AutoSize = false,
-                        Width = ketqua.Width - 2,
-                        Height = 40,
-                        Padding = new Padding(10, 5, 5, 5),
-                        Font = new Font("Segoe UI", 11, FontStyle.Regular),
-                        ForeColor = Color.FromArgb(33, 37, 41),
-                        BorderStyle = BorderStyle.FixedSingle,
-                        Margin = new Padding(1),
-                        Tag = item
-                    };
-
-                    lbl.MouseEnter += (s, e) => { lbl.BackColor = hoverLabelColor; lbl.ForeColor = Color.FromArgb(0, 102, 204); };
-                    lbl.MouseLeave += (s, e) => { lbl.BackColor = defaultLabelColor; lbl.ForeColor = Color.FromArgb(33, 37, 41); };
-                    lbl.Click += (s, e) =>
-                    {
-                        var selectedItem = (DTO_Khach)lbl.Tag;
-                        SeacrhKh.Text = $"{selectedItem.Ten} - {selectedItem.MaKhachHang}";
-                        ketqua.Visible = false;
-                    };
-
-                    ketqua.Controls.Add(lbl);
-                }
-                ketqua.Visible = true;
-            }
-            else
-            {
-                ketqua.Visible = false;
-            }
-        }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-                busHoaDon.DeleteHoaDonTam(_maHoaDon.Value, CurrentUser.MaTK);
-                this.Controls.Clear();
-                FrmHoaDon frm = new FrmHoaDon()
-                {
-                    TopLevel = false,
-                    Dock = DockStyle.Fill
-                };
-                this.Controls.Add(frm);
-                frm.Show();
+            busHoaDon.DeleteHoaDonTam(_maHoaDon.Value, CurrentUser.MaTK);
+            this.Controls.Clear();
+            FrmHoaDon frm = new FrmHoaDon()
+            {
+                TopLevel = false,
+                Dock = DockStyle.Fill
+            };
+            this.Controls.Add(frm);
+            frm.Show();
         }
     }
 }

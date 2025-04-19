@@ -43,13 +43,16 @@ namespace QLVT
             TbAddress = new TextBox();
             panel4 = new Panel();
             label4 = new Label();
-            BtnDelete = new ReaLTaiizor.Controls.AloneButton();
+            BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnEdit = new ReaLTaiizor.Controls.HopeRoundButton();
             panel5 = new Panel();
             roundedPictureBox1 = new RoundedPictureBox();
             ID = new ReaLTaiizor.Controls.BigLabel();
             panel3 = new Panel();
             Ngay = new TextBox();
+            btnDuyet = new ReaLTaiizor.Controls.HopeRoundButton();
+            lblTrangThai = new ReaLTaiizor.Controls.BigLabel();
+            btnDecline = new ReaLTaiizor.Controls.AloneButton();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             SuspendLayout();
@@ -192,18 +195,18 @@ namespace QLVT
             label4.TabIndex = 25;
             label4.Text = "Địa Chỉ";
             // 
-            // BtnDelete
+            // BtnDisable
             // 
-            BtnDelete.BackColor = Color.Transparent;
-            BtnDelete.EnabledCalc = true;
-            BtnDelete.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BtnDelete.ForeColor = Color.Black;
-            BtnDelete.Location = new Point(32, 386);
-            BtnDelete.Name = "BtnDelete";
-            BtnDelete.Size = new Size(67, 30);
-            BtnDelete.TabIndex = 34;
-            BtnDelete.Text = "Xóa";
-            BtnDelete.Click += BtnDelete_Click;
+            BtnDisable.BackColor = Color.Transparent;
+            BtnDisable.EnabledCalc = true;
+            BtnDisable.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            BtnDisable.ForeColor = Color.Black;
+            BtnDisable.Location = new Point(32, 365);
+            BtnDisable.Name = "BtnDisable";
+            BtnDisable.Size = new Size(112, 30);
+            BtnDisable.TabIndex = 34;
+            BtnDisable.Text = "Ngừng sử dụng";
+            BtnDisable.Click += BtnDelete_Click;
             // 
             // BtnEdit
             // 
@@ -214,7 +217,7 @@ namespace QLVT
             BtnEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnEdit.HoverTextColor = Color.FromArgb(48, 49, 51);
             BtnEdit.InfoColor = Color.FromArgb(144, 147, 153);
-            BtnEdit.Location = new Point(737, 386);
+            BtnEdit.Location = new Point(737, 365);
             BtnEdit.Name = "BtnEdit";
             BtnEdit.PrimaryColor = Color.FromArgb(39, 174, 97);
             BtnEdit.Size = new Size(106, 30);
@@ -254,11 +257,11 @@ namespace QLVT
             // 
             ID.AutoSize = true;
             ID.BackColor = Color.Transparent;
-            ID.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ID.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ID.ForeColor = Color.FromArgb(80, 80, 80);
-            ID.Location = new Point(803, 75);
+            ID.Location = new Point(804, 66);
             ID.Name = "ID";
-            ID.Size = new Size(19, 21);
+            ID.Size = new Size(24, 30);
             ID.TabIndex = 42;
             ID.Text = "2";
             // 
@@ -283,17 +286,65 @@ namespace QLVT
             Ngay.Size = new Size(149, 24);
             Ngay.TabIndex = 45;
             // 
+            // btnDuyet
+            // 
+            btnDuyet.BorderColor = Color.FromArgb(220, 223, 230);
+            btnDuyet.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
+            btnDuyet.DangerColor = Color.FromArgb(245, 108, 108);
+            btnDuyet.DefaultColor = Color.FromArgb(255, 255, 255);
+            btnDuyet.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDuyet.HoverTextColor = Color.FromArgb(48, 49, 51);
+            btnDuyet.InfoColor = Color.FromArgb(144, 147, 153);
+            btnDuyet.Location = new Point(609, 365);
+            btnDuyet.Name = "btnDuyet";
+            btnDuyet.PrimaryColor = Color.FromArgb(39, 174, 97);
+            btnDuyet.Size = new Size(106, 30);
+            btnDuyet.SuccessColor = Color.FromArgb(103, 194, 58);
+            btnDuyet.TabIndex = 46;
+            btnDuyet.Text = "Duyệt";
+            btnDuyet.TextColor = Color.White;
+            btnDuyet.WarningColor = Color.FromArgb(230, 162, 60);
+            btnDuyet.Click += btnDuyet_Click;
+            // 
+            // lblTrangThai
+            // 
+            lblTrangThai.AutoSize = true;
+            lblTrangThai.BackColor = Color.Transparent;
+            lblTrangThai.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTrangThai.ForeColor = Color.FromArgb(80, 80, 80);
+            lblTrangThai.Location = new Point(349, 59);
+            lblTrangThai.Name = "lblTrangThai";
+            lblTrangThai.Size = new Size(57, 37);
+            lblTrangThai.TabIndex = 47;
+            lblTrangThai.Text = "Tên";
+            // 
+            // btnDecline
+            // 
+            btnDecline.BackColor = Color.Transparent;
+            btnDecline.EnabledCalc = true;
+            btnDecline.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDecline.ForeColor = Color.Black;
+            btnDecline.Location = new Point(160, 365);
+            btnDecline.Name = "btnDecline";
+            btnDecline.Size = new Size(67, 30);
+            btnDecline.TabIndex = 48;
+            btnDecline.Text = "Từ chối";
+            btnDecline.Click += btnDecline_Click;
+            // 
             // PopNcc
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(869, 428);
+            ClientSize = new Size(869, 414);
+            Controls.Add(btnDecline);
+            Controls.Add(lblTrangThai);
+            Controls.Add(btnDuyet);
             Controls.Add(Ngay);
             Controls.Add(panel3);
             Controls.Add(ID);
             Controls.Add(panel5);
             Controls.Add(BtnEdit);
-            Controls.Add(BtnDelete);
+            Controls.Add(BtnDisable);
             Controls.Add(TbAddress);
             Controls.Add(panel4);
             Controls.Add(label4);
@@ -333,12 +384,15 @@ namespace QLVT
         private TextBox TbAddress;
         private Panel panel4;
         private Label label4;
-        private ReaLTaiizor.Controls.AloneButton BtnDelete;
+        private ReaLTaiizor.Controls.AloneButton BtnDisable;
         private ReaLTaiizor.Controls.HopeRoundButton BtnEdit;
         private Panel panel5;
         private RoundedPictureBox roundedPictureBox1;
         private ReaLTaiizor.Controls.BigLabel ID;
         private Panel panel3;
         private TextBox Ngay;
+        private ReaLTaiizor.Controls.HopeRoundButton btnDuyet;
+        private ReaLTaiizor.Controls.BigLabel lblTrangThai;
+        private ReaLTaiizor.Controls.AloneButton btnDecline;
     }
 }

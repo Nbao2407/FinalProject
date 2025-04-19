@@ -13,6 +13,7 @@ using System.Globalization;
 using DAL;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using QLVT.Helper;
+using Microsoft.VisualBasic;
 
 namespace QLVT.Order
 {
@@ -21,17 +22,21 @@ namespace QLVT.Order
         private readonly int _maDonXuat;
         private readonly BUS_DonXuat busDonXuat = new BUS_DonXuat();
         private DTO_DonXuat _loadedHeader = null;
+        private FrmXuat _parrentfrm;
         private List<DTO_ChiTietDonXuat> _loadedDetails = null;
         public bool DataChanged { get; private set; } = false;
-
-        public PopupXuat(int maDonXuat)
+        private const string STATUS_PENDING = "Chờ duyệt";
+        private const string STATUS_ACTIVE = "Hoàn thành";
+        private const string STATUS_REJECTED = "Từ chối";
+        public PopupXuat(int maDonXuat, FrmXuat frmXuat)
         {
             InitializeComponent();
             _maDonXuat = maDonXuat;
+            _parrentfrm = frmXuat;
             LoadOrderData();
             PopupHelper.RoundCorners(this, 10);
             PopupHelper.changecolor(this);
-            Quyen();
+            UpdateButtonStates(tranthai.Text);
             ConfigureDetailsGrid();
         }
 
@@ -158,75 +163,88 @@ namespace QLVT.Order
             dgvPopupChiTiet.RowTemplate.Height = 35;
         }
 
-        private void LoadOrderData()
+        private void LoadOrderData() // Đổi tên từ LoadOrderDataForEditing nếu cần
         {
-            if (busDonXuat == null) return; 
+            if (busDonXuat == null)
+            {
+                MessageBox.Show("Lỗi: Chưa khởi tạo đối tượng BUS.", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (_maDonXuat <= 0) // Giả sử _maDonXuat đã được gán giá trị trước khi gọi hàm này
+            {
+                MessageBox.Show("Mã đơn xuất không hợp lệ.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
 
             this.Cursor = Cursors.WaitCursor;
             try
             {
                 _loadedHeader = busDonXuat.GetDonXuatById(_maDonXuat);
-
-                _loadedDetails = busDonXuat.GetChiTietDonXuat(_maDonXuat);
-
                 if (_loadedHeader != null)
                 {
                     lbld.Text = _loadedHeader.MaDonXuat.ToString();
-                    lblNgayXuat.Text = _loadedHeader.NgayXuat.ToString("dd/MM/yyyy");
+                    lblNgayXuat.Text = _loadedHeader.NgayXuat.ToString("dd/MM/yyyy"); // Giả sử NgayXuat là DateOnly
                     lblLoaiXuat.Text = _loadedHeader.LoaiXuat;
-                    txtNgTao.Text = _loadedHeader.TenNguoiLap ?? "N/A"; 
+                    txtNgTao.Text = _loadedHeader.TenNguoiLap ?? "N/A";
                     tranthai.Text = _loadedHeader.TrangThai;
-                    txtGhiChuPopup.Text = _loadedHeader.GhiChu ?? ""; 
+                    txtGhiChuPopup.Text = _loadedHeader.GhiChu ?? "";
 
                     if (_loadedHeader.LoaiXuat == "Xuất hàng")
                     {
                         lblKh.Text = !string.IsNullOrEmpty(_loadedHeader.TenKhachHang)
-                                                ? $"{_loadedHeader.TenKhachHang} (ID: {_loadedHeader.MaKhachHang?.ToString() ?? "N/A"})"
-                                                : "[Không có]";
+                                               ? $"{_loadedHeader.TenKhachHang} (ID: {_loadedHeader.MaKhachHang?.ToString() ?? "N/A"})"
+                                               : "[Không có]";
                         lblHoaDonValue.Text = _loadedHeader.MaHoaDon?.ToString() ?? "[Không có]";
                     }
-                    else 
+                    else if (_loadedHeader.LoaiXuat == "Chuyển kho")
                     {
-                        string khoDichInfo = "";
-                        if (!string.IsNullOrEmpty(_loadedHeader.GhiChu) && _loadedHeader.GhiChu.Contains("đến kho:"))
+                        string tenKhoDich = "[Chưa xác định]";
+                        if (_loadedHeader.MaKhoDich.HasValue)
                         {
-                            khoDichInfo = _loadedHeader.GhiChu.Substring(_loadedHeader.GhiChu.IndexOf("đến kho:") + 8).Split('.')[0].Trim();
+                            tenKhoDich = $"ID: {_loadedHeader.MaKhoDich.Value}"; // Tạm hiển thị ID
                         }
-                        lblKh.Text = $"Kho Đích: {khoDichInfo}"; 
+                        lblKh.Text = $"Kho Đích: {tenKhoDich}";
                         lblHoaDonValue.Text = "[Không áp dụng]";
                     }
+                    else
+                    {
+                        lblKh.Text = "[Không xác định]";
+                        lblHoaDonValue.Text = "[Không xác định]";
+                    }
+
+                    dgvPopupChiTiet.DataSource = null; // Xóa nguồn cũ
+
+                    if (_loadedHeader.ChitietDonXuat != null && _loadedHeader.ChitietDonXuat.Any())
+                    {
+                        var bindingSource = new BindingSource { DataSource = _loadedHeader.ChitietDonXuat };
+                        dgvPopupChiTiet.DataSource = bindingSource;
+                        Console.WriteLine($"[LoadOrderData] Loaded {_loadedHeader.ChitietDonXuat.Count} detail items to DGV.");
+                    }
+                    else
+                    {
+                        dgvPopupChiTiet.DataSource = null;
+                        Console.WriteLine("[LoadOrderData] No detail items found to load to DGV.");
+                    }
+
+                    TinhTongCongPopup();
+
                 }
                 else
                 {
                     MessageBox.Show("Không tìm thấy thông tin đơn xuất.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    this.Close();
                     return;
                 }
-
-                dgvPopupChiTiet.DataSource = null;
-                if (_loadedDetails != null && _loadedDetails.Any())
-                {
-                    var bindingSource = new BindingSource { DataSource = _loadedDetails };
-                    dgvPopupChiTiet.DataSource = bindingSource;
-                }
-                else
-                {
-                    dgvPopupChiTiet.DataSource = null;
-                }
-
-                TinhTongCongPopup();
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải dữ liệu đơn xuất: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi tải dữ liệu đơn xuất: {ex.Message}\n{ex.ToString()}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error); // Thêm ex.ToString()
             }
             finally
             {
                 this.Cursor = Cursors.Default;
             }
         }
-
         private void ConfigureDetailsGrid()
         {
             if (dgvPopupChiTiet == null) return;
@@ -261,43 +279,112 @@ namespace QLVT.Order
             {
                 EditXuat editForm = new EditXuat(this, id);
                 frm1.OpenChildForm(editForm);
-                this.Dispose();
+                this.Close();
             }
             else
             {
                 MessageBox.Show("Không tìm thấy form cha Frm1!");
                 return;
             }
-            this.Dispose();
+            this.Close();
         }
 
-        private void Quyen()
+        private void UpdateButtonStates(string currentStatus)
         {
-            bool isOwner = CurrentUser.MaTK == int.Parse(lbld.Text);
-            bool isStaff = CurrentUser.ChucVu == "Nhân viên";
-            bool isManagerOrAdmin = CurrentUser.ChucVu == "Quản lý" || CurrentUser.ChucVu == "Admin";
+            bool isManagerOrAdmin = CurrentUser.ChucVu == "Admin" || CurrentUser.ChucVu == "Quản lý";
+
             bool canEdit = false;
             bool canApprove = false;
-            bool canDisable = false;
+            bool canReject = false;
+            bool canToggleLock = false;
+            string toggleButtonText = "Huỷ";
 
-            if (tranthai.Text == "Đang xử lý")
+            if (isManagerOrAdmin)
             {
-                if (isStaff && isOwner)
+                switch (currentStatus)
                 {
-                    canEdit = true;
-                }
-                else if (isManagerOrAdmin)
-                {
-                    canEdit = true;
-                    canApprove = true;
-                    canDisable = true;
+                    case STATUS_PENDING:
+                        canApprove = true;
+                        canReject = true;
+                        canEdit = true;
+                        toggleButtonText = "Huỷ";
+                        break;
+
+                    case STATUS_ACTIVE:
+                        canApprove = false;
+                        canReject = false;
+                        canEdit = false;
+                        break;
+                    case STATUS_REJECTED:
+                        canApprove = false;
+                        canReject = false;
+                        canEdit = true;
+                        toggleButtonText = "Huỷ";
+                        break;
+
+                    default:
+                        canEdit = false;
+                        canApprove = false;
+                        canReject = false;
+                        toggleButtonText = "Huỷ";
+                        break;
                 }
             }
-            BtnEdit.Enabled = BtnEdit.Visible = canEdit;
-            btnDuyet.Visible = canApprove;
+            else
+            {
+                canEdit = false;
+                canApprove = false;
+                canReject = false;
+                canToggleLock = false;
+            }
+
+            BtnEdit.Enabled = canEdit;
+            BtnEdit.Visible = canEdit;
             btnDuyet.Enabled = canApprove;
-            BtnDisable.Visible = canDisable;
-            BtnDisable.Enabled = canDisable;
+            btnDuyet.Visible = canApprove;
+            btnDecine.Enabled = canReject;
+            btnDecine.Visible = canReject;
+            BtnDisable.Enabled = canToggleLock;
+            BtnDisable.Visible = canToggleLock;
+            BtnDisable.Text = toggleButtonText;
+        }
+        private void btnDuyet_Click(object sender, EventArgs e)
+        {
+            int id = int.Parse(lbld.Text);
+            try
+            {
+                bool da = busDonXuat.DuyeDonXuat(_maDonXuat, CurrentUser.MaTK, txtGhiChuPopup.Text);
+                if (da)
+                {
+                    MessageBox.Show("Duyệt đơn thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                    _parrentfrm.LoadAllDonXuat();
+                }
+                else { MessageBox.Show("Duyệt đơn thất bại"); }
+            }
+            catch
+            {
+                MessageBox.Show("Lỗi", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+        private async void btnDecine_Click(object sender, EventArgs e)
+        {
+            int maDonXuatCanTuChoi = Convert.ToInt32(lbld.Text);
+            int maNguoiTuChoi = CurrentUser.MaTK;
+            string errorMessage;
+            bool success = await busDonXuat.TuChoiDonXuatAsync(maDonXuatCanTuChoi, maNguoiTuChoi);
+
+            if (success)
+            {
+                MessageBox.Show("Từ chối Đơn Xuất Hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+                _parrentfrm.LoadAllDonXuat();
+            }
+            else
+            {
+                MessageBox.Show($"Từ chối Đơn Xuất Hàng thất bại:\n", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

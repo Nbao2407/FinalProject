@@ -22,17 +22,46 @@ namespace DAL
                 NguoiTao =reader.GetInt32(reader.GetOrdinal("NguoiTao"))
             };
         }
+        public bool TuChoiNcc(int maNcc, int maTK_NguoiTuChoi)
+        {
+                using (SqlCommand command = new SqlCommand("sp_TuChoiNhaCungCap", conn)) 
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@MaNCC", maNcc);
+                    command.Parameters.AddWithValue("@MaTK_NguoiTuChoi", maTK_NguoiTuChoi);
+                    try
+                    {
+                        conn.Open();
+                        command.ExecuteNonQuery(); 
+                        Console.WriteLine($"[DAL_Ncc] Đã gọi sp_TuChoiNhaCungCap thành công cho MaNCC: {maNcc}");
+                        return true; 
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_Ncc] Lỗi SQL khi từ chối NCC {maNcc}: {ex.Message}");
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_Ncc] Lỗi khác khi từ chối NCC {maNcc}: {ex.Message}");
+                        throw; 
+                    }
+                } 
+        }
+
         public DTO_Ncap LayThongTinNCC(int maNCC) 
         {
             DTO_Ncap ncc = null; 
             string query = @"
                 SELECT MaNCC, TenNCC, DiaChi, SDT, Email, NguoiTao, NgayTao, TrangThai
                 FROM NCC
-                WHERE MaNCC = @MaNCC";
+                WHERE MaNCC = @MaNCC
+                AND TrangThai !='Bị khoá'";
 
             try
             {
-                using (SqlConnection conn = DBConnect.GetConnection()) // Hoặc this.conn nếu dùng kế thừa
+                using (SqlConnection conn = DBConnect.GetConnection()) 
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -41,7 +70,7 @@ namespace DAL
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read()) // Chỉ mong đợi một kết quả
+                            if (reader.Read()) 
                             {
                                 ncc = MapReaderToNcc(reader);
                             }
@@ -59,7 +88,36 @@ namespace DAL
             }
             return ncc; 
         }
+        public bool DuyetNcc(int maNcc, int maTK_NguoiDuyet)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand command = new SqlCommand("sp_DuyetNhaCungCap", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@MaNCC", maNcc);
+                    command.Parameters.AddWithValue("@MaTK_NguoiDuyet", maTK_NguoiDuyet);
 
+                    try
+                    {
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                        Console.WriteLine($"[DAL_Ncc] Đã gọi sp_DuyetNhaCungCap thành công cho MaNCC: {maNcc}");
+                        return true;
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_Ncc] Lỗi SQL khi duyệt NCC {maNcc}: {ex.Message}");
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_Ncc] Lỗi khác khi duyệt NCC {maNcc}: {ex.Message}");
+                        throw; 
+                    }
+                }
+            } 
+        }
         public List<DTO_Ncap> TimKiemNcc(string keyword)
         {
             List<DTO_Ncap> DanhsachNcc = new List<DTO_Ncap>();
@@ -103,7 +161,7 @@ namespace DAL
                 using (SqlConnection conn = DBConnect.GetConnection())
                 {
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand("SELECT MaNCC, TenNCC, DiaChi, SDT, Email, NgayTao, NguoiTao FROM NCC", conn))
+                    using (SqlCommand cmd = new SqlCommand("SELECT MaNCC, TenNCC, DiaChi, SDT, Email, NgayTao, NguoiTao,TrangThai FROM NCC", conn))
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -118,6 +176,7 @@ namespace DAL
                                     Email = reader.IsDBNull(4) ? null : reader.GetString(4),
                                     NgayTao = reader.GetDateTime(5),
                                     NguoiTao = reader.GetInt32(6),
+                                    TrangThai = reader.GetString(7)
                                 });
                             }
                         }
@@ -161,7 +220,37 @@ namespace DAL
 
             return creatorName ?? "Unknown";
         }
+        public bool ToggleKhoaNcc(int maNcc, int maTK_NguoiThucHien)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand command = new SqlCommand("sp_ToggleKhoaNhaCungCap", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    command.Parameters.AddWithValue("@MaNCC", maNcc);
+                    command.Parameters.AddWithValue("@MaTK_NguoiThucHien", maTK_NguoiThucHien);
+
+                    try
+                    {
+                        conn.Open();
+                        command.ExecuteNonQuery(); 
+                        Console.WriteLine($"[DAL_Ncc] Đã gọi sp_ToggleKhoaNhaCungCap thành công cho MaNCC: {maNcc}");
+                        return true;
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_Ncc] Lỗi SQL khi Toggle khóa NCC {maNcc}: {ex.Message}");
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_Ncc] Lỗi khác khi Toggle khóa NCC {maNcc}: {ex.Message}");
+                        throw;
+                    }
+                } 
+            } 
+        }
         public void ThemNCC(string tenNCC, string diaChi, string sdt, string email, int nguoiTao)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -261,10 +350,10 @@ namespace DAL
         public async Task<int> ThemNccAsync(DTO_Ncap ncc)
         {
             string query = @"
-            INSERT INTO NCC (TenNCC, DiaChi, SDT, Email, NguoiTao) -- Bỏ MaNCC, NgayTao, TrangThai
+            INSERT INTO NCC (TenNCC, DiaChi, SDT, Email, NguoiTao,Trangthai)
             OUTPUT INSERTED.MaNCC
-            VALUES (@TenNCC, @DiaChi, @SDT, @Email, @NguoiTao);";
-            int newId = 0; // Mặc định là lỗi
+            VALUES (@TenNCC, @DiaChi, @SDT, @Email, @NguoiTao,@TrangThai);";
+            int newId = 0; 
 
             try
             {
@@ -273,10 +362,10 @@ namespace DAL
                 {
                     cmd.Parameters.AddWithValue("@TenNCC", ncc.TenNCC);
                     cmd.Parameters.AddWithValue("@DiaChi", (object)ncc.DiaChi ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@SDT", (object)ncc.SDT ?? DBNull.Value); // Truyền DBNull.Value nếu Sdt là null
+                    cmd.Parameters.AddWithValue("@SDT", (object)ncc.SDT ?? DBNull.Value); 
                     cmd.Parameters.AddWithValue("@Email", (object)ncc.Email ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@NguoiTao", (object)ncc.NguoiTao ?? DBNull.Value); // Xử lý null cho NguoiTao nếu có thể
-
+                    cmd.Parameters.AddWithValue("@NguoiTao", (object)ncc.NguoiTao ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@TrangThai", (object)ncc.TrangThai ?? DBNull.Value);
                     object result = await cmd.ExecuteScalarAsync();
 
                     if (result != null && result != DBNull.Value)
@@ -292,12 +381,12 @@ namespace DAL
             catch (SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error in DAL.ThemNccAsync for '{ncc.TenNCC}': {sqlEx.Message}");
-                newId = 0; // Đảm bảo trả về lỗi
+                newId = 0; 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"General Error in DAL.ThemNccAsync for '{ncc.TenNCC}': {ex.Message}");
-                newId = 0; // Đảm bảo trả về lỗi
+                newId = 0; 
             }
             finally
             {
@@ -306,13 +395,13 @@ namespace DAL
                     await conn.CloseAsync();
                 }
             }
-            return newId; // Trả về ID mới hoặc 0 nếu lỗi
+            return newId;
         }
         public DTO_Ncap TimNccTheoTen(string tenNcc)
         {
             DTO_Ncap ncc = null;
 
-            string query = "SELECT MaNCC, TenNCC, DiaChi, SDT, TrangThai FROM NCC WHERE TenNCC COLLATE Latin1_General_CI_AS = @TenNCC COLLATE Latin1_General_CI_AS";
+            string query = "SELECT MaNCC, TenNCC, DiaChi, SDT, TrangThai FROM NCC WHERE TenNCC COLLATE Latin1_General_CI_AS = @TenNCC COLLATE Latin1_General_CI_AS AND TrangThai =N'Hoạt động'";
 
             SqlDataReader reader = null;
             try
@@ -330,7 +419,6 @@ namespace DAL
                         {
                             MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC")),
                             TenNCC = reader.GetString(reader.GetOrdinal("TenNCC")),
-                            // Check for DBNull before reading nullable columns
                             DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString(reader.GetOrdinal("DiaChi")),
                             SDT = reader.IsDBNull(reader.GetOrdinal("Sdt")) ? null : reader.GetString(reader.GetOrdinal("Sdt")),
                         };

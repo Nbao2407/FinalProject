@@ -86,7 +86,7 @@ namespace DAL
                         result.Add(new UnderstockDTO
                         {
                             TenVatLieu = reader.GetString("TenVatLieu"),
-                            SoLuongTon = reader.GetInt32("SoLuongTon")
+                            SoLuongTon = reader.GetDecimal("SoLuongTon")
                         });
                     }
                 }

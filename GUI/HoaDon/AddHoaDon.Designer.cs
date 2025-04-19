@@ -28,7 +28,7 @@ namespace QLVT
             pictureBox1 = new PictureBox();
             flowLayoutPanel2 = new BufferedFlowLayoutPanel();
             txtSearch = new ReaLTaiizor.Controls.DungeonTextBox();
-            ketqua = new Panel();
+            result = new Panel();
             SeacrhKh = new ReaLTaiizor.Controls.DungeonTextBox();
             flowLayoutPanel1 = new BufferedFlowLayoutPanel();
             roundedPanel6 = new QLVT.Helper.RoundedPanel();
@@ -36,6 +36,8 @@ namespace QLVT
             lblTong = new Label();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             searchTimer = new System.Windows.Forms.Timer(components);
+            searchDonXuat = new ReaLTaiizor.Controls.DungeonTextBox();
+            ketqua = new Panel();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -112,6 +114,8 @@ namespace QLVT
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(ketqua);
+            splitContainer1.Panel2.Controls.Add(searchDonXuat);
+            splitContainer1.Panel2.Controls.Add(result);
             splitContainer1.Panel2.Controls.Add(SeacrhKh);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel2.Controls.Add(roundedPanel6);
@@ -155,7 +159,7 @@ namespace QLVT
             BtnThanhToan.PressedColor = Color.FromArgb(165, 37, 37);
             BtnThanhToan.Size = new Size(549, 40);
             BtnThanhToan.TabIndex = 12;
-            BtnThanhToan.Text = "Thanh Toán";
+            BtnThanhToan.Text = "Tạo phiếu";
             BtnThanhToan.TextAlignment = StringAlignment.Center;
             BtnThanhToan.Click += BtnThanhToan_Click;
             // 
@@ -199,13 +203,13 @@ namespace QLVT
             txtSearch.UseSystemPasswordChar = false;
             txtSearch.TextChanged += txtSearch_TextChanged;
             // 
-            // ketqua
+            // result
             // 
-            ketqua.Location = new Point(6, 34);
-            ketqua.Name = "ketqua";
-            ketqua.Size = new Size(312, 82);
-            ketqua.TabIndex = 15;
-            ketqua.Visible = false;
+            result.Location = new Point(6, 34);
+            result.Name = "result";
+            result.Size = new Size(269, 82);
+            result.TabIndex = 15;
+            result.Visible = false;
             // 
             // SeacrhKh
             // 
@@ -219,7 +223,7 @@ namespace QLVT
             SeacrhKh.Multiline = false;
             SeacrhKh.Name = "SeacrhKh";
             SeacrhKh.ReadOnly = false;
-            SeacrhKh.Size = new Size(312, 28);
+            SeacrhKh.Size = new Size(272, 28);
             SeacrhKh.TabIndex = 10;
             SeacrhKh.TextAlignment = HorizontalAlignment.Left;
             SeacrhKh.UseSystemPasswordChar = false;
@@ -273,6 +277,32 @@ namespace QLVT
             lblTong.TabIndex = 15;
             lblTong.Text = "500,000";
             // 
+            // searchDonXuat
+            // 
+            searchDonXuat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            searchDonXuat.BackColor = Color.FromArgb(236, 240, 241);
+            searchDonXuat.BorderColor = Color.FromArgb(180, 180, 180);
+            searchDonXuat.EdgeColor = SystemColors.ActiveBorder;
+            searchDonXuat.Font = new Font("Tahoma", 11F);
+            searchDonXuat.ForeColor = Color.DimGray;
+            searchDonXuat.Location = new Point(362, 3);
+            searchDonXuat.MaxLength = 32767;
+            searchDonXuat.Multiline = false;
+            searchDonXuat.Name = "searchDonXuat";
+            searchDonXuat.ReadOnly = false;
+            searchDonXuat.Size = new Size(165, 28);
+            searchDonXuat.TabIndex = 17;
+            searchDonXuat.TextAlignment = HorizontalAlignment.Left;
+            searchDonXuat.UseSystemPasswordChar = false;
+            // 
+            // ketqua
+            // 
+            ketqua.Location = new Point(362, 34);
+            ketqua.Name = "ketqua";
+            ketqua.Size = new Size(165, 70);
+            ketqua.TabIndex = 16;
+            ketqua.Visible = false;
+            // 
             // AddHoaDon
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -312,7 +342,9 @@ namespace QLVT
         private Panel panel2;
         private System.Windows.Forms.Timer searchTimer;
         private ReaLTaiizor.Controls.DungeonTextBox SeacrhKh;
-        private Panel ketqua;
+        private Panel result;
         private PictureBox pictureBox2;
+        private Panel ketqua;
+        private ReaLTaiizor.Controls.DungeonTextBox searchDonXuat;
     }
 }

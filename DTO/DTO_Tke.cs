@@ -20,6 +20,6 @@
     public class UnderstockDTO
     {
         public string TenVatLieu { get; set; }
-        public int SoLuongTon { get; set; }
+        public decimal SoLuongTon { get; set; }
     }
 }

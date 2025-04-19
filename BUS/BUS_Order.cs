@@ -22,14 +22,16 @@ namespace BUS
         {
             return dal.GetAllOrder();
         }
-    
+        private static readonly List<string> _validStatuses = new List<string> { "Chờ duyệt", "Hoàn thành",  "Đã Hủy","Từ chối" };
+
         public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(
         DateOnly ngayNhap,
         int maNCC,
         int maTK,
         string ghiChu,
         List<DTO_Order> chiTietNhap,
-        int nguoiCapNhat
+        int nguoiCapNhat,
+        int makho
         )
         {
             if (maNCC <= 0 || maTK <= 0 || nguoiCapNhat <= 0)
@@ -40,7 +42,6 @@ namespace BUS
 
             foreach (var chiTiet in chiTietNhap)
             {
-                if (chiTiet.MaVatLieu <= 0 || chiTiet.SoLuong <= 0 || chiTiet.GiaNhap < 0)
                     return (false, "Chi tiết nhập hàng chứa thông tin không hợp lệ.", 0);
             }
 
@@ -48,7 +49,7 @@ namespace BUS
 
             try
             {
-                var dalResult = await dal.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietNhapJson, nguoiCapNhat);
+                var dalResult = await dal.NhapHangAsync(ngayNhap, maNCC, maTK, ghiChu, chiTietNhapJson, nguoiCapNhat,makho);
 
                 return dalResult;
             }
@@ -99,8 +100,82 @@ namespace BUS
                 throw;
             }
         }
+        public bool DuyetDonNhap(int maDonNhap, int maTK_NguoiDuyet, out string errorMessage)
+        {
+            errorMessage = string.Empty; 
 
-        // Giữ lại hàm gọi SP dùng TVP nếu muốn dùng thay thế
-        // public bool UpdateOrderWithDetailsStoredProcedure(...) { ... }
+            if (maDonNhap <= 0)
+            {
+                errorMessage = "Mã đơn nhập không hợp lệ.";
+                return false;
+            }
+            if (maTK_NguoiDuyet <= 0)
+            {
+                errorMessage = "Mã người duyệt không hợp lệ.";
+                return false;
+            }
+            try
+            {
+                bool success = dal.DuyetDonNhap(maDonNhap, maTK_NguoiDuyet);
+                return success;
+            }
+            catch (SqlException sqlEx) 
+            {
+                Console.WriteLine($"[BUS_DonNhap] Lỗi SQL khi duyệt đơn {maDonNhap}: {sqlEx.Message}");
+                errorMessage = sqlEx.Message;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[BUS_DonNhap] Lỗi không xác định khi duyệt đơn {maDonNhap}: {ex.Message}");
+                errorMessage = "Đã xảy ra lỗi không mong muốn trong quá trình duyệt đơn.";
+                return false;
+            }
+        }
+
+        public async Task<bool> CapNhatTrangThaiDonNhapAsync(int maDonNhap, string trangThaiMoi, int maNguoiCapNhat)
+        {
+            if (maDonNhap <= 0)
+            {
+                Console.WriteLine("Mã đơn nhập không hợp lệ.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(trangThaiMoi))
+            {
+                Console.WriteLine("Trạng thái mới không được để trống.");
+                return false;
+            }
+            if (maNguoiCapNhat <= 0)
+            {
+                Console.WriteLine("Mã người cập nhật không hợp lệ.");
+                return false;
+            }
+
+            if (!_validStatuses.Contains(trangThaiMoi)) 
+            {
+                Console.WriteLine($"Trạng thái '{trangThaiMoi}' không hợp lệ.");
+                return false;
+            }
+
+            // DTO_DonNhap currentOrder = await _dalOrder.GetOrderByIdAsync(maDonNhap);
+            // if (currentOrder != null && !CanTransitionToStatus(currentOrder.TrangThai, trangThaiMoi))
+            // {
+            //      Console.WriteLine($"Không thể chuyển từ trạng thái '{currentOrder.TrangThai}' sang '{trangThaiMoi}'.");
+            //      return false;
+            // }
+            // --- Kết thúc kiểm tra nghiệp vụ ---
+
+
+            try
+            {
+                return await dal.CapNhatTrangThaiDonNhapAsync(maDonNhap, trangThaiMoi, maNguoiCapNhat);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Business Logic Error updating status for order {maDonNhap}: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

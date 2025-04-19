@@ -1,9 +1,6 @@
 ﻿using DTO;
 using Microsoft.Data.SqlClient;
-using System;
 using System.Data;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace DAL
 {
@@ -12,7 +9,7 @@ namespace DAL
         public List<DTO_Order> GetAllOrder()
         {
             List<DTO_Order> orders = new List<DTO_Order>();
-            using (SqlConnection conn = DBConnect.GetConnection()) 
+            using (SqlConnection conn = DBConnect.GetConnection())
             {
                 conn.Open();
                 string query = @"SELECT QLDonNhap.MaDonNhap, QLDonNhap.NgayNhap, NCC.TenNCC, QLDonNhap.TrangThai " +
@@ -20,7 +17,7 @@ namespace DAL
                                "LEFT JOIN NCC ON QLDonNhap.MaNCC = NCC.MaNCC;";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    try 
+                    try
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -49,7 +46,39 @@ namespace DAL
             }
             return orders;
         }
-        public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(DateOnly ngayNhap, int maNCC, int maTK, string ghiChu, string chiTietJson, int nguoiCapNhat)
+
+        public bool DuyetDonNhap(int maDonNhap, int maTK_NguoiDuyet)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand command = new SqlCommand("sp_DuyetDonNhap", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@MaDonNhap", maDonNhap);
+                    command.Parameters.AddWithValue("@MaTK_NguoiDuyet", maTK_NguoiDuyet);
+
+                    try
+                    {
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                        Console.WriteLine($"[DAL_DonNhap] Đã gọi sp_DuyetDonNhap thành công cho MaDonNhap: {maDonNhap}");
+                        return true;
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_DonNhap] Lỗi SQL khi duyệt đơn nhập {maDonNhap}: {ex.Message}");
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_DonNhap] Lỗi khác khi duyệt đơn nhập {maDonNhap}: {ex.Message}");
+                        throw;
+                    }
+                } // SqlCommand được dispose
+            } // SqlConnection được dispose
+        }
+        public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(DateOnly ngayNhap, int maNCC, int maTK, string ghiChu, string chiTietJson, int nguoiCapNhat,int makho)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -65,7 +94,7 @@ namespace DAL
                     command.Parameters.AddWithValue("@GhiChu", (object)ghiChu ?? DBNull.Value);
                     command.Parameters.AddWithValue("@ChiTietNhap", chiTietJson);
                     command.Parameters.AddWithValue("@NguoiCapNhat", nguoiCapNhat);
-
+                    command.Parameters.AddWithValue("@MaKhoNhap", makho);
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())
@@ -170,6 +199,7 @@ namespace DAL
             }
             return results;
         }
+
         public List<DTO_Order> SearchOrder(string keyword)
         {
             List<DTO_Order> danhSachL = new List<DTO_Order>();
@@ -198,27 +228,40 @@ namespace DAL
             }
             return danhSachL;
         }
+
         public DTO_OrderDetail GetOrderDetailById(int? orderId)
         {
-            DTO_OrderDetail orderDetail = null; 
+            DTO_OrderDetail orderDetail = null;
 
             string queryHeader = @"
                 SELECT
-                    dn.MaDonNhap, dn.NgayNhap, dn.MaNCC, ncc.TenNCC, dn.MaTK,
-                    tk.TenDangNhap AS TenNguoiTao, dn.TrangThai, dn.GhiChu,
-                    dn.NgayCapNhat, tkUpdate.TenDangNhap AS TenNguoiCapNhat, dn.NgayTao
-                FROM QLDonNhap dn
-                LEFT JOIN NCC ncc ON dn.MaNCC = ncc.MaNCC
-                LEFT JOIN QLTK tk ON dn.MaTK = tk.MaTK
-                LEFT JOIN QLTK tkUpdate ON dn.NguoiCapNhat = tkUpdate.MaTK
+                dn.MaDonNhap, dn.NgayNhap, dn.MaNCC, ncc.TenNCC, dn.MaTK,
+                tk.TenDangNhap AS TenNguoiTao, dn.TrangThai, dn.GhiChu,
+                dn.NgayCapNhat, dn.NguoiNhap, tkNhap.TenDangNhap AS TenNguoiNhap,
+                tkUpdate.TenDangNhap AS TenNguoiCapNhat, dn.NgayTao
+            FROM QLDonNhap dn
+            LEFT JOIN NCC ncc ON dn.MaNCC = ncc.MaNCC
+            LEFT JOIN QLTK tk ON dn.MaTK = tk.MaTK
+            LEFT JOIN QLTK tkUpdate ON dn.NguoiCapNhat = tkUpdate.MaTK
+            LEFT JOIN QLTK tkNhap ON dn.NguoiNhap = tkNhap.MaTK
                 WHERE dn.MaDonNhap = @OrderId";
 
             string queryDetails = @"
-                SELECT
-                    ctdn.MaDonNhap, ctdn.MaVatLieu, vl.Ten AS TenVatLieu,
-                    vl.DonViTinh, ctdn.SoLuong, ctdn.GiaNhap
-                FROM ChiTietDonNhap ctdn
-                INNER JOIN QLVatLieu vl ON ctdn.MaVatLieu = vl.MaVatLieu
+               SELECT
+                    ctdn.MaDonNhap,        
+                    ctdn.MaVatLieu,       
+                    vl.Ten AS TenVatLieu,  
+                    vl.DonViTinh,        
+                    ctdn.MaKho,            
+                    k.TenKho AS TenKho,   
+                    ctdn.SoLuong,       
+                    ctdn.GiaNhap          
+                FROM
+                    dbo.ChiTietDonNhap ctdn
+                INNER JOIN
+                    dbo.QLVatLieu vl ON ctdn.MaVatLieu = vl.MaVatLieu 
+                INNER JOIN
+                    dbo.Kho k ON ctdn.MaKho = k.MaKho
                 WHERE ctdn.MaDonNhap = @OrderId";
 
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -232,9 +275,9 @@ namespace DAL
                         cmdHeader.Parameters.AddWithValue("@OrderId", orderId);
                         using (SqlDataReader readerHeader = cmdHeader.ExecuteReader())
                         {
-                            if (readerHeader.Read()) 
+                            if (readerHeader.Read())
                             {
-                                orderDetail = new DTO_OrderDetail 
+                                orderDetail = new DTO_OrderDetail
                                 {
                                     MaDonNhap = readerHeader.GetInt32(readerHeader.GetOrdinal("MaDonNhap")),
                                     NgayNhap = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayNhap")),
@@ -246,12 +289,14 @@ namespace DAL
                                     GhiChu = readerHeader.IsDBNull(readerHeader.GetOrdinal("GhiChu")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("GhiChu")),
                                     NgayCapNhat = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayCapNhat")),
                                     NguoiCapNhatTen = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNguoiCapNhat")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiCapNhat")),
-                                    NgayTao = readerHeader.GetDateTime("NgayTao") ,
-                                    ChiTietDonNhap = new List<DTO_ChiTietDonNhap>() 
+                                    NgayTao = readerHeader.GetDateTime("NgayTao"),
+                                    NguoiNhap =readerHeader.GetInt32(readerHeader.GetOrdinal("NguoiNhap")),
+                                    TenNguoiNhap = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNguoiNhap")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiNhap")),
+                                    ChiTietDonNhap = new List<DTO_ChiTietDonNhap>()
                                 };
                             }
-                        } 
-                    } 
+                        }
+                    }
 
                     if (orderDetail != null)
                     {
@@ -271,13 +316,15 @@ namespace DAL
                                             TenVatLieu = readerDetails.GetString(readerDetails.GetOrdinal("TenVatLieu")),
                                             DonViTinh = readerDetails.GetString(readerDetails.GetOrdinal("DonViTinh")),
                                             SoLuong = readerDetails.GetInt32(readerDetails.GetOrdinal("SoLuong")),
-                                            GiaNhap = readerDetails.GetDecimal(readerDetails.GetOrdinal("GiaNhap")) 
+                                            GiaNhap = readerDetails.GetDecimal(readerDetails.GetOrdinal("GiaNhap")),
+                                            MaKho = readerDetails.GetInt32(readerDetails.GetOrdinal("MaKho")),
+                                            TenKho = readerDetails.GetString(readerDetails.GetOrdinal("TenKho")),
                                         };
                                         orderDetail.ChiTietDonNhap.Add(detailItem);
                                     }
                                     catch (Exception exRow) { Console.WriteLine($"Error reading order detail row: {exRow.Message}"); }
                                 }
-                            } 
+                            }
                         }
                     }
                 }
@@ -289,6 +336,35 @@ namespace DAL
 
             return orderDetail;
         }
+        public bool KiemTraDonNhapMoCuaNCC(int maNcc)
+        {
+            bool coDonMo = false;
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                string query = @"
+                    SELECT TOP 1 
+                    FROM dbo.QLDonNhap
+                    WHERE MaNCC = @MaNCC
+                      AND TrangThai NOT IN (N'Hoàn thành', N'Chờ duyệt', N'Từ chối');";
+                using (SqlCommand command = new SqlCommand(query, conn))
+                {
+                    command.Parameters.AddWithValue("@MaNCC", maNcc);
+                    try
+                    {
+                        conn.Open();
+                        object result = command.ExecuteScalar();
+                        coDonMo = (result != null && result != DBNull.Value);
+                        Console.WriteLine($"[DAL_DonNhap] Kết quả kiểm tra đơn mở cho NCC {maNcc}: {coDonMo}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_DonNhap] Lỗi khi kiểm tra đơn nhập mở của NCC {maNcc}: {ex.Message}");
+                        throw;
+                    }
+                }
+            }
+            return coDonMo;
+        }
         public async Task<bool> UpdateOrderFromJsonAsync(DTO_Order header, string chiTietJson, int userId)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -299,9 +375,9 @@ namespace DAL
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@MaDonNhap", header.MaDonNhap);
-                    cmd.Parameters.AddWithValue("@NgayNhap", header.NgayNhap); // Đảm bảo kiểu DateOnly/DateTime khớp với SP
+                    cmd.Parameters.AddWithValue("@NgayNhap", header.NgayNhap); 
                     cmd.Parameters.AddWithValue("@MaNCC", header.MaNCC);
-                    cmd.Parameters.AddWithValue("@MaTK", CurrentUser.MaTK); 
+                    cmd.Parameters.AddWithValue("@MaTK", CurrentUser.MaTK);
                     cmd.Parameters.AddWithValue("@GhiChu", (object)header.GhiChu ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@ChiTietNhap", chiTietJson);
                     cmd.Parameters.AddWithValue("@NguoiCapNhat", userId);
@@ -322,9 +398,45 @@ namespace DAL
                         throw; // Ném lại các lỗi khác
                     }
                 }
-            } 
+            }
         }
 
-        // public bool UpdateOrderWithDetailsStoredProcedure(...) { ... }
+        public async Task<bool> CapNhatTrangThaiDonNhapAsync(int maDonNhap, string trangThaiMoi, int maNguoiCapNhat)
+        {
+            string sql = @"
+            UPDATE QLDonNhap
+            SET
+                TrangThai = @TrangThai,
+                NguoiCapNhat = @NguoiCapNhat,
+                NgayCapNhat = @NgayCapNhat
+                WHERE
+                MaDonNhap = @MaDonNhap;";
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                using (var command = new SqlCommand(sql, conn))
+                {
+                    command.Parameters.Add("@MaDonNhap", SqlDbType.Int).Value = maDonNhap;
+                    command.Parameters.Add("@TrangThai", SqlDbType.NVarChar, 50).Value = trangThaiMoi;
+                    command.Parameters.Add("@NguoiCapNhat", SqlDbType.Int).Value = maNguoiCapNhat;
+                    command.Parameters.Add("@NgayCapNhat", SqlDbType.DateTime).Value = DateTime.Now; 
+                    await conn.OpenAsync();
+
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    return rowsAffected == 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"SQL Error updating order status for MaDonNhap {maDonNhap}: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Error updating order status for MaDonNhap {maDonNhap}: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

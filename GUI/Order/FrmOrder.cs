@@ -3,6 +3,7 @@ using DAL;
 using DTO;
 using GUI.Helpler;
 using Microsoft.Data.SqlClient;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using OfficeOpenXml.Style;
 using QLVT.Helper;
@@ -23,9 +24,9 @@ namespace QLVT
         private readonly Color defaultLabelColor = Color.White;
         private readonly Color hoverLabelColor = Color.FromArgb(230, 240, 255);
         private readonly BUS_Order _busOrder = new BUS_Order();
-        private readonly DAL_Order _dalOrder = new DAL_Order(); 
+        private readonly DAL_Order _dalOrder = new DAL_Order();
         private List<DTO_Order> danhSach = new List<DTO_Order>();
-        
+
         private List<DTO_DonNhapSearchResult> _allLoadedOrders = new List<DTO_DonNhapSearchResult>();
 
         public FrmOrder()
@@ -58,10 +59,10 @@ namespace QLVT
             {
                 Name = "colNgayNhap",
                 HeaderText = "Ngày Nhập",
-                DataPropertyName = "NgayNhap", 
+                DataPropertyName = "NgayNhap",
                 Width = 100,
                 ReadOnly = true,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" } 
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
             });
 
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
@@ -76,7 +77,7 @@ namespace QLVT
             {
                 Name = "colTrangThai",
                 HeaderText = "Trạng Thái",
-                DataPropertyName = "TrangThai", 
+                DataPropertyName = "TrangThai",
                 Width = 100,
                 ReadOnly = true
             });
@@ -97,11 +98,11 @@ namespace QLVT
             };
         }
 
-        private void LoadInitialData()
+        public void LoadInitialData()
         {
             try
             {
-                danhSach = _dalOrder.GetAllOrder(); 
+                danhSach = _dalOrder.GetAllOrder();
                 danhSach = danhSach.AsEnumerable().Reverse().ToList();
 
                 if (danhSach != null && danhSach.Any())
@@ -124,7 +125,6 @@ namespace QLVT
             }
         }
 
-
         private void Frm_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -144,6 +144,7 @@ namespace QLVT
 
             ResizeColumns();
         }
+
         private void ResizeColumns()
         {
             if (dataGridView1.Columns.Count == 0) return;
@@ -158,6 +159,7 @@ namespace QLVT
                 column.Width = variableColumnWidth;
             }
         }
+
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count && !dataGridView1.Rows[e.RowIndex].IsNewRow)
@@ -167,7 +169,25 @@ namespace QLVT
                 if (clickedRow.DataBoundItem is DTO_Order selectedOrder)
                 {
                     int orderId = selectedOrder.MaDonNhap;
-                    ShowPopup(orderId); 
+
+                    if (CurrentUser.ChucVu == "Nhân viên")
+                    {
+                        if (selectedOrder.NguoiNhap == CurrentUser.MaTK)
+                        {
+                            Console.WriteLine($"User {CurrentUser.MaTK} (Role: Nhân viên) is the creator ({selectedOrder.NguoiNhap}). Opening order {orderId}.");
+                            ShowPopup(orderId);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"User {CurrentUser.MaTK} (Role: Nhân viên) is NOT the creator ({selectedOrder.NguoiNhap}). Denying access to order {orderId}.");
+                            MessageBox.Show("Bạn là Nhân viên nhưng không phải người tạo đơn hàng này nên không thể mở.", "Không có quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else 
+                    {  
+                        
+                        ShowPopup(orderId);
+                    }
                 }
                 else
                 {
@@ -181,37 +201,39 @@ namespace QLVT
         {
             try
             {
-                using (var popup = new PopupOrder(orderId))
-                {
-
+                var popup = new PopupOrder(orderId);
+                
                     popup.StartPosition = FormStartPosition.CenterParent;
 
-                    DialogResult result = popup.ShowDialog();
+                    DialogResult result = popup.ShowDialog(this); 
 
-                    bool dataMayHaveChanged = popup.DataChanged;
-                    if (dataMayHaveChanged)
+                    if (result == DialogResult.OK)
                     {
-                        Console.WriteLine("Data may have changed, reloading initial data...");
+                        Console.WriteLine("PopupOrder closed with OK, reloading initial data...");
                         LoadInitialData();
                     }
-                } 
+                    else
+                    {
+                        Console.WriteLine($"PopupOrder closed with result: {result}");
+                    }
             }
+            
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to open or process the order details.\nError: {ex.Message}", "Popup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-   
-       
-        private void button2_Click(object sender, EventArgs e) 
+
+
+        private void button2_Click(object sender, EventArgs e)
         {
-            Control parentControl = this.Parent; 
+            Control parentControl = this.Parent;
             if (parentControl != null)
             {
                 parentControl.Controls.Remove(this);
                 this.Dispose();
 
-                AddXuat nhap = new AddXuat()
+                NhapHang nhap = new NhapHang()
                 {
                     TopLevel = false,
                     Dock = DockStyle.Fill,
@@ -222,8 +244,8 @@ namespace QLVT
             }
             else
             {
-                AddXuat nhap = new AddXuat();
-                nhap.Show(); 
+                NhapHang nhap = new NhapHang();
+                nhap.Show();
             }
         }
 
@@ -232,7 +254,7 @@ namespace QLVT
             cboTrangThai.Items.Clear();
             cboTrangThai.Items.Add("-- Tất cả TT --");
             cboTrangThai.Items.Add("Hoàn thành");
-            cboTrangThai.Items.Add("Đang xử lý"); 
+            cboTrangThai.Items.Add("Chờ duyệt");
             cboTrangThai.SelectedIndex = -1;
         }
 
@@ -241,14 +263,15 @@ namespace QLVT
             debounceTimer.Stop();
             debounceTimer.Start();
         }
+
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
 
             string selectedTrangThai = null;
-            if (cboTrangThai.SelectedIndex > 0) 
+            if (cboTrangThai.SelectedIndex > 0)
             {
-                selectedTrangThai = cboTrangThai.Text; 
+                selectedTrangThai = cboTrangThai.Text;
             }
 
             try
@@ -257,7 +280,7 @@ namespace QLVT
                 {
                     MessageBox.Show("Danh sách đơn nhập chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     if (result != null) result.Visible = false;
-                    dataGridView1.DataSource = null; 
+                    dataGridView1.DataSource = null;
                     return;
                 }
 
@@ -266,8 +289,8 @@ namespace QLVT
                 if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
                     suggestionSource = suggestionSource.Where(order =>
-                        order != null && 
-                        order.TrangThai != null && 
+                        order != null &&
+                        order.TrangThai != null &&
                         order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
                     );
                 }
@@ -298,7 +321,6 @@ namespace QLVT
                     suggestionResults = suggestionSource.Where(order => order != null).ToList();
                 }
 
-
                 dataGridView1.DataSource = null;
                 if (suggestionResults.Any())
                 {
@@ -307,27 +329,28 @@ namespace QLVT
 
                 Func<DTO_Order, string> displayFunc = item => $"{item.MaDonNhap} - {item.TenNCC}";
 
-                Action<DTO_Order> clickAction = selectedItem => {
+                Action<DTO_Order> clickAction = selectedItem =>
+                {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
                     txtSearch.Text = selectedItem.TenNCC;
                     txtSearch.TextChanged += txtSearch_TextChanged;
                     var itemToShow = new List<DTO_Order> { selectedItem };
-                    dataGridView1.DataSource = itemToShow; 
+                    dataGridView1.DataSource = itemToShow;
                     ResizeColumns();
-                    if (result != null) result.Visible = false; 
+                    if (result != null) result.Visible = false;
                 };
 
                 SearchHelper.UpdateSearchSuggestions(
                     result,
                     suggestionResults,
                     txtSearch,
-                    38, 
+                    38,
                     190,
                     displayFunc,
                     clickAction
                 );
             }
-            catch (NullReferenceException nre) 
+            catch (NullReferenceException nre)
             {
                 MessageBox.Show($"Lỗi tham chiếu null khi tìm kiếm: {nre.Message}\nKiểm tra xem có đối tượng 'order' nào bị null trong danh sách không.\n{nre.StackTrace}", "Lỗi Null Reference", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;

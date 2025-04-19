@@ -76,7 +76,23 @@ namespace BUS
                 return new List<DTO_VatLieu>(); 
             }
         }
+        public DTO_Kho TimkhotheoTen(string tenkho)
+        {
+            if (string.IsNullOrWhiteSpace(tenkho))
+            {
+                return null; 
+            }
 
+            try
+            {
+                var khoList = dalVatLieu.TimKhoTheoTen(tenkho);
+                return khoList;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         public void XoaVatLieu(int maVatLieu, int nguoiCapNhat)
         {
             if (maVatLieu <= 0)
@@ -95,9 +111,20 @@ namespace BUS
         {
             return dalVatLieu.LayDanhSachKho();
         }
+        public List<DTO_Kho> LayDanhSachKhokho()
+        {
+            return dalVatLieu.LayDanhSachKhokho();
+        }
         public string LayTenKhoTheoMa(int maKho)
         {
             DataTable dt = dalVatLieu.LayTenKhoTheoMa(maKho);
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0]["TenKho"].ToString();
+            return string.Empty;
+        }
+        public string LayTenKhoTheoten(string ten)
+        {
+            DataTable dt = dalVatLieu.LayTenKhoTheoTen(ten);
             if (dt.Rows.Count > 0)
                 return dt.Rows[0]["TenKho"].ToString();
             return string.Empty;

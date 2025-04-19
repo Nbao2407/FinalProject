@@ -58,6 +58,7 @@
             bigLabel4 = new ReaLTaiizor.Controls.BigLabel();
             lblHoaDonValue = new ReaLTaiizor.Controls.BigLabel();
             bigLabel3 = new ReaLTaiizor.Controls.BigLabel();
+            btnDecine = new ReaLTaiizor.Controls.AloneButton();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             panel5.SuspendLayout();
@@ -140,7 +141,7 @@
             BtnDisable.Name = "BtnDisable";
             BtnDisable.Size = new Size(120, 30);
             BtnDisable.TabIndex = 62;
-            BtnDisable.Text = "Xoá";
+            BtnDisable.Text = "Huỷ";
             // 
             // BtnEdit
             // 
@@ -312,6 +313,7 @@
             btnDuyet.Text = "Duyệt";
             btnDuyet.TextColor = Color.White;
             btnDuyet.WarningColor = Color.FromArgb(230, 162, 60);
+            btnDuyet.Click += btnDuyet_Click;
             // 
             // txtGhiChuPopup
             // 
@@ -437,11 +439,25 @@
             bigLabel3.TabIndex = 93;
             bigLabel3.Text = "Hoá đơn";
             // 
+            // btnDecine
+            // 
+            btnDecine.BackColor = Color.Transparent;
+            btnDecine.EnabledCalc = true;
+            btnDecine.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDecine.ForeColor = Color.Black;
+            btnDecine.Location = new Point(162, 501);
+            btnDecine.Name = "btnDecine";
+            btnDecine.Size = new Size(120, 30);
+            btnDecine.TabIndex = 95;
+            btnDecine.Text = "Từ chối";
+            btnDecine.Click += btnDecine_Click;
+            // 
             // PopupXuat
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1050, 561);
+            Controls.Add(btnDecine);
             Controls.Add(lblHoaDonValue);
             Controls.Add(bigLabel3);
             Controls.Add(lblKh);
@@ -507,5 +523,6 @@
         private ReaLTaiizor.Controls.BigLabel bigLabel4;
         private ReaLTaiizor.Controls.BigLabel lblHoaDonValue;
         private ReaLTaiizor.Controls.BigLabel bigLabel3;
+        private ReaLTaiizor.Controls.AloneButton btnDecine;
     }
 }

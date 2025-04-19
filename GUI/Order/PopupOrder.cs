@@ -11,13 +11,16 @@ using System.Windows.Forms;
 using DTO;
 using System.Globalization;
 using QLVT.Helper;
+using DAL;
 namespace QLVT.Order
 {
     public partial class PopupOrder : Form
     {
         private int? _orderId;
         private BUS_Order _busOrder = new BUS_Order();
-        public bool DataChanged { get; private set; } = false;
+        private BUS_Ncc _Ncc = new BUS_Ncc();
+        private DAL_Order DAL_Order = new DAL_Order();
+        private FrmOrder _parrentfrm;
         private int tongSoLuong = 0;
         private decimal tongGiaTri = 0;
         public PopupOrder(int? orderid)
@@ -28,6 +31,12 @@ namespace QLVT.Order
             PopupHelper.RoundCorners(this, 10);
             PopupHelper.changecolor(this);
             Quyen();
+            if (tranthai.Text == "Chờ duyệt")
+            {
+                BtnDisable.Text = "Từ chối";
+
+            }
+            else { BtnDisable.Text = "Huỷ"; }
         }
 
         private void PopupOrder_Load(object sender, EventArgs e)
@@ -90,7 +99,14 @@ namespace QLVT.Order
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight },
                 Width = 120
             });
-
+            dgvPopupChiTiet.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "TenKho",
+                HeaderText = "Kho",
+                DataPropertyName = "TenKho",
+                ReadOnly = true,
+                Width = 120 
+            });
             ConfigureDgvChiTietStyles();
         }
 
@@ -133,7 +149,7 @@ namespace QLVT.Order
             }
             dgvPopupChiTiet.RowTemplate.Height = 35;
         }
-        private void LoadOrderDetails()
+        public void LoadOrderDetails()
         {
             if (_orderId <= 0)
             {
@@ -150,9 +166,9 @@ namespace QLVT.Order
                 {
                     lbld.Text = orderDetails.MaDonNhap.ToString();
                     NgayTao.Text = orderDetails.NgayTao.ToString("dd/MM/yyyy");
-                    NgNhap.Text = orderDetails.NguoiCapNhatTen;
+                    NgNhap.Text = $"{orderDetails.TenNguoiNhap} - {orderDetails.NguoiNhap}";
                     lblNCC.Text = orderDetails.TenNCC;
-                    lblNgayNhap.Text = orderDetails.NgayCapNhat.ToString("dd/MM/yyyy");
+                    lblNgayNhap.Text = orderDetails.NgayNhap.ToString("dd/MM/yyyy");
                     tranthai.Text = orderDetails.TrangThai;
                     txtGhiChuPopup.Text = orderDetails.GhiChu;
                     txtNgTao.Text = orderDetails.NguoiTao;
@@ -184,7 +200,7 @@ namespace QLVT.Order
         }
         private void roundedPictureBox1_Click(object sender, EventArgs e)
         {
-            this.Dispose();
+            this.Close();
         }
 
         private void BtnEdit_Click(object sender, EventArgs e)
@@ -195,25 +211,25 @@ namespace QLVT.Order
             {
                 EditNhap editForm = new EditNhap(this, id);
                 frm1.OpenChildForm(editForm);
-                this.Dispose();
+                this.Close();
             }
             else
             {
                 MessageBox.Show("Không tìm thấy form cha Frm1!");
                 return;
             }
-            this.Dispose();
+            this.Close();
         }
         private void Quyen()
         {
             bool isOwner = CurrentUser.MaTK == int.Parse(lbld.Text);
             bool isStaff = CurrentUser.ChucVu == "Nhân viên";
-            bool isManagerOrAdmin = CurrentUser.ChucVu == "Quản lý" || CurrentUser.ChucVu == "Admin";
+            bool isManagerOrAdmin = CurrentUser.ChucVu != "Nhân viên";
             bool canEdit = false;
             bool canApprove = false;
             bool canDisable = false;
 
-            if (tranthai.Text == "Đang xử lý")
+            if (tranthai.Text == "Chờ duyệt")
             {
                 if (isStaff && isOwner)
                 {
@@ -231,6 +247,92 @@ namespace QLVT.Order
             btnDuyet.Enabled = canApprove;
             BtnDisable.Visible = canDisable;
             BtnDisable.Enabled = canDisable;
+        }
+
+        private void btnDuyet_Click(object sender, EventArgs e)
+        {
+            BUS_Order bUS_Order = new BUS_Order();
+
+            if (!int.TryParse(lbld.Text, out int maDonNhap) || maDonNhap <= 0)
+            {
+                MessageBox.Show("Mã đơn nhập không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (tranthai.Text != "Chờ duyệt")
+            {
+                MessageBox.Show("Đơn hàng không ở trạng thái 'Chờ duyệt'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int maNguoiDuyet = CurrentUser.MaTK;
+
+
+            if (bUS_Order.DuyetDonNhap(maDonNhap, maNguoiDuyet, out string errorMessage))
+            {
+                MessageBox.Show("Duyệt đơn nhập hàng thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+                btnDuyet.Enabled = false;
+
+            }
+            else
+            {     
+                MessageBox.Show($"Duyệt đơn thất bại:\n{errorMessage}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void BtnDisable_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!int.TryParse(lbld.Text, out int id))
+                {
+                    MessageBox.Show("Không thể đọc được ID hợp lệ.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                string trangthaih = "Đã huỷ";
+                string Decline = "Từ chối";
+                int nguoicapnhat = CurrentUser.MaTK;
+                bool success = false;
+                string currentStatus = tranthai.Text;
+                if (currentStatus == "Chờ duyệt" && CurrentUser.ChucVu !="Nhân viên")
+                {
+                    success = await _busOrder.CapNhatTrangThaiDonNhapAsync(id, Decline, nguoicapnhat);
+
+                    if (success)
+                    {
+                        BtnDisable.Text = "Từ Chối";
+                        BtnDisable.BackColor = Color.Crimson;
+                        tranthai.Text = Decline;
+                        MessageBox.Show("Đã từ chối đơn nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        BtnDisable.Enabled = false;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Từ chối thất bại.", "Lỗi Cập Nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else if(CurrentUser.ChucVu=="Nhân viên" && CurrentUser.TenDangNhap == txtNgTao.Text)
+                {
+                    success = await _busOrder.CapNhatTrangThaiDonNhapAsync(id, trangthaih, nguoicapnhat);
+                    if (success)
+                    {
+                        BtnDisable.Text = "Huỷ";
+                        BtnDisable.BackColor = Color.LightGray;
+                        tranthai.Text = trangthaih;
+                        MessageBox.Show("Đã huỷ đơn nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        BtnDisable.Enabled = false;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cập nhật trạng thái thành 'Đã huỷ' thất bại.", "Lỗi Cập Nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Đã xảy ra lỗi: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

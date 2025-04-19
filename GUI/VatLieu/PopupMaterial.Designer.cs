@@ -172,6 +172,7 @@
             BtnDelete.Size = new Size(67, 30);
             BtnDelete.TabIndex = 61;
             BtnDelete.Text = "Xóa";
+            BtnDelete.Click += BtnDelete_Click;
             // 
             // txtEmail
             // 

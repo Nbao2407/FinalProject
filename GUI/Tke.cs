@@ -36,7 +36,7 @@ namespace QLVT
                     lblTotalRevenue.Text = thongKeBUS.TinhTongDoanhThu(dtpStartDate.Value, dtpEndDate.Value).ToString("N0") + " VNĐ";
                     lblTotalProfit.Text = (thongKeBUS.TinhTongDoanhThu(dtpStartDate.Value, dtpEndDate.Value) * 0.2m).ToString("N0") + " VNĐ";
                     lblNumCustomers.Text = danhSach.Select(x => x.KhachHang).Distinct().Count().ToString();
-
+                    lblNumOrdersPen.Text = danhSach.Count(o => o.TrangThai =="Chờ duyệt").ToString();
                     var grossRevenueData = danhSach.GroupBy(x => x.NgayLap.Date)
                         .Select(g => new { Date = g.Key, TotalAmount = g.Sum(x => x.TongTien) / 1000 }).ToList();
                     chartGrossRevenue.DataSource = grossRevenueData;

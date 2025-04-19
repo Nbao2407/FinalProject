@@ -75,9 +75,9 @@
             // 
             // result
             // 
-            result.BackColor = Color.White;
+            result.BackColor = Color.Transparent;
             result.BorderStyle = BorderStyle.FixedSingle;
-            result.Location = new Point(23, 56);
+            result.Location = new Point(23, 61);
             result.Name = "result";
             result.Size = new Size(223, 45);
             result.TabIndex = 16;
@@ -108,7 +108,7 @@
             dgvDonXuat.AllowUserToResizeColumns = false;
             dgvDonXuat.AllowUserToResizeRows = false;
             dgvDonXuat.Anchor = AnchorStyles.None;
-            dgvDonXuat.BackgroundColor = Color.FromArgb(224, 224, 224);
+            dgvDonXuat.BackgroundColor = SystemColors.Control;
             dgvDonXuat.BorderStyle = BorderStyle.None;
             dgvDonXuat.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dgvDonXuat.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;

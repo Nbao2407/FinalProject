@@ -43,9 +43,11 @@
             label1 = new Label();
             CbChucVu = new ReaLTaiizor.Controls.AloneComboBox();
             label6 = new Label();
-            Tbpass = new ReaLTaiizor.Controls.DungeonRichTextBox();
             label8 = new Label();
+            Tbpass = new ReaLTaiizor.Controls.SmallTextBox();
+            pictureBox1 = new PictureBox();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // btnCancel
@@ -260,22 +262,6 @@
             label6.TabIndex = 38;
             label6.Text = "Chức vụ";
             // 
-            // Tbpass
-            // 
-            Tbpass.AutoWordSelection = false;
-            Tbpass.BackColor = Color.Transparent;
-            Tbpass.BorderColor = Color.FromArgb(180, 180, 180);
-            Tbpass.EdgeColor = Color.White;
-            Tbpass.Font = new Font("Tahoma", 10F);
-            Tbpass.ForeColor = Color.Black;
-            Tbpass.Location = new Point(442, 217);
-            Tbpass.Name = "Tbpass";
-            Tbpass.ReadOnly = false;
-            Tbpass.Size = new Size(380, 32);
-            Tbpass.TabIndex = 40;
-            Tbpass.TextBackColor = Color.White;
-            Tbpass.WordWrap = true;
-            // 
             // label8
             // 
             label8.AutoSize = true;
@@ -286,14 +272,44 @@
             label8.TabIndex = 41;
             label8.Text = "Mật khẩu";
             // 
+            // Tbpass
+            // 
+            Tbpass.BackColor = Color.Transparent;
+            Tbpass.BorderColor = Color.FromArgb(180, 180, 180);
+            Tbpass.CustomBGColor = Color.White;
+            Tbpass.Font = new Font("Tahoma", 11F);
+            Tbpass.ForeColor = Color.DimGray;
+            Tbpass.Location = new Point(442, 223);
+            Tbpass.MaxLength = 32767;
+            Tbpass.Multiline = false;
+            Tbpass.Name = "Tbpass";
+            Tbpass.ReadOnly = false;
+            Tbpass.Size = new Size(345, 28);
+            Tbpass.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            Tbpass.TabIndex = 42;
+            Tbpass.Text = "smallTextBox1";
+            Tbpass.TextAlignment = HorizontalAlignment.Left;
+            Tbpass.UseSystemPasswordChar = true;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = GUI.Properties.Resources.icons8_eye_243;
+            pictureBox1.Location = new Point(793, 225);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(24, 24);
+            pictureBox1.TabIndex = 43;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
+            // 
             // AddTk
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(837, 406);
-            Controls.Add(label8);
+            Controls.Add(pictureBox1);
             Controls.Add(Tbpass);
+            Controls.Add(label8);
             Controls.Add(label6);
             Controls.Add(CbChucVu);
             Controls.Add(btnCancel);
@@ -312,6 +328,7 @@
             Name = "AddTk";
             Text = "AddTk";
             groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -332,8 +349,9 @@
         private Label label1;
         private ReaLTaiizor.Controls.AloneComboBox CbChucVu;
         private Label label6;
-        private ReaLTaiizor.Controls.DungeonRichTextBox Tbpass;
         private Label label8;
         private ReaLTaiizor.Controls.DungeonRichTextBox TbNote;
+        private ReaLTaiizor.Controls.SmallTextBox Tbpass;
+        private PictureBox pictureBox1;
     }
 }

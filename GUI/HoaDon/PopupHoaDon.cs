@@ -12,6 +12,7 @@ using DAL;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using BUS;
 using QLVT.Helper;
+using Microsoft.VisualBasic;
 
 namespace QLVT.HoaDon
 {
@@ -21,11 +22,15 @@ namespace QLVT.HoaDon
         private DTO_HoaDon _hoaDon;
         private BUS_HoaDon hoaDonBLL = new BUS_HoaDon();
         private int? maHoaDon;
-        public PopupHoaDon(int? maHoaDon)
+        private DAL_HoaDon dal = new DAL_HoaDon();
+        public bool DataChanged { get; private set; } = false;
+
+        public PopupHoaDon(int? maHoaDon, FrmHoaDon frmHoaDon)
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.maHoaDon = maHoaDon;
+            _parentForm = frmHoaDon;
             DataGridViewHelper.CustomizeDataGridView(dataGridView);
             PopupHelper.RoundCorners(this, 10);
             PopupHelper.changecolor(this);
@@ -35,6 +40,7 @@ namespace QLVT.HoaDon
         private void PopupHoaDon_Load(object sender, EventArgs e)
         {
             LoadHoaDonData();
+            Quyen();
             DataGridViewHelper.CustomizeDataGridView(dataGridView);
             DataGridViewHelper.FillColumnsToDgvWidth(dataGridView);
             DataGridViewHelper.DisableColumnSorting(dataGridView);
@@ -75,7 +81,7 @@ namespace QLVT.HoaDon
                     }
                     if (hoaDon.TrangThai == "Đã hủy" || hoaDon.TrangThai == "Đã thanh toán")
                     {
-                        BtnHuy.Enabled = false;
+                        BtnDisable.Enabled = false;
                     }
                     if (!dataGridView.Columns.Contains("ThanhTien"))
                     {
@@ -113,20 +119,37 @@ namespace QLVT.HoaDon
         {
             try
             {
-                using (LydoHuy formLyDo = new LydoHuy())
-                {
-                    if (formLyDo.ShowDialog() == DialogResult.OK)
-                    {
-                        string lyDoHuy = formLyDo.LyDoHuy;
-                        DialogResult result = MessageBox.Show($"Bạn có chắc chắn muốn hủy hóa đơn này?\nLý do: {lyDoHuy}", "Xác nhận hủy", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (result == DialogResult.Yes)
-                        {
-                            string message = hoaDonBLL.CancelHoaDon((int)maHoaDon, CurrentUser.MaTK, lyDoHuy);
-                            MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                int id = int.Parse(lblID.Text);
 
-                          
+                if (lblTrangthai.Text == "Chờ duyệt")
+                {
+                    using (LydoHuy formLyDo = new LydoHuy())
+                    {
+                        if (formLyDo.ShowDialog() == DialogResult.OK)
+                        {
+                            string lyDoHuy = formLyDo.LyDoHuy;
+                            DialogResult result = MessageBox.Show($"Bạn có chắc chắn muốn hủy hóa đơn này?\nLý do: {lyDoHuy}", "Xác nhận hủy", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (result == DialogResult.Yes)
+                            {
+                                string message = hoaDonBLL.CancelHoaDon((int)maHoaDon, CurrentUser.MaTK, lyDoHuy);
+                                MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+                            }
                         }
                     }
+                }
+                else if (lblTrangthai.Text == "Nháp")
+                {
+                    bool daXoa = dal.XoaHoaDonVaChiTiet(id);
+                    if (daXoa)
+                    {
+                        MessageBox.Show("Đã xóa hóa đơn và chi tiết thành công!");
+                        this.Close();
+                        _parentForm.LoadData();
+                    }
+                    else
+                        MessageBox.Show("Xóa thất bại hoặc hóa đơn không tồn tại.");
                 }
             }
             catch (Exception ex)
@@ -136,9 +159,9 @@ namespace QLVT.HoaDon
         }
         private void BtnEdit_Click(object sender, EventArgs e)
         {
-            
-             
-                int maHoaDon = Convert.ToInt32(lblID.Text);
+
+
+            int maHoaDon = Convert.ToInt32(lblID.Text);
             Form1 frm1 = Application.OpenForms.OfType<Form1>().FirstOrDefault();
             if (frm1 != null)
             {
@@ -153,5 +176,113 @@ namespace QLVT.HoaDon
             this.Close();
         }
 
+        private void hopeRoundButton1_Click(object sender, EventArgs e)
+        {
+            int id = Convert.ToInt32(lblID.Text);
+            hoaDonBLL.UpdateTHoaDon(id, "Đã thanh toán");
+            MessageBox.Show($"Duyệt đơn thành công{id}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _parentForm.LoadData();
+
+        }
+        private void Quyen()
+        {
+            bool isOwner = CurrentUser.TenDangNhap == txtNgTao.Text;
+            bool isStaff = CurrentUser.ChucVu == "Nhân viên";
+            bool isManagerOrAdmin = CurrentUser.ChucVu != "Nhân viên";
+            bool canEdit = false;
+            bool canApprove = false;
+            bool canDisable = false;
+            bool canDelete = false;
+
+            if (lblTrangthai.Text == "Chờ duyệt")
+            {
+                if (isStaff && isOwner)
+                {
+                    canEdit = true;
+                    canDelete = true;
+                }
+                else if (isManagerOrAdmin)
+                {
+                    canEdit = true;
+                    canApprove = true;
+                    canDisable = true;
+                    canDelete = true;
+                }
+            }
+            else if (lblTrangthai.Text == "Nháp")
+            {
+                if (isStaff && isOwner)
+                {
+                    canEdit = true;
+                    canDelete = true;
+                    canApprove = false;
+                    canDisable = false;
+                }
+                else if (isManagerOrAdmin)
+                {
+                    canEdit = true;
+                    canApprove = false;
+                    canDisable = false;
+                    canDelete = true;
+
+                }
+            }
+            else if (lblTrangthai.Text == "Đã huỷ")
+            {
+                if (isManagerOrAdmin)
+                {
+                    canEdit = true;
+                    canApprove = false;
+                    canDisable = true;
+                }
+            }
+            BtnEdit.Enabled = BtnEdit.Visible = canEdit;
+            btnDuyet.Visible = canApprove;
+            btnDuyet.Enabled = canApprove;
+            BtnDisable.Visible = canDisable;
+            BtnDisable.Enabled = canDisable;
+            btnDecline.Visible = canApprove;
+            btnDecline.Enabled = canApprove;
+        }
+
+        private async void btnDecline_Click(object sender, EventArgs e)
+        {
+            int maHoaDonCanTuChoi = int.Parse(lblID.Text);
+            
+
+            int maNguoiThucHien = CurrentUser.MaTK; 
+            
+            DialogResult confirm = MessageBox.Show($"Bạn có chắc muốn Từ chối/Hủy Hóa Đơn có mã {maHoaDonCanTuChoi}?",
+                                                   "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                this.Cursor = Cursors.WaitCursor; 
+                btnDecline.Enabled = false;
+
+                try
+                {
+                    var result = await hoaDonBLL.TuChoiHoaDonAsync(maHoaDonCanTuChoi, maNguoiThucHien);
+
+                    if (result.Success)
+                    {
+                        MessageBox.Show("Từ chối/Hủy Hóa Đơn thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Thao tác thất bại:\n{result.ErrorMessage}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex) 
+                {
+                    MessageBox.Show($"Đã xảy ra lỗi trong quá trình xử lý:\n{ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    this.Cursor = Cursors.Default; 
+                    btnDecline.Enabled = true; 
+                }
+            } 
+        }
     }
 }

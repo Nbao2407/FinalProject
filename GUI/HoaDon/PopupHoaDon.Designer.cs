@@ -36,7 +36,7 @@
             label2 = new Label();
             label1 = new Label();
             Ngay = new ReaLTaiizor.Controls.SmallTextBox();
-            BtnHuy = new ReaLTaiizor.Controls.AloneButton();
+            BtnDisable = new ReaLTaiizor.Controls.AloneButton();
             BtnEdit = new ReaLTaiizor.Controls.HopeRoundButton();
             bigLabel5 = new ReaLTaiizor.Controls.BigLabel();
             TenKH = new ReaLTaiizor.Controls.BigLabel();
@@ -47,6 +47,8 @@
             lblTrangthai = new ReaLTaiizor.Controls.BigLabel();
             badge1 = new ReaLTaiizor.Controls.Badge();
             dataGridView = new DataGridView();
+            btnDuyet = new ReaLTaiizor.Controls.HopeRoundButton();
+            btnDecline = new ReaLTaiizor.Controls.AloneButton();
             ((System.ComponentModel.ISupportInitialize)roundedPictureBox1).BeginInit();
             panel5.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -145,18 +147,18 @@
             Ngay.TextAlignment = HorizontalAlignment.Left;
             Ngay.UseSystemPasswordChar = false;
             // 
-            // BtnHuy
+            // BtnDisable
             // 
-            BtnHuy.BackColor = Color.Transparent;
-            BtnHuy.EnabledCalc = true;
-            BtnHuy.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BtnHuy.ForeColor = Color.Black;
-            BtnHuy.Location = new Point(21, 455);
-            BtnHuy.Name = "BtnHuy";
-            BtnHuy.Size = new Size(67, 30);
-            BtnHuy.TabIndex = 88;
-            BtnHuy.Text = "Hủy";
-            BtnHuy.Click += BtnHuy_Click;
+            BtnDisable.BackColor = Color.Transparent;
+            BtnDisable.EnabledCalc = true;
+            BtnDisable.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            BtnDisable.ForeColor = Color.Black;
+            BtnDisable.Location = new Point(21, 455);
+            BtnDisable.Name = "BtnDisable";
+            BtnDisable.Size = new Size(67, 31);
+            BtnDisable.TabIndex = 88;
+            BtnDisable.Text = "Hủy";
+            BtnDisable.Click += BtnHuy_Click;
             // 
             // BtnEdit
             // 
@@ -167,7 +169,7 @@
             BtnEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnEdit.HoverTextColor = Color.FromArgb(48, 49, 51);
             BtnEdit.InfoColor = Color.FromArgb(144, 147, 153);
-            BtnEdit.Location = new Point(742, 455);
+            BtnEdit.Location = new Point(759, 455);
             BtnEdit.Name = "BtnEdit";
             BtnEdit.PrimaryColor = Color.FromArgb(39, 174, 97);
             BtnEdit.Size = new Size(114, 30);
@@ -298,12 +300,47 @@
             dataGridView.Size = new Size(835, 199);
             dataGridView.TabIndex = 103;
             // 
+            // btnDuyet
+            // 
+            btnDuyet.BorderColor = Color.FromArgb(220, 223, 230);
+            btnDuyet.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
+            btnDuyet.DangerColor = Color.FromArgb(245, 108, 108);
+            btnDuyet.DefaultColor = Color.FromArgb(255, 255, 255);
+            btnDuyet.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDuyet.HoverTextColor = Color.FromArgb(48, 49, 51);
+            btnDuyet.InfoColor = Color.FromArgb(144, 147, 153);
+            btnDuyet.Location = new Point(619, 455);
+            btnDuyet.Name = "btnDuyet";
+            btnDuyet.PrimaryColor = Color.FromArgb(39, 174, 97);
+            btnDuyet.Size = new Size(114, 30);
+            btnDuyet.SuccessColor = Color.FromArgb(103, 194, 58);
+            btnDuyet.TabIndex = 104;
+            btnDuyet.Text = "Duyệt đơn";
+            btnDuyet.TextColor = Color.White;
+            btnDuyet.WarningColor = Color.FromArgb(230, 162, 60);
+            btnDuyet.Click += hopeRoundButton1_Click;
+            // 
+            // btnDecline
+            // 
+            btnDecline.BackColor = Color.Transparent;
+            btnDecline.EnabledCalc = true;
+            btnDecline.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDecline.ForeColor = Color.Black;
+            btnDecline.Location = new Point(111, 455);
+            btnDecline.Name = "btnDecline";
+            btnDecline.Size = new Size(67, 31);
+            btnDecline.TabIndex = 105;
+            btnDecline.Text = "Từ chối";
+            btnDecline.Click += btnDecline_Click;
+            // 
             // PopupHoaDon
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(236, 240, 241);
             ClientSize = new Size(885, 498);
+            Controls.Add(btnDecline);
+            Controls.Add(btnDuyet);
             Controls.Add(dataGridView);
             Controls.Add(badge1);
             Controls.Add(lblTrangthai);
@@ -313,7 +350,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(Ngay);
-            Controls.Add(BtnHuy);
+            Controls.Add(BtnDisable);
             Controls.Add(BtnEdit);
             Controls.Add(bigLabel5);
             Controls.Add(tableLayoutPanel1);
@@ -343,7 +380,7 @@
         private Label label2;
         private Label label1;
         private ReaLTaiizor.Controls.SmallTextBox Ngay;
-        private ReaLTaiizor.Controls.AloneButton BtnHuy;
+        private ReaLTaiizor.Controls.AloneButton BtnDisable;
         private ReaLTaiizor.Controls.HopeRoundButton BtnEdit;
         private ReaLTaiizor.Controls.BigLabel bigLabel5;
         private ReaLTaiizor.Controls.BigLabel TenKH;
@@ -354,5 +391,7 @@
         private ReaLTaiizor.Controls.BigLabel lblTrangthai;
         private ReaLTaiizor.Controls.Badge badge1;
         private DataGridView dataGridView;
+        private ReaLTaiizor.Controls.HopeRoundButton btnDuyet;
+        private ReaLTaiizor.Controls.AloneButton btnDecline;
     }
 }

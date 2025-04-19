@@ -10,7 +10,7 @@ namespace DAL
 {
     public class DAL_DonXuat : DBConnect
     {
-        public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int? maKhoNguon, int nguoiThucHien)
+        public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int? maKhoNguon, int? maKhoDich, int nguoiThucHien) 
         {
             int newMaDonXuat = -1;
 
@@ -26,48 +26,136 @@ namespace DAL
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@NgayXuat", donXuatInput.NgayXuat);
-                    cmd.Parameters.AddWithValue("@MaTK", donXuatInput.MaTK);
+                    cmd.Parameters.AddWithValue("@MaTK", donXuatInput.MaTK); 
                     cmd.Parameters.AddWithValue("@LoaiXuat", donXuatInput.LoaiXuat);
+
                     cmd.Parameters.AddWithValue("@MaKhoNguon", (object)maKhoNguon ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@MaKhoDich", (object)maKhoDich ?? DBNull.Value); 
                     cmd.Parameters.AddWithValue("@MaHoaDon", (object)donXuatInput.MaHoaDon ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@MaKhachHang", (object)donXuatInput.MaKhachHang ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@GhiChu", string.IsNullOrEmpty(donXuatInput.GhiChu) ? DBNull.Value : (object)donXuatInput.GhiChu);
+
                     cmd.Parameters.AddWithValue("@ChiTietXuat", chiTietJson);
+
                     cmd.Parameters.AddWithValue("@NguoiCapNhat", nguoiThucHien);
+
                     try
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read() && reader.FieldCount > 1 && reader.GetName(1).Equals("MaDonXuat", StringComparison.OrdinalIgnoreCase))
+                            if (reader.Read()) 
                             {
-                                newMaDonXuat = Convert.ToInt32(reader["MaDonXuat"]);
+                                string message = reader["Message"]?.ToString() ?? "Không có thông báo.";
+                                Console.WriteLine($"Thông báo từ SP: {message}");
+
+                                if (reader.FieldCount > 1 && reader.GetName(1).Equals("MaDonXuat", StringComparison.OrdinalIgnoreCase) && reader["MaDonXuat"] != DBNull.Value)
+                                {
+                                    newMaDonXuat = Convert.ToInt32(reader["MaDonXuat"]);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("SP không trả về MaDonXuat hợp lệ.");
+                                }
                             }
                             else
                             {
-                                // Có thể đọc Message trả về từ SP nếu cần
-                                // Console.WriteLine(reader["Message"]?.ToString());
+                                Console.WriteLine("SP không trả về kết quả nào.");
                             }
                         }
-                        // Nếu SP không trả về MaDonXuat qua SELECT, bạn cần Output Parameter
-                        // SqlParameter outputIdParam = new SqlParameter("@NewMaDonXuatOutput", SqlDbType.Int) { Direction = ParameterDirection.Output };
-                        // cmd.Parameters.Add(outputIdParam);
-                        // cmd.ExecuteNonQuery();
-                        // if (outputIdParam.Value != DBNull.Value) newMaDonXuat = Convert.ToInt32(outputIdParam.Value);
                     }
                     catch (SqlException ex)
                     {
-                        Console.WriteLine($"Lỗi DAL ThemDonXuat (SQL): {ex.Message}");
-                        throw;
+                        Console.WriteLine($"Lỗi SQL khi gọi sp_ThemDonXuat: {ex.Message} (Số lỗi: {ex.Number})");
+                        throw new Exception($"Lỗi từ cơ sở dữ liệu: {ex.Message}", ex);
                     }
                     catch (Exception ex)
                     {
-                        // Log lỗi chi tiết
-                        Console.WriteLine($"Lỗi DAL ThemDonXuat: {ex.Message}");
-                        throw; // Ném lại để tầng trên xử lý
+                        Console.WriteLine($"Lỗi hệ thống trong ThemDonXuat (DAL): {ex.Message}");
+                        throw; // Ném lại lỗi gốc
                     }
+                } 
+            } 
+            return newMaDonXuat;
+        }
+        public async Task<bool> UpdateDonXuatAsync(DTO_DonXuat headerUpdate, string chiTietMoiJson)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+
+            {
+                using (SqlCommand command = new SqlCommand("sp_UpdateDonXuat", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@MaDonXuat", headerUpdate.MaDonXuat);
+                    command.Parameters.AddWithValue("@NgayXuat", headerUpdate.NgayXuat); 
+                    command.Parameters.AddWithValue("@GhiChu", (object)headerUpdate.GhiChu ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@MaKH", (object)headerUpdate.MaKhachHang ?? DBNull.Value); 
+                    command.Parameters.AddWithValue("@MaKhoNguon_Header", headerUpdate.Makhonguon);
+                    command.Parameters.AddWithValue("@MaKhoDich_Header", (object)headerUpdate.MaKhoDich ?? DBNull.Value); 
+                    command.Parameters.AddWithValue("@LoaiPhieu", headerUpdate.LoaiXuat);
+                    command.Parameters.AddWithValue("@NguoiCapNhat", headerUpdate.NguoiCapNhat); 
+                    command.Parameters.AddWithValue("@ChiTietMoi", chiTietMoiJson);
+
+                    try
+                    {
+                        await conn.OpenAsync();
+                        await command.ExecuteNonQueryAsync(); 
+                        Console.WriteLine($"[DAL_DonXuat] Đã gọi sp_UpdateDonXuat thành công cho MaDonXuat: {headerUpdate.MaDonXuat}");
+                        return true; 
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_DonXuat] Lỗi SQL khi cập nhật đơn xuất {headerUpdate.MaDonXuat}: {ex.Message}");
+                        throw; 
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_DonXuat] Lỗi khác khi cập nhật đơn xuất {headerUpdate.MaDonXuat}: {ex.Message}");
+                        throw; 
+                    }
+                } 
+            } 
+        }
+        public bool DuyetDonXuat(int maDonXuat, int nguoiDuyet, string ghiChu = null)
+        {
+            bool success = false;
+            const string storedProcedure = "dbo.sp_DuyetDonXuat"; 
+
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(storedProcedure, conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
+                        cmd.Parameters.AddWithValue("@NguoiDuyet", nguoiDuyet);
+                        cmd.Parameters.AddWithValue("@GhiChu", string.IsNullOrEmpty(ghiChu) ? DBNull.Value : (object)ghiChu);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Console.WriteLine($"Thông báo từ sp_DuyetDonXuat: {reader["Message"]?.ToString()}");
+                                success = true; 
+                            }
+                        }
+                    } 
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine($"Lỗi SQL khi duyệt đơn xuất {maDonXuat}: {ex.Message} (Số lỗi: {ex.Number})");
+                    success = false; // Đánh dấu thất bại
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi hệ thống trong DuyetDonXuat (DAL) cho đơn {maDonXuat}: {ex.Message}");
+                    success = false; // Đánh dấu thất bại
                 }
             }
-            return newMaDonXuat;
+
+            return success;
         }
 
         public bool HuyDonXuat(int maDonXuat, int nguoiHuy, string lyDo)
@@ -103,6 +191,37 @@ namespace DAL
             return false;
         }
 
+
+        public async Task<bool> TuChoiDonXuatAsync(int maDonXuat, int maTK_NguoiTuChoi)
+        {
+            using (SqlConnection conn = GetConnection())
+
+            {
+                using (SqlCommand command = new SqlCommand("sp_TuChoiDonXuat", conn))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
+                    command.Parameters.AddWithValue("@MaTK_NguoiTuChoi", maTK_NguoiTuChoi);
+                    try
+                    {
+                        await conn.OpenAsync();
+                        await command.ExecuteNonQueryAsync(); 
+                        Console.WriteLine($"[DAL_DonXuat] Đã gọi sp_TuChoiDonXuat thành công cho MaDonXuat: {maDonXuat}");
+                        return true; 
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_DonXuat] Lỗi SQL khi từ chối đơn xuất {maDonXuat}: {ex.Message}");
+                        throw; 
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_DonXuat] Lỗi khác khi từ chối đơn xuất {maDonXuat}: {ex.Message}");
+                        throw;
+                    }
+                } 
+            } 
+        }
         public List<DTO_DonXuat> GetAllDonXuat()
         {
             List<DTO_DonXuat> danhSach = new List<DTO_DonXuat>();
@@ -178,58 +297,140 @@ namespace DAL
         public DTO_DonXuat GetDonXuatById(int maDonXuat)
         {
             DTO_DonXuat donXuat = null;
-            string query = @"
-        SELECT TOP 1
-            dx.MaDonXuat, dx.NgayXuat, dx.MaTK, tkLap.TenDangNhap AS TenNguoiLap,
-            dx.LoaiXuat, dx.MaHoaDon, dx.MaKhachHang, kh.Ten AS TenKhachHang,
-            dx.TrangThai, dx.GhiChu, dx.NgayCapNhat, dx.NguoiCapNhat,
-            tkCapNhat.TenDangNhap AS TenNguoiCapNhat
-        FROM QLDonXuat dx
-        INNER JOIN QLTK tkLap ON dx.MaTK = tkLap.MaTK
-        LEFT JOIN QLKH kh ON dx.MaKhachHang = kh.MaKhachHang
-        LEFT JOIN QLTK tkCapNhat ON dx.NguoiCapNhat = tkCapNhat.MaTK
-        WHERE dx.MaDonXuat = @MaDonXuat;";
+            List<DTO_ChiTietDonXuat> chiTietList = new List<DTO_ChiTietDonXuat>();
 
-            using (SqlConnection conn = DBConnect.GetConnection())
+            string queryHeader = @"
+                                SELECT TOP 1
+                     dx.MaDonXuat, dx.NgayXuat, dx.MaTK, tkLap.TenDangNhap AS TenNguoiLap,
+                     dx.LoaiXuat, dx.MaHoaDon, dx.MaKhachHang AS MaKhachHang, kh.Ten AS TenKhachHang, -- Sửa lại tên cột MaKH nếu cần
+                     dx.TrangThai, dx.GhiChu, dx.NgayCapNhat, dx.NguoiCapNhat,
+                     tkCapNhat.TenDangNhap AS TenNguoiCapNhat
+                 FROM dbo.QLDonXuat dx -- Thêm dbo.
+                 INNER JOIN dbo.QLTK tkLap ON dx.MaTK = tkLap.MaTK
+                 LEFT JOIN dbo.QLKH kh ON dx.MaKhachHang = kh.MaKhachHang -- Sửa lại tên cột MaKH nếu cần
+                 LEFT JOIN dbo.QLTK tkCapNhat ON dx.NguoiCapNhat = tkCapNhat.MaTK
+                 WHERE dx.MaDonXuat =@MaDonXuat;";
+
+            string queryDetails = @"
+               SELECT
+                  ct.MaCTDX, ct.MaDonXuat, ct.MaVatLieu, vl.Ten AS TenVatLieu, vl.DonViTinh,
+                  ct.MaKhoNguon, kn.TenKho AS TenKhoNguon, -- Lấy tên kho nguồn
+                  ct.MaKhoDich, kd.TenKho AS TenKhoDich,   -- Lấy tên kho đích
+                  ct.SoLuong, ct.DonGia
+              FROM dbo.ChiTietDonXuat ct -- Thêm dbo.
+              INNER JOIN dbo.QLVatLieu vl ON ct.MaVatLieu = vl.MaVatLieu
+              LEFT JOIN dbo.Kho kn ON ct.MaKhoNguon = kn.MaKho -- Join để lấy tên Kho Nguồn
+              LEFT JOIN dbo.Kho kd ON ct.MaKhoDich = kd.MaKho   -- Join để lấy tên Kho Đích (có thể NULL)
+              WHERE ct.MaDonXuat = @MaDonXuat;";
+
+            using (SqlConnection conn = GetConnection())
             {
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                try
                 {
-                    cmd.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
-                    try
+                    conn.Open();
+
+                    using (SqlCommand cmdHeader = new SqlCommand(queryHeader, conn))
                     {
-                        conn.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        cmdHeader.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
+                        using (SqlDataReader readerHeader = cmdHeader.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (readerHeader.Read())
                             {
                                 donXuat = new DTO_DonXuat
                                 {
-                                    MaDonXuat = reader.GetInt32(reader.GetOrdinal("MaDonXuat")),
-                                    NgayXuat = reader.GetDateTime(reader.GetOrdinal("NgayXuat")),
-                                    MaTK = reader.GetInt32(reader.GetOrdinal("MaTK")),
-                                    TenNguoiLap = reader.GetString(reader.GetOrdinal("TenNguoiLap")),
-                                    LoaiXuat = reader.GetString(reader.GetOrdinal("LoaiXuat")),
-                                    MaHoaDon = reader.IsDBNull(reader.GetOrdinal("MaHoaDon")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaHoaDon")),
-                                    MaKhachHang = reader.IsDBNull(reader.GetOrdinal("MaKhachHang")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaKhachHang")),
-                                    TenKhachHang = reader.IsDBNull(reader.GetOrdinal("TenKhachHang")) ? null : reader.GetString(reader.GetOrdinal("TenKhachHang")),
-                                    TrangThai = reader.GetString(reader.GetOrdinal("TrangThai")),
-                                    GhiChu = reader.IsDBNull(reader.GetOrdinal("GhiChu")) ? null : reader.GetString(reader.GetOrdinal("GhiChu")),
-                                    NgayCapNhat = reader.IsDBNull(reader.GetOrdinal("NgayCapNhat")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayCapNhat")),
-                                    NguoiCapNhat = reader.IsDBNull(reader.GetOrdinal("NguoiCapNhat")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("NguoiCapNhat")),
-                                    TenNguoiCapNhat = reader.IsDBNull(reader.GetOrdinal("TenNguoiCapNhat")) ? null : reader.GetString(reader.GetOrdinal("TenNguoiCapNhat"))
+                                    MaDonXuat = readerHeader.GetInt32(readerHeader.GetOrdinal("MaDonXuat")),
+                                    NgayXuat = readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayXuat")),
+                                    MaTK = readerHeader.GetInt32(readerHeader.GetOrdinal("MaTK")),
+                                    TenNguoiLap = readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiLap")),
+                                    LoaiXuat = readerHeader.GetString(readerHeader.GetOrdinal("LoaiXuat")),
+                                    MaHoaDon = readerHeader.IsDBNull(readerHeader.GetOrdinal("MaHoaDon")) ? (int?)null : readerHeader.GetInt32(readerHeader.GetOrdinal("MaHoaDon")),
+                                    MaKhachHang = readerHeader.IsDBNull(readerHeader.GetOrdinal("MaKhachHang")) ? (int?)null : readerHeader.GetInt32(readerHeader.GetOrdinal("MaKhachHang")),
+                                    TenKhachHang = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenKhachHang")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenKhachHang")),
+                                    TrangThai = readerHeader.GetString(readerHeader.GetOrdinal("TrangThai")),
+                                    GhiChu = readerHeader.IsDBNull(readerHeader.GetOrdinal("GhiChu")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("GhiChu")),
+                                    NgayCapNhat = readerHeader.IsDBNull(readerHeader.GetOrdinal("NgayCapNhat")) ? (DateTime?)null : readerHeader.GetDateTime(readerHeader.GetOrdinal("NgayCapNhat")),
+                                    NguoiCapNhat = readerHeader.IsDBNull(readerHeader.GetOrdinal("NguoiCapNhat")) ? (int?)null : readerHeader.GetInt32(readerHeader.GetOrdinal("NguoiCapNhat")),
+                                    TenNguoiCapNhat = readerHeader.IsDBNull(readerHeader.GetOrdinal("TenNguoiCapNhat")) ? null : readerHeader.GetString(readerHeader.GetOrdinal("TenNguoiCapNhat")), // Có thể không cần lưu tên người cập nhật trong DTO này
                                 };
                             }
-                        }
+                        } 
                     }
-                    catch (Exception ex)
+
+                    if (donXuat != null)
                     {
-                        Console.WriteLine($"Lỗi DAL GetDonXuatById (MaDX={maDonXuat}): {ex.Message}");
+                        using (SqlCommand cmdDetails = new SqlCommand(queryDetails, conn))
+                        {
+                            cmdDetails.Parameters.AddWithValue("@MaDonXuat", maDonXuat);
+                            using (SqlDataReader readerDetails = cmdDetails.ExecuteReader())
+                            {
+                                var columns = Enumerable.Range(0, readerDetails.FieldCount)
+                                                        .Select(i => readerDetails.GetName(i))
+                                                        .ToList();
+
+                                string[] requiredColumns = { "MaCTDX", "MaDonXuat", "MaVatLieu", "TenVatLieu", "DonViTinh",
+                                                             "MaKhoNguon", "TenKhoNguon", "MaKhoDich", "TenKhoDich",
+                                                             "SoLuong", "DonGia" };
+
+                                foreach (string colName in requiredColumns)
+                                {
+                                    if (!columns.Any(c => c.Equals(colName, StringComparison.OrdinalIgnoreCase)))
+                                    {
+                                        string errorMsg = $"Lỗi DAL GetDonXuatById: Câu lệnh queryDetails không trả về cột cần thiết '{colName}'. Các cột trả về: {string.Join(", ", columns)}";
+                                        Console.WriteLine(errorMsg);
+                                        throw new InvalidOperationException(errorMsg); // Ném lỗi rõ ràng hơn IndexOutOfRange
+                                    }
+                                }
+                                int maCTDXOrdinal = readerDetails.GetOrdinal("MaCTDX");
+                                int maDonXuatOrdinal = readerDetails.GetOrdinal("MaDonXuat");
+                                int maVatLieuOrdinal = readerDetails.GetOrdinal("MaVatLieu");
+                                int tenVatLieuOrdinal = readerDetails.GetOrdinal("TenVatLieu");
+                                int donViTinhOrdinal = readerDetails.GetOrdinal("DonViTinh");
+                                int maKhoNguonOrdinal = readerDetails.GetOrdinal("MaKhoNguon"); 
+                                int tenKhoNguonOrdinal = readerDetails.GetOrdinal("TenKhoNguon");
+                                int maKhoDichOrdinal = readerDetails.GetOrdinal("MaKhoDich");
+                                int tenKhoDichOrdinal = readerDetails.GetOrdinal("TenKhoDich");
+                                int soLuongOrdinal = readerDetails.GetOrdinal("SoLuong");
+                                int donGiaOrdinal = readerDetails.GetOrdinal("DonGia");
+
+                                while (readerDetails.Read())
+                                {
+                                    try
+                                    {
+                                        chiTietList.Add(new DTO_ChiTietDonXuat
+                                        {
+                                            MaCTDX = readerDetails.GetInt32(maCTDXOrdinal),
+                                            MaDonXuat = readerDetails.GetInt32(maDonXuatOrdinal),
+                                            MaVatLieu = readerDetails.GetInt32(maVatLieuOrdinal),
+                                            TenVatLieu = readerDetails.GetString(tenVatLieuOrdinal),
+                                            DonViTinh = readerDetails.GetString(donViTinhOrdinal),
+                                            MaKhoNguon = readerDetails.GetInt32(maKhoNguonOrdinal),
+                                            TenKhoNguon = readerDetails.IsDBNull(tenKhoNguonOrdinal) ? null : readerDetails.GetString(tenKhoNguonOrdinal),
+                                            MaKhoDich = readerDetails.IsDBNull(maKhoDichOrdinal) ? (int?)null : readerDetails.GetInt32(maKhoDichOrdinal), // Đọc MaKhoDich
+                                            TenKhoDich = readerDetails.IsDBNull(tenKhoDichOrdinal) ? null : readerDetails.GetString(tenKhoDichOrdinal),
+                                            SoLuong = readerDetails.GetInt32(soLuongOrdinal),
+                                            DonGia = readerDetails.GetDecimal(donGiaOrdinal)
+                                        });
+                                    }
+                                    catch (Exception exRow)
+                                    {
+                                        Console.WriteLine($"--- Lỗi DAL khi đọc chi tiết dòng (MaDX={maDonXuat}): {exRow.ToString()} ---");
+                                        continue; // Bỏ qua dòng lỗi
+                                    }
+                                }
+                            }
+                        }
+                        donXuat.ChitietDonXuat = chiTietList;
                     }
                 }
-            }
+                catch (Exception ex) // Bắt lỗi chung
+                {
+                    Console.WriteLine($"Lỗi DAL GetDonXuatById (MaDX={maDonXuat}): {ex.ToString()}");
+                    return null;
+                }
+            } 
+
             return donXuat;
         }
-
 
         public List<DTO_DonXuat> TimKiemDonXuat(string keyword, string trangThai)
         {
@@ -335,5 +536,6 @@ namespace DAL
             }
             return danhSachChiTiet;
         }
+
     }
 }

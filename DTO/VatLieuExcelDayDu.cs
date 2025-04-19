@@ -19,8 +19,9 @@ namespace DTO
         public string DiaChiNcc { get; set; }
         public string EmailNcc { get; set; }
         public string RowError { get; set; }
+        public string TenKho {  get; set; }
     }
-
+ 
     public class NccFilterItem
     {
         public string TenNCC { get; set; } 

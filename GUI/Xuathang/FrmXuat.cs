@@ -45,7 +45,7 @@ namespace QLVT
             dgvDonXuat.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNgayXuat", HeaderText = "Ngày Xuất", DataPropertyName = "NgayXuat", DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }, Width = 90 });
             dgvDonXuat.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColLoaiXuat", HeaderText = "Loại Xuất ", DataPropertyName = "LoaiXuat", Width = 120 });
             dgvDonXuat.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColKhachHang", HeaderText = "Khách Hàng", DataPropertyName = "TenKhachHang", Width = 150 });
-            dgvDonXuat.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColTrangThai", HeaderText = "Trạng Thái", DataPropertyName = "TrangThai", Width = 100 });
+            dgvDonXuat.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColTrangThai", HeaderText = "Trạng Thái", DataPropertyName = "TrangThai", Width = 150 });
             dgvDonXuat.AllowUserToAddRows = false;
             dgvDonXuat.ReadOnly = true;
             DataGridViewHelper.CustomizeDataGridView(dgvDonXuat);
@@ -57,7 +57,7 @@ namespace QLVT
         {
             cboTrangThaiFilter.Items.Clear();
             cboTrangThaiFilter.Items.Add("-- Tất cả TT --");
-            cboTrangThaiFilter.Items.Add("Đang xử lý");
+            cboTrangThaiFilter.Items.Add("Chờ duyệt");
             cboTrangThaiFilter.Items.Add("Hoàn thành");
             cboTrangThaiFilter.Items.Add("Đã hủy");
             cboTrangThaiFilter.SelectedIndex = 0;
@@ -73,7 +73,7 @@ namespace QLVT
                 PerformSearch();
             };
         }
-        private void LoadAllDonXuat()
+        public void LoadAllDonXuat()
         {
             try
             {
@@ -139,10 +139,28 @@ namespace QLVT
             {
                 DataGridViewRow clickedRow = dgvDonXuat.Rows[e.RowIndex];
 
-                if (clickedRow.DataBoundItem is DTO_DonXuat selectedOrder)
+                if (clickedRow.DataBoundItem is DTO_DonXuat selected)
                 {
-                    int orderId = selectedOrder.MaDonXuat;
-                    ShowPopup(orderId);
+                    int orderId = selected.MaDonXuat;
+
+                    if (CurrentUser.ChucVu == "Nhân viên")
+                    {
+                        if (selected.TenNguoiLap == CurrentUser.TenDangNhap)
+                        {
+                            Console.WriteLine($"User {CurrentUser.MaTK} (Role: Nhân viên) is the creator ({selected.TenNguoiLap}). Opening order {orderId}.");
+                            ShowPopup(orderId);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"User {CurrentUser.MaTK} (Role: Nhân viên) is NOT the creator ({selected.TenNguoiLap}). Denying access to order {orderId}.");
+                            MessageBox.Show("Bạn là Nhân viên nhưng không phải người tạo đơn này nên không thể mở.", "Không có quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+
+                        ShowPopup(orderId);
+                    }
                 }
                 else
                 {
@@ -155,7 +173,7 @@ namespace QLVT
         {
             try
             {
-                using (var popup = new PopupXuat(orderId))
+                using (var popup = new PopupXuat(orderId,this))
                 {
                     popup.StartPosition = FormStartPosition.CenterParent;
 
@@ -204,7 +222,7 @@ namespace QLVT
             cboTrangThaiFilter.Items.Clear();
             cboTrangThaiFilter.Items.Add("-- Tất cả TT --");
             cboTrangThaiFilter.Items.Add("Hoàn thành");
-            cboTrangThaiFilter.Items.Add("Đang xử lý");
+            cboTrangThaiFilter.Items.Add("Chờ duyệt");
             cboTrangThaiFilter.SelectedIndex = -1;
         }
 
@@ -213,7 +231,7 @@ namespace QLVT
             debounceTimer.Stop();
             debounceTimer.Start();
         }
-        private void PerformSearch()
+        public void PerformSearch()
         {
             string keyword = txtSearch.Text.Trim();
             string selectedTrangThai = null;
@@ -254,8 +272,6 @@ namespace QLVT
                 var finalResults = filteredList.ToList();
                 BindDataToGrid(finalResults);
 
-                // --- Cập nhật gợi ý (nếu cần) ---
-                // Bạn có thể dùng cùng logic lọc hoặc logic khác cho gợi ý
                 // Ví dụ đơn giản là hiển thị các kết quả grid làm gợi ý
                 Func<DTO_DonXuat, string> displayFunc = item => $"{item.MaDonXuat} - {item.TenKhachHang ?? item.TenNguoiLap}";
                 Action<DTO_DonXuat> clickAction = selectedItem =>

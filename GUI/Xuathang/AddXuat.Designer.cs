@@ -38,16 +38,13 @@
             CbKhoNguon = new ReaLTaiizor.Controls.AloneComboBox();
             label9 = new Label();
             resultKh = new Panel();
-            resultHD = new Panel();
             CbKhoDich = new ReaLTaiizor.Controls.AloneComboBox();
             label1 = new Label();
             TgTrangthai = new ReaLTaiizor.Controls.ForeverToggle();
             label8 = new Label();
             label5 = new Label();
-            SearchHoaDon = new ReaLTaiizor.Controls.SmallTextBox();
             SearchKh = new ReaLTaiizor.Controls.SmallTextBox();
             lblNgTao = new Label();
-            label2 = new Label();
             Tbnote = new ReaLTaiizor.Controls.SmallTextBox();
             label7 = new Label();
             label6 = new Label();
@@ -60,9 +57,6 @@
             button3 = new ReaLTaiizor.Controls.Button();
             button4 = new ReaLTaiizor.Controls.Button();
             ID = new ReaLTaiizor.Controls.SmallTextBox();
-            panelImportExcel = new Panel();
-            btnImportExcel = new ReaLTaiizor.Controls.HopeRoundButton();
-            smallLabel1 = new ReaLTaiizor.Controls.SmallLabel();
             button2 = new ReaLTaiizor.Controls.Button();
             button1 = new ReaLTaiizor.Controls.Button();
             panel2 = new Panel();
@@ -75,7 +69,6 @@
             timer1 = new System.Windows.Forms.Timer(components);
             panel1.SuspendLayout();
             panel4.SuspendLayout();
-            panelImportExcel.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -87,7 +80,6 @@
             panel1.BackColor = Color.FromArgb(236, 240, 241);
             panel1.Controls.Add(ketqua);
             panel1.Controls.Add(panel4);
-            panel1.Controls.Add(panelImportExcel);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(panel2);
@@ -112,16 +104,13 @@
             panel4.Controls.Add(CbKhoNguon);
             panel4.Controls.Add(label9);
             panel4.Controls.Add(resultKh);
-            panel4.Controls.Add(resultHD);
             panel4.Controls.Add(CbKhoDich);
             panel4.Controls.Add(label1);
             panel4.Controls.Add(TgTrangthai);
             panel4.Controls.Add(label8);
             panel4.Controls.Add(label5);
-            panel4.Controls.Add(SearchHoaDon);
             panel4.Controls.Add(SearchKh);
             panel4.Controls.Add(lblNgTao);
-            panel4.Controls.Add(label2);
             panel4.Controls.Add(Tbnote);
             panel4.Controls.Add(label7);
             panel4.Controls.Add(label6);
@@ -165,19 +154,11 @@
             // 
             // resultKh
             // 
-            resultKh.Location = new Point(117, 212);
+            resultKh.Location = new Point(118, 168);
             resultKh.Name = "resultKh";
             resultKh.Size = new Size(167, 24);
             resultKh.TabIndex = 74;
             resultKh.Visible = false;
-            // 
-            // resultHD
-            // 
-            resultHD.Location = new Point(118, 169);
-            resultHD.Name = "resultHD";
-            resultHD.Size = new Size(166, 24);
-            resultHD.TabIndex = 75;
-            resultHD.Visible = false;
             // 
             // CbKhoDich
             // 
@@ -186,9 +167,9 @@
             CbKhoDich.EnabledCalc = true;
             CbKhoDich.FormattingEnabled = true;
             CbKhoDich.ItemHeight = 20;
-            CbKhoDich.Location = new Point(119, 141);
+            CbKhoDich.Location = new Point(117, 140);
             CbKhoDich.Name = "CbKhoDich";
-            CbKhoDich.Size = new Size(166, 26);
+            CbKhoDich.Size = new Size(172, 26);
             CbKhoDich.TabIndex = 73;
             CbKhoDich.SelectedIndexChanged += CbKhoDich_SelectedIndexChanged;
             // 
@@ -196,7 +177,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(28, 141);
+            label1.Location = new Point(30, 141);
             label1.Name = "label1";
             label1.Size = new Size(61, 17);
             label1.TabIndex = 72;
@@ -240,25 +221,6 @@
             label5.TabIndex = 41;
             label5.Text = "Xuất kho";
             // 
-            // SearchHoaDon
-            // 
-            SearchHoaDon.BackColor = Color.Transparent;
-            SearchHoaDon.BorderColor = Color.FromArgb(180, 180, 180);
-            SearchHoaDon.CustomBGColor = Color.White;
-            SearchHoaDon.Font = new Font("Tahoma", 11F);
-            SearchHoaDon.ForeColor = Color.DimGray;
-            SearchHoaDon.Location = new Point(119, 141);
-            SearchHoaDon.MaxLength = 32767;
-            SearchHoaDon.Multiline = false;
-            SearchHoaDon.Name = "SearchHoaDon";
-            SearchHoaDon.ReadOnly = false;
-            SearchHoaDon.Size = new Size(162, 28);
-            SearchHoaDon.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            SearchHoaDon.TabIndex = 39;
-            SearchHoaDon.TextAlignment = HorizontalAlignment.Left;
-            SearchHoaDon.UseSystemPasswordChar = false;
-            SearchHoaDon.TextChanged += SearchHoaDon_TextChanged;
-            // 
             // SearchKh
             // 
             SearchKh.BackColor = Color.Transparent;
@@ -266,7 +228,7 @@
             SearchKh.CustomBGColor = Color.White;
             SearchKh.Font = new Font("Tahoma", 11F);
             SearchKh.ForeColor = Color.DimGray;
-            SearchKh.Location = new Point(117, 183);
+            SearchKh.Location = new Point(119, 139);
             SearchKh.MaxLength = 32767;
             SearchKh.Multiline = false;
             SearchKh.Name = "SearchKh";
@@ -287,16 +249,6 @@
             lblNgTao.Size = new Size(71, 17);
             lblNgTao.TabIndex = 37;
             lblNgTao.Text = "Người Tạo";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(28, 141);
-            label2.Name = "label2";
-            label2.Size = new Size(61, 17);
-            label2.TabIndex = 35;
-            label2.Text = "Hoá đơn";
             // 
             // Tbnote
             // 
@@ -341,7 +293,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(7, 185);
+            label3.Location = new Point(9, 141);
             label3.Name = "label3";
             label3.Size = new Size(80, 17);
             label3.TabIndex = 21;
@@ -479,49 +431,6 @@
             ID.Text = "Tự động";
             ID.TextAlignment = HorizontalAlignment.Left;
             ID.UseSystemPasswordChar = false;
-            // 
-            // panelImportExcel
-            // 
-            panelImportExcel.Anchor = AnchorStyles.None;
-            panelImportExcel.BackColor = Color.FromArgb(236, 240, 241);
-            panelImportExcel.Controls.Add(btnImportExcel);
-            panelImportExcel.Controls.Add(smallLabel1);
-            panelImportExcel.Location = new Point(285, 228);
-            panelImportExcel.Name = "panelImportExcel";
-            panelImportExcel.Size = new Size(247, 117);
-            panelImportExcel.TabIndex = 12;
-            // 
-            // btnImportExcel
-            // 
-            btnImportExcel.BorderColor = Color.FromArgb(220, 223, 230);
-            btnImportExcel.ButtonType = ReaLTaiizor.Util.HopeButtonType.Primary;
-            btnImportExcel.DangerColor = Color.FromArgb(245, 108, 108);
-            btnImportExcel.DefaultColor = Color.FromArgb(255, 255, 255);
-            btnImportExcel.Font = new Font("Segoe UI", 12F);
-            btnImportExcel.HoverTextColor = Color.FromArgb(48, 49, 51);
-            btnImportExcel.InfoColor = Color.FromArgb(144, 147, 153);
-            btnImportExcel.Location = new Point(25, 64);
-            btnImportExcel.Name = "btnImportExcel";
-            btnImportExcel.PrimaryColor = Color.FromArgb(64, 158, 255);
-            btnImportExcel.Size = new Size(190, 40);
-            btnImportExcel.SuccessColor = Color.FromArgb(103, 194, 58);
-            btnImportExcel.TabIndex = 1;
-            btnImportExcel.Text = "Chọn file";
-            btnImportExcel.TextColor = Color.White;
-            btnImportExcel.WarningColor = Color.FromArgb(230, 162, 60);
-            btnImportExcel.Click += hopeRoundButton2_Click;
-            // 
-            // smallLabel1
-            // 
-            smallLabel1.AutoSize = true;
-            smallLabel1.BackColor = Color.Transparent;
-            smallLabel1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            smallLabel1.ForeColor = Color.Black;
-            smallLabel1.Location = new Point(8, 28);
-            smallLabel1.Name = "smallLabel1";
-            smallLabel1.Size = new Size(225, 21);
-            smallLabel1.TabIndex = 0;
-            smallLabel1.Text = "Thêm sản phẩm từ file excel";
             // 
             // button2
             // 
@@ -719,8 +628,6 @@
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
-            panelImportExcel.ResumeLayout(false);
-            panelImportExcel.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -749,9 +656,6 @@
         private ReaLTaiizor.Controls.BigLabel bigLabel1;
         private PictureBox pictureBox3;
         private ReaLTaiizor.Controls.HopeRoundButton btnXuatHang;
-        private Panel panelImportExcel;
-        private ReaLTaiizor.Controls.HopeRoundButton btnImportExcel;
-        private ReaLTaiizor.Controls.SmallLabel smallLabel1;
         private Label lblSl;
         private ReaLTaiizor.Controls.AloneComboBox CbKhach;
         private ReaLTaiizor.Controls.SmallTextBox SearchKh;
@@ -762,19 +666,16 @@
         private ReaLTaiizor.Controls.SmallTextBox ID;
         private FlowLayoutPanel ketqua;
         private ReaLTaiizor.Controls.AloneComboBox CbNgNhap;
-        private Label label2;
         private Label lblNgTao;
         private ReaLTaiizor.Controls.HopeRoundButton btnCancelImport;
         private Label label3;
-        private ReaLTaiizor.Controls.SmallTextBox SearchHoaDon;
         private Label label8;
         private Label label5;
         private ReaLTaiizor.Controls.ForeverToggle TgTrangthai;
-        private ReaLTaiizor.Controls.AloneComboBox CbKhoDich;
         private Panel resultKh;
-        private Panel resultHD;
         private System.Windows.Forms.Timer timer1;
         private ReaLTaiizor.Controls.AloneComboBox CbKhoNguon;
         private Label label9;
+        private ReaLTaiizor.Controls.AloneComboBox CbKhoDich;
     }
 }

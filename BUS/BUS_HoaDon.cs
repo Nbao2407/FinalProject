@@ -16,10 +16,61 @@ namespace BUS
         {
             return dalHoaDon.LayTatCaHoaDon();
         }
+        public List<DTO_HoaDon> LayTatcaHoaDon2(int CurrentUser)
+        {
+            return dalHoaDon.LayTatCaHoaDonnhap(CurrentUser);
+        }
         public DataTable LoadVatLieu()
         {
             return dalHoaDon.GetVatLieu();
         }
+        public bool XoaHoaDonVaChiTiet(int maHoaDon)
+        {
+            return dalHoaDon.XoaHoaDonVaChiTiet(maHoaDon);
+        }
+        public async Task<(bool Success, string ErrorMessage)> TuChoiHoaDonAsync(int maHoaDon, int maTK_NguoiThucHien)
+        {
+            string errorMessage = string.Empty;
+
+            if (maHoaDon <= 0)
+            {
+                errorMessage = "Mã hóa đơn không hợp lệ.";
+                return (false, errorMessage);
+            }
+            if (maTK_NguoiThucHien <= 0)
+            {
+                errorMessage = "Mã người thực hiện không hợp lệ.";
+                return (false, errorMessage);
+            }
+
+            try
+            {
+                bool success = await dalHoaDon.TuChoiHoaDonAsync(maHoaDon, maTK_NguoiThucHien);
+
+                if (success)
+                {
+                    return (true, string.Empty);
+                }
+                else
+                {
+                    errorMessage = "Thao tác DAL không thành công nhưng không có lỗi SQL.";
+                    return (false, errorMessage);
+                }
+            }
+            catch (SqlException sqlEx) 
+            {
+                Console.WriteLine($"[BUS_HoaDon] Lỗi SQL khi từ chối/hủy hóa đơn {maHoaDon}: {sqlEx.Message}");
+                errorMessage = sqlEx.Message; 
+                return (false, errorMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[BUS_HoaDon] Lỗi không xác định khi từ chối/hủy hóa đơn {maHoaDon}: {ex.Message}");
+                errorMessage = "Đã xảy ra lỗi không mong muốn trong quá trình xử lý hóa đơn.";
+                return (false, errorMessage);
+            }
+        }
+
         public void DeleteHoaDonTam(int maHoaDon,int nguoiCapNhat)
         {
             dalHoaDon.DeleteHoaDonTam(maHoaDon,nguoiCapNhat);

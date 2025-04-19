@@ -107,11 +107,6 @@ namespace QLVT.Helper
         public static bool IsValidMatKhau(string matKhau, out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (string.IsNullOrEmpty(matKhau))
-            {
-                errorMessage = "Mật khẩu không được để trống!";
-                return false;
-            }
             if (matKhau.Length < 6 || matKhau.Length > 255)
             {
                 errorMessage = "Mật khẩu phải từ 6 đến 255 ký tự!";
@@ -131,12 +126,6 @@ namespace QLVT.Helper
             if (chucVu.Length > 50)
             {
                 errorMessage = "Chức vụ không được vượt quá 50 ký tự!";
-                return false;
-            }
-            string[] validChucVu = { "Quản lý", "Nhân viên" };
-            if (!validChucVu.Contains(chucVu))
-            {
-                errorMessage = "Chức vụ không hợp lệ! Chỉ chấp nhận: Quản lý, Nhân viên.";
                 return false;
             }
             return true;

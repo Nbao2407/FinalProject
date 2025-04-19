@@ -4,6 +4,7 @@ using DTO;
 using GUI.Helpler;
 using QLVT.Helper;
 using QLVT.HoaDon;
+using QLVT.Order;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,6 +35,8 @@ namespace QLVT
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.Resize += new EventHandler(Frm_Resize);
+            LoadData();
+            SetupDataGridView();
             SetupDebounceTimer();
             LoadComboBoxes();
         }
@@ -49,78 +52,162 @@ namespace QLVT
         {
             try
             {
-                List<DTO_HoaDon> danhSach = busHoaDon.LayTatCaHoaDon();
+                danhSach = busHoaDon.LayTatcaHoaDon2(CurrentUser.MaTK);
                 danhSach = danhSach.AsEnumerable().Reverse().ToList();
-                if (danhSach == null || danhSach.Count == 0)
+
+                if (danhSach != null && danhSach.Any())
                 {
-                    MessageBox.Show("Không có dữ liệu hóa đơn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    if (dataGridView1 != null)
-                        dataGridView1.DataSource = null;
-                    return;
+                    dataGridView1.DataSource = danhSach;
+                    ResizeColumns();
                 }
-                var data = danhSach.Select(hd => new
+                else
                 {
-                    hd.MaHoaDon,
-                    hd.NgayLap,
-                    hd.NguoiLap,
-                    KhachHang = hd.TenKhachHang,
-                    hd.TongTien,
-                    hd.TrangThai,
-                    hd.HinhThucThanhToan
-                }).ToList();
-
-                dataGridView1.DataSource = data;
-
-                if (dataGridView1.Columns.Contains("MaHoaDon"))
-                    dataGridView1.Columns["MaHoaDon"].HeaderText = "Mã Hóa Đơn";
-
-                if (dataGridView1.Columns.Contains("NgayLap"))
-                    dataGridView1.Columns["NgayLap"].HeaderText = "Ngày Lập";
-
-                if (dataGridView1.Columns.Contains("NguoiLap"))
-                    dataGridView1.Columns["NguoiLap"].HeaderText = "Người Lập";
-
-                if (dataGridView1.Columns.Contains("KhachHang"))
-                    dataGridView1.Columns["KhachHang"].HeaderText = "Khách Hàng";
-
-                if (dataGridView1.Columns.Contains("TongTien"))
-                {
-                    dataGridView1.Columns["TongTien"].HeaderText = "Tổng Tiền";
-                    dataGridView1.Columns["TongTien"].DefaultCellStyle.Format = "N0";
-                    dataGridView1.Columns["TongTien"].DefaultCellStyle.ForeColor = Color.Blue;
+                    danhSach = new List<DTO_HoaDon>();
+                    dataGridView1.DataSource = null;
+                    MessageBox.Show("Không có dữ liệu ban đầu để hiển thị!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                if (dataGridView1.Columns.Contains("TrangThai"))
-                    dataGridView1.Columns["TrangThai"].HeaderText = "Trạng Thái";
-
-                if (dataGridView1.Columns.Contains("HinhThucThanhToan"))
-                    dataGridView1.Columns["HinhThucThanhToan"].HeaderText = "Hình Thức TT";
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi tải dữ liệu ban đầu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                danhSach = new List<DTO_HoaDon>();
+                dataGridView1.DataSource = null;
             }
         }
-        private void SetupDebounceTimer()
+
+        private void SetupDataGridView()
         {
-            debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
-            debounceTimer.Tick += (s, e) =>
+            dataGridView1.AutoGenerateColumns = false;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+
+            dataGridView1.Columns.Clear();
+
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
-                debounceTimer.Stop();
-                PerformSearch();
-            };
+                Name = "colMaHoaDon",
+                HeaderText = "Mã",
+                DataPropertyName = "MaHoaDon",
+                Width = 80,
+                ReadOnly = true
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colNguoiTao",
+                HeaderText = "Người tạo",
+                DataPropertyName = "NguoiLap",
+                Width = 100,
+                ReadOnly = true,
+            });
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colNhapLap",
+                HeaderText = "Ngày lập",
+                DataPropertyName = "Ngaylap",
+                Width = 100,
+                ReadOnly = true,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
+            });
+
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTenKh",
+                HeaderText = "Tên khách hàng",
+                DataPropertyName = "TenKhachHang",
+                ReadOnly = true
+            });
+
+            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTrangThai",
+                HeaderText = "Trạng Thái",
+                DataPropertyName = "TrangThai",
+                Width = 100,
+                ReadOnly = true
+            });
+
+            DataGridViewHelper.CustomizeDataGridView(dataGridView1);
+            this.Resize += new EventHandler(Frm_Resize);
         }
+
+
+
         private void dgvHoaDon_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count && !dataGridView1.Rows[e.RowIndex].IsNewRow)
             {
-                int maHoaDon = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[0].Value);
+                DataGridViewRow clickedRow = dataGridView1.Rows[e.RowIndex];
 
-                PopupHoaDon popup = new PopupHoaDon(maHoaDon);
-                popup.ShowDialog();
+                string maHoaDonColumnName = "colMaHoaDon"; // Ví dụ tên cột
+                int hoaDonId = -1;
+
+                try
+                {
+                    if (dataGridView1.Columns.Contains(maHoaDonColumnName) && clickedRow.Cells[maHoaDonColumnName].Value != null &&
+                        int.TryParse(clickedRow.Cells[maHoaDonColumnName].Value.ToString(), out hoaDonId))
+                    {
+                        DTO_HoaDon selected = busHoaDon.GetHoaDonById(hoaDonId);
+
+                        if (selected == null)
+                        {
+                            MessageBox.Show("Không tìm thấy chi tiết hóa đơn với mã được chọn.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        if (CurrentUser.ChucVu == "Nhân viên")
+                        {
+                            // Dùng MaTK từ DT vừa lấy được
+                            if (selected.MaTK == CurrentUser.MaTK)
+                            {
+                                ShowPopup(selected.MaHoaDon);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Bạn là Nhân viên nhưng không phải người tạo hóa đơn này nên không thể mở.", "Không có quyền truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                        else
+                        {
+                            ShowPopup(selected.MaHoaDon);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể lấy Mã Hóa Đơn hợp lệ từ dòng được chọn.", "Lỗi Dữ Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi lấy hoặc xử lý chi tiết hóa đơn: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
+
+        private void ShowPopup(int orderId)
+        {
+            try
+            {
+                using (var popup = new PopupHoaDon(orderId, this))
+                {
+                    popup.StartPosition = FormStartPosition.CenterParent;
+
+                    DialogResult result = popup.ShowDialog();
+
+                    bool dataMayHaveChanged = popup.DataChanged;
+
+                    if (dataMayHaveChanged)
+                    {
+                        Console.WriteLine("Data may have changed, reloading initial data...");
+                        LoadData();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open or process the order details.\nError: {ex.Message}", "Popup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void Frm_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -162,19 +249,6 @@ namespace QLVT
             debounceTimer.Start();
         }
 
-        public void OpenEdit(int? maHoaDon)
-        {
-            this.Controls.Clear();
-            EditHoaDon editForm = new EditHoaDon(maHoaDon);
-            editForm.TopLevel = false;
-            editForm.Dock = DockStyle.Fill;
-            editForm.FormClosed += (s, e) =>
-            {
-                LoadData();
-            };
-            this.Controls.Add(editForm);
-            editForm.Show();
-        }
         public void Openadd()
         {
             this.Controls.Clear();
@@ -186,6 +260,7 @@ namespace QLVT
             this.Controls.Add(addHoaDon);
             addHoaDon.Show();
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
             Openadd();
@@ -193,73 +268,106 @@ namespace QLVT
 
         private void CbTrangthai_SelectedIndexChanged(object sender, EventArgs e)
         {
-                string filter = CbTrangthai.SelectedItem.ToString();
-                if (filter == "Tất cả")
-                {
-                    dataGridView1.DataSource = hoaDons;
-                }
-                else
-                {
-                    var filteredList = hoaDons.Where(k => k.TrangThai == filter).ToList();
-                    dataGridView1.DataSource = filteredList;
-                }
+            PerformSearch();
+
         }
 
         private void LoadComboBoxes()
         {
             CbTrangthai.Items.Clear();
-            CbTrangthai.Items.Add("-- Tất cả TT --");
-            CbTrangthai.Items.Add("Hoàn thành");
-            CbTrangthai.Items.Add("Đang xử lý");
+            CbTrangthai.Items.Add("Tất cả");
+            CbTrangthai.Items.Add("Đã thanh toán");
+            CbTrangthai.Items.Add("Chờ duyệt");
+            CbTrangthai.Items.Add("Nháp");
+            CbTrangthai.Items.Add("Từ chối");
             CbTrangthai.Items.Add("Đã hủy");
             CbTrangthai.SelectedIndex = 0;
+        }
+
+        private void SetupDebounceTimer()
+        {
+            debounceTimer = new System.Windows.Forms.Timer { Interval = 300 };
+            debounceTimer.Tick += (s, e) =>
+            {
+                debounceTimer.Stop();
+                PerformSearch();
+            };
         }
 
         private void PerformSearch()
         {
             string searchQuery = txtSearch.Text.Trim().ToLowerInvariant();
-            string selectedTrangThai = CbTrangthai.SelectedItem?.ToString();
-            if (selectedTrangThai == "-- Tất cả TT --") { selectedTrangThai = null; }
 
-            Console.WriteLine($"PerformSearch for suggestions. Query: '{searchQuery}', Status: '{selectedTrangThai ?? "All"}'");
+            string selectedTrangThai = null;
+            if (CbTrangthai.SelectedIndex > 0)
+            {
+                selectedTrangThai = CbTrangthai.Text;
+            }
 
             try
             {
+                if (danhSach == null)
+                {
+                    MessageBox.Show("Danh sách đơn nhập chưa được tải.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (result != null) result.Visible = false;
+                    dataGridView1.DataSource = null;
+                    return;
+                }
+
                 IEnumerable<DTO_HoaDon> suggestionSource = danhSach;
 
                 if (!string.IsNullOrEmpty(selectedTrangThai))
                 {
                     suggestionSource = suggestionSource.Where(order =>
+                        order != null &&
                         order.TrangThai != null &&
                         order.TrangThai.Equals(selectedTrangThai, StringComparison.OrdinalIgnoreCase)
                     );
                 }
 
-                List<DTO_HoaDon> suggestionResults = new List<DTO_HoaDon>(); 
+                List<DTO_HoaDon> suggestionResults;
                 if (!string.IsNullOrEmpty(searchQuery))
                 {
                     suggestionResults = suggestionSource.Where(order =>
                     {
+                        if (order == null) return false;
+
                         bool match = false;
-                        if (order.MaHoaDon.ToString().Contains(searchQuery)) match = true;
-                        if (!match && order.TenKhachHang.ToLowerInvariant().Contains(searchQuery)) match = true;
+                        if (order.MaHoaDon.ToString().ToLowerInvariant().Contains(searchQuery))
+                        {
+                            match = true;
+                        }
+
+                        if (!match && order.TenKhachHang != null &&
+                            order.TenKhachHang.Contains(searchQuery, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            match = true;
+                        }
                         return match;
                     }).ToList();
                 }
+                else
+                {
+                    suggestionResults = suggestionSource.Where(order => order != null).ToList();
+                }
 
-                Console.WriteLine($"Found {suggestionResults.Count} suggestions.");
+                dataGridView1.DataSource = null;
+                if (suggestionResults.Any())
+                {
+                    dataGridView1.DataSource = suggestionResults;
+                }
 
-                Func<DTO_HoaDon, string> displayFunc = item => $"{item.MaHoaDon} - {item.TenKhachHang ?? "N/A"}";
+                Func<DTO_HoaDon, string> displayFunc = item => $"{item.MaHoaDon} - {item.TenKhachHang}";
 
-                Action<DTO_HoaDon> clickAction = selectedItem => {
+                Action<DTO_HoaDon> clickAction = selectedItem =>
+                {
                     txtSearch.TextChanged -= txtSearch_TextChanged;
-                    txtSearch.Text = selectedItem.MaHoaDon.ToString(); 
+                    txtSearch.Text = selectedItem.MaHoaDon.ToString();
                     txtSearch.TextChanged += txtSearch_TextChanged;
-
                     var itemToShow = new List<DTO_HoaDon> { selectedItem };
                     dataGridView1.DataSource = itemToShow;
-                    Console.WriteLine($"DGV DataSource updated to show only item {selectedItem.MaHoaDon}");
                     ResizeColumns();
+                    if (result != null) result.Visible = false;
                 };
 
                 SearchHelper.UpdateSearchSuggestions(
@@ -272,39 +380,18 @@ namespace QLVT
                     clickAction
                 );
             }
+            catch (NullReferenceException nre)
+            {
+                MessageBox.Show($"Lỗi tham chiếu null khi tìm kiếm: {nre.Message}\nKiểm tra xem có đối tượng 'order' nào bị null trong danh sách không.\n{nre.StackTrace}", "Lỗi Null Reference", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thực hiện tìm kiếm gợi ý: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khác khi tìm kiếm: {ex.Message}\n{ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result != null) result.Visible = false;
+                dataGridView1.DataSource = null;
             }
         }
-        private void cboTrangThai_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string filter = CbTrangthai.SelectedItem?.ToString();
-
-            if (danhSach == null) { return; }
-
-            IEnumerable<DTO_HoaDon> listToShow = danhSach;
-
-            if (filter != "-- Tất cả TT --" && !string.IsNullOrEmpty(filter))
-            {
-                listToShow = danhSach.Where(k => k.TrangThai != null && k.TrangThai.Equals(filter, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var filteredByStatus = listToShow.ToList();
-            dataGridView1.DataSource = filteredByStatus.Any() ? filteredByStatus : null;
-            Console.WriteLine($"DGV updated by status filter. Showing {filteredByStatus.Count} items.");
-            ResizeColumns();
-
-            if (txtSearch.Text.Length > 0)
-            {
-                txtSearch.Text = string.Empty;
-            }
-            else
-            {
-                if (result != null) result.Visible = false;
-            }
-        }
-
     }
 }

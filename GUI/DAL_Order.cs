@@ -38,7 +38,7 @@ namespace DAL
             return dt;
         }
 
-        public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(DateOnly ngayNhap, int maNCC, int maTK, string ghiChu, string chiTietNhap, int nguoiCapNhat)
+        public async Task<(bool Success, string Message, int MaDonNhap)> NhapHangAsync(DateOnly ngayNhap, int maNCC, int maTK, string ghiChu, string chiTietNhap, int nguoiCapNhat,int NguoiNhap)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -54,6 +54,7 @@ namespace DAL
                     command.Parameters.AddWithValue("@GhiChu", (object)ghiChu ?? DBNull.Value);
                     command.Parameters.AddWithValue("@ChiTietNhap", chiTietNhap);
                     command.Parameters.AddWithValue("@NguoiCapNhat", nguoiCapNhat);
+                    command.Parameters.AddWithValue("@NguoiNhap", NguoiNhap);
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())
@@ -68,6 +69,7 @@ namespace DAL
                 }
             }
         }
+
 
         public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string keyword)
         {

@@ -47,7 +47,7 @@ namespace QLVT
                 {
                     dtpNgaySinh.Value = DateTime.Today;
                 }
-                CbGender.SelectedItem = khach.GioiTinh;
+                smallTextBox1.Text = khach.GioiTinh;
                 phone.Text = khach.SDT;
                 email.Text = khach.Email;
                 txtNgTao.Text = khach.TenNguoiTao ?? string.Empty;
@@ -83,15 +83,8 @@ namespace QLVT
 
         private void PopupCmer_Load(object sender, EventArgs e)
         {
-            CbGender.Items.AddRange(new string[] { "Nam", "Nữ" });
-            if (_khachHang == null)
-            {
-                CbGender.SelectedIndex = 0;
-            }
-            else
-            {
+            
                 LoadDataToControls(_khachHang);
-            }
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)
@@ -271,6 +264,11 @@ namespace QLVT
         }
 
         private void Ngay_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void smallTextBox1_TextChanged(object sender, EventArgs e)
         {
 
         }

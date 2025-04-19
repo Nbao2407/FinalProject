@@ -38,6 +38,7 @@
             button1 = new ReaLTaiizor.Controls.Button();
             result = new Panel();
             panel1 = new Panel();
+            CbKho = new ReaLTaiizor.Controls.AloneComboBox();
             CbLoai = new ReaLTaiizor.Controls.AloneComboBox();
             Tong = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -159,6 +160,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(236, 240, 241);
+            panel1.Controls.Add(CbKho);
             panel1.Controls.Add(CbLoai);
             panel1.Controls.Add(Tong);
             panel1.Controls.Add(result);
@@ -171,6 +173,19 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1106, 600);
             panel1.TabIndex = 0;
+            // 
+            // CbKho
+            // 
+            CbKho.DrawMode = DrawMode.OwnerDrawFixed;
+            CbKho.DropDownStyle = ComboBoxStyle.DropDownList;
+            CbKho.EnabledCalc = true;
+            CbKho.FormattingEnabled = true;
+            CbKho.ItemHeight = 20;
+            CbKho.Location = new Point(516, 33);
+            CbKho.Name = "CbKho";
+            CbKho.Size = new Size(161, 26);
+            CbKho.TabIndex = 14;
+            CbKho.SelectedIndexChanged += CbKho_SelectedIndexChanged;
             // 
             // CbLoai
             // 
@@ -223,5 +238,6 @@
         private Panel panel1;
         private Label Tong;
         private ReaLTaiizor.Controls.AloneComboBox CbLoai;
+        private ReaLTaiizor.Controls.AloneComboBox CbKho;
     }
 }

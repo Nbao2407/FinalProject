@@ -40,6 +40,10 @@ namespace BUS
                 return false;
             }
         }
+        public DataTable LayDSNgNhapNv()
+        {
+            return DAL_TK.LayDSNgNhapNv();
+        }
         private bool IsNumeric(string value)
         {
             return value.All(char.IsDigit);
@@ -67,7 +71,7 @@ namespace BUS
             DAL_TK.ThemTaiKhoan(user, nguoiTao);
         }
 
-        public bool SuaTaiKhoan(DTO_TK tk, string matKhauMoi, int nguoiCapNhat)
+        public bool SuaTaiKhoan(DTO_TK tk, string? matKhauMoi, int nguoiCapNhat)
         {
             return DAL_TK.SuaTaiKhoan(tk, matKhauMoi, nguoiCapNhat);
         }

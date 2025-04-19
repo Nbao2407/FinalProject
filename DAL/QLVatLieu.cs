@@ -12,49 +12,102 @@ namespace DAL
     public class QLVatLieu : DBConnect
     {
         private SqlConnection conn = DBConnect.GetConnection();
+
         public List<DTO_VatLieu> LayTatCaVatLieu()
         {
-            List<DTO_VatLieu> danhSach = new List<DTO_VatLieu>();
+            List<DTO_VatLieu> danhSachVatLieu = new List<DTO_VatLieu>();
+            string query = @"
+                       SELECT
+                    tkv.MaVatLieu,
+                    vl.Ten,
+                    tkv.MaKho,
+                    k.TenKho,
+                    tkv.SoLuongTon,
+                    vl.DonViTinh,
+                    vl.DonGiaNhap,
+                    vl.DonGiaBan,
+                    vl.TrangThai AS TrangThaiVatLieu,
+                    lv.TenLoai,
+                    vl.GhiChu,
+                    vl.NgayTao,
+                    vl.NguoiTao,
+                    tkTao.TenDangNhap AS TenNguoiTao,
+                    vl.NgayCapNhat,
+                    vl.NguoiCapNhat,
+                    tkCapNhat.TenDangNhap AS TenNguoiCapNhat
+                FROM
+                    dbo.TonKhoVatLieu tkv -- Bắt đầu từ bảng tồn kho
+                INNER JOIN
+                    dbo.QLVatLieu vl ON tkv.MaVatLieu = vl.MaVatLieu -- Lấy thông tin vật liệu
+                INNER JOIN
+                    dbo.Kho k ON tkv.MaKho = k.MaKho -- Lấy tên kho
+                LEFT JOIN
+                    dbo.QLLoaiVatLieu lv ON vl.Loai = lv.MaLoaiVatLieu -- Lấy tên loại vật liệu
+                LEFT JOIN
+                    dbo.QLTK tkTao ON vl.NguoiTao = tkTao.MaTK -- Lấy tên người tạo
+                LEFT JOIN
+                    dbo.QLTK tkCapNhat ON vl.NguoiCapNhat = tkCapNhat.MaTK -- Lấy tên người cập nhật";
+
             using (SqlConnection conn = DBConnect.GetConnection())
             {
-                conn.Open();
-                string query = @"
-                            SELECT vl.MaVatLieu, vl.Ten, lv.TenLoai, vl.DonGiaNhap, vl.DonGiaBan, vl.DonViTinh, vl.SoLuong
-                            FROM QLVatLieu vl
-                            JOIN QLLoaiVatLieu lv ON vl.Loai = lv.MaLoaiVatLieu";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                try
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        DTO_VatLieu vatLieu = new DTO_VatLieu(
-                            reader.GetInt32(0),
-                            reader.GetString(1),
-                            reader.GetString(2),
-                            reader.GetDecimal(3),
-                            reader.GetDecimal(4),
-                            reader.GetString(5),
-                            reader.GetDecimal(6)
-                        );
-                        danhSach.Add(vatLieu);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DTO_VatLieu vl = new DTO_VatLieu();
+                                vl.MaVatLieu = reader.GetInt32(reader.GetOrdinal("MaVatLieu"));
+                                vl.Ten = reader.GetString(reader.GetOrdinal("Ten"));
+                                vl.TenLoai = reader["Ten"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("TenLoai")) : string.Empty;
+                                vl.DonGiaNhap = reader.GetDecimal(reader.GetOrdinal("DonGiaNhap"));
+                                vl.DonGiaBan = reader.GetDecimal(reader.GetOrdinal("DonGiaBan"));
+                                vl.DonViTinh = reader.GetString(reader.GetOrdinal("DonViTinh"));
+                                vl.SoLuong = reader.GetDecimal(reader.GetOrdinal("SoLuongTon"));
+                                vl.TrangThai = reader.GetString(reader.GetOrdinal("TrangThaiVatLieu"));
+                                vl.TenKho = reader.GetString(reader.GetOrdinal("TenKho"));
+                                vl.NgayTao = reader.GetDateTime(reader.GetOrdinal("NgayTao"));
+                                vl.NguoiTao = reader["NguoiTao"] != DBNull.Value ? reader.GetInt32(reader.GetOrdinal("NguoiTao")) : (int?)null;
+                                vl.NgayCapNhat = reader["NgayCapNhat"] != DBNull.Value ? reader.GetDateTime(reader.GetOrdinal("NgayCapNhat")) : (DateTime?)null;
+                                vl.NguoiCapNhat = reader["NguoiCapNhat"] != DBNull.Value ? reader.GetInt32(reader.GetOrdinal("NguoiCapNhat")) : (int?)null;
+                                vl.TenNguoiTao = reader["TenNguoiTao"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("TenNguoiTao")) : null;
+                                vl.TenNguoiCapNhat = reader["TenNguoiCapNhat"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("TenNguoiCapNhat")) : null;
+
+                                danhSachVatLieu.Add(vl);
+                            }
+                        }
                     }
                 }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine($"Lỗi SQL khi lấy danh sách vật liệu: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi hệ thống khi lấy danh sách vật liệu: {ex.Message}");
+                    throw;
+                }
             }
-            return danhSach;
+
+            return danhSachVatLieu;
         }
+
         public async Task<DTO_VatLieu> LayThongTinVatLieuAsync(int maVatLieu)
         {
             DTO_VatLieu vatLieu = null;
             string query = @"
     SELECT
         MaVatLieu,
-        Ten ,    
+        Ten ,
         DonViTinh,
-        SoLuong, 
+        SoLuong,
         DonGiaNhap,
          TrangThai
-    FROM QLVatLieu 
+    FROM QLVatLieu
     WHERE MaVatLieu = @MaVatLieu
       AND TrangThai = N'Hoạt động';";
             try
@@ -66,7 +119,7 @@ namespace DAL
 
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync()) 
+                        if (await reader.ReadAsync())
                         {
                             vatLieu = MapReaderToVatLieu(reader);
                         }
@@ -92,14 +145,15 @@ namespace DAL
             }
             return vatLieu;
         }
+
         private DTO_VatLieu MapReaderToVatLieu(SqlDataReader reader)
         {
             return new DTO_VatLieu
             {
                 MaVatLieu = reader.GetInt32(reader.GetOrdinal("MaVatLieu")),
-                Ten = reader.GetString(reader.GetOrdinal("Ten")), 
+                Ten = reader.GetString(reader.GetOrdinal("Ten")),
                 DonViTinh = reader.GetString(reader.GetOrdinal("DonViTinh")),
-                SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")), 
+                SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")),
                 DonGiaNhap = reader.IsDBNull(reader.GetOrdinal("DonGiaNhap")) ? 0m : reader.GetDecimal(reader.GetOrdinal("DonGiaNhap"))
                 // Không đọc TrangThai nếu SELECT không có
             };
@@ -116,13 +170,13 @@ namespace DAL
                 using (SqlConnection _conn = DBConnect.GetConnection())
 
                 {
-                    _conn.Open(); 
+                    _conn.Open();
                     SqlCommand cmd = new SqlCommand(query, _conn);
-                    cmd.Parameters.AddWithValue("@Ten", tenVatLieu.Trim()); 
+                    cmd.Parameters.AddWithValue("@Ten", tenVatLieu.Trim());
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read()) 
+                        if (reader.Read())
                         {
                             vatLieu = new DTO_VatLieu
                             {
@@ -139,11 +193,80 @@ namespace DAL
             catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi DAL_VatLieu.TimVatLieuTheoTenChinhXac: {ex.Message}");
-                throw; 
+                throw;
             }
             return vatLieu;
         }
+        public List<DTO_Kho> LayDanhSachKhokho()
+        {
+            List<DTO_Kho> danhSachKho = new List<DTO_Kho>();
+            using (SqlConnection _conn = DBConnect.GetConnection())
+            {
+                string query = "SELECT MaKho, TenKho FROM Kho"; 
+                using (SqlCommand command = new SqlCommand(query, _conn))
+                {
+                    try
+                    {
+                        _conn.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DTO_Kho kho = new DTO_Kho
+                                {
+                                    MaKho = Convert.ToInt32(reader["MaKho"]),
+                                    TenKho = reader["TenKho"].ToString()
+                                };
+                                danhSachKho.Add(kho);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_Kho] Lỗi khi lấy danh sách kho: {ex.Message}");
+                        throw;
+                    }
+                }
+            }
+            return danhSachKho;
+        }
+        public DTO_Kho TimKhoTheoTen(string tenKho)
+        {
+            if (string.IsNullOrWhiteSpace(tenKho))
+            {
+                return null;
+            }
+            string query = "SELECT MaKho, TenKho FROM dbo.Kho WHERE TenKho = @TenKho";
+            DTO_Kho kho = null;
 
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TenKho", tenKho);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                kho = new DTO_Kho
+                                {
+                                    MaKho = reader.GetInt32(reader.GetOrdinal("MaKho")),
+                                    TenKho = reader.GetString(reader.GetOrdinal("TenKho"))
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                }
+            }
+
+            return kho;
+        }
         public DataTable LayVatLieuTheoMa(int maVatLieu)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -157,6 +280,7 @@ namespace DAL
                 return dt;
             }
         }
+
         public DataTable LayTenKhoTheoMa(int maKho)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -170,6 +294,21 @@ namespace DAL
                 return dt;
             }
         }
+
+        public DataTable LayTenKhoTheoTen(string Ten)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("SELECT TenKho FROM Kho WHERE TenKho = @TenKho", conn);
+                cmd.Parameters.AddWithValue("@MaKho", Ten);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                conn.Open();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+
         public DataTable LayTenNgTaoTheoMa(int maTk)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -197,6 +336,7 @@ namespace DAL
                 return dt;
             }
         }
+
         public async Task<List<DTO_VatLieu>> TimKiemVatLieuAsync(string searchQuery)
         {
             List<DTO_VatLieu> dsVatLieu = new List<DTO_VatLieu>();
@@ -227,7 +367,7 @@ namespace DAL
             catch (SqlException sqlEx)
             {
                 Console.WriteLine($"SQL Error in DAL_VatLieu.TimKiemVatLieuAsync: {sqlEx.Message}");
-                throw; 
+                throw;
             }
             catch (Exception ex)
             {
@@ -243,6 +383,7 @@ namespace DAL
             }
             return dsVatLieu;
         }
+
         public DataTable LayVatLieuTheoMa2(int maVatLieu)
         {
             DataTable dt = new DataTable();
@@ -284,7 +425,8 @@ namespace DAL
                                 DonGiaBan = reader.GetDecimal(3),
                                 DonGiaNhap = reader.GetDecimal(4),
                                 DonViTinh = reader.GetString(5),
-                                SoLuong = reader.GetDecimal(6)
+                                SoLuong = reader.GetDecimal(6),
+                                TenKho = reader.GetString(7)
                             });
                         }
                     }
@@ -317,7 +459,7 @@ namespace DAL
                             Ten = reader["Ten"] != DBNull.Value ? reader["Ten"].ToString() : string.Empty,
                             DonGiaBan = reader["DonGiaBan"] != DBNull.Value ? Convert.ToDecimal(reader["DonGiaBan"]) : 0m,
                             DonViTinh = reader["DonViTinh"] != DBNull.Value ? reader["DonViTinh"].ToString() : string.Empty,
-                            SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToInt32(reader["SoLuong"]) : 0, 
+                            SoLuong = reader["SoLuong"] != DBNull.Value ? Convert.ToDecimal(reader["SoLuong"]) : 0,
                             TenKho = reader["TenKho"] != DBNull.Value ? reader["TenKho"].ToString() : string.Empty,
                             MaKho = reader.IsDBNull(reader.GetOrdinal("MaKho")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaKho"))
                         };
@@ -330,7 +472,7 @@ namespace DAL
                 Console.WriteLine($"SQL Error in DAL_VatLieu.TimKiemVatLieuTheoKho: {sqlEx.Message}, SP Params: MaKho={maKho}, Keyword='{searchKeyword}'");
             }
             catch (Exception ex)
-            { 
+            {
                 Console.WriteLine($"Error in DAL_VatLieu.TimKiemVatLieuTheoKho: {ex.Message}");
             }
             finally
@@ -343,7 +485,7 @@ namespace DAL
             return ketQua;
         }
 
-        public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu,int NguoiTao)
+        public void ThemVatLieu(string ten, int loai, decimal donGiaNhap, decimal donGiaBan, string donViTinh, int maKho, byte[] hinhAnh, string ghiChu, int NguoiTao)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -357,7 +499,7 @@ namespace DAL
                 cmd.Parameters.AddWithValue("@MaKho", maKho);
                 cmd.Parameters.AddWithValue("@HinhAnh", hinhAnh == null ? (object)DBNull.Value : hinhAnh);
                 cmd.Parameters.AddWithValue("@GhiChu", string.IsNullOrEmpty(ghiChu) ? (object)DBNull.Value : ghiChu);
-                cmd.Parameters.AddWithValue("@NguoiTao",NguoiTao );
+                cmd.Parameters.AddWithValue("@NguoiTao", NguoiTao);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -401,7 +543,7 @@ namespace DAL
             }
         }
 
-      public DataTable LayDanhSachLoaiVatLieu()
+        public DataTable LayDanhSachLoaiVatLieu()
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
@@ -414,6 +556,7 @@ namespace DAL
                 return dt;
             }
         }
+
         public DataTable LayDanhSachDonViTinh()
         {
             using (SqlConnection conn = DBConnect.GetConnection())
@@ -427,6 +570,7 @@ namespace DAL
                 return dt;
             }
         }
+
         public DataTable LayDanhSachKho()
         {
             DataTable dt = new DataTable();
@@ -445,6 +589,7 @@ namespace DAL
             }
             return dt;
         }
+
         public int GetSoLuongTonKho(int maVatLieu, int maKho)
         {
             int soLuongTon = 0;
@@ -460,7 +605,7 @@ namespace DAL
                     try
                     {
                         conn.Open();
-                        object result = cmd.ExecuteScalar(); 
+                        object result = cmd.ExecuteScalar();
 
                         if (result != null && result != DBNull.Value)
                         {
@@ -479,6 +624,5 @@ namespace DAL
             }
             return soLuongTon;
         }
-
     }
 }

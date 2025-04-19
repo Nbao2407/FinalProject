@@ -30,8 +30,8 @@ namespace DAL
                 FROM QLHoaDon hd
                 JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
                 LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang;
-            ";
 
+            ";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         SqlDataReader reader = cmd.ExecuteReader();
@@ -59,13 +59,138 @@ namespace DAL
             }
             return danhSach;
         }
+        public async Task<bool> TuChoiHoaDonAsync(int maHoaDon, int maTK_NguoiThucHien)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                using (SqlCommand command = new SqlCommand("sp_TuChoiHoaDon", conn)) 
+                {
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    command.Parameters.AddWithValue("@MaHoaDon", maHoaDon);
+                    command.Parameters.AddWithValue("@MaTK_NguoiThucHien", maTK_NguoiThucHien);
+
+                    try
+                    {
+                        await conn.OpenAsync();
+                        await command.ExecuteNonQueryAsync(); 
+                        Console.WriteLine($"[DAL_HoaDon] Đã gọi sp_TuChoiHoaDon thành công cho MaHoaDon: {maHoaDon}");
+                        return true; // Thành công
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"[DAL_HoaDon] Lỗi SQL khi từ chối/hủy hóa đơn {maHoaDon}: {ex.Message}");
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[DAL_HoaDon] Lỗi khác khi từ chối/hủy hóa đơn {maHoaDon}: {ex.Message}");
+                        throw;
+                    }
+                }
+            }
+        }
+        public bool XoaHoaDonVaChiTiet(int maHoaDon)
+        {
+            using (SqlConnection conn = DBConnect.GetConnection())
+            {
+                conn.Open();
+
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                            string queryCTHD = "DELETE FROM ChiTietHoaDon WHERE MaHoaDon = @MaHoaDon";
+                            using (SqlCommand cmdCTHD = new SqlCommand(queryCTHD, conn, transaction))
+                            {
+                                cmdCTHD.Parameters.AddWithValue("@MaHoaDon", maHoaDon);
+                                cmdCTHD.ExecuteNonQuery(); 
+                            }
+
+                            // Xóa hóa đơn
+                            string queryHD = "DELETE FROM QLHoaDon WHERE MaHoaDon = @MaHoaDon";
+                            using (SqlCommand cmdHD = new SqlCommand(queryHD, conn, transaction))
+                            {
+                                cmdHD.Parameters.AddWithValue("@MaHoaDon", maHoaDon);
+                                int rows = cmdHD.ExecuteNonQuery();
+
+                                if (rows == 0)
+                                {
+                                    transaction.Rollback();
+                                    return false; // Không tìm thấy hóa đơn
+                                }
+                            }
+
+                            transaction.Commit();
+                            return true;
+                        }
+                        catch
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+                    }
+            }
+        }
+        public List<DTO_HoaDon> LayTatCaHoaDonnhap(int currentUserId)
+        {
+            List<DTO_HoaDon> danhSach = new List<DTO_HoaDon>();
+
+            try
+            {
+                using (SqlConnection conn = DBConnect.GetConnection())
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT hd.MaHoaDon, 
+                       hd.NgayLap, 
+                       tk.TenDangNhap AS NguoiLap, 
+                       kh.MaKhachHang,
+                       COALESCE(kh.Ten, N'Khách lẻ') AS TenKhachHang,
+                       hd.TongTien, 
+                       hd.TrangThai, 
+                       hd.HinhThucThanhToan
+                FROM QLHoaDon hd
+                JOIN QLTK tk ON hd.MaTKLap = tk.MaTK
+                LEFT JOIN QLKH kh ON hd.MaKhachHang = kh.MaKhachHang
+                 WHERE hd.TrangThai != N'Nháp' OR (hd.TrangThai = N'Nháp' AND hd.MaTKLap = @CurrentUserId);";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CurrentUserId", currentUserId);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DTO_HoaDon hd = new DTO_HoaDon
+                                {
+                                    MaHoaDon = reader.GetInt32(0),
+                                    NgayLap = reader.GetDateTime(1),
+                                    NguoiLap = reader.GetString(2),
+                                    MaKhachHang = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                                    TenKhachHang = reader.GetString(4),
+                                    TongTien = reader.GetDecimal(5),
+                                    TrangThai = reader.GetString(6),
+                                    HinhThucThanhToan = reader.GetString(7)
+                                };
+                                danhSach.Add(hd);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy danh sách hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return danhSach;
+        }
         public int CreateHoaDon(int maTKLap, int? maKhachHang)
         {
             using (SqlConnection conn = DBConnect.GetConnection())
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai) OUTPUT INSERTED.MaHoaDon VALUES (GETDATE(), @MaTKLap, @MaKhachHang, 0, N'Chờ thanh toán')", conn))
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO QLHoaDon (NgayLap, MaTKLap, MaKhachHang, TongTien, TrangThai) OUTPUT INSERTED.MaHoaDon VALUES (GETDATE(), @MaTKLap, @MaKhachHang, 0, N'Nháp')", conn))
                 {
                     cmd.Parameters.AddWithValue("@MaTKLap", maTKLap);
                     cmd.Parameters.AddWithValue("@MaKhachHang", maKhachHang ?? (object)DBNull.Value);

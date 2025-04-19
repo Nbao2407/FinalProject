@@ -1,6 +1,7 @@
 ﻿using DAL;
 using DTO;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -16,8 +17,31 @@ namespace BUS
             return dalDonXuat.GetAllDonXuat();
         }
 
+        public async Task<bool> TuChoiDonXuatAsync(int maDonXuat, int maTK_NguoiTuChoi)
+        {
+            try
+            {
+                bool success = await dalDonXuat.TuChoiDonXuatAsync(maDonXuat, maTK_NguoiTuChoi);
+                return success; 
+            }
+            catch (SqlException sqlEx) 
+            {
+                Console.WriteLine($"[BUS_DonXuat] Lỗi SQL khi từ chối đơn xuất {maDonXuat}: {sqlEx.Message}");
+                return false;
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine($"[BUS_DonXuat] Lỗi không xác định khi từ chối đơn xuất {maDonXuat}: {ex.Message}");
+                return false;
+            }
+        }
 
-        public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int? maKhoNguon, int nguoiThucHien)
+        public bool DuyeDonXuat(int maDonXuat, int nguoiDuyet, string ghiChu = null)
+        {
+            return dalDonXuat.DuyetDonXuat(maDonXuat, nguoiDuyet, ghiChu);
+        }
+
+        public int ThemDonXuat(DTO_DonXuatInput donXuatInput, int? maKhoNguon, int? maKhoDich, int nguoiThucHien)
         {
             if (donXuatInput == null) throw new ArgumentNullException(nameof(donXuatInput));
             if (donXuatInput.MaTK <= 0) throw new ArgumentException("Mã người lập không hợp lệ.", nameof(donXuatInput.MaTK));
@@ -44,7 +68,7 @@ namespace BUS
 
             try
             {
-                return dalDonXuat.ThemDonXuat(donXuatInput, maKhoNguon, nguoiThucHien);
+                return dalDonXuat.ThemDonXuat(donXuatInput, maKhoNguon, maKhoDich, nguoiThucHien);
             }
             catch (SqlException ex)
             {
@@ -55,6 +79,46 @@ namespace BUS
             {
                 Console.WriteLine($"BUS ThemDonXuat Error: {ex.Message}");
                 throw;
+            }
+        }
+
+        public async Task<bool> UpdateDonXuatAsync(DTO_DonXuat headerUpdate, List<DTO_ChiTietDonXuat> oldDetails, List<DTO_ChiTietDonXuat> newDetails)
+        {
+            if (headerUpdate == null || newDetails == null)
+            {
+                Console.WriteLine("[BUS_DonXuat] Dữ liệu đầu vào không hợp lệ.");
+                return false; // Hoặc ném Exception
+            }
+            if (!newDetails.Any())
+            {
+                Console.WriteLine("[BUS_DonXuat] Chi tiết đơn xuất không được rỗng.");
+                return false; // Hoặc ném Exception
+            }
+
+            string chiTietMoiJson = "[]";
+            try
+            {
+                chiTietMoiJson = JsonConvert.SerializeObject(newDetails);
+            }
+            catch (Exception jsonEx)
+            {
+                Console.WriteLine($"[BUS_DonXuat] Lỗi khi serialize chi tiết mới: {jsonEx.Message}");
+                return false;
+            }
+            try
+            {
+                bool orderUpdated = await dalDonXuat.UpdateDonXuatAsync(headerUpdate, chiTietMoiJson);
+                return orderUpdated;
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"[BUS_DonXuat] Lỗi SQL khi cập nhật đơn xuất {headerUpdate.MaDonXuat}: {sqlEx.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[BUS_DonXuat] Lỗi không xác định khi cập nhật đơn xuất {headerUpdate.MaDonXuat}: {ex.Message}");
+                return false;
             }
         }
 
@@ -95,6 +159,7 @@ namespace BUS
                 return null;
             }
         }
+
         public bool HuyDonXuat(int maDonXuat, int nguoiHuy, string lyDo)
         {
             if (maDonXuat <= 0)
@@ -123,12 +188,13 @@ namespace BUS
         {
             return dalDonXuat.TimKiemDonXuat(keyword, trangThai);
         }
+
         public int GetSoLuongTonKho(int maVatLieu, int maKho)
         {
             if (maVatLieu <= 0 || maKho <= 0)
             {
                 Console.WriteLine("BUS GetSoLuongTonKho: Mã vật liệu hoặc Mã kho không hợp lệ.");
-                return 0; 
+                return 0;
             }
 
             try
